@@ -6,8 +6,7 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
   useEffect(() => {
-    console.log(JSON.stringify(process.env));
-    console.log(JSON.stringify(process.env.REACT_APP_API_SERVICE));
+    console.log(JSON.stringify(import.meta.env));
   },[])
   return (
     <>
