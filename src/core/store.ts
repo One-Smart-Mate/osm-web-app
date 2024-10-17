@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "../services/apiSlice";
-import authReducer from "./authReducer";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import genericReducer from "./genericReducer";
+import authReducer from "./authReducer";
 
 
 
