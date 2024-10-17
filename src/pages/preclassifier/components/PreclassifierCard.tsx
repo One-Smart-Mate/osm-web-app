@@ -3,6 +3,7 @@ import { getStatusAndText } from "../../../utils/Extensions";
 import { SlOptionsVertical } from "react-icons/sl";
 import Strings from "../../../utils/localizations/Strings";
 import UpdatePreclassierButton from "./UpdatePreclassifierButton";
+import Preclassifier from "../../../data/preclassifier/preclassifier";
 
 interface CardProps {
   data: Preclassifier;

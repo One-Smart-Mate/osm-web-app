@@ -1,3 +1,4 @@
+import Preclassifier from "../data/preclassifier/preclassifier";
 import {
   CreatePreclassifier,
   UpdatePreclassifier,

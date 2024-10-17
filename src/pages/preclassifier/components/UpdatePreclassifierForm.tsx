@@ -7,6 +7,7 @@ import { useAppSelector } from "../../../core/store";
 import { selectCurrentRowData } from "../../../core/genericReducer";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";
+import Preclassifier from "../../../data/preclassifier/preclassifier";
 
 interface FormProps {
   form: FormInstance;

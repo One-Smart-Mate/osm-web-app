@@ -6,6 +6,7 @@ import { getStatusAndText } from "../../../utils/Extensions";
 import { Badge, Space, Table } from "antd";
 import Constants from "../../../utils/Constants";
 import UpdatePreclassierButton from "./UpdatePreclassifierButton";
+import Preclassifier from "../../../data/preclassifier/preclassifier";
 
 interface TableProps {
   data: Preclassifier[];

@@ -26,6 +26,7 @@ import {
   selectPreclassifierUpdatedIndicator,
 } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import Preclassifier from "../../data/preclassifier/preclassifier";
 
 const Preclassifiers = () => {
   const [getPreclassifiers] = useGetPreclassifiersMutation();
