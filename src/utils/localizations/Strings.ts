@@ -265,7 +265,7 @@ export default class Strings {
   static delete = "Delete";
   static confirm = "Confirm";
 
-  static tagVersion = "Version 1.0.14";
+  static tagVersion = import.meta.env.VITE_AP_VERSION;
 
   //Evidence type
   static AUCR = "AUCR";
