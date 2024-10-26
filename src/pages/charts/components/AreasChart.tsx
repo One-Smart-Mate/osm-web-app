@@ -19,11 +19,19 @@ import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   methodologies: Methodology[];
   rol: UserRoles;
 }
 
-const AreasChart = ({ siteId, methodologies, rol }: ChartProps) => {
+const AreasChart = ({
+  siteId,
+  startDate,
+  endDate,
+  methodologies,
+  rol,
+}: ChartProps) => {
   const [getAreas] = useGetAreasChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -41,7 +49,11 @@ const AreasChart = ({ siteId, methodologies, rol }: ChartProps) => {
   });
 
   const handleGetData = async () => {
-    const response = await getAreas(siteId).unwrap();
+    const response = await getAreas({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     const areaMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!areaMap[item.area]) {
@@ -58,7 +70,7 @@ const AreasChart = ({ siteId, methodologies, rol }: ChartProps) => {
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({

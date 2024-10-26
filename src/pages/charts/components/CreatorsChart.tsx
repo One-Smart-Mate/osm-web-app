@@ -19,11 +19,19 @@ import { UserRoles } from "../../../utils/Extensions";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
 }
 
-const CreatorsChart = ({ siteId, methodologies, rol }: ChartProps) => {
+const CreatorsChart = ({
+  siteId,
+  startDate,
+  endDate,
+  methodologies,
+  rol,
+}: ChartProps) => {
   const [getCreators] = useGetCreatorsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -41,7 +49,11 @@ const CreatorsChart = ({ siteId, methodologies, rol }: ChartProps) => {
   });
 
   const handleGetData = async () => {
-    const response = await getCreators(siteId).unwrap();
+    const response = await getCreators({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     const creatorMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!creatorMap[item.creator]) {
@@ -60,7 +72,7 @@ const CreatorsChart = ({ siteId, methodologies, rol }: ChartProps) => {
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({
