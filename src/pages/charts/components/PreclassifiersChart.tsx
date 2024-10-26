@@ -18,10 +18,17 @@ import { UserRoles } from "../../../utils/Extensions";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   rol: UserRoles;
 }
 
-const PreclassifiersChart = ({ siteId, rol }: ChartProps) => {
+const PreclassifiersChart = ({
+  siteId,
+  startDate,
+  endDate,
+  rol,
+}: ChartProps) => {
   const [getAnomalies] = useGetPreclassifiersChartDataMutation();
   const [preclassifiers, setPreclassifiers] = useState<Preclassifier[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -53,13 +60,17 @@ const PreclassifiersChart = ({ siteId, rol }: ChartProps) => {
   };
 
   const handleGetData = async () => {
-    const response = await getAnomalies(siteId).unwrap();
+    const response = await getAnomalies({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     setPreclassifiers(response);
   };
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   return (
     <>

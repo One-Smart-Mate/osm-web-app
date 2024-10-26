@@ -19,11 +19,19 @@ import { UserRoles } from "../../../utils/Extensions";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
 }
 
-const MechanicsChart = ({ siteId, methodologies, rol }: ChartProps) => {
+const MechanicsChart = ({
+  siteId,
+  startDate,
+  endDate,
+  methodologies,
+  rol,
+}: ChartProps) => {
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -43,7 +51,11 @@ const MechanicsChart = ({ siteId, methodologies, rol }: ChartProps) => {
   });
 
   const handleGetData = async () => {
-    const response = await getMechanics(siteId).unwrap();
+    const response = await getMechanics({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     const mechanicMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!mechanicMap[item.mechanic]) {
@@ -62,7 +74,7 @@ const MechanicsChart = ({ siteId, methodologies, rol }: ChartProps) => {
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({

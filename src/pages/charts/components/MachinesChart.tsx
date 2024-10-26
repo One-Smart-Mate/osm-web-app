@@ -19,11 +19,19 @@ import { UserRoles } from "../../../utils/Extensions";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
 }
 
-const MachinesChart = ({ siteId, methodologies, rol }: ChartProps) => {
+const MachinesChart = ({
+  siteId,
+  startDate,
+  endDate,
+  methodologies,
+  rol,
+}: ChartProps) => {
   const [getMachines] = useGetMachinesChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -42,7 +50,11 @@ const MachinesChart = ({ siteId, methodologies, rol }: ChartProps) => {
   });
 
   const handleGetData = async () => {
-    const response = await getMachines(siteId).unwrap();
+    const response = await getMachines({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     const nodeMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!nodeMap[item.nodeName]) {
@@ -62,7 +74,7 @@ const MachinesChart = ({ siteId, methodologies, rol }: ChartProps) => {
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({

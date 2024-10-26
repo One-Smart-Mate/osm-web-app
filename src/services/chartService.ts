@@ -11,32 +11,109 @@ import { apiSlice } from "./apiSlice";
 
 export const chartService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getPreclassifiersChartData: builder.mutation<Preclassifier[], string>({
-      query: (siteId) => `/card/site/preclassifiers/${siteId}`,
+    getPreclassifiersChartData: builder.mutation<
+      Preclassifier[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/preclassifiers/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Preclassifier[] }) => response.data,
     }),
-    getMethodologiesChartData: builder.mutation<Preclassifier[], string>({
-      query: (siteId) => `/card/site/methodologies/${siteId}`,
+    getMethodologiesChartData: builder.mutation<
+      Preclassifier[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/methodologies/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Preclassifier[] }) => response.data,
     }),
-    getAreasChartData: builder.mutation<Area[], string>({
-      query: (siteId) => `/card/site/areas/${siteId}`,
+    getAreasChartData: builder.mutation<
+      Area[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/areas/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Area[] }) => response.data,
     }),
-    getMachinesChartData: builder.mutation<Machine[], string>({
-      query: (siteId) => `/card/site/machines/${siteId}`,
+    getMachinesChartData: builder.mutation<
+      Machine[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/machines/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Machine[] }) => response.data,
     }),
-    getCreatorsChartData: builder.mutation<Creator[], string>({
-      query: (siteId) => `/card/site/creators/${siteId}`,
+    getCreatorsChartData: builder.mutation<
+      Creator[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/creators/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Creator[] }) => response.data,
     }),
-    getMechanicsChartData: builder.mutation<Mechanic[], string>({
-      query: (siteId) => `/card/site/mechanics/${siteId}`,
+    getMechanicsChartData: builder.mutation<
+      Mechanic[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/mechanics/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Mechanic[] }) => response.data,
     }),
-    getDefinitiveUsersChartData: builder.mutation<DefinitiveUser[], string>({
-      query: (siteId) => `/card/site/definitive-user/${siteId}`,
+    getDefinitiveUsersChartData: builder.mutation<
+      DefinitiveUser[],
+      { siteId: string; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        let url = `/card/site/definitive-user/${siteId}`;
+        if (startDate || endDate) {
+          url += `?${startDate ? `startDate=${startDate}&` : ""}${
+            endDate ? `endDate=${endDate}` : ""
+          }`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: DefinitiveUser[] }) =>
         response.data,
     }),
@@ -55,5 +132,5 @@ export const {
   useGetMethodologiesChartDataMutation,
   useGetMachinesChartDataMutation,
   useGetMechanicsChartDataMutation,
-  useGetDefinitiveUsersChartDataMutation
+  useGetDefinitiveUsersChartDataMutation,
 } = chartService;
