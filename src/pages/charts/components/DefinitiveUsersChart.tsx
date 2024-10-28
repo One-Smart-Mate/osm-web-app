@@ -19,11 +19,19 @@ import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
 
 export interface ChartProps {
   siteId: string;
+  startDate: string;
+  endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
 }
 
-const DefinitiveUsersChart = ({ siteId, methodologies, rol }: ChartProps) => {
+const DefinitiveUsersChart = ({
+  siteId,
+  startDate,
+  endDate,
+  methodologies,
+  rol,
+}: ChartProps) => {
   const [getDefinitiveUsers] = useGetDefinitiveUsersChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -43,7 +51,11 @@ const DefinitiveUsersChart = ({ siteId, methodologies, rol }: ChartProps) => {
   });
 
   const handleGetData = async () => {
-    const response = await getDefinitiveUsers(siteId).unwrap();
+    const response = await getDefinitiveUsers({
+      siteId,
+      startDate,
+      endDate,
+    }).unwrap();
     const definitiveUserMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!definitiveUserMap[item.definitiveUser]) {
@@ -60,7 +72,7 @@ const DefinitiveUsersChart = ({ siteId, methodologies, rol }: ChartProps) => {
 
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({

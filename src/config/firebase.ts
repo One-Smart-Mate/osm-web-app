@@ -4,13 +4,13 @@ import { getStorage } from "firebase/storage";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDZ_7OLVZWZBaJU7AlRwh6SniIWbKxuQlU",
-  authDomain: "web-m2-app.firebaseapp.com",
-  projectId: "web-m2-app",
-  storageBucket: "web-m2-app.appspot.com",
-  messagingSenderId: "29097942681",
-  appId: "1:29097942681:web:5de8b61add9d7147642208",
-  measurementId: "G-Y0KP9BQK24"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASURE_ID
 };
 
 
