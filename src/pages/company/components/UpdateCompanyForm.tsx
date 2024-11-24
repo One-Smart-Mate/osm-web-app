@@ -10,15 +10,20 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Tooltip,
 } from "antd";
 import Strings from "../../../utils/localizations/Strings";
+import {
+  MailOutlined,
+  QuestionCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { FaRegBuilding } from "react-icons/fa";
 import { MdOutlineLocalPhone, MdOutlineQrCodeScanner } from "react-icons/md";
 import { IoIosContact } from "react-icons/io";
 import { BsDiagram3 } from "react-icons/bs";
 import { TiPlusOutline } from "react-icons/ti";
 import { HiDevicePhoneMobile } from "react-icons/hi2";
-import { PlusOutlined, MailOutlined } from "@ant-design/icons";
 import { SlCompass } from "react-icons/sl";
 import { Company } from "../../../data/company/company";
 import { selectCurrentRowData } from "../../../core/genericReducer";
@@ -94,7 +99,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               { required: true, message: Strings.requiredCompanyName },
               { max: 100 },
             ]}
-            className="flex-1 mr-1"
+            className="flex-1 mr-2"
           >
             <Input
               size="large"
@@ -103,6 +108,9 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.companyName}
             />
           </Form.Item>
+          <Tooltip title="Legal name of the company">
+            <QuestionCircleOutlined className="h-9 mr-2 text-blue-500 text-sm" />
+          </Tooltip>
           <Form.Item
             name="rfc"
             validateFirst
@@ -126,20 +134,30 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               }
             />
           </Form.Item>
+          <Tooltip title="The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.">
+            <QuestionCircleOutlined className="ml-2 h-9 text-blue-500 text-sm" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="address"
-          rules={[
-            { required: true, message: Strings.requiredAddress },
-            { max: 200 },
-          ]}
-        >
-          <Input
-            size="large"
-            addonBefore={<SlCompass />}
-            placeholder={Strings.companyAddress}
-          />
-        </Form.Item>
+        <div className="flex items-center w-full">
+          <Form.Item
+            name="address"
+            rules={[
+              { required: true, message: Strings.requiredAddress },
+              { max: 200 },
+            ]}
+            className="flex-grow"
+          >
+            <Input
+              size="large"
+              addonBefore={<SlCompass />}
+              placeholder={Strings.companyAddress}
+            />
+          </Form.Item>
+          <Tooltip title="Complete address of the company, including street and city.">
+            <QuestionCircleOutlined className="mb-6 ml-2 text-blue-500 text-sm" />
+          </Tooltip>
+        </div>
+
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="contact"
@@ -156,6 +174,9 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.contact}
             />
           </Form.Item>
+          <Tooltip title="Name of the primary contact person.">
+            <QuestionCircleOutlined className="h-9 ml-1 mr-1.5 text-blue-500 text-sm" />
+          </Tooltip>
           <Form.Item
             name="position"
             rules={[
@@ -171,8 +192,11 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.position}
             />
           </Form.Item>
+          <Tooltip title="Job position of the contact person.">
+            <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
+          </Tooltip>
         </div>
-        <div className="flex justify-between flex-row flex-wrap">
+        <div className="flex justify-between flex-row ">
           <Form.Item
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
@@ -184,6 +208,9 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.phone}
             />
           </Form.Item>
+          <Tooltip title="Company's landline number.">
+            <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
+          </Tooltip>
           <Form.Item name="extension">
             <InputNumber
               size="large"
@@ -192,6 +219,9 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.extension}
             />
           </Form.Item>
+          <Tooltip title="Extension for the phone number (if applicable).">
+            <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
+          </Tooltip>
           <Form.Item
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
@@ -203,42 +233,56 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.cellular}
             />
           </Form.Item>
+          <Tooltip title="Primary mobile phone number.">
+            <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="email"
-          rules={[
-            { required: true, message: Strings.requiredEmail },
-            { type: "email", message: Strings.requiredValidEmailAddress },
-            { max: 60 },
-          ]}
-        >
-          <Input
-            size="large"
-            maxLength={60}
-            addonBefore={<MailOutlined />}
-            placeholder={Strings.email}
-          />
-        </Form.Item>
-        <Form.Item name="logoURL" className="hidden">
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="logo"
-          label={Strings.logo}
-          getValueFromEvent={(event) => event?.fileList}
-          rules={[{ required: true, message: Strings.requiredLogo }]}
-        >
-          <Upload
-            maxCount={1}
-            accept="image/*"
-            listType="picture-card"
-            onPreview={handleOnPreview}
-            onChange={handleChange}
-            fileList={fileList}
+        <div className="flex items-center w-full">
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: Strings.requiredEmail },
+              { type: "email", message: Strings.requiredValidEmailAddress },
+              { max: 60 },
+            ]}
+            className="flex-grow"
           >
-            {uploadButton}
-          </Upload>
-        </Form.Item>
+            <Input
+              size="large"
+              maxLength={60}
+              addonBefore={<MailOutlined />}
+              placeholder={Strings.email}
+            />
+          </Form.Item>
+          <Tooltip title="Official company email address.">
+            <QuestionCircleOutlined className="h-9 mb-7 ml-2 text-blue-500 text-sm" />
+          </Tooltip>
+        </div>
+        <div className="flex items-center w-full">
+          <Form.Item
+            name="logo"
+            label={Strings.logo}
+            getValueFromEvent={(event) => event?.fileList}
+            rules={[{ required: true, message: Strings.requiredLogo }]}
+          >
+            <div className="flex items-center">
+              <Upload
+                maxCount={1}
+                accept="image/*"
+                listType="picture-card"
+                onPreview={handleOnPreview}
+                onChange={handleChange}
+                fileList={fileList}
+              >
+                {uploadButton}
+              </Upload>
+              <Tooltip title="Upload the company logo in image format.">
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
+          </Form.Item>
+        </div>
+
         <Form.Item>
           {previewImage && (
             <Image
