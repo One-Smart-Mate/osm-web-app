@@ -1,4 +1,4 @@
-import { Form, FormInstance, Input, InputNumber, Select } from "antd";
+import { Form, FormInstance, Input, InputNumber, Select, Tooltip } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText } from "react-icons/bs";
 import { CiBarcode } from "react-icons/ci";
@@ -9,6 +9,7 @@ import { selectCurrentRowData } from "../../../core/genericReducer";
 import { useEffect, useState } from "react";
 import { Status } from "../../../data/status/status";
 import { useGetStatusMutation } from "../../../services/statusService";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: FormInstance;
@@ -30,10 +31,12 @@ const UpdatePriorityForm = ({ form }: FormProps) => {
       label: status.statusName,
     }));
   };
+
   useEffect(() => {
     handleGetData();
     form.setFieldsValue({ ...rowData });
   }, []);
+
   return (
     <Form form={form}>
       <div className="flex flex-col">
@@ -50,12 +53,17 @@ const UpdatePriorityForm = ({ form }: FormProps) => {
             ]}
             className="mr-1"
           >
-            <Input
-              size="large"
-              maxLength={4}
-              addonBefore={<CiBarcode />}
-              placeholder={Strings.code}
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                maxLength={4}
+                addonBefore={<CiBarcode />}
+                placeholder={Strings.code}
+              />
+              <Tooltip title="A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.">
+                <QuestionCircleOutlined className="ml-2 mr-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item
             name="priorityDescription"
@@ -66,12 +74,17 @@ const UpdatePriorityForm = ({ form }: FormProps) => {
             ]}
             className="flex-1"
           >
-            <Input
-              size="large"
-              maxLength={50}
-              addonBefore={<BsCardText />}
-              placeholder={Strings.description}
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                maxLength={50}
+                addonBefore={<BsCardText />}
+                placeholder={Strings.description}
+              />
+              <Tooltip title="A brief description of the priority. Use clear, concise language. Maximum 50 characters.">
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
         </div>
         <div className="flex flex-wrap">
@@ -81,12 +94,17 @@ const UpdatePriorityForm = ({ form }: FormProps) => {
             rules={[{ required: true, message: Strings.requiredDaysNumber }]}
             className="mr-1"
           >
-            <InputNumber
-              size="large"
-              maxLength={3}
-              addonBefore={<AiOutlineFieldNumber />}
-              placeholder={Strings.daysNumber}
-            />
+            <div className="flex items-center">
+              <InputNumber
+                size="large"
+                maxLength={3}
+                addonBefore={<AiOutlineFieldNumber />}
+                placeholder={Strings.daysNumber}
+              />
+              <Tooltip title="The number of days associated with this priority. Must be a positive number.">
+                <QuestionCircleOutlined className="ml-2 mr-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item name="status" className="w-60">
             <Select size="large" options={statusOptions()} />
@@ -96,5 +114,4 @@ const UpdatePriorityForm = ({ form }: FormProps) => {
     </Form>
   );
 };
-
 export default UpdatePriorityForm;
