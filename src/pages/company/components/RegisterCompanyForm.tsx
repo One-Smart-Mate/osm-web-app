@@ -81,7 +81,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<FaRegBuilding />}
                 placeholder={Strings.companyName}
               />
-              <Tooltip title="Legal name of the company">
+              <Tooltip title={Strings.companyNameTooltip}>
                 <QuestionCircleOutlined className="ml-1.5 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -109,7 +109,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                   ).value.toUpperCase())
                 }
               />
-              <Tooltip title="The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.">
+              <Tooltip title={Strings.rfcTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -128,7 +128,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               addonBefore={<SlCompass />}
               placeholder={Strings.companyAddress}
             />
-            <Tooltip title="Complete address of the company, including street and city.">
+            <Tooltip title={Strings.addressTooltip}>
               <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
             </Tooltip>
           </div>
@@ -149,7 +149,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<IoIosContact />}
                 placeholder={Strings.contact}
               />
-              <Tooltip title="Name of the primary contact person.">
+              <Tooltip title={Strings.contactNameTooltip}>
                 <QuestionCircleOutlined className="ml-1.5 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -169,7 +169,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<BsDiagram3 />}
                 placeholder={Strings.position}
               />
-              <Tooltip title="Job position of the contact person.">
+              <Tooltip title={Strings.positionTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -187,7 +187,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<MdOutlineLocalPhone />}
                 placeholder={Strings.phone}
               />
-              <Tooltip title="Company's landline number.">
+              <Tooltip title={Strings.phoneTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -200,7 +200,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<TiPlusOutline />}
                 placeholder={Strings.extension}
               />
-              <Tooltip title="Extension for the phone number (if applicable).">
+              <Tooltip title={Strings.extensionTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -216,7 +216,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<HiDevicePhoneMobile />}
                 placeholder={Strings.cellular}
               />
-              <Tooltip title="Primary mobile phone number.">
+              <Tooltip title={Strings.cellularTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -237,7 +237,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               addonBefore={<MailOutlined />}
               placeholder={Strings.email}
             />
-            <Tooltip title="Official company email address.">
+            <Tooltip title={Strings.emailTooltip}>
               <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
             </Tooltip>
           </div>
@@ -249,7 +249,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
           rules={[{ required: true, message: Strings.requiredLogo }]}
           className="mt-4"
         >
-          <Tooltip title="Upload the company logo in image format.">
+          <Tooltip title={Strings.logoTooltip}>
             <QuestionCircleOutlined className="mb-2 text-blue-500 text-xs" />
           </Tooltip>
           <div className="flex items-center">

@@ -108,7 +108,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.companyName}
             />
           </Form.Item>
-          <Tooltip title="Legal name of the company">
+          <Tooltip title={Strings.companyNameTooltip}>
             <QuestionCircleOutlined className="h-9 mr-2 text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item
@@ -134,7 +134,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               }
             />
           </Form.Item>
-          <Tooltip title="The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.">
+          <Tooltip title={Strings.rfcTooltip}>
             <QuestionCircleOutlined className="ml-2 h-9 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -153,7 +153,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.companyAddress}
             />
           </Form.Item>
-          <Tooltip title="Complete address of the company, including street and city.">
+          <Tooltip title={Strings.addressTooltip}>
             <QuestionCircleOutlined className="mb-6 ml-2 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -174,7 +174,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.contact}
             />
           </Form.Item>
-          <Tooltip title="Name of the primary contact person.">
+          <Tooltip title={Strings.contactNameTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1 mr-1.5 text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item
@@ -192,7 +192,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.position}
             />
           </Form.Item>
-          <Tooltip title="Job position of the contact person.">
+          <Tooltip title={Strings.positionTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -208,7 +208,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.phone}
             />
           </Form.Item>
-          <Tooltip title="Company's landline number.">
+          <Tooltip title={Strings.phoneTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item name="extension">
@@ -219,7 +219,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.extension}
             />
           </Form.Item>
-          <Tooltip title="Extension for the phone number (if applicable).">
+          <Tooltip title={Strings.extensionTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item
@@ -233,7 +233,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.cellular}
             />
           </Form.Item>
-          <Tooltip title="Primary mobile phone number.">
+          <Tooltip title={Strings.cellularTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -254,7 +254,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.email}
             />
           </Form.Item>
-          <Tooltip title="Official company email address.">
+          <Tooltip title={Strings.emailTooltip}>
             <QuestionCircleOutlined className="h-9 mb-7 ml-2 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -276,7 +276,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               >
                 {uploadButton}
               </Upload>
-              <Tooltip title="Upload the company logo in image format.">
+              <Tooltip title={Strings.logoTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
