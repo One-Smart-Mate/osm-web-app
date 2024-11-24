@@ -351,4 +351,15 @@ export default class Strings {
     static cardTypeStatusTooltip = "Select the current status of the card type. It determines whether the card type is active or inactive in the system.";
     static statusCardTypeTooltip = "You can change the status of the card type"
 
+        // Register / Update Users Form Tooltips
+    static userNameTooltip = "Enter the full name of the user. Only letters are allowed.";
+    static emailTooltip = "Enter a valid email address for the user.";
+    static passwordTooltip = "Enter a secure password. It must be at least 8 characters long.";
+    static confirmPasswordTooltip = "Confirm the password to ensure it matches the original.";
+    static siteRfcTooltip = "Select the RFC of the site to which the user will be assigned.";
+    static uploadCardDataWithDataNetTooltip = "Enable this option if the user can upload card data using DataNet.";
+    static uploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
+    static rolesTooltip = "Select one or more roles to assign to the user.";
+
+
 }
