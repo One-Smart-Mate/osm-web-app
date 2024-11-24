@@ -318,10 +318,37 @@ export default class Strings {
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
 
-    // Register Priority Form Tooltips
+    // Register/ Update Priority Form Tooltips
     static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
     static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
     static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
-  
+    // Register / Update Card-Type Form Tooltips
+    static cardTypeMethodologyTooltip = "Select the methodology associated with this card type.";
+    static cardTypeNameTooltip = "Provide a unique name for the card type. Maximum 45 characters.";
+    static cardTypeDescriptionTooltip = "Briefly describe the purpose of the card type. Maximum 100 characters.";
+    static cardTypeColorTooltip = "Choose a color to visually represent this card type.";
+    static responsibleTooltip = "Select the person responsible for managing this card type.";
+
+    static quantityPicturesCreateTooltip = "Enter the number of pictures required at the creation stage.";
+    static quantityVideosCreateTooltip = "Specify the number of videos required at the creation stage.";
+    static videosDurationCreateTooltip = "Provide the total duration (in seconds) of videos for the creation stage.";
+    static quantityAudiosCreateTooltip = "Specify the number of audio files required at the creation stage.";
+    static audiosDurationCreateTooltip = "Provide the total duration (in seconds) of audio files for the creation stage.";
+
+    static quantityPicturesPsTooltip = "Enter the number of pictures required at the provisional solution stage.";
+    static quantityVideosPsTooltip = "Specify the number of videos required at the provisional solution stage.";
+    static videosDurationPsTooltip = "Provide the total duration (in seconds) of videos for the provisional solution stage.";
+    static quantityAudiosPsTooltip = "Specify the number of audio files required at the provisional solution stage.";
+    static audiosDurationPsTooltip = "Provide the total duration (in seconds) of audio files for the provisional solution stage.";
+
+    static quantityPicturesCloseTooltip = "Enter the number of pictures required at the definitive solution stage.";
+    static quantityVideosCloseTooltip = "Specify the number of videos required at the definitive solution stage.";
+    static videosDurationCloseTooltip = "Provide the total duration (in seconds) of videos for the definitive solution stage.";
+    static quantityAudiosCloseTooltip = "Specify the number of audio files required at the definitive solution stage.";
+    static audiosDurationCloseTooltip = "Provide the total duration (in seconds) of audio files for the definitive solution stage.";  
+
+    static cardTypeStatusTooltip = "Select the current status of the card type. It determines whether the card type is active or inactive in the system.";
+    static statusCardTypeTooltip = "You can change the status of the card type"
+
 }
