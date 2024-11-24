@@ -30,7 +30,7 @@ const RegisterPriorityForm = ({ form }: FormProps) => {
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
-              <Tooltip title="A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.">
+              <Tooltip title={Strings.priorityCodeTooltip}>
                 <QuestionCircleOutlined className="ml-2 mr-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -51,7 +51,7 @@ const RegisterPriorityForm = ({ form }: FormProps) => {
                 addonBefore={<BsCardText />}
                 placeholder={Strings.description}
               />
-              <Tooltip title="A brief description of the priority. Use clear, concise language. Maximum 50 characters.">
+              <Tooltip title={Strings.priorityDescriptionTooltip}>
                 <QuestionCircleOutlined className="ml-2 mr-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -70,7 +70,7 @@ const RegisterPriorityForm = ({ form }: FormProps) => {
               addonBefore={<AiOutlineFieldNumber />}
               placeholder={Strings.daysNumber}
             />
-            <Tooltip title="The number of days associated with this priority. Must be a positive number.">
+            <Tooltip title={Strings.priorityDaysNumberTooltip}>
               <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
             </Tooltip>
           </div>

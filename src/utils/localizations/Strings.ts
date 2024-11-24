@@ -317,4 +317,11 @@ export default class Strings {
   //warning notifications
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
+
+    // Register Priority Form Tooltips
+    static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+    static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+    static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
+  
 }
