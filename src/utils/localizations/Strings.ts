@@ -306,15 +306,20 @@ export default class Strings {
   static colon = ":";
 
   static downloadData = "Download data";
-   //Rangepricker presets
-   static last7days = "Last 7 Days";
-   static last14days = "Last 14 Days";
-   static last30days = "Last 30 Days";
-   static last90days = "Last 90 Days";
- 
-   static failedToDownload = "Failed to download";
+  //Rangepricker presets
+  static last7days = "Last 7 Days";
+  static last14days = "Last 14 Days";
+  static last30days = "Last 30 Days";
+  static last90days = "Last 90 Days";
+
+  static failedToDownload = "Failed to download";
 
   //warning notifications
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
+
+  // Create Update preclassifier tooltips
+  static preclassifierCodeTooltip = "Enter the preclassifier code.";
+  static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
+  static preclassifierStatusTooltip = "Select the status of the preclassifier.";
 }
