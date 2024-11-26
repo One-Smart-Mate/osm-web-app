@@ -317,4 +317,31 @@ export default class Strings {
   //warning notifications
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
+
+  // Create-update tooltips strings
+  // Form tooltips
+// Form tooltips based on SiteEntity
+static siteNameTooltip = "Enter the name of the site . Maximum length: 100 characters.";
+static siteRfcTooltip = "Enter the  RFC for the company associated with the site. It should be exactly 13 characters long for companies.";
+static siteBusinessNameTooltip = "Enter the legal business name of the site, as registered officially. Maximum length: 100 characters.";
+static siteTypeTooltip = "Specify the type of the site (e.g., office, warehouse, retail). Maximum length: 20 characters.";
+static siteLatitudeTooltip = "Enter the latitude coordinates of the site. Use a format with up to 11 characters, e.g., '19.432608'.";
+static siteLongitudeTooltip = "Enter the longitude coordinates of the site. Use a format with up to 11 characters, e.g., '-99.133209'.";
+static siteAddressTooltip = "Provide the complete physical address of the site, including street, city, and ZIP code. Maximum length: 200 characters.";
+static siteContactTooltip = "Enter the name of the primary contact person for this site. Maximum length: 100 characters.";
+static sitePositionTooltip = "Specify the position or job title of the contact person (e.g., Manager, Supervisor). Maximum length: 100 characters.";
+static sitePhoneTooltip = "Provide the main contact phone number, including area code. Maximum length: 13 characters.";
+static siteExtensionTooltip = "If applicable, specify the phone extension for the contact person. Maximum length: 10 characters.";
+static siteCellularTooltip = "Provide a mobile phone number for the contact person. Maximum length: 13 characters.";
+static siteEmailTooltip = "Provide the email address of the contact person. Ensure it is valid and has a maximum length of 60 characters.";
+static siteDueDateTooltip = "Select the due date for site-related payments or obligations. Format: YYYY-MM-DD.";
+static siteMonthlyPaymentTooltip = "Specify the monthly payment amount for the site in decimal format, e.g., '1200.00'.";
+static siteCurrencyTooltip = "Select the currency for financial transactions related to this site. Use ISO 4217 codes (e.g., USD, MXN).";
+static siteAppHistoryDaysTooltip = "Enter the number of days to retain the site's application history. ";
+static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
+static siteCodeTooltip = "Auto-generated site code.";
+static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
+
+
+
 }
