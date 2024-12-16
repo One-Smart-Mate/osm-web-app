@@ -323,5 +323,8 @@ export default class Strings {
     static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
     static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
-  
+  // User status
+    static requiredStatus= "Status is required"
+    static statusPlaceholder = "Choose a status"
+
 }

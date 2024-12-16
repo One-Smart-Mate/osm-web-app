@@ -39,6 +39,11 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
 
   const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
+  const statusOptions = [
+    { value: "A", label: Strings.active },
+    { value: "I", label: Strings.inactive },
+  ];
+
   return (
     <Form form={form} layout="vertical">
       <div className="flex flex-col">
@@ -108,7 +113,9 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value && getFieldValue("password")) {
-                    return Promise.reject(new Error(Strings.requiredPassword));
+                    return Promise.reject(
+                      new Error(Strings.requiredPassword)
+                    );
                   }
                   if (value && getFieldValue("password") !== value) {
                     return Promise.reject(
@@ -166,8 +173,17 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             }))}
           />
         </Form.Item>
-        <Form.Item className="hidden" name="status">
-          <Input />
+        <Form.Item
+          name="status"
+          validateFirst
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+          className="w-60"
+        >
+          <Select
+            size="large"
+            placeholder={Strings.statusPlaceholder}
+            options={statusOptions}
+          />
         </Form.Item>
       </div>
     </Form>
