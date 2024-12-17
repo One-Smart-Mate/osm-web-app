@@ -82,12 +82,10 @@ const LoginPage = () => {
 
   return (
 <Layout className="flex justify-center items-center min-h-screen">
-  <Card className="p-3 relative w-[700px] h-[500px] shadow-2xl rounded-2xl">
-    {/* Contenedor con display flex para alinear imagen y contenido */}
+<Card className="p-3 relative w-full sm:w-[600px] h-auto sm:h-[400px] shadow-2xl rounded-2xl">
     <div className="flex items-center space-x-4">
-      {/* Imagen a la izquierda */}
       <img
-        className= "w-[320px] o h-[450px]"
+        className= "w-[250px] o h-[350px]"
         src="https://img.freepik.com/fotos-premium/trabajador-industria-hd-8k-fondo-pantalla-imagen-fotografica-stock_890746-39011.jpg"
         alt="Descripción de la imagen"
       />
