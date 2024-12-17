@@ -6,7 +6,7 @@ import {
   localAdminRoutes,
   sysAdminRoutes,
 } from "./pages/routes/Routes";
-import LoginPage from "./pages/auth/Login";
+import LoginPage from "./pages/auth/LoginV2";
 import PrivateRoutes from "./components/PrivateRoutes";
 import ResetPassword from "./pages/auth/ResetPassword";
 import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
@@ -18,17 +18,17 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#e73773",
-          colorLinkHover: "#e73773",
-          colorLinkActive: "#e73773",
+          colorPrimary: "#061178", 
+          colorLinkHover: "#061178", 
+          colorLinkActive: "#061178", 
           linkHoverDecoration: "underline",
           colorBgLayout: "#e2e8f0",
         },
         components: {
           Card: {
-            colorBgContainer: "#001529",
+            colorBgContainer: "white",
             colorPrimary: "white",
-            colorTextHeading: "white",
+            colorTextHeading: "#061178", 
           },
           Table: {
             headerBg: "#001529",
@@ -40,6 +40,7 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
+          
         },
       }}
     >
