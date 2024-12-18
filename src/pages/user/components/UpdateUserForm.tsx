@@ -67,6 +67,11 @@ const UpdateUserForm = ({ form }: FormProps) => {
 
   const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
+  const statusOptions = [
+    { value: Strings.activeValue, label: Strings.active },
+    { value: Strings.inactiveValue, label: Strings.inactive },
+  ];
+
   return (
     <Form form={form} layout="vertical">
       <div className="flex flex-col">
@@ -226,8 +231,18 @@ const UpdateUserForm = ({ form }: FormProps) => {
             }))}
           />
         </Form.Item>
-        <Form.Item className="hidden" name="status">
-          <Input />
+        <Form.Item
+          name="status"
+          label = {Strings.statusUserLabel}
+          validateFirst
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+          className="w-60"
+        >
+          <Select
+            size="large"
+            placeholder={Strings.statusPlaceholder}
+            options={statusOptions}
+          />
         </Form.Item>
       </div>
     </Form>

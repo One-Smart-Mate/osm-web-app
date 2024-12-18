@@ -326,5 +326,7 @@ export default class Strings {
   // User status
     static requiredStatus= "Status is required"
     static statusPlaceholder = "Choose a status"
-
+    static activeValue = "A"
+    static inactiveValue = "I"
+    static statusUserLabel = "User status"
 }
