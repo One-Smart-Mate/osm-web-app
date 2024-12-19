@@ -322,4 +322,10 @@ export default class Strings {
   static preclassifierCodeTooltip = "Enter the preclassifier code.";
   static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
   static preclassifierStatusTooltip = "Select the status of the preclassifier.";
+
+  // Register Priority Form Tooltips
+  static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+  static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+  static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
 }
