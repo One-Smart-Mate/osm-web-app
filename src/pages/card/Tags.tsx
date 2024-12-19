@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Input, List, Space } from "antd";
+import { Input, List, Button } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
+import PageTitleCards from "../../components/PageTitleCards";
 import { useGetCardsMutation } from "../../services/cardService";
 import PaginatedList from "../../components/PaginatedList";
-import InformationPanel from "./components/Card";
+import InformationPanel from "./components/Tag";
 import { CardInterface } from "../../data/card/card";
 import { UserRoles } from "../../utils/Extensions";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -67,37 +67,60 @@ const Cards = ({ rol }: CardsProps) => {
 
   return (
     <>
+      {/* Fragmento que envuelve todos los elementos */}
       <div className="h-full flex flex-col">
-        <div className="flex flex-col items-center m-3">
-          <PageTitle mainText={Strings.tagsOf} subText={siteName} />
-          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
-              <Space className="w-full md:w-auto mb-1 md:mb-0">
-                <Input
-                  className="w-full"
-                  onChange={handleOnSearch}
-                  value={querySearch}
-                  addonAfter={<IoIosSearch />}
-                />
-              </Space>
-            </div>
-            <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto"></div>
+  
+        {/* Contenedor principal con margen */}
+        <div className="flex flex-col m-4">
+  
+          <div className="m-4 mb-6">  {/* ESPACIO OPEN */}
+            <PageTitleCards mainText={Strings.tagsOf} subText={siteName} primaryColor="#061178" />
+          </div> {/* ESPACIO CLOSED */}
+  
+          {/* Contenedor flex para el input y el botón */}
+          <div className="flex items-center space-x-4 m-4 mb-6"> {/* Asegura que estén en línea y con espacio entre ellos */}
+            {/* INPUT OPEN */}
+            <Input
+              className="w-full h-8 px-8 text-lg"
+              onChange={handleOnSearch}
+              value={querySearch}
+              addonAfter={<IoIosSearch />}
+            />  {/* INPUT CLOSED */}
+  
+            {/* Botón al lado del input */}
+            <Button
+             /* Mantener la misma altura para alineación */
+              size="large" 
+              className="w-64 h-8 px-8 text-lg" 
+              type="primary"
+              htmlType="submit"
+            >
+              {Strings.filters}
+            </Button>
+  
           </div>
-        </div>
+  
+        </div>  {/* Cierre del contenedor principal con margen */}
+  
+        {/* Contenedor para la lista paginada */}
         <div className="flex-1 overflow-y-auto overflow-x-clip">
+          {/* Componente PaginatedList */}
           <PaginatedList
             dataSource={data}
             renderItem={(item: CardInterface, index: number) => (
               <List.Item>
+                {/* Componente InformationPanel dentro de la lista */}
                 <InformationPanel key={index} data={item} rol={rol} />
               </List.Item>
             )}
             loading={isLoading}
           />
-        </div>
-      </div>
+        </div> {/* Cierre del contenedor para la lista paginada */}
+  
+      </div>  {/* Cierre del fragmento que envuelve todos los elementos */}
     </>
   );
+  
 };
 
 export default Cards;

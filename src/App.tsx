@@ -14,6 +14,7 @@ import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 
 function App() {
+
   return (
     <ConfigProvider
       theme={{
@@ -75,6 +76,7 @@ function App() {
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
       </Routes>
+
     </ConfigProvider>
   );
 }

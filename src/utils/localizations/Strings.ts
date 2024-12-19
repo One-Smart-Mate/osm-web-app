@@ -100,7 +100,7 @@ export default class Strings {
   static phone = "Phone";
   static extension = "Extension";
   static cellular = "Cellular";
-  static status = "Status";
+
   //This logo will be removed when firebase upload is implemented.
   static logoTemp =
     "https://th.bing.com/th/id/OIG4.jIj.NbKiwFNdl.C3Ltft?pid=ImgGn";
@@ -152,7 +152,7 @@ export default class Strings {
   static siteCode = "Site code";
   static siteBusinessName = "Site business name";
   static siteType = "Site type";
-  static dueDate = "Due date";
+
   static monthlyPayment = "Monthly payment";
   static currency = "Currency";
   static appHistoryDays = "App history days";
@@ -222,15 +222,15 @@ export default class Strings {
   static createLevel = "Create level for";
   static updateLevel = "Update level";
   static createNodefor = "Create node for";
-  static cardsOf = "Cards of";
+
   static cards = "Cards";
   static cardDetailsOf = "Card details of";
-  static cardType = "Card type";
+ 
   static type = "Type";
-  static problemType = "Problem type";
+  
   static cardNumber = "Card Number";
   static area = "Area";
-  static createdBy = "Created by";
+ 
   static date = "Date";
   static mechanic = "Mechanic";
   static mechanics = "Mechanics";
@@ -240,6 +240,18 @@ export default class Strings {
   static updateMechanic = "Update mechanic";
   static changeLog = "Change log";
   static noDueDate = "No due date";
+
+  //Tags re-design
+  static tagsOf = "Tags of";
+  static filters = "Filters";
+  static status = "Status: ";
+  static dueDate = "Due date: ";
+  static cardType = "Tag type: ";
+  static problemType = "Problem type: ";
+  static location = "Location: ";
+  static createdBy = "Created by: ";
+  static problemDescription = "Problem description: ";
+
 
   //charts
   static chartsOf = "Charts of";
@@ -252,7 +264,7 @@ export default class Strings {
   static total = "Total";
   static areaChart = "Area";
   static machine = "Machine";
-  static location = "Location";
+ 
   static machineLocation = "Machine location";
   static creatorChart = "Creator";
   static cardName = "Card name";
