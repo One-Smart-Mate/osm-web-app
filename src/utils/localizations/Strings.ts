@@ -317,4 +317,22 @@ export default class Strings {
   //warning notifications
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
+
+        
+    
+    // Levels Tree
+    static close = "Close";
+    static createLevelBtn = "Create Level";
+    static updateLevelTree = "Update Level";
+    static details = "Details";
+    static levelsOf = "Levels of ";
+    static newLevel = "New Level";
+    static level = "Level";
+    static errorFetchingLevels = "Error fetching levels";
+    static errorSavingLevel = "Error saving level";
+    static defaultSiteName = "Site Name";
+    
+
+
+
 }
