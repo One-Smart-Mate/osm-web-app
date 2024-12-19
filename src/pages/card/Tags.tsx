@@ -67,29 +67,29 @@ const Cards = ({ rol }: CardsProps) => {
 
   return (
     <>
-      {/* Fragmento que envuelve todos los elementos */}
+    
       <div className="h-full flex flex-col">
   
-        {/* Contenedor principal con margen */}
+      
         <div className="flex flex-col m-4">
   
-          <div className="m-4 mb-6">  {/* ESPACIO OPEN */}
+          <div className="m-4 mb-6"> 
             <PageTitleCards mainText={Strings.tagsOf} subText={siteName} primaryColor="#061178" />
-          </div> {/* ESPACIO CLOSED */}
+          </div>
   
-          {/* Contenedor flex para el input y el botón */}
-          <div className="flex items-center space-x-4 m-4 mb-6"> {/* Asegura que estén en línea y con espacio entre ellos */}
-            {/* INPUT OPEN */}
+          
+          <div className="flex items-center space-x-4 m-4 mb-6"> 
+           
             <Input
               className="w-full h-8 px-8 text-lg"
               onChange={handleOnSearch}
               value={querySearch}
               addonAfter={<IoIosSearch />}
-            />  {/* INPUT CLOSED */}
+            />  
   
-            {/* Botón al lado del input */}
+
             <Button
-             /* Mantener la misma altura para alineación */
+   
               size="large" 
               className="w-64 h-8 px-8 text-lg" 
               type="primary"
@@ -100,24 +100,25 @@ const Cards = ({ rol }: CardsProps) => {
   
           </div>
   
-        </div>  {/* Cierre del contenedor principal con margen */}
-  
-        {/* Contenedor para la lista paginada */}
+        </div>  
+
+    
         <div className="flex-1 overflow-y-auto overflow-x-clip">
-          {/* Componente PaginatedList */}
+
           <PaginatedList
             dataSource={data}
             renderItem={(item: CardInterface, index: number) => (
               <List.Item>
-                {/* Componente InformationPanel dentro de la lista */}
+      
+    
                 <InformationPanel key={index} data={item} rol={rol} />
               </List.Item>
             )}
             loading={isLoading}
           />
-        </div> {/* Cierre del contenedor para la lista paginada */}
+        </div> 
   
-      </div>  {/* Cierre del fragmento que envuelve todos los elementos */}
+      </div> 
     </>
   );
   
