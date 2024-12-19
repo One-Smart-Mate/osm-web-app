@@ -342,6 +342,9 @@ static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
 static siteCodeTooltip = "Auto-generated site code.";
 static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
 
-
+// Tooltips for Priority Form
+static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
 }
