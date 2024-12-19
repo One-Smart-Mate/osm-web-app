@@ -9,7 +9,7 @@ import {
 } from "../../../utils/Extensions";
 import { CardInterface, Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
-import CustomTagCard from "../../../components/CustomTagCard";
+import CustomTagV2 from "../../../components/CustomTagV2";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
@@ -97,9 +97,9 @@ const InformationPanel = ({ data, rol }: CardProps) => {
       {/* Status */}
       <div className="flex items-center gap-1">
         <span>{Strings.status}</span>
-        <CustomTagCard className="w-min text-sm" color={status}>
+        <CustomTagV2 className="w-min text-sm" color={status}>
           <span className="font-medium">{text}</span>
-        </CustomTagCard>
+        </CustomTagV2>
       </div>
   
       <div className="flex items-center gap-1 w-full">

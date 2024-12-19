@@ -3,7 +3,7 @@ import { Input, List, Button } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitleCards from "../../components/PageTitleCards";
+import PageTitleTag from "../../components/PageTitleTag";
 import { useGetCardsMutation } from "../../services/cardService";
 import PaginatedList from "../../components/PaginatedList";
 import InformationPanel from "./components/Tag";
@@ -74,7 +74,7 @@ const Cards = ({ rol }: CardsProps) => {
         <div className="flex flex-col m-4">
   
           <div className="m-4 mb-6"> 
-            <PageTitleCards mainText={Strings.tagsOf} subText={siteName} primaryColor="#061178" />
+            <PageTitleTag mainText={Strings.tagsOf} subText={siteName}/>
           </div>
   
           

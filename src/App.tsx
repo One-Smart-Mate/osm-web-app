@@ -19,9 +19,9 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#061178", 
-          colorLinkHover: "#061178", 
-          colorLinkActive: "#061178", 
+          colorPrimary: "#061178",
+          colorLinkHover: "#061178",
+          colorLinkActive: "#061178",
           linkHoverDecoration: "underline",
           colorBgLayout: "#e2e8f0",
         },

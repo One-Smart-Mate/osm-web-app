@@ -5,7 +5,7 @@ interface CustomTagProps {
   [key: string]: any;
 }
 
-const CustomTag: React.FC<CustomTagProps> = ({ color, children, ...rest }) => {
+const CustomTagV2: React.FC<CustomTagProps> = ({ color, children, ...rest }) => {
   const customSuccesColor = "#239F05";
   const customErrorColor = "#FF0100";
 
@@ -38,4 +38,4 @@ const CustomTag: React.FC<CustomTagProps> = ({ color, children, ...rest }) => {
   );
 };
 
-export default CustomTag;
+export default CustomTagV2;
