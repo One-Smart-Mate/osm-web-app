@@ -318,8 +318,6 @@ export default class Strings {
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
 
-  // Create-update tooltips strings
-  // Form tooltips
 // Form tooltips based on SiteEntity
 static siteNameTooltip = "Enter the name of the site . Maximum length: 100 characters.";
 static siteRfcTooltip = "Enter the  RFC for the company associated with the site. It should be exactly 13 characters long for companies.";
@@ -342,9 +340,10 @@ static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
 static siteCodeTooltip = "Auto-generated site code.";
 static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
 
-// Tooltips for Priority Form
-static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
-static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
-static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
+    // Register Priority Form Tooltips
+    static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+    static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+    static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+  
 }
