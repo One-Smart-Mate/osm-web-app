@@ -1,4 +1,3 @@
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Form, Button, Input, Layout, Card } from "antd";
 import React, { useEffect } from "react";
 import { useLoginMutation } from "../../services/authService";
@@ -82,7 +81,7 @@ const LoginPage = () => {
 
   return (
 <Layout className="flex justify-center items-center min-h-screen">
-<Card className="p-3 relative w-full sm:w-[600px] h-auto sm:h-[400px] shadow-2xl rounded-2xl">
+<Card className="p-3 relative w-full sm:w-[600px] h-auto sm:h-[400px] rounded-2xl">
     <div className="flex items-center space-x-4">
       <img
         className= "w-[250px] o h-[350px]"
@@ -138,7 +137,7 @@ const LoginPage = () => {
           <Form.Item className="text-center">
             <Button
               loading={isLoading}
-              className="px-12 py-4 text-lg mt-4"
+              className="px-12 py-4 text-lg mt-4 w-full rounded-full"
               type="primary"
               htmlType="submit"
             >
