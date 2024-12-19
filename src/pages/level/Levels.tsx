@@ -10,7 +10,7 @@ import {
   useUdpateLevelMutation,
 } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import { Form } from "antd";
+import { Form, Drawer, Button } from "antd";
 import ModalForm from "../../components/ModalForm";
 import RegisterLevelForm from "./components/RegisterLevelForm";
 import UpdateLevelForm from "./components/UpdateLevelForm";
@@ -62,7 +62,7 @@ const Levels = ({ role }: Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
-  const [panelInfo, setPanelInfo] = useState({ visible: false, x: 0, y: 0 });
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
 
@@ -85,7 +85,11 @@ const Levels = ({ role }: Props) => {
     try {
       const response = await getLevels(location.state.siteId).unwrap();
       setTreeData([
-        { name: Strings.levelsOf.concat(siteName), id: "0", children: buildHierarchy(response) },
+        {
+          name: Strings.levelsOf.concat(siteName),
+          id: "0",
+          children: buildHierarchy(response),
+        },
       ]);
       dispatch(setSiteId(location.state.siteId));
 
@@ -100,31 +104,30 @@ const Levels = ({ role }: Props) => {
     }
   };
 
-  const handleNodeClick = (node: any, event: any) => {
-    event.preventDefault();
+  const handleNodeClick = (node: any) => {
     setSelectedNode(node);
-    setPanelInfo({ visible: true, x: event.clientX, y: event.clientY });
+    setDrawerVisible(true);
   };
 
   const handleCreateLevel = () => {
     setModalType("create");
     setModalOpen(true);
     setFormData({ superiorId: selectedNode?.data?.id });
-    setPanelInfo({ ...panelInfo, visible: false });
+    setDrawerVisible(false);
   };
 
   const handleUpdateLevel = () => {
     setModalType("update");
     setModalOpen(true);
     setFormData(selectedNode?.data || {});
-    setPanelInfo({ ...panelInfo, visible: false });
+    setDrawerVisible(false);
   };
 
   const handleShowDetails = () => {
     if (selectedNode?.data?.id) {
       setSelectedLevelId(selectedNode.data.id);
       setDetailsVisible(true);
-      setPanelInfo({ ...panelInfo, visible: false });
+      setDrawerVisible(false);
     }
   };
 
@@ -151,7 +154,9 @@ const Levels = ({ role }: Props) => {
         await updateLevel({
           ...values,
           id: Number(formData.id),
-          responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
+          responsibleId: values.responsibleId
+            ? Number(values.responsibleId)
+            : null,
         }).unwrap();
       }
       setModalOpen(false);
@@ -169,7 +174,10 @@ const Levels = ({ role }: Props) => {
         <PageTitle mainText={Strings.levelsOf} subText={siteName} />
       </div>
 
-      <div ref={containerRef} className="border-4 border-slate-900 rounded-md bg-white p-4 mt-5 h-[500px] w-full">
+      <div
+        ref={containerRef}
+        className="border-4 border-slate-900 rounded-md bg-white p-4 mt-5 h-[500px] w-full"
+      >
         {treeData.length > 0 && (
           <Tree
             data={treeData}
@@ -181,40 +189,59 @@ const Levels = ({ role }: Props) => {
         )}
       </div>
 
-      {panelInfo.visible && (
-  <div
-    className="absolute bg-white border border-gray-300 p-4 shadow-md z-50 flex flex-col rounded-md"
-    style={{ top: `${panelInfo.y}px`, left: `${panelInfo.x}px` }}
-  >
-    {selectedNode?.data?.id !== "0" && (
-      <>
-        <button className="py-1 px-4 mb-2 bg-yellow-500 text-white rounded-md" onClick={handleShowDetails}>
-          {Strings.details}
-        </button>
-        <button className="py-1 px-4 mb-2 bg-blue-700 text-white rounded-md" onClick={handleUpdateLevel}>
-          {Strings.updateLevelTree}
-        </button>
-      </>
-    )}
-    <button className="py-1 px-4 mb-2 bg-green-700 text-white rounded-md" onClick={handleCreateLevel}>
-      {Strings.createLevelBtn}
-    </button>
-    <button
-      className="py-1 px-4 bg-red-700 text-white rounded-md"
-      onClick={() => setPanelInfo({ ...panelInfo, visible: false })}
-    >
-      {Strings.close}
-    </button>
-  </div>
-)}
+      <Drawer
+        title={Strings.levelOptions}
+        placement="right"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        width={300}
+      >
+        <div className="flex flex-col gap-2 items-center p-2">
+          {" "}
+          {/* Reduce el padding */}
+          {selectedNode?.data?.id !== "0" && (
+            <>
+              <Button
+                className="w-3/4 bg-yellow-500 text-white mx-auto"
+                onClick={handleShowDetails}
+              >
+                {Strings.details}
+              </Button>
+              <Button
+                className="w-3/4 bg-blue-700 text-white mx-auto"
+                onClick={handleUpdateLevel}
+              >
+                {Strings.updateLevelTree}
+              </Button>
+            </>
+          )}
+          <Button
+            className="w-3/4 bg-green-700 text-white mx-auto"
+            onClick={handleCreateLevel}
+          >
+            {Strings.createLevelBtn}
+          </Button>
+          <Button
+            className="w-3/4 bg-red-700 text-white mx-auto"
+            onClick={() => setDrawerVisible(false)}
+          >
+            {Strings.close}
+          </Button>
+        </div>
+      </Drawer>
 
       {detailsVisible && selectedLevelId && (
         <div className="fixed top-0 right-0 h-full w-1/3 bg-white shadow-lg z-50 p-4">
-          <LevelDetails levelId={selectedLevelId} onClose={handleCloseDetails} />
+          <LevelDetails
+            levelId={selectedLevelId}
+            onClose={handleCloseDetails}
+          />
         </div>
       )}
 
-      <Form.Provider onFormFinish={async (_, { values }) => await handleOnFormFinish(values)}>
+      <Form.Provider
+        onFormFinish={async (_, { values }) => await handleOnFormFinish(values)}
+      >
         <ModalForm
           open={modalIsOpen}
           onCancel={() => setModalOpen(false)}

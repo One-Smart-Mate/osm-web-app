@@ -33,12 +33,12 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
 
   const getStatusText = (status: string): string => {
     switch (status) {
-      case "A":
-        return "Active";
-      case "C":
-        return "Cancelled";
-      case "S":
-        return "Suspended";
+      case Strings.detailsOptionA:
+        return Strings.detailsStatusActive;
+        case Strings.detailsOptionC:
+        return Strings.detailsStatsCancelled;
+      case Strings.detailsOptionS:
+        return Strings.detailsStatusSuspended;
       default:
         return Strings.none;
     }

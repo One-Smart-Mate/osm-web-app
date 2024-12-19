@@ -331,6 +331,13 @@ export default class Strings {
     static errorFetchingLevels = "Error fetching levels";
     static errorSavingLevel = "Error saving level";
     static defaultSiteName = "Site Name";
+    static detailsOptionA = "A"
+    static detailsOptionS = "S"
+    static detailsOptionC = "C"
+    static detailsStatusActive = "Active"
+    static detailsStatusSuspended = "Suspended"
+    static detailsStatsCancelled = "Cancelled"
+    static levelOptions = "Level Options"
     
     // Register Priority Form Tooltips
     static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
