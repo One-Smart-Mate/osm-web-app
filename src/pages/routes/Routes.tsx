@@ -244,9 +244,29 @@ const sysAdminRoutesSiderOptions = (user: User): ItemType[] => {
             sysAdminSiteUsers.icon
           ),
           getItem(
-            adminNotifications.label,
-            adminNotifications.fullPath,
-            adminNotifications.icon
+            sysAdminCharts.label,
+            sysAdminCharts.fullPath.replace(Strings.siteParam, site.id),
+            sysAdminCharts.icon
+          ),
+          getItem(
+            sysAdminCards.label,
+            sysAdminCards.fullPath.replace(Strings.siteParam, site.id),
+            sysAdminCards.icon
+          ),
+          getItem(
+            sysAdminLevels.label,
+            sysAdminLevels.fullPath.replace(Strings.siteParam, site.id),
+            sysAdminLevels.icon
+          ),
+          getItem(
+            sysAdminCardTypes.label,
+            sysAdminCardTypes.fullPath.replace(Strings.siteParam, site.id),
+            sysAdminCardTypes.icon
+          ),
+          getItem(
+            sysAdminPriorities.label,
+            sysAdminPriorities.fullPath.replace(Strings.siteParam, site.id),
+            sysAdminPriorities.icon
           ),
         ])
       ),
@@ -254,6 +274,7 @@ const sysAdminRoutesSiderOptions = (user: User): ItemType[] => {
   ];
   return items;
 };
+
 
 const localAdminSites = new Route(
   "Users",
