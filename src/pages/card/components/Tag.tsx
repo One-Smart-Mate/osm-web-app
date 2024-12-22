@@ -26,7 +26,7 @@ interface CardProps {
   rol: UserRoles;
 }
 
-const InformationPanel = ({ data, rol }: CardProps) => {
+const Tag = ({ data, rol }: CardProps) => {
   const { status, text } = getCardStatusAndText(data.status, data.cardDueDate);
   const navigate = useNavigate();
 
@@ -157,4 +157,4 @@ const InformationPanel = ({ data, rol }: CardProps) => {
   
 };
 
-export default InformationPanel;
+export default Tag;

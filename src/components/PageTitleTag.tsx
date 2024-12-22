@@ -7,10 +7,11 @@ interface Props {
   mainText: string;
   subText?: string;
 }
-const PageTitleCards: React.FC<Props> = ({ mainText, subText }) => {
-  const { token } = useToken();  // Se obtiene el token en PageTitleCards
+const PageTitleTag: React.FC<Props> = ({ mainText, subText }) => {
+  const { token } = useToken();  // The token is obtained in PageTitleCards
+  
 
-  // Usamos el color primario del tema
+// We use the primary color of the theme
   const primaryColor = token.colorPrimary;
 
   return (
@@ -23,4 +24,4 @@ const PageTitleCards: React.FC<Props> = ({ mainText, subText }) => {
   );
 };
 
-export default PageTitleCards;
+export default PageTitleTag;
