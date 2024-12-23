@@ -340,4 +340,9 @@ static companyLogoTooltip = "Upload the company logo in image format.";
   static userUploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
   static userRolesTooltip = "Select one or more roles to assign to the user.";
 
+    // Register Priority Form Tooltips
+    static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+    static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+    static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
 }

@@ -134,7 +134,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               }
             />
           </Form.Item>
-          <Tooltip title={Strings.rfcTooltip}>
+          <Tooltip title={Strings.companyRfcTooltip}>
             <QuestionCircleOutlined className="ml-2 h-9 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -153,7 +153,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.companyAddress}
             />
           </Form.Item>
-          <Tooltip title={Strings.addressTooltip}>
+          <Tooltip title={Strings.companyAddressTooltip}>
             <QuestionCircleOutlined className="mb-6 ml-2 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -174,7 +174,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.contact}
             />
           </Form.Item>
-          <Tooltip title={Strings.contactNameTooltip}>
+          <Tooltip title={Strings.companyContactNameTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1 mr-1.5 text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item
@@ -192,7 +192,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.position}
             />
           </Form.Item>
-          <Tooltip title={Strings.positionTooltip}>
+          <Tooltip title={Strings.companyPositionTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -208,7 +208,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.phone}
             />
           </Form.Item>
-          <Tooltip title={Strings.phoneTooltip}>
+          <Tooltip title={Strings.companyPhoneTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item name="extension">
@@ -219,7 +219,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.extension}
             />
           </Form.Item>
-          <Tooltip title={Strings.extensionTooltip}>
+          <Tooltip title={Strings.companyExtensionTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5 mr-1.5  text-blue-500 text-sm" />
           </Tooltip>
           <Form.Item
@@ -233,7 +233,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.cellular}
             />
           </Form.Item>
-          <Tooltip title={Strings.cellularTooltip}>
+          <Tooltip title={Strings.companyCellularTooltip}>
             <QuestionCircleOutlined className="h-9 ml-1.5  text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -254,7 +254,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               placeholder={Strings.email}
             />
           </Form.Item>
-          <Tooltip title={Strings.emailTooltip}>
+          <Tooltip title={Strings.companyEmailTooltip}>
             <QuestionCircleOutlined className="h-9 mb-7 ml-2 text-blue-500 text-sm" />
           </Tooltip>
         </div>
@@ -276,7 +276,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
               >
                 {uploadButton}
               </Upload>
-              <Tooltip title={Strings.logoTooltip}>
+              <Tooltip title={Strings.companyLogoTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
