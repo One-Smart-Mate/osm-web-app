@@ -14,13 +14,14 @@ import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 
 function App() {
+
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#061178", 
-          colorLinkHover: "#061178", 
-          colorLinkActive: "#061178", 
+          colorPrimary: "#061178",
+          colorLinkHover: "#061178",
+          colorLinkActive: "#061178",
           linkHoverDecoration: "underline",
           colorBgLayout: "#e2e8f0",
         },
@@ -75,6 +76,7 @@ function App() {
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
       </Routes>
+
     </ConfigProvider>
   );
 }
