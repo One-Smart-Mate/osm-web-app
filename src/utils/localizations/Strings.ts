@@ -8,8 +8,8 @@ export default class Strings {
   static confirmPassword = "Confirm password";
   static uploadCardDataWithDataNet = "Upload card with data net";
   static uploadCardEvidenceWithDataNet = "Upload card evidence with data net";
-  static email = "E-mail";
-  static forgotPassword = "Forgot password";
+  
+ 
   static searchRecord = "Search record";
   static clearFiltersAndSorters = "Clear filters and sorters";
   static empty = "";
@@ -48,6 +48,12 @@ export default class Strings {
   static audios = "Audios";
   static evidences = "Evidences";
   static none = "None";
+
+  // Login re-design
+  static entrepriseName = "OSM";
+  static email = "Email";
+  static loginText = "Get a complete overview of all your company's maintenance needs before they turn into costly repairs."
+  static forgotPassword = "Forgot password?";
 
   //errors login form
   static requiredEmail = "Please input your e-mail address!";
@@ -94,7 +100,7 @@ export default class Strings {
   static phone = "Phone";
   static extension = "Extension";
   static cellular = "Cellular";
-  static status = "Status";
+
   //This logo will be removed when firebase upload is implemented.
   static logoTemp =
     "https://th.bing.com/th/id/OIG4.jIj.NbKiwFNdl.C3Ltft?pid=ImgGn";
@@ -146,7 +152,7 @@ export default class Strings {
   static siteCode = "Site code";
   static siteBusinessName = "Site business name";
   static siteType = "Site type";
-  static dueDate = "Due date";
+
   static monthlyPayment = "Monthly payment";
   static currency = "Currency";
   static appHistoryDays = "App history days";
@@ -216,15 +222,15 @@ export default class Strings {
   static createLevel = "Create level for";
   static updateLevel = "Update level";
   static createNodefor = "Create node for";
-  static cardsOf = "Cards of";
+
   static cards = "Cards";
   static cardDetailsOf = "Card details of";
-  static cardType = "Card type";
+ 
   static type = "Type";
-  static problemType = "Problem type";
+  
   static cardNumber = "Card Number";
   static area = "Area";
-  static createdBy = "Created by";
+ 
   static date = "Date";
   static mechanic = "Mechanic";
   static mechanics = "Mechanics";
@@ -234,6 +240,18 @@ export default class Strings {
   static updateMechanic = "Update mechanic";
   static changeLog = "Change log";
   static noDueDate = "No due date";
+
+  //Tags re-design
+  static tagsOf = "Tags of";
+  static filters = "Filters";
+  static status = "Status: ";
+  static dueDate = "Due date: ";
+  static cardType = "Tag type: ";
+  static problemType = "Problem type: ";
+  static location = "Location: ";
+  static createdBy = "Created by: ";
+  static problemDescription = "Problem description: ";
+
 
   //charts
   static chartsOf = "Charts of";
@@ -246,7 +264,7 @@ export default class Strings {
   static total = "Total";
   static areaChart = "Area";
   static machine = "Machine";
-  static location = "Location";
+ 
   static machineLocation = "Machine location";
   static creatorChart = "Creator";
   static cardName = "Card name";
@@ -318,6 +336,7 @@ export default class Strings {
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
 
+
   // Create Update preclassifier tooltips
   static preclassifierCodeTooltip = "Enter the preclassifier code.";
   static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
@@ -327,5 +346,33 @@ export default class Strings {
   static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
   static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
   static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
+// Register / Update Company Tooltips
+static companyNameTooltip = "Legal name of the company";
+static companyRfcTooltip = "The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.";
+static companyAddressTooltip = "Complete address of the company, including street and city.";
+static companyContactNameTooltip = "Name of the primary contact person.";
+static companyPositionTooltip = "Job position of the contact person.";
+static companyPhoneTooltip = "Company's landline number.";
+static companyExtensionTooltip = "Extension for the phone number (if applicable).";
+static companyCellularTooltip = "Primary mobile phone number.";
+static companyEmailTooltip = "Official company email address.";
+static companyLogoTooltip = "Upload the company logo in image format.";
+
+  // Register / Update Users Form Tooltips
+  static userNameTooltip = "Enter the full name of the user. Only letters are allowed.";
+  static userEmailTooltip = "Enter a valid email address for the user.";
+  static userPasswordTooltip = "Enter a secure password. It must be at least 8 characters long.";
+  static userConfirmPasswordTooltip = "Confirm the password to ensure it matches the original.";
+  static userSiteRfcTooltip = "Select the RFC of the site to which the user will be assigned.";
+  static userUploadCardDataWithDataNetTooltip = "Enable this option if the user can upload card data using DataNet.";
+  static userUploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
+  static userRolesTooltip = "Select one or more roles to assign to the user.";
+
+    
+    static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+    static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+    static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
 
 }
