@@ -54,13 +54,6 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     setFileList(newFileList);
   };
 
-  const uploadButton = (
-    <button className="border-0 bg-none" type="button">
-      <PlusOutlined />
-      <div className="mt-2">Upload</div>
-    </button>
-  );
-
   return (
     <Form form={form} name="registerCompanyForm">
       <div className="flex flex-col">
@@ -109,7 +102,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                   ).value.toUpperCase())
                 }
               />
-              <Tooltip title={Strings.rfcTooltip}>
+              <Tooltip title={Strings.companyRfcTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -128,7 +121,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               addonBefore={<SlCompass />}
               placeholder={Strings.companyAddress}
             />
-            <Tooltip title={Strings.addressTooltip}>
+            <Tooltip title={Strings.companyAddressTooltip}>
               <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
             </Tooltip>
           </div>
@@ -149,7 +142,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<IoIosContact />}
                 placeholder={Strings.contact}
               />
-              <Tooltip title={Strings.contactNameTooltip}>
+              <Tooltip title={Strings.companyContactNameTooltip}>
                 <QuestionCircleOutlined className="ml-1.5 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -169,7 +162,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<BsDiagram3 />}
                 placeholder={Strings.position}
               />
-              <Tooltip title={Strings.positionTooltip}>
+              <Tooltip title={Strings.companyPositionTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -187,7 +180,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<MdOutlineLocalPhone />}
                 placeholder={Strings.phone}
               />
-              <Tooltip title={Strings.phoneTooltip}>
+              <Tooltip title={Strings.companyPhoneTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -200,7 +193,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<TiPlusOutline />}
                 placeholder={Strings.extension}
               />
-              <Tooltip title={Strings.extensionTooltip}>
+              <Tooltip title={Strings.companyExtensionTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -216,7 +209,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
                 addonBefore={<HiDevicePhoneMobile />}
                 placeholder={Strings.cellular}
               />
-              <Tooltip title={Strings.cellularTooltip}>
+              <Tooltip title={Strings.companyCellularTooltip}>
                 <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
               </Tooltip>
             </div>
@@ -237,7 +230,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               addonBefore={<MailOutlined />}
               placeholder={Strings.email}
             />
-            <Tooltip title={Strings.emailTooltip}>
+            <Tooltip title={Strings.companyEmailTooltip}>
               <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
             </Tooltip>
           </div>
@@ -249,7 +242,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
           rules={[{ required: true, message: Strings.requiredLogo }]}
           className="mt-4"
         >
-          <Tooltip title={Strings.logoTooltip}>
+          <Tooltip title={Strings.companyLogoTooltip}>
             <QuestionCircleOutlined className="mb-2 text-blue-500 text-xs" />
           </Tooltip>
           <div className="flex items-center">
