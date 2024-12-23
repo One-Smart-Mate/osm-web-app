@@ -8,8 +8,8 @@ export default class Strings {
   static confirmPassword = "Confirm password";
   static uploadCardDataWithDataNet = "Upload card with data net";
   static uploadCardEvidenceWithDataNet = "Upload card evidence with data net";
-  static email = "E-mail";
-  static forgotPassword = "Forgot password";
+  
+ 
   static searchRecord = "Search record";
   static clearFiltersAndSorters = "Clear filters and sorters";
   static empty = "";
@@ -48,6 +48,12 @@ export default class Strings {
   static audios = "Audios";
   static evidences = "Evidences";
   static none = "None";
+
+  // Login re-design
+  static entrepriseName = "OSM";
+  static email = "Email";
+  static loginText = "Get a complete overview of all your company's maintenance needs before they turn into costly repairs."
+  static forgotPassword = "Forgot password?";
 
   //errors login form
   static requiredEmail = "Please input your e-mail address!";
