@@ -15,7 +15,7 @@ interface CardsProps {
   rol: UserRoles;
 }
 
-const Cards = ({ rol }: CardsProps) => {
+const Tags = ({ rol }: CardsProps) => {
   const [getCards] = useGetCardsMutation();
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
@@ -124,4 +124,4 @@ const Cards = ({ rol }: CardsProps) => {
   
 };
 
-export default Cards;
+export default Tags;
