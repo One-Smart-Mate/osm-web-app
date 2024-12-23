@@ -330,6 +330,14 @@ static companyCellularTooltip = "Primary mobile phone number.";
 static companyEmailTooltip = "Official company email address.";
 static companyLogoTooltip = "Upload the company logo in image format.";
 
-
+  // Register / Update Users Form Tooltips
+  static userNameTooltip = "Enter the full name of the user. Only letters are allowed.";
+  static userEmailTooltip = "Enter a valid email address for the user.";
+  static userPasswordTooltip = "Enter a secure password. It must be at least 8 characters long.";
+  static userConfirmPasswordTooltip = "Confirm the password to ensure it matches the original.";
+  static userSiteRfcTooltip = "Select the RFC of the site to which the user will be assigned.";
+  static userUploadCardDataWithDataNetTooltip = "Enable this option if the user can upload card data using DataNet.";
+  static userUploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
+  static userRolesTooltip = "Select one or more roles to assign to the user.";
 
 }

@@ -113,7 +113,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
                 placeholder={Strings.email}
               />
             </Form.Item>
-            <Tooltip title={Strings.emailTooltip}>
+            <Tooltip title={Strings.userEmailTooltip}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </div>
@@ -137,7 +137,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
                 }}
               />
             </Form.Item>
-            <Tooltip title={Strings.passwordTooltip}>
+            <Tooltip title={Strings.userPasswordTooltip}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </div>
@@ -170,7 +170,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
                 placeholder={Strings.confirmPassword}
               />
             </Form.Item>
-            <Tooltip title={Strings.confirmPasswordTooltip}>
+            <Tooltip title={Strings.userConfirmPasswordTooltip}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </div>
@@ -211,7 +211,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
               }}
             />
           </Form.Item>
-          <Tooltip title={Strings.siteRfcTooltip}>
+          <Tooltip title={Strings.userSiteRfcTooltip}>
             <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
           </Tooltip>
         </div>
@@ -224,7 +224,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
             >
               <Checkbox value={1}>{Strings.enable}</Checkbox>
             </Form.Item>
-            <Tooltip title={Strings.uploadCardDataWithDataNetTooltip}>
+            <Tooltip title={Strings.userUploadCardDataWithDataNetTooltip}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </div>
@@ -236,7 +236,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
             >
               <Checkbox value={1}>{Strings.enable}</Checkbox>
             </Form.Item>
-            <Tooltip title={Strings.uploadCardEvidenceWithDataNetTooltip}>
+            <Tooltip title={Strings.userUploadCardEvidenceWithDataNetTooltip}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </div>
@@ -259,7 +259,7 @@ const UpdateUserForm = ({ form }: FormProps) => {
               }))}
             />
           </Form.Item>
-          <Tooltip title={Strings.rolesTooltip}>
+          <Tooltip title={Strings.userRolesTooltip}>
             <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
           </Tooltip>
         </div>
