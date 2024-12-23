@@ -13,7 +13,7 @@ import Preclassifiers from "../preclassifier/Preclassifiers";
 import Users from "../user/Users";
 import { MdLowPriority, MdOutlineManageAccounts } from "react-icons/md";
 import Levels from "../level/Levels";
-import Cards from "../card/Cards";
+import Cards from "../card/Tags";
 import CardDetails from "../carddetails/CardDetails";
 import Charts from "../charts/Charts";
 import SiteUsers from "../user/SiteUsers";
