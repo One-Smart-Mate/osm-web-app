@@ -318,6 +318,7 @@ export default class Strings {
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
 
+
   // Register / Update Users Form Tooltips
   static userNameTooltip = "Enter the full name of the user. Only letters are allowed.";
   static emailTooltip = "Enter a valid email address for the user.";
@@ -328,5 +329,23 @@ export default class Strings {
   static uploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
   static rolesTooltip = "Select one or more roles to assign to the user.";
        
+
+  // Register / Update Company Tooltips
+  static companyNameTooltip = "Legal name of the company";
+  static rfcTooltip = "The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.";
+  static addressTooltip = "Complete address of the company, including street and city.";
+  static contactNameTooltip = "Name of the primary contact person.";
+  static positionTooltip = "Job position of the contact person.";
+  static phoneTooltip = "Company's landline number.";
+  static extensionTooltip = "Extension for the phone number (if applicable).";
+  static cellularTooltip = "Primary mobile phone number.";
+  static emailTooltip = "Official company email address.";
+  static logoTooltip = "Upload the company logo in image format.";
+
+  // Register Priority Form Tooltips
+  static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+  static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+  static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
 
 }
