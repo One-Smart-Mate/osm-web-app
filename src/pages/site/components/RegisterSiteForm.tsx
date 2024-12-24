@@ -10,6 +10,7 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Tooltip,
 } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import { FaRegBuilding } from "react-icons/fa";
@@ -19,6 +20,7 @@ import {
   MdOutlineQrCodeScanner,
 } from "react-icons/md";
 import { SlCompass } from "react-icons/sl";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { IoIosContact } from "react-icons/io";
 import { PlusOutlined } from "@ant-design/icons";
 import { BsDiagram3 } from "react-icons/bs";
@@ -118,6 +120,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.companyName}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="rfc"
             validateFirst
@@ -141,11 +147,18 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               }
             />
           </Form.Item>
+          <Tooltip title={Strings.siteRfcTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item name="siteCode" className="w-36">
             <Input size="large" disabled addonBefore={<CiBarcode />} />
           </Form.Item>
+          <Tooltip title={Strings.siteCodeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="siteBusinessName"
             rules={[
@@ -160,8 +173,11 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<IoBusinessOutline />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteBusinessNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <div className="flex justify-between flex-row flex-wrap">
+        <div className="flex justify-between flex-row">
           <Form.Item
             name="siteType"
             rules={[{ required: true, message: Strings.requiredSiteType }]}
@@ -173,6 +189,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<MdOutlineCategory />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteTypeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="latitud"
             rules={[{ required: true, message: Strings.requiredLatitud }]}
@@ -184,6 +204,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<TbWorldLatitude />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteLatitudeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="longitud"
             rules={[{ required: true, message: Strings.requiredLongitud }]}
@@ -195,20 +219,30 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<TbWorldLongitude />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteLongitudeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="address"
-          rules={[
-            { required: true, message: Strings.requiredAddress },
-            { max: 200 },
-          ]}
-        >
-          <Input
-            size="large"
-            addonBefore={<SlCompass />}
-            placeholder={Strings.companyAddress}
-          />
-        </Form.Item>
+        <div className="flex">
+          <Form.Item
+            name="address"
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.requiredAddress },
+              { max: 200 },
+            ]}
+          >
+            <Input
+              size="large"
+              addonBefore={<SlCompass />}
+              placeholder={Strings.companyAddress}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.siteAddressTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+        </div>
+
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="contact"
@@ -225,6 +259,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.contact}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteContactTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="position"
             rules={[
@@ -240,8 +278,11 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.position}
             />
           </Form.Item>
+          <Tooltip title={Strings.sitePositionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <div className="flex justify-between flex-row flex-wrap">
+        <div className="flex justify-between flex-row ">
           <Form.Item
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
@@ -253,6 +294,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.phone}
             />
           </Form.Item>
+          <Tooltip title={Strings.sitePhoneTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item name="extension">
             <InputNumber
               size="large"
@@ -261,6 +306,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.extension}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteExtensionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
@@ -272,23 +321,33 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.cellular}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteCellularTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="email"
-          rules={[
-            { required: true, message: Strings.requiredEmail },
-            { type: "email", message: Strings.requiredValidEmailAddress },
-            { max: 60 },
-          ]}
-        >
-          <Input
-            size="large"
-            maxLength={60}
-            addonBefore={<MailOutlined />}
-            placeholder={Strings.email}
-          />
-        </Form.Item>
-        <div className="flex flex-row flex-wrap">
+        <div className="flex">
+          <Form.Item
+            name="email"
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.requiredEmail },
+              { type: "email", message: Strings.requiredValidEmailAddress },
+              { max: 60 },
+            ]}
+          >
+            <Input
+              size="large"
+              maxLength={60}
+              addonBefore={<MailOutlined />}
+              placeholder={Strings.email}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.siteEmailTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+        </div>
+
+        <div className="flex flex-row ">
           <Form.Item
             name="dueDate"
             rules={[{ required: true, message: Strings.requiredDueDate }]}
@@ -300,6 +359,10 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.dueDate}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteDueDateTooltip}>
+            <QuestionCircleOutlined className="ml-0.5  mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="monthlyPayment"
             rules={[
@@ -314,6 +377,11 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<FiDollarSign />}
             />
           </Form.Item>
+
+          <Tooltip title={Strings.siteMonthlyPaymentTooltip}>
+            <QuestionCircleOutlined className="ml-0.5 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="currency"
             rules={[{ required: true, message: Strings.requiredCurrency }]}
@@ -325,6 +393,9 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.currency}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteCurrencyTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
         <div className="flex flex-row">
           <Form.Item
@@ -332,7 +403,7 @@ const RegisterSiteForm = ({ form }: FormProps) => {
             rules={[
               { required: true, message: Strings.requiredAppHistoryDays },
             ]}
-            className="mr-10"
+            className="mr-2"
           >
             <InputNumber
               size="large"
@@ -341,24 +412,33 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               addonBefore={<LuHistory />}
             />
           </Form.Item>
+          <Tooltip title={Strings.appHistoryDaysTooltip}>
+            <QuestionCircleOutlined className=" mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="logo"
-          label={Strings.logo}
-          getValueFromEvent={(event) => event?.fileList}
-          rules={[{ required: true, message: Strings.requiredLogo }]}
-        >
-          <Upload
-            maxCount={1}
-            accept="image/*"
-            listType="picture-card"
-            onPreview={handleOnPreview}
-            onChange={handleChange}
-            fileList={fileList}
+        <div className="flex">
+          <Form.Item
+            name="logo"
+            label={Strings.logo}
+            getValueFromEvent={(event) => event?.fileList}
+            rules={[{ required: true, message: Strings.requiredLogo }]}
           >
-            {uploadButton}
-          </Upload>
-        </Form.Item>
+            <Upload
+              maxCount={1}
+              accept="image/*"
+              listType="picture-card"
+              onPreview={handleOnPreview}
+              onChange={handleChange}
+              fileList={fileList}
+            >
+              {uploadButton}
+            </Upload>
+          </Form.Item>
+          <Tooltip title={Strings.siteLogoTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+        </div>
+
         <Form.Item>
           {previewImage && (
             <Image
