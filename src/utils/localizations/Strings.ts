@@ -368,6 +368,7 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
 
+
     // Register / Update Card-Type Form Tooltips
     static cardTypeMethodologyTooltip = "Select the methodology associated with this card type.";
     static cardTypeNameTooltip = "Provide a unique name for the card type. Maximum 45 characters.";
@@ -395,5 +396,23 @@ static companyLogoTooltip = "Upload the company logo in image format.";
 
     static cardTypeStatusTooltip = "Select the current status of the card type. It determines whether the card type is active or inactive in the system.";
     static statusCardTypeTooltip = "You can change the status of the card type"
+
+    // Custom Push Notifications 
+    static createNotification = "Create Notification";
+    static notificationName = "Notification Name";
+    static requiredName = "The notification name is required.";
+    static notificationDescription = "Notification Description";
+    static notificationsRequiredDescription = "The description is required.";
+    static notificationsSite = "Site";
+    static notificationsSelectSite = "Select a site";
+    static notificationsRequiredSite = "You must select a site.";
+    static notificationsSelectUsers = "Select Users";
+    static notificationsRequiredUsers = "You must select at least one user.";
+    static notificationsSave = "Save";
+    static notificationsCancel = "Cancel";
+    static searchUsers = "Search User"
+
+
+
 
 }
