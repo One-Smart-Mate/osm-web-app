@@ -22,6 +22,17 @@ import { TbCards } from "react-icons/tb";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
 
+import { AiOutlineBell } from "react-icons/ai";
+import Notifications from "../notifications/Notifications";
+
+const adminNotifications = new Route(
+  "Notifications",
+  "notifications",
+  Routes.AdminPrefix + "/notifications",
+  <Notifications />,
+  <AiOutlineBell />
+);
+
 const adminCompanies = new Route(
   "Companies",
   "companies",
@@ -113,6 +124,11 @@ const adminRoutesSiderOptions = (): ItemType[] => {
   const items: MenuProps["items"] = [
     getItem(adminCompanies.label, adminCompanies.fullPath, adminCompanies.icon),
     getItem(adminUsers.label, adminUsers.fullPath, adminUsers.icon),
+    getItem(
+      adminNotifications.label,
+      adminNotifications.fullPath,
+      adminNotifications.icon
+    ),
   ];
   return items;
 };
@@ -129,6 +145,7 @@ const adminRoutes: Route[] = [
   adminCardDetails,
   adminCharts,
   adminSiteUsers,
+  adminNotifications,
 ];
 
 const sysAdminCharts = new Route(
@@ -258,6 +275,7 @@ const sysAdminRoutesSiderOptions = (user: User): ItemType[] => {
   return items;
 };
 
+
 const localAdminSites = new Route(
   "Users",
   "site users",
@@ -286,7 +304,7 @@ const localAdminCharts = new Route(
   "Charts",
   "charts",
   Routes.LocalAdminPrefix + Routes.Site + Routes.Charts,
-  <Charts rol={UserRoles.LOCALADMIN}/>,
+  <Charts rol={UserRoles.LOCALADMIN} />,
   <BsBarChartLine />
 );
 
@@ -322,15 +340,33 @@ const localAdminRoutesSiderOptions = (user: User): ItemType[] => {
 
 const getUserSiderOptions = (user: User): ItemType[] => {
   const rol = getUserRol(user);
+
+  let routes: ItemType[] = [];
+
   switch (rol) {
     case UserRoles.IHSISADMIN:
-      return adminRoutesSiderOptions();
+      routes = adminRoutesSiderOptions();
+      break;
     case UserRoles.LOCALSYSADMIN:
-      return sysAdminRoutesSiderOptions(user);
+      routes = sysAdminRoutesSiderOptions(user);
+      break;
     case UserRoles.LOCALADMIN:
-      return localAdminRoutesSiderOptions(user);
+      routes = localAdminRoutesSiderOptions(user);
+      break;
+    default:
+      break;
   }
-  return [];
+
+  const notificationsRoute = getItem(
+    adminNotifications.label,
+    adminNotifications.fullPath,
+    adminNotifications.icon
+  );
+  if (!routes.some((item) => item?.key === adminNotifications.fullPath)) {
+    routes.push(notificationsRoute);
+  }
+
+  return routes;
 };
 
 export {

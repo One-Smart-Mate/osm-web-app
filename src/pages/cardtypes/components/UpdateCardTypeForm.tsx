@@ -8,6 +8,7 @@ import {
   Input,
   InputNumber,
   Select,
+  Tooltip,
 } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText } from "react-icons/bs";
@@ -26,7 +27,12 @@ import { GoDeviceCameraVideo } from "react-icons/go";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";
-type Color = Extract<GetProp<ColorPickerProps, 'value'>, string | { cleared: any }>;
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
+type Color = Extract<
+  GetProp<ColorPickerProps, "value">,
+  string | { cleared: any }
+>;
 
 interface FormProps {
   form: FormInstance;
@@ -104,22 +110,31 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
               placeholder={Strings.name}
             />
           </Form.Item>
+          <Tooltip title={Strings.cardTypeNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="description"
-          validateFirst
-          rules={[
-            { required: true, message: Strings.requiredDescription },
-            { max: 100 },
-          ]}
-        >
-          <Input
-            size="large"
-            maxLength={100}
-            addonBefore={<BsCardText />}
-            placeholder={Strings.description}
-          />
-        </Form.Item>
+        <div className="flex items-center w-full">
+          <Form.Item
+            name="description"
+            validateFirst
+            rules={[
+              { required: true, message: Strings.requiredDescription },
+              { max: 100 },
+            ]}
+            className="flex-grow"
+          >
+            <Input
+              size="large"
+              maxLength={100}
+              addonBefore={<BsCardText />}
+              placeholder={Strings.description}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.cardTypeDescriptionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
+        </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="color"
@@ -138,6 +153,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
               </Button>
             </ColorPicker>
           </Form.Item>
+          <Tooltip title={Strings.cardTypeColorTooltip}>
+            <QuestionCircleOutlined className="ml-0 mr-3 mb-6 text-sm text-blue-500" />
+          </Tooltip>
           <Form.Item
             name="responsableId"
             validateFirst
@@ -151,10 +169,13 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
               className=""
             />
           </Form.Item>
+          <Tooltip title={Strings.responsibleTooltip}>
+            <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
         <h1 className="font-semibold">{Strings.atCreation}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex">
             <Form.Item name="quantityPicturesCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -163,6 +184,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesCreateTooltip}>
+              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
           <div className="flex gap-1">
             <Form.Item name="quantityVideosCreate" validateFirst>
@@ -173,7 +197,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityVideos}
               />
             </Form.Item>
-
+            <Tooltip title={Strings.quantityVideosCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="videosDurationCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -182,6 +208,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
           <div className="flex gap-1">
             <Form.Item name="quantityAudiosCreate" validateFirst>
@@ -192,6 +221,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityAudios}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityAudiosCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item
               name="audiosDurationCreate"
               validateFirst
@@ -204,11 +236,14 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationCreateTooltip}>
+              <QuestionCircleOutlined className="mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
         </div>
         <h1 className="font-semibold">{Strings.atProvisionalSolution}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex">
             <Form.Item name="quantityPicturesPs" validateFirst>
               <InputNumber
                 size="large"
@@ -217,6 +252,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesPsTooltip}>
+              <QuestionCircleOutlined className="ml-3 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
           <div className="flex gap-1">
             <Form.Item name="quantityVideosPs" validateFirst>
@@ -227,6 +265,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.videosCreatePs}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityVideosPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="videosDurationPs" validateFirst>
               <InputNumber
                 size="large"
@@ -235,6 +276,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
           <div className="flex gap-1">
             <Form.Item name="quantityAudiosPs" validateFirst>
@@ -245,6 +289,9 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.audiosCreatePs}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityAudiosPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="audiosDurationPs" validateFirst className="mr-2">
               <InputNumber
                 size="large"
@@ -253,11 +300,14 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationPsTooltip}>
+              <QuestionCircleOutlined className="ml-0 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
         </div>
         <h1 className="font-semibold">{Strings.atDefinitiveSolution}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex items-center w-full">
             <Form.Item name="quantityPicturesClose" validateFirst>
               <InputNumber
                 size="large"
@@ -266,8 +316,12 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesCloseTooltip}>
+              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+
+          <div className="flex gap-1 items-center">
             <Form.Item name="quantityVideosClose" validateFirst>
               <InputNumber
                 size="large"
@@ -276,6 +330,10 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityVideos}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityVideosCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+
             <Form.Item name="videosDurationClose" validateFirst>
               <InputNumber
                 size="large"
@@ -284,8 +342,12 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+
+          <div className="flex gap-1 items-center">
             <Form.Item name="quantityAudiosClose" validateFirst>
               <InputNumber
                 size="large"
@@ -294,11 +356,11 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityAudios}
               />
             </Form.Item>
-            <Form.Item
-              name="audiosDurationClose"
-              validateFirst
-              className="mr-2"
-            >
+            <Tooltip title={Strings.quantityAudiosCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+
+            <Form.Item name="audiosDurationClose" validateFirst>
               <InputNumber
                 size="large"
                 maxLength={10}
@@ -306,11 +368,19 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
         </div>
-        <Form.Item className="w-60" name="status">
+            <div className="flex">
+            <Form.Item className="w-60" name="status">
           <Select size="large" options={statusOptions()} />
         </Form.Item>
+        <Tooltip title={Strings.statusCardTypeTooltip}>
+              <QuestionCircleOutlined className="ml-3.5 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+            </div>
       </div>
     </Form>
   );
