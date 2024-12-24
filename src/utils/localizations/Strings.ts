@@ -324,18 +324,29 @@ export default class Strings {
   static colon = ":";
 
   static downloadData = "Download data";
-   //Rangepricker presets
-   static last7days = "Last 7 Days";
-   static last14days = "Last 14 Days";
-   static last30days = "Last 30 Days";
-   static last90days = "Last 90 Days";
- 
-   static failedToDownload = "Failed to download";
+  //Rangepricker presets
+  static last7days = "Last 7 Days";
+  static last14days = "Last 14 Days";
+  static last30days = "Last 30 Days";
+  static last90days = "Last 90 Days";
+
+  static failedToDownload = "Failed to download";
 
   //warning notifications
   static restrictedAccessMessage =
     "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
 
+
+
+  // Create Update preclassifier tooltips
+  static preclassifierCodeTooltip = "Enter the preclassifier code.";
+  static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
+  static preclassifierStatusTooltip = "Select the status of the preclassifier.";
+
+  // Register Priority Form Tooltips
+  static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+  static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+  static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
 
 // Form tooltips based on SiteEntity
@@ -362,6 +373,7 @@ static appHistoryDaysTooltip = "Enter the number of days the application's histo
 
 
 
+
 // Register / Update Company Tooltips
 static companyNameTooltip = "Legal name of the company";
 static companyRfcTooltip = "The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.";
@@ -385,7 +397,11 @@ static companyLogoTooltip = "Upload the company logo in image format.";
   static userRolesTooltip = "Select one or more roles to assign to the user.";
 
 
+    
+
+
     // Register Priority Form Tooltips
+
 
     static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
     static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
@@ -436,6 +452,7 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static notificationsSave = "Save";
     static notificationsCancel = "Cancel";
     static searchUsers = "Search User"
+
 
 
 

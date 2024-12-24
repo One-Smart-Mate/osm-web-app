@@ -1,7 +1,8 @@
-import { Form, FormInstance, Input } from "antd";
+import { Form, FormInstance, Input, Tooltip } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText } from "react-icons/bs";
 import { CiBarcode } from "react-icons/ci";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: FormInstance;
@@ -25,6 +26,9 @@ const RegisterPreclassifierForm = ({ form }: FormProps) => {
               placeholder={Strings.code}
             />
           </Form.Item>
+          <Tooltip title={Strings.preclassifierCodeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="description"
             validateFirst
@@ -38,6 +42,9 @@ const RegisterPreclassifierForm = ({ form }: FormProps) => {
               placeholder={Strings.description}
             />
           </Form.Item>
+          <Tooltip title={Strings.preclassifierDescriptionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-1.5 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
       </div>
     </Form>
