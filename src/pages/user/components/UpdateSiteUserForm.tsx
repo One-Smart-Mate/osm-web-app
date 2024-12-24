@@ -40,6 +40,11 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
 
   const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
+  const statusOptions = [
+    { value: "A", label: Strings.active },
+    { value: "I", label: Strings.inactive },
+  ];
+
   return (
     <Form form={form} layout="vertical">
       <div className="flex flex-col gap-6">
@@ -176,8 +181,25 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
           <Form.Item
             name="roles"
             validateFirst
-            rules={[{ required: true, message: Strings.requiredRoles }]}
-            className="w-full"
+            dependencies={["password"]}
+            className="flex-1"
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value && getFieldValue("password")) {
+                    return Promise.reject(
+                      new Error(Strings.requiredPassword)
+                    );
+                  }
+                  if (value && getFieldValue("password") !== value) {
+                    return Promise.reject(
+                      new Error(Strings.passwordsDoNotMatch)
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <Select
               mode="multiple"
@@ -195,8 +217,56 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
           </Tooltip>
         </div>
-        <Form.Item className="hidden" name="status">
+        <Form.Item name="siteId" className="hidden">
           <Input />
+        </Form.Item>
+        <div className="flex flex-row flex-wrap">
+          <Form.Item
+            name="uploadCardDataWithDataNet"
+            valuePropName="checked"
+            label={Strings.uploadCardDataWithDataNet}
+            className="mr-1"
+          >
+            <Checkbox value={1}>{Strings.enable}</Checkbox>
+          </Form.Item>
+          <Form.Item
+            name="uploadCardEvidenceWithDataNet"
+            valuePropName="checked"
+            label={Strings.uploadCardEvidenceWithDataNet}
+            className="flex-1"
+          >
+            <Checkbox value={1}>{Strings.enable}</Checkbox>
+          </Form.Item>
+        </div>
+        <Form.Item
+          name="roles"
+          validateFirst
+          rules={[{ required: true, message: Strings.requiredRoles }]}
+          className="flex-1"
+        >
+          <Select
+            mode="multiple"
+            size="large"
+            placeholder={Strings.roles}
+            value={selectedRoles}
+            onChange={setSelectedRoles}
+            options={filteredOptions.map((item) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          name="status"
+          validateFirst
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+          className="w-60"
+        >
+          <Select
+            size="large"
+            placeholder={Strings.statusPlaceholder}
+            options={statusOptions}
+          />
         </Form.Item>
       </div>
     </Form>

@@ -415,6 +415,14 @@ static companyLogoTooltip = "Upload the company logo in image format.";
   static userRolesTooltip = "Select one or more roles to assign to the user.";
 
 
+  // User status
+    static requiredStatus= "Status is required"
+    static statusPlaceholder = "Choose a status"
+    static activeValue = "A"
+    static inactiveValue = "I"
+    static statusUserLabel = "User status"
+
+
     // Register / Update Card-Type Form Tooltips
     static cardTypeMethodologyTooltip = "Select the methodology associated with this card type.";
     static cardTypeNameTooltip = "Provide a unique name for the card type. Maximum 45 characters.";
@@ -457,9 +465,5 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static notificationsSave = "Save";
     static notificationsCancel = "Cancel";
     static searchUsers = "Search User"
-
-
-
-
 
 }
