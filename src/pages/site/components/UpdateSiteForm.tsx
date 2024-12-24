@@ -10,9 +10,11 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Tooltip,
 } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import { FaRegBuilding } from "react-icons/fa";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import {
   MdOutlineCategory,
   MdOutlineLocalPhone,
@@ -138,6 +140,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.companyName}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="rfc"
             validateFirst
@@ -161,11 +166,17 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               }
             />
           </Form.Item>
+          <Tooltip title={Strings.siteRfcTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item name="siteCode" className="w-36">
             <Input size="large" disabled addonBefore={<CiBarcode />} />
           </Form.Item>
+          <Tooltip title={Strings.siteCodeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="siteBusinessName"
             rules={[
@@ -180,8 +191,11 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               addonBefore={<IoBusinessOutline />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteBusinessNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <div className="flex justify-between flex-row flex-wrap">
+        <div className="flex justify-between flex-row ">
           <Form.Item
             name="siteType"
             rules={[{ required: true, message: Strings.requiredSiteType }]}
@@ -193,6 +207,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               addonBefore={<MdOutlineCategory />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteTypeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="latitud"
             rules={[{ required: true, message: Strings.requiredLatitud }]}
@@ -204,6 +221,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               addonBefore={<TbWorldLatitude />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteLatitudeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="longitud"
             rules={[{ required: true, message: Strings.requiredLongitud }]}
@@ -215,20 +235,29 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               addonBefore={<TbWorldLongitude />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteLongitudeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="address"
-          rules={[
-            { required: true, message: Strings.requiredAddress },
-            { max: 200 },
-          ]}
-        >
-          <Input
-            size="large"
-            addonBefore={<SlCompass />}
-            placeholder={Strings.companyAddress}
-          />
-        </Form.Item>
+        <div className="flex">
+          <Form.Item
+            name="address"
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.requiredAddress },
+              { max: 200 },
+            ]}
+          >
+            <Input
+              size="large"
+              addonBefore={<SlCompass />}
+              placeholder={Strings.companyAddress}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.siteAddressTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+        </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="contact"
@@ -245,6 +274,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.contact}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteContactTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="position"
             rules={[
@@ -260,8 +292,11 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.position}
             />
           </Form.Item>
+          <Tooltip title={Strings.sitePositionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <div className="flex justify-between flex-row flex-wrap">
+        <div className="flex justify-between flex-row ">
           <Form.Item
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
@@ -273,6 +308,10 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.phone}
             />
           </Form.Item>
+          <Tooltip title={Strings.sitePhoneTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item name="extension">
             <InputNumber
               size="large"
@@ -281,6 +320,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.extension}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteExtensionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
@@ -292,23 +334,32 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.cellular}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteCellularTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="email"
-          rules={[
-            { required: true, message: Strings.requiredEmail },
-            { type: "email", message: Strings.requiredValidEmailAddress },
-            { max: 60 },
-          ]}
-        >
-          <Input
-            size="large"
-            maxLength={60}
-            addonBefore={<MailOutlined />}
-            placeholder={Strings.email}
-          />
-        </Form.Item>
-        <div className="flex flex-row flex-wrap">
+        <div className="flex">
+          <Form.Item
+            name="email"
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.requiredEmail },
+              { type: "email", message: Strings.requiredValidEmailAddress },
+              { max: 60 },
+            ]}
+          >
+            <Input
+              size="large"
+              maxLength={60}
+              addonBefore={<MailOutlined />}
+              placeholder={Strings.email}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.siteEmailTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+        </div>
+        <div className="flex flex-row">
           <Form.Item
             name="dueDate"
             rules={[{ required: true, message: Strings.requiredDueDate }]}
@@ -320,6 +371,9 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.dueDate}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteDueDateTooltip}>
+            <QuestionCircleOutlined className="ml-0.5  mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
           <Form.Item
             name="monthlyPayment"
             rules={[
@@ -334,6 +388,10 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               addonBefore={<FiDollarSign />}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteMonthlyPaymentTooltip}>
+            <QuestionCircleOutlined className="ml-0.5 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="currency"
             rules={[{ required: true, message: Strings.requiredCurrency }]}
@@ -345,19 +403,30 @@ const UpdateSiteForm = ({ form }: FormProps) => {
               placeholder={Strings.currency}
             />
           </Form.Item>
+          <Tooltip title={Strings.siteCurrencyTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="appHistoryDays"
-          rules={[{ required: true, message: Strings.requiredAppHistoryDays }]}
-        >
-          <InputNumber
-            size="large"
-            maxLength={3}
-            placeholder={Strings.appHistoryDays}
-            addonBefore={<LuHistory />}
-          />
-        </Form.Item>
-        <Form.Item name="logoURL" className="hidden">
+        <div className="flex">
+          <Form.Item
+            name="appHistoryDays"
+            rules={[
+              { required: true, message: Strings.requiredAppHistoryDays },
+            ]}
+          >
+            <InputNumber
+              size="large"
+              maxLength={3}
+              placeholder={Strings.appHistoryDays}
+              addonBefore={<LuHistory />}
+            />
+          </Form.Item>
+        <Tooltip title={Strings.appHistoryDaysTooltip}>
+          <QuestionCircleOutlined className="ml-3 mb-6 text-blue-500 text-sm cursor-pointer" />
+        </Tooltip>
+        </div>
+          <div className="flex">
+          <Form.Item name="logoURL" className="hidden">
           <Input />
         </Form.Item>
         <Form.Item
@@ -377,6 +446,10 @@ const UpdateSiteForm = ({ form }: FormProps) => {
             {uploadButton}
           </Upload>
         </Form.Item>
+        <Tooltip title={Strings.siteLogoTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+          </div>
         <Form.Item>
           {previewImage && (
             <Image
@@ -391,6 +464,7 @@ const UpdateSiteForm = ({ form }: FormProps) => {
             />
           )}
         </Form.Item>
+        
         <Form.Item name="status" className="hidden">
           <Input />
         </Form.Item>

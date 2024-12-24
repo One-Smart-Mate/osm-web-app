@@ -324,19 +324,17 @@ export default class Strings {
   static colon = ":";
 
   static downloadData = "Download data";
-   //Rangepricker presets
-   static last7days = "Last 7 Days";
-   static last14days = "Last 14 Days";
-   static last30days = "Last 30 Days";
-   static last90days = "Last 90 Days";
- 
-   static failedToDownload = "Failed to download";
+  //Rangepricker presets
+  static last7days = "Last 7 Days";
+  static last14days = "Last 14 Days";
+  static last30days = "Last 30 Days";
+  static last90days = "Last 90 Days";
+
+  static failedToDownload = "Failed to download";
 
   //warning notifications
   static restrictedAccessMessage =
-    "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
-
-        
+    "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";        
     
     // Levels Tree
     static close = "Close";
@@ -357,6 +355,45 @@ export default class Strings {
     static detailsStatsCancelled = "Cancelled"
     static levelOptions = "Level Options"
     
+
+
+
+  // Create Update preclassifier tooltips
+  static preclassifierCodeTooltip = "Enter the preclassifier code.";
+  static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
+  static preclassifierStatusTooltip = "Select the status of the preclassifier.";
+
+  // Register Priority Form Tooltips
+  static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
+  static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
+  static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
+
+// Form tooltips based on SiteEntity
+static siteNameTooltip = "Enter the name of the site . Maximum length: 100 characters.";
+static siteRfcTooltip = "Enter the  RFC for the company associated with the site. It should be exactly 13 characters long for companies.";
+static siteBusinessNameTooltip = "Enter the legal business name of the site, as registered officially. Maximum length: 100 characters.";
+static siteTypeTooltip = "Specify the type of the site (e.g., office, warehouse, retail). Maximum length: 20 characters.";
+static siteLatitudeTooltip = "Enter the latitude coordinates of the site. Use a format with up to 11 characters, e.g., '19.432608'.";
+static siteLongitudeTooltip = "Enter the longitude coordinates of the site. Use a format with up to 11 characters, e.g., '-99.133209'.";
+static siteAddressTooltip = "Provide the complete physical address of the site, including street, city, and ZIP code. Maximum length: 200 characters.";
+static siteContactTooltip = "Enter the name of the primary contact person for this site. Maximum length: 100 characters.";
+static sitePositionTooltip = "Specify the position or job title of the contact person (e.g., Manager, Supervisor). Maximum length: 100 characters.";
+static sitePhoneTooltip = "Provide the main contact phone number, including area code. Maximum length: 13 characters.";
+static siteExtensionTooltip = "If applicable, specify the phone extension for the contact person. Maximum length: 10 characters.";
+static siteCellularTooltip = "Provide a mobile phone number for the contact person. Maximum length: 13 characters.";
+static siteEmailTooltip = "Provide the email address of the contact person. Ensure it is valid and has a maximum length of 60 characters.";
+static siteDueDateTooltip = "Select the due date for site-related payments or obligations. Format: YYYY-MM-DD.";
+static siteMonthlyPaymentTooltip = "Specify the monthly payment amount for the site in decimal format, e.g., '1200.00'.";
+static siteCurrencyTooltip = "Select the currency for financial transactions related to this site. Use ISO 4217 codes (e.g., USD, MXN).";
+static siteAppHistoryDaysTooltip = "Enter the number of days to retain the site's application history. ";
+static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
+static siteCodeTooltip = "Auto-generated site code.";
+static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
+
+
+
+
 
 // Register / Update Company Tooltips
 static companyNameTooltip = "Legal name of the company";
@@ -380,9 +417,65 @@ static companyLogoTooltip = "Upload the company logo in image format.";
   static userUploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
   static userRolesTooltip = "Select one or more roles to assign to the user.";
 
+
+    
+
+
     // Register Priority Form Tooltips
+
+
     static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
     static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
     static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+
+
+
+
+    // Register / Update Card-Type Form Tooltips
+    static cardTypeMethodologyTooltip = "Select the methodology associated with this card type.";
+    static cardTypeNameTooltip = "Provide a unique name for the card type. Maximum 45 characters.";
+    static cardTypeDescriptionTooltip = "Briefly describe the purpose of the card type. Maximum 100 characters.";
+    static cardTypeColorTooltip = "Choose a color to visually represent this card type.";
+    static responsibleTooltip = "Select the person responsible for managing this card type.";
+
+    static quantityPicturesCreateTooltip = "Enter the number of pictures required at the creation stage.";
+    static quantityVideosCreateTooltip = "Specify the number of videos required at the creation stage.";
+    static videosDurationCreateTooltip = "Provide the total duration (in seconds) of videos for the creation stage.";
+    static quantityAudiosCreateTooltip = "Specify the number of audio files required at the creation stage.";
+    static audiosDurationCreateTooltip = "Provide the total duration (in seconds) of audio files for the creation stage.";
+
+    static quantityPicturesPsTooltip = "Enter the number of pictures required at the provisional solution stage.";
+    static quantityVideosPsTooltip = "Specify the number of videos required at the provisional solution stage.";
+    static videosDurationPsTooltip = "Provide the total duration (in seconds) of videos for the provisional solution stage.";
+    static quantityAudiosPsTooltip = "Specify the number of audio files required at the provisional solution stage.";
+    static audiosDurationPsTooltip = "Provide the total duration (in seconds) of audio files for the provisional solution stage.";
+
+    static quantityPicturesCloseTooltip = "Enter the number of pictures required at the definitive solution stage.";
+    static quantityVideosCloseTooltip = "Specify the number of videos required at the definitive solution stage.";
+    static videosDurationCloseTooltip = "Provide the total duration (in seconds) of videos for the definitive solution stage.";
+    static quantityAudiosCloseTooltip = "Specify the number of audio files required at the definitive solution stage.";
+    static audiosDurationCloseTooltip = "Provide the total duration (in seconds) of audio files for the definitive solution stage.";  
+
+    static cardTypeStatusTooltip = "Select the current status of the card type. It determines whether the card type is active or inactive in the system.";
+    static statusCardTypeTooltip = "You can change the status of the card type"
+
+    // Custom Push Notifications 
+    static createNotification = "Create Notification";
+    static notificationName = "Notification Name";
+    static requiredName = "The notification name is required.";
+    static notificationDescription = "Notification Description";
+    static notificationsRequiredDescription = "The description is required.";
+    static notificationsSite = "Site";
+    static notificationsSelectSite = "Select a site";
+    static notificationsRequiredSite = "You must select a site.";
+    static notificationsSelectUsers = "Select Users";
+    static notificationsRequiredUsers = "You must select at least one user.";
+    static notificationsSave = "Save";
+    static notificationsCancel = "Cancel";
+    static searchUsers = "Search User"
+
+
+
+
 
 }
