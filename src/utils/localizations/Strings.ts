@@ -363,4 +363,22 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
     static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
 
+
+    // Custom Push Notifications 
+    static createNotification = "Create Notification";
+    static notificationName = "Notification Name";
+    static requiredName = "The notification name is required.";
+    static notificationDescription = "Notification Description";
+    static notificationsRequiredDescription = "The description is required.";
+    static notificationsSite = "Site";
+    static notificationsSelectSite = "Select a site";
+    static notificationsRequiredSite = "You must select a site.";
+    static notificationsSelectUsers = "Select Users";
+    static notificationsRequiredUsers = "You must select at least one user.";
+    static notificationsSave = "Save";
+    static notificationsCancel = "Cancel";
+    static searchUsers = "Search User"
+
+
+
 }

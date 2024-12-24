@@ -78,6 +78,13 @@ export const userService = apiSlice.injectEndpoints({
         };
       },
     }),
+    sendCustomNotification: builder.mutation<void, { siteId: number; userIds: number[]; title: string; description: string }>({
+      query: (notificationData) => ({
+        url: "/notifications/send-custom-notification",
+        method: "POST",
+        body: { ...notificationData },
+      }),
+    }),
   }),
 });
 
@@ -93,4 +100,5 @@ export const {
   useResetPasswordMutation,
   useGetSiteUsersMutation,
   useImportUsersMutation,
+  useSendCustomNotificationMutation
 } = userService;
