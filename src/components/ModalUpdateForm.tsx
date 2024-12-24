@@ -7,7 +7,7 @@ interface ModalUpdateFormProps {
   open: boolean;
   onCancel: () => void;
   title: string;
-  FormComponent: React.ComponentType<{ form: FormInstance }>;
+  FormComponent: React.ComponentType<{ form: FormInstance; initialValues: any }>;
   isLoading: boolean;
 }
 
@@ -39,7 +39,7 @@ const ModalUpdateForm = ({
         confirmLoading={isLoading}
         destroyOnClose
       >
-        <FormComponent form={form} />
+        <FormComponent form={form} initialValues={{}} />
       </Modal>
     </div>
   );
