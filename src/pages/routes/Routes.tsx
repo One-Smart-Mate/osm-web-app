@@ -92,7 +92,7 @@ const adminLevels = new Route(
   "Levels",
   "levels",
   Routes.AdminPrefix + Routes.Levels,
-  <Levels rol={UserRoles.IHSISADMIN} />,
+  <Levels role={UserRoles.IHSISADMIN} />,
   <></>
 );
 
@@ -184,7 +184,7 @@ const sysAdminLevels = new Route(
   "Levels",
   "levels",
   Routes.SysadminPrefix + Routes.Site + Routes.Levels,
-  <Levels rol={UserRoles.LOCALSYSADMIN} />,
+  <Levels role={UserRoles.LOCALSYSADMIN} />,
   <PiMapPinAreaLight />
 );
 

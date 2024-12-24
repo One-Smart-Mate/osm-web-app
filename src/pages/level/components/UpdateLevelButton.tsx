@@ -7,11 +7,12 @@ import {
   handleErrorNotification,
   handleSucccessNotification,
 } from "../../../utils/Notifications";
-import { useAppDispatch } from "../../../core/store";
+import { useAppDispatch, useAppSelector } from "../../../core/store";
 import {
   resetRowData,
   setLevelUpdatedIndicator,
   setRowData,
+  selectCurrentRowData,
 } from "../../../core/genericReducer";
 import ModalUpdateForm from "../../../components/ModalUpdateForm";
 import {
@@ -30,15 +31,21 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
   const [modalIsLoading, setModalLoading] = useState(false);
   const [dataIsLoading, setDataLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const rowData = useAppSelector(selectCurrentRowData);
   const [getLevel] = useGetlevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
 
   const handleOnClickEditButton = async () => {
     setDataLoading(true);
-    const site = await getLevel(levelId).unwrap();
-    dispatch(setRowData(site));
-    setModalOpen(true);
-    setDataLoading(false);
+    try {
+      const site = await getLevel(levelId).unwrap();
+      dispatch(setRowData(site));
+      setModalOpen(true);
+    } catch (error) {
+      handleErrorNotification(error);
+    } finally {
+      setDataLoading(false);
+    }
   };
 
   const handleOnCancelButton = () => {
@@ -51,19 +58,13 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
   const handleOnUpdateFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
-      if (values.responsibleId && values.responsibleId !== "0") {
-        values.responsibleId = Number(values.responsibleId);
-      } else {
-        values.responsibleId = null;
-      }
-      console.log(values);
       const priorityToUpdate = new UpdateLevel(
         Number(values.id),
         values.name,
         values.description,
-        values.responsibleId,
+        values.responsibleId !== "0" ? Number(values.responsibleId) : 0,
         values.status,
-        values.levelMachineId && values.levelMachineId.trim(),
+        values.levelMachineId?.trim() || null,
         values.notify ? 1 : 0
       );
       await updateLevel(priorityToUpdate).unwrap();
@@ -96,7 +97,7 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
         <ModalUpdateForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={UpdateLevelForm}
+          FormComponent={(props) => <UpdateLevelForm {...props} initialValues={rowData} />}
           title={Strings.updateLevel}
           isLoading={modalIsLoading}
         />
