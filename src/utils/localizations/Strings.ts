@@ -334,7 +334,27 @@ export default class Strings {
 
   //warning notifications
   static restrictedAccessMessage =
-    "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";
+    "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";        
+    
+    // Levels Tree
+    static close = "Close";
+    static createLevelBtn = "Create Level";
+    static updateLevelTree = "Update Level";
+    static details = "Details";
+    static levelsOf = "Levels of ";
+    static newLevel = "New Level";
+    static level = "Level";
+    static errorFetchingLevels = "Error fetching levels";
+    static errorSavingLevel = "Error saving level";
+    static defaultSiteName = "Site Name";
+    static detailsOptionA = "A"
+    static detailsOptionS = "S"
+    static detailsOptionC = "C"
+    static detailsStatusActive = "Active"
+    static detailsStatusSuspended = "Suspended"
+    static detailsStatsCancelled = "Cancelled"
+    static levelOptions = "Level Options"
+    
 
 
 
@@ -370,6 +390,7 @@ static siteAppHistoryDaysTooltip = "Enter the number of days to retain the site'
 static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
 static siteCodeTooltip = "Auto-generated site code.";
 static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
+
 
 
 
