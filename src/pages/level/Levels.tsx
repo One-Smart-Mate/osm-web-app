@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Tree from "react-d3-tree";
 import Strings from "../../utils/localizations/Strings";
 import PageTitle from "../../components/PageTitle";
@@ -48,7 +48,7 @@ interface Props {
   role: UserRoles;
 }
 
-const Levels = ({ role }: Props) => {
+const Levels = ({}: Props) => {
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
