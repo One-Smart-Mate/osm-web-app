@@ -10,8 +10,7 @@ import {
   useUdpateLevelMutation,
 } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Button } from "antd";
-import ModalForm from "../../components/ModalForm";
+import { Form, Button, Drawer, Spin } from "antd";
 import RegisterLevelForm from "./components/RegisterLevelForm";
 import UpdateLevelForm from "./components/UpdateLevelForm";
 import { useAppDispatch } from "../../core/store";
@@ -49,22 +48,35 @@ interface Props {
 }
 
 const Levels = ({}: Props) => {
+  const [createForm] = Form.useForm();
+  const [updateForm] = Form.useForm();
+
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
-  const [modalIsOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"create" | "update">("create");
-  const [formData, setFormData] = useState<any>({});
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
+  const [detailsVisible, setDetailsVisible] = useState(false);
 
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
+
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [detailsVisible, setDetailsVisible] = useState(false);
-  const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
+  const [drawerType, setDrawerType] = useState<
+    "create" | "update" | "clone" | null
+  >(null);
+  const [formData, setFormData] = useState<any>({});
+
+  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
+    "right"
+  );
+
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -75,6 +87,23 @@ const Levels = ({}: Props) => {
     handleGetLevels();
   }, [location.state]);
 
+  useEffect(() => {
+    const updateDrawerPlacement = () => {
+      if (window.innerWidth < 768) {
+        setDrawerPlacement("bottom");
+      } else {
+        setDrawerPlacement("right");
+      }
+    };
+
+    updateDrawerPlacement();
+    window.addEventListener("resize", updateDrawerPlacement);
+
+    return () => {
+      window.removeEventListener("resize", updateDrawerPlacement);
+    };
+  }, []);
+
   const handleGetLevels = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
@@ -84,6 +113,7 @@ const Levels = ({}: Props) => {
     setLoading(true);
     try {
       const response = await getLevels(location.state.siteId).unwrap();
+
       setTreeData([
         {
           name: Strings.levelsOf.concat(siteName),
@@ -98,37 +128,54 @@ const Levels = ({}: Props) => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error(Strings.errorFetchingLevels, error);
+      console.error(Strings.errorFetchingLevels);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleNodeClick = (node: any) => {
-    setSelectedNode(node);
-    setDrawerVisible(true);
-  };
-
   const handleCreateLevel = () => {
-    setModalType("create");
-    setModalOpen(true);
-    setFormData({ superiorId: selectedNode?.data?.id });
-    setDrawerVisible(false);
+    const supId = selectedNode?.data?.id;
+
+    if (supId === "0") {
+      createForm.setFieldsValue({ superiorId: null });
+    } else if (!supId) {
+      return;
+    } else {
+      createForm.setFieldsValue({ superiorId: supId });
+    }
+
+    setDrawerType("create");
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
   };
 
   const handleUpdateLevel = () => {
-    setModalType("update");
-    setModalOpen(true);
+    setDrawerType("update");
+    updateForm.resetFields();
+
+    if (selectedNode?.data) {
+      updateForm.setFieldsValue(selectedNode.data);
+    }
     setFormData(selectedNode?.data || {});
-    setDrawerVisible(false);
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
   };
 
-  const handleShowDetails = () => {
-    if (selectedNode?.data?.id) {
-      setSelectedLevelId(selectedNode.data.id);
-      setDetailsVisible(true);
-      setDrawerVisible(false);
+  const handleCloneLevel = () => {
+    setDrawerType("clone");
+    createForm.resetFields();
+
+    if (selectedNode?.data) {
+      createForm.setFieldsValue(selectedNode.data);
     }
+
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenuVisible(false);
   };
 
   const handleCloseDetails = () => {
@@ -136,130 +183,248 @@ const Levels = ({}: Props) => {
     setSelectedLevelId(null);
   };
 
-  const handleOnFormFinish = async (values: any) => {
-    setLoading(true);
+  const handleDrawerClose = () => {
+    createForm.resetFields();
+    updateForm.resetFields();
+    setDrawerVisible(false);
+    setDrawerType(null);
+  };
+
+  const handleSubmit = async (values: any) => {
     try {
-      if (modalType === "create") {
+      if (drawerType === "create" || drawerType === "clone") {
+        const supIdNum = Number(values.superiorId);
+
         const newNode = new CreateNode(
-          values.name.trim(),
-          values.description.trim(),
+          values.name?.trim(),
+          values.description?.trim(),
           Number(values.responsibleId) || 0,
           Number(location.state.siteId),
-          Number(formData.superiorId),
+          supIdNum,
           values.levelMachineId?.trim() || "",
           values.notify ? 1 : 0
         );
+
         await createLevel(newNode).unwrap();
-      } else {
-        await updateLevel({
-          ...values,
-          id: Number(formData.id),
+      } else if (drawerType === "update") {
+        const { superiorId, ...updateValues } = values;
+        const updatePayload = {
+          ...updateValues,
+          id: Number(values.id),
           responsibleId: values.responsibleId
             ? Number(values.responsibleId)
             : null,
-        }).unwrap();
+        };
+
+        await updateLevel(updatePayload).unwrap();
       }
-      setModalOpen(false);
-      handleGetLevels();
+
+      await handleGetLevels();
+      handleDrawerClose();
     } catch (error) {
-      console.error(Strings.errorSavingLevel, error);
+      console.error(Strings.errorOnSubmit);
     } finally {
       setLoading(false);
     }
   };
 
+  const renderCustomNodeElement = (rd3tProps: any) => {
+    const { nodeDatum } = rd3tProps;
+    const isLeaf = !nodeDatum.children || nodeDatum.children.length === 0;
+    const fillColor = isLeaf ? "#ffff00" : "#145695";
+
+    const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
+      e.preventDefault();
+      if (containerRef.current) {
+        const offsetX = e.currentTarget.getBoundingClientRect().right;
+        const offsetY = e.currentTarget.getBoundingClientRect().top;
+        setContextMenuPos({ x: offsetX - 50, y: offsetY - 60 });
+      }
+      setSelectedNode({ data: nodeDatum });
+      setContextMenuVisible(true);
+    };
+
+    const handleShowDetails = (nodeId: string) => {
+      if (nodeId !== "0") {
+        setSelectedLevelId(nodeId);
+        setDetailsVisible(true);
+        setContextMenuVisible(false);
+      }
+    };
+
+    const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
+      e.stopPropagation();
+      handleShowDetails(nodeDatum.id);
+    };
+
+    return (
+      <g onContextMenu={handleContextMenu} onClick={handleLeftClick}>
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+        <text
+          fill="black"
+          strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
+          x={nodeDatum.id === "0" ? -200 : 20}
+          y={nodeDatum.id === "0" ? 0 : 20}
+          style={{ fontSize: "14px" }}
+        >
+          {nodeDatum.name}
+        </text>
+      </g>
+    );
+  };
+
+  const isRootNode = selectedNode?.data?.id === "0";
+
   return (
     <div className="h-full flex flex-col">
-      <div className="flex flex-col gap-2 items-center m-3">
+      <div className="flex flex-col gap-2 items-center py-4">
         <PageTitle mainText={Strings.levelsOf} subText={siteName} />
       </div>
 
       <div
         ref={containerRef}
-        className="border-4 border-slate-900 rounded-md bg-white p-4 mt-5 h-[500px] w-full"
+        className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
+        style={{ height: "calc(100vh - 6rem)" }}
       >
-        {treeData.length > 0 && (
-          <Tree
-            data={treeData}
-            collapsible={false}
-            orientation="horizontal"
-            translate={translate}
-            onNodeClick={handleNodeClick}
-          />
+        {isLoading ? (
+          <div className="flex justify-center items-center h-full">
+            <Spin size="large" />
+          </div>
+        ) : (
+          treeData.length > 0 && (
+            <Tree
+              data={treeData}
+              collapsible={false}
+              orientation="horizontal"
+              translate={translate}
+              renderCustomNodeElement={renderCustomNodeElement}
+            />
+          )
         )}
       </div>
 
-      <Drawer
-        title={Strings.levelOptions}
-        placement="right"
-        onClose={() => setDrawerVisible(false)}
-        open={drawerVisible}
-        width={300}
-      >
-        <div className="flex flex-col gap-2 items-center p-2">
-          {" "}
-          {/* Reduce el padding */}
-          {selectedNode?.data?.id !== "0" && (
+      {contextMenuVisible && (
+        <div
+          className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
+          style={{
+            top: contextMenuPos.y,
+            left: contextMenuPos.x,
+          }}
+        >
+          {isRootNode ? (
             <>
               <Button
-                className="w-3/4 bg-yellow-500 text-white mx-auto"
-                onClick={handleShowDetails}
+                className="w-28 bg-green-700 text-white mx-auto"
+                onClick={handleCreateLevel}
               >
-                {Strings.details}
+                {Strings.levelsTreeOptionCreate}
               </Button>
               <Button
-                className="w-3/4 bg-blue-700 text-white mx-auto"
+                className="w-28 bg-red-700 text-white mx-auto"
+                onClick={handleCloseContextMenu}
+              >
+                {Strings.levelsTreeOptionClose}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                className="w-28 bg-green-700 text-white mx-auto"
+                onClick={handleCreateLevel}
+              >
+                {Strings.levelsTreeOptionCreate}
+              </Button>
+              <Button
+                className="w-28 bg-blue-700 text-white mx-auto"
                 onClick={handleUpdateLevel}
               >
-                {Strings.updateLevelTree}
+                {Strings.levelsTreeOptionEdit}
+              </Button>
+              <Button
+                className="w-28 bg-yellow-500 text-white mx-auto"
+                onClick={handleCloneLevel}
+              >
+                {Strings.levelsTreeOptionClone}
+              </Button>
+              <Button
+                className="w-28 bg-red-700 text-white mx-auto"
+                onClick={handleCloseContextMenu}
+              >
+                {Strings.levelsTreeOptionClose}
               </Button>
             </>
           )}
-          <Button
-            className="w-3/4 bg-green-700 text-white mx-auto"
-            onClick={handleCreateLevel}
-          >
-            {Strings.createLevelBtn}
-          </Button>
-          <Button
-            className="w-3/4 bg-red-700 text-white mx-auto"
-            onClick={() => setDrawerVisible(false)}
-          >
-            {Strings.close}
-          </Button>
         </div>
-      </Drawer>
+      )}
 
       {detailsVisible && selectedLevelId && (
-        <div className="fixed top-0 right-0 h-full w-1/3 bg-white shadow-lg z-50 p-4">
+        <Drawer
+          title={Strings.levelDetailsTitle}
+          placement={drawerPlacement}
+          height={drawerPlacement === "bottom" ? "50vh" : undefined}
+          width={drawerPlacement === "right" ? 400 : undefined}
+          onClose={handleCloseDetails}
+          open={detailsVisible}
+          destroyOnClose
+          closable={true}
+          className="drawer-responsive"
+        >
           <LevelDetails
             levelId={selectedLevelId}
             onClose={handleCloseDetails}
           />
-        </div>
+        </Drawer>
       )}
 
-      <Form.Provider
-        onFormFinish={async (_, { values }) => await handleOnFormFinish(values)}
+      <Drawer
+        title={
+          drawerType === Strings.drawerTypeCreate
+            ? Strings.levelsTreeOptionCreate.concat(" " + Strings.level)
+            : drawerType === Strings.drawerTypeEdit
+            ? Strings.levelsTreeOptionEdit.concat(" " + Strings.level)
+            : drawerType === Strings.drawerTypeClone
+            ? Strings.levelsTreeOptionClone.concat(" " + Strings.level)
+            : ""
+        }
+        placement={drawerPlacement}
+        height={drawerPlacement === "bottom" ? "50vh" : undefined}
+        width={drawerPlacement === "right" ? 400 : undefined}
+        onClose={handleDrawerClose}
+        open={drawerVisible}
+        destroyOnClose
+        closable={true}
+        className="drawer-responsive"
       >
-        <ModalForm
-          open={modalIsOpen}
-          onCancel={() => setModalOpen(false)}
-          FormComponent={({ form }) =>
-            modalType === "create" ? (
-              <RegisterLevelForm form={form} />
-            ) : (
-              <UpdateLevelForm form={form} initialValues={formData} />
-            )
-          }
-          title={
-            modalType === "create"
-              ? Strings.createLevel.concat(Strings.newLevel)
-              : Strings.updateLevelTree.concat(Strings.level)
-          }
-          isLoading={isLoading}
-        />
-      </Form.Provider>
+        <Form.Provider
+          onFormFinish={async (_name, { values }) => {
+            await handleSubmit(values);
+          }}
+        >
+          <div className="drawer-content">
+            {drawerType === "create" || drawerType === "clone" ? (
+              <RegisterLevelForm form={createForm} />
+            ) : drawerType === "update" ? (
+              <UpdateLevelForm form={updateForm} initialValues={formData} />
+            ) : null}
+
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="primary"
+                loading={isLoading}
+                onClick={() => {
+                  if (drawerType === Strings.drawerTypeCreate || drawerType === Strings.drawerTypeClone) {
+                    createForm.submit();
+                  } else if (drawerType === Strings.drawerTypeEdit) {
+                    updateForm.submit();
+                  }
+                }}
+              >
+                {Strings.save}
+              </Button>
+            </div>
+          </div>
+        </Form.Provider>
+      </Drawer>
     </div>
   );
 };
