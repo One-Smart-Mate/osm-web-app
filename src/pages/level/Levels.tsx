@@ -134,7 +134,14 @@ const Levels = ({}: Props) => {
     }
   };
 
+  const closeAllDrawers = () => {
+    setDetailsVisible(false);
+    setDrawerVisible(false);
+  };
+  
+
   const handleCreateLevel = () => {
+    closeAllDrawers();
     const supId = selectedNode?.data?.id;
 
     if (supId === "0") {
@@ -151,6 +158,7 @@ const Levels = ({}: Props) => {
   };
 
   const handleUpdateLevel = () => {
+    closeAllDrawers();
     setDrawerType("update");
     updateForm.resetFields();
 
@@ -163,6 +171,7 @@ const Levels = ({}: Props) => {
   };
 
   const handleCloneLevel = () => {
+    closeAllDrawers();
     setDrawerType("clone");
     createForm.resetFields();
 
@@ -246,6 +255,7 @@ const Levels = ({}: Props) => {
 
     const handleShowDetails = (nodeId: string) => {
       if (nodeId !== "0") {
+        closeAllDrawers();
         setSelectedLevelId(nodeId);
         setDetailsVisible(true);
         setContextMenuVisible(false);
@@ -359,7 +369,15 @@ const Levels = ({}: Props) => {
 
       {detailsVisible && selectedLevelId && (
         <Drawer
-          title={Strings.levelDetailsTitle}
+          mask={false} 
+          maskClosable={false} 
+          title={
+            Strings.levelDetailsTitle.concat(
+              selectedNode?.data?.name
+                ? `: ${selectedNode.data.name}`
+                : ""
+            )
+          }
           placement={drawerPlacement}
           height={drawerPlacement === "bottom" ? "50vh" : undefined}
           width={drawerPlacement === "right" ? 400 : undefined}
@@ -377,15 +395,27 @@ const Levels = ({}: Props) => {
       )}
 
       <Drawer
-        title={
-          drawerType === Strings.drawerTypeCreate
-            ? Strings.levelsTreeOptionCreate.concat(" " + Strings.level)
-            : drawerType === Strings.drawerTypeEdit
-            ? Strings.levelsTreeOptionEdit.concat(" " + Strings.level)
-            : drawerType === Strings.drawerTypeClone
-            ? Strings.levelsTreeOptionClone.concat(" " + Strings.level)
-            : ""
-        }
+ title={
+  drawerType === Strings.drawerTypeCreate
+    ? Strings.levelsTreeOptionCreate.concat(
+        selectedNode?.data?.name
+          ? ` ${Strings.for} "${selectedNode.data.name}"`
+          : Strings.empty
+      )
+    : drawerType === Strings.drawerTypeEdit
+    ? Strings.levelsTreeOptionEdit.concat(
+        selectedNode?.data?.name
+          ? ` "${selectedNode.data.name}" ${Strings.level}`
+          : Strings.empty
+      )
+    : drawerType === Strings.drawerTypeClone
+    ? Strings.levelsTreeOptionClone.concat(
+        selectedNode?.data?.name
+          ? ` "${selectedNode.data.name}" ${Strings.level}`
+          : Strings.empty
+      )
+    : Strings.empty
+}
         placement={drawerPlacement}
         height={drawerPlacement === "bottom" ? "50vh" : undefined}
         width={drawerPlacement === "right" ? 400 : undefined}
@@ -394,6 +424,8 @@ const Levels = ({}: Props) => {
         destroyOnClose
         closable={true}
         className="drawer-responsive"
+        mask={false} 
+        maskClosable={false} 
       >
         <Form.Provider
           onFormFinish={async (_name, { values }) => {

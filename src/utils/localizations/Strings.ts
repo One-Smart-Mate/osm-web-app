@@ -484,6 +484,7 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static yes = "Yes";
     static no = "No";
     static detailsStatusCancelled = "Cancelled";
-
+    static for = "for"
+    
 
 }
