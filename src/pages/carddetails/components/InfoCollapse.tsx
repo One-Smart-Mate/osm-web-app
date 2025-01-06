@@ -50,7 +50,7 @@ const InfoCollapse = ({ data, evidences }: CardProps) => {
   const dispatch = useAppDispatch();
 
   const { card } = data;
-  const cardStatus = getCardStatusAndText(card.status, card.cardDueDate);
+  const cardStatus = getCardStatusAndText(card.status, card.cardDueDate, data.cardDefinitiveSolutionDate, card.cardCreationDate);
 
   const handleOnOpenModal = (modalType: string) => {
     setModalOpen(true);

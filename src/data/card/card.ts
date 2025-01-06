@@ -41,6 +41,7 @@ export interface Evidences {
 }
 
 export interface CardDetailsInterface {
+  cardDefinitiveSolutionDate: string | undefined;
   card: CardInterface;
   evidences: Evidences[];
 }
