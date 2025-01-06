@@ -68,33 +68,34 @@ const CardDetails = () => {
     const creation: Evidences[] = [];
     const provisionalSolution: Evidences[] = [];
     const definitiveSolution: Evidences[] = [];
-
-    data.map((evidence) => {
-      switch (evidence.evidenceType) {
-        case Strings.AUCR:
-        case Strings.IMCR:
-        case Strings.VICR:
-          creation.push(evidence);
-          break;
-        case Strings.AUPS:
-        case Strings.IMPS:
-        case Strings.VIPS:
-          provisionalSolution.push(evidence);
-          break;
-        case Strings.AUCL:
-        case Strings.IMCL:
-        case Strings.VICL:
-          definitiveSolution.push(evidence);
-          break;
-      }
-    });
-
-    return {
-      creation,
-      provisionalSolution,
-      definitiveSolution,
+    
+      data.map((evidence) => {
+        switch (evidence.evidenceType) {
+          case Strings.AUCR:
+          case Strings.IMCR:
+          case Strings.VICR:
+            creation.push(evidence);
+            break;
+          case Strings.AUPS:
+          case Strings.IMPS:
+          case Strings.VIPS:
+            provisionalSolution.push(evidence);
+            break;
+          case Strings.AUCL:
+          case Strings.IMCL:
+          case Strings.VICL:
+            definitiveSolution.push(evidence);
+            break;
+        }
+      });
+    
+      return {
+        creation,
+        provisionalSolution,
+        definitiveSolution,
+      };
     };
-  };
+    
 
   return (
     <>
