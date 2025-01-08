@@ -41,8 +41,8 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
   const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
   const statusOptions = [
-    { value: "A", label: Strings.active },
-    { value: "I", label: Strings.inactive },
+    { value: Strings.activeStatus, label: Strings.active },
+    { value: Strings.inactiveValue, label: Strings.inactive },
   ];
 
   return (
@@ -98,12 +98,21 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             <Form.Item
               name="password"
               validateFirst
-              rules={[{ min: 8, message: Strings.passwordLenght }]}
+              rules={[
+                {
+                  validator(_, value) {
+                    if (!value) return Promise.resolve();
+                    if (value.length < 8) {
+                      return Promise.reject(new Error(Strings.passwordLenght));
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
               className="w-full"
             >
               <Input.Password
                 size="large"
-                minLength={8}
                 addonBefore={<LockOutlined />}
                 placeholder={Strings.updatePassword}
                 visibilityToggle={{
@@ -181,25 +190,8 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
           <Form.Item
             name="roles"
             validateFirst
-            dependencies={["password"]}
+            rules={[{ required: true, message: Strings.requiredRoles }]}
             className="flex-1"
-            rules={[
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value && getFieldValue("password")) {
-                    return Promise.reject(
-                      new Error(Strings.requiredPassword)
-                    );
-                  }
-                  if (value && getFieldValue("password") !== value) {
-                    return Promise.reject(
-                      new Error(Strings.passwordsDoNotMatch)
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              }),
-            ]}
           >
             <Select
               mode="multiple"
@@ -217,45 +209,6 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
           </Tooltip>
         </div>
-        <Form.Item name="siteId" className="hidden">
-          <Input />
-        </Form.Item>
-        <div className="flex flex-row flex-wrap">
-          <Form.Item
-            name="uploadCardDataWithDataNet"
-            valuePropName="checked"
-            label={Strings.uploadCardDataWithDataNet}
-            className="mr-1"
-          >
-            <Checkbox value={1}>{Strings.enable}</Checkbox>
-          </Form.Item>
-          <Form.Item
-            name="uploadCardEvidenceWithDataNet"
-            valuePropName="checked"
-            label={Strings.uploadCardEvidenceWithDataNet}
-            className="flex-1"
-          >
-            <Checkbox value={1}>{Strings.enable}</Checkbox>
-          </Form.Item>
-        </div>
-        <Form.Item
-          name="roles"
-          validateFirst
-          rules={[{ required: true, message: Strings.requiredRoles }]}
-          className="flex-1"
-        >
-          <Select
-            mode="multiple"
-            size="large"
-            placeholder={Strings.roles}
-            value={selectedRoles}
-            onChange={setSelectedRoles}
-            options={filteredOptions.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-          />
-        </Form.Item>
         <Form.Item
           name="status"
           validateFirst
@@ -267,6 +220,9 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             placeholder={Strings.statusPlaceholder}
             options={statusOptions}
           />
+        </Form.Item>
+        <Form.Item name="id" className="hidden">
+          <Input type="hidden" />
         </Form.Item>
       </div>
     </Form>
