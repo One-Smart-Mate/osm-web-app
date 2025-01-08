@@ -244,7 +244,7 @@ export default class Strings {
   //Tags re-design
   static tagsOf = "Tags of";
   static filters = "Filters";
-  static status = "Status: ";
+  static status = "Status ";
   static dueDate = "Due date: ";
   static cardType = "Tag type: ";
   static problemType = "Problem type: ";
@@ -342,7 +342,7 @@ export default class Strings {
     static updateLevelTree = "Update Level";
     static details = "Details";
     static levelsOf = "Levels of ";
-    static newLevel = "New Level";
+    static newLevel = " New Level";
     static level = "Level";
     static errorFetchingLevels = "Error fetching levels";
     static errorSavingLevel = "Error saving level";
@@ -465,5 +465,26 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static notificationsSave = "Save";
     static notificationsCancel = "Cancel";
     static searchUsers = "Search User"
+
+    
+    static responsibleRequired = "Responsible Required"
+    static levelsTreeOptionCreate = "Create";
+    static levelsTreeOptionClose = "Close";
+    static levelsTreeOptionEdit = "Edit";
+    static levelsTreeOptionClone = "Clone";
+    static levelDetailsTitle = "Level Details";
+    static errorOnSubmit = "Error on submit";
+    static drawerTypeCreate = "create"
+    static drawerTypeEdit = "update"
+    static drawerTypeClone = "clone"
+    
+    static loading = "Loading";
+    static noData = "No data";
+    static errorFetchingLevelData = "Error fetching level data";
+    static yes = "Yes";
+    static no = "No";
+    static detailsStatusCancelled = "Cancelled";
+    static for = "for"
+    
 
 }

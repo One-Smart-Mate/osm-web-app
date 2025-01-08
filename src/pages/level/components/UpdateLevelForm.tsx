@@ -36,7 +36,7 @@ const UpdateLevelForm = ({ form, initialValues }: FormProps) => {
     handleGetData();
     const defaultValues = {
       ...initialValues,
-      notify: initialValues?.notify !== undefined ? Number(initialValues.notify) : 0, // Convertir a número
+      notify: initialValues?.notify !== undefined ? Number(initialValues.notify) : 0,
     };
 
     if (defaultValues) {
@@ -62,63 +62,64 @@ const UpdateLevelForm = ({ form, initialValues }: FormProps) => {
 
   return (
     <Form form={form} layout="vertical">
-      <div className="flex flex-col">
-        <div className="flex flex-row flex-wrap">
-          <Form.Item name="id" className="hidden">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            rules={[{ required: true, message: Strings.name }, { max: 45 }]}
-            className="mr-1"
-          >
-            <Input
-              size="large"
-              maxLength={45}
-              addonBefore={<LuTextCursor />}
-              placeholder={Strings.name}
-            />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            rules={[{ required: true, message: Strings.requiredDescription }, { max: 100 }]}
-            className="md:flex-1 w-2/3"
-          >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<BsCardText />}
-              placeholder={Strings.description}
-            />
-          </Form.Item>
-        </div>
-        <div className="flex gap-1 flex-wrap">
-          <Form.Item name="responsibleId" className="flex-1">
-            <Select
-              size="large"
-              placeholder={Strings.responsible}
-              options={responsibleOptions()}
-            />
-          </Form.Item>
-          <Form.Item name="levelMachineId" className="md:flex-1 w-2/3">
-            <Input
-              size="large"
-              maxLength={50}
-              addonBefore={<CiBarcode />}
-              placeholder={Strings.levelMachineId}
-            />
-          </Form.Item>
-        </div>
-        <div className="flex gap-3">
-          <Form.Item name="status" className="w-60">
-            <Select size="large" options={statusOptions()} />
-          </Form.Item>
-          <Form.Item name="notify" valuePropName="checked">
-            <Checkbox>
-              <p className="text-base">{Strings.notify}</p>
-            </Checkbox>
-          </Form.Item>
-        </div>
+      <div className="flex flex-col gap-1">
+        <Form.Item name="id" className="hidden">
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="name"
+          rules={[{ required: true, message: Strings.name }, { max: 45 }]}
+        >
+          <Input
+            size="large"
+            maxLength={45}
+            addonBefore={<LuTextCursor />}
+            placeholder={Strings.name}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="description"
+          rules={[
+            { required: true, message: Strings.requiredDescription },
+            { max: 100 },
+          ]}
+        >
+          <Input
+            size="large"
+            maxLength={100}
+            addonBefore={<BsCardText />}
+            placeholder={Strings.description}
+          />
+        </Form.Item>
+
+        <Form.Item name="responsibleId">
+          <Select
+            size="large"
+            placeholder={Strings.responsible}
+            options={responsibleOptions()}
+          />
+        </Form.Item>
+
+        <Form.Item name="levelMachineId">
+          <Input
+            size="large"
+            maxLength={50}
+            addonBefore={<CiBarcode />}
+            placeholder={Strings.levelMachineId}
+          />
+        </Form.Item>
+
+        <Form.Item name="status">
+          <Select size="large" placeholder={Strings.status} options={statusOptions()} />
+        </Form.Item>
+
+        <Form.Item name="notify" valuePropName="checked">
+          <Checkbox>
+            <p className="text-base">{Strings.notify}</p>
+          </Checkbox>
+        </Form.Item>
       </div>
     </Form>
   );

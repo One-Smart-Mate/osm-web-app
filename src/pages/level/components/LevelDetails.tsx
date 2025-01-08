@@ -8,10 +8,10 @@ const { Title } = Typography;
 
 interface LevelDetailsProps {
   levelId: string;
-  onClose: () => void; // Function to close the panel
+  onClose: () => void;
 }
 
-const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
+const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId }) => {
   const [getLevel] = useGetlevelMutation();
   const [levelData, setLevelData] = useState<Level | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,7 +22,7 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
         const response = await getLevel(levelId).unwrap();
         setLevelData(response);
       } catch (error) {
-        console.error("Error fetching level data:", error);
+        console.error(Strings.errorFetchingLevelData);
       } finally {
         setIsLoading(false);
       }
@@ -35,8 +35,8 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
     switch (status) {
       case Strings.detailsOptionA:
         return Strings.detailsStatusActive;
-        case Strings.detailsOptionC:
-        return Strings.detailsStatsCancelled;
+      case Strings.detailsOptionC:
+        return Strings.detailsStatusCancelled;
       case Strings.detailsOptionS:
         return Strings.detailsStatusSuspended;
       default:
@@ -45,16 +45,16 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
   };
 
   if (isLoading) {
-    return <Spin tip={"Loading"} className="flex justify-center mt-10" />;
+    return <Spin tip={Strings.loading} className="flex justify-center mt-10" />;
   }
 
   if (!levelData) {
-    return <div className="text-center">{"No data"}</div>;
+    return <div className="text-center">{Strings.noData}</div>;
   }
 
   return (
-    <div className="mt-10 p-4 bg-white shadow-md rounded-md border border-gray-300">
-      <Title level={4}>{"Level Details"}</Title>
+    <div className="p-4 bg-white shadow-md rounded-md border border-gray-300">
+      <Title level={4}>{Strings.levelDetailsTitle}</Title>
       <Descriptions bordered column={1}>
         <Descriptions.Item label={Strings.name}>
           {levelData.name}
@@ -69,20 +69,12 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, onClose }) => {
           {getStatusText(levelData.status)}
         </Descriptions.Item>
         <Descriptions.Item label={Strings.notify}>
-          {levelData.notify ? "Yes" : "No"}
+          {levelData.notify ? Strings.yes : Strings.no}
         </Descriptions.Item>
         <Descriptions.Item label={Strings.levelMachineId}>
           {levelData.levelMachineId || Strings.none}
         </Descriptions.Item>
       </Descriptions>
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          {Strings.close}
-        </button>
-      </div>
     </div>
   );
 };
