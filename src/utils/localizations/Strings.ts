@@ -270,6 +270,24 @@ export default class Strings {
   static definitiveUser = "Definitive user: ";
   static definitiveSolutionApplied = "Definitive solution applied: ";
 
+  //Constants for the dividers
+  static evidencesAtCreationDivider = "Evidences at creation";
+
+
+  static definitiveSolutionDivider = "Definitive solution";
+  static evidencesAtDefinitiveDivider = "Evidences at definitive solution";
+
+  static provisionalSolutionDivider = "Provisional solution";
+  static evidencesAtProvisionalDivider = "Evidences at provisional solution";
+
+  static changeLogDivider = "Change log";
+
+  // Constants for the date status
+  static expired = "Expired"; 
+  static current = "Current";
+  static onTime = "On time";
+
+
   //charts
   static chartsOf = "Charts of";
   static anomalies = "Anomalies";

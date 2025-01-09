@@ -20,11 +20,9 @@ import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionColla
 import NoteCollapseV2 from "./components/NoteCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
 import PageTitleTag from "../../components/PageTitleTag";
-import { Divider, Typography } from 'antd';
+import { Divider, Typography } from "antd";
 
-
-
-const { Text } = Typography
+const { Text } = Typography;
 
 const CardDetails = () => {
   const [getCardDetails] = useGetCardDetailsMutation();
@@ -70,40 +68,39 @@ const CardDetails = () => {
     const creation: Evidences[] = [];
     const provisionalSolution: Evidences[] = [];
     const definitiveSolution: Evidences[] = [];
-    
-      data.map((evidence) => {
-        switch (evidence.evidenceType) {
-          case Strings.AUCR:
-          case Strings.IMCR:
-          case Strings.VICR:
-            creation.push(evidence);
-            break;
-          case Strings.AUPS:
-          case Strings.IMPS:
-          case Strings.VIPS:
-            provisionalSolution.push(evidence);
-            break;
-          case Strings.AUCL:
-          case Strings.IMCL:
-          case Strings.VICL:
-            definitiveSolution.push(evidence);
-            break;
-        }
-      });
-    
-      return {
-        creation,
-        provisionalSolution,
-        definitiveSolution,
-      };
+
+    data.map((evidence) => {
+      switch (evidence.evidenceType) {
+        case Strings.AUCR:
+        case Strings.IMCR:
+        case Strings.VICR:
+          creation.push(evidence);
+          break;
+        case Strings.AUPS:
+        case Strings.IMPS:
+        case Strings.VIPS:
+          provisionalSolution.push(evidence);
+          break;
+        case Strings.AUCL:
+        case Strings.IMCL:
+        case Strings.VICL:
+          definitiveSolution.push(evidence);
+          break;
+      }
+    });
+
+    return {
+      creation,
+      provisionalSolution,
+      definitiveSolution,
     };
-    
+  };
 
   return (
     <>
       <div className="h-full flex flex-col">
         <div className="flex flex-col items-center m-3">
-          <PageTitleTag mainText={Strings.cardDetailsOf} subText={cardName}/>
+          <PageTitleTag mainText={Strings.cardDetailsOf} subText={cardName} />
         </div>
 
         <div className="flex flex-col overflow-y-auto overflow-x-clipb gap-2">
@@ -132,14 +129,15 @@ const CardDetails = () => {
             <LoadingCard />
           )}
 
-              
-    <Divider style={{ borderColor: '	#808080' }} >
-    <Text style={{ fontSize: '24px', fontWeight: 'bold' }} >Change log</Text>
-    </Divider>
-    
+          <Divider style={{ borderColor: "	#808080" }}>
+            <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
+              {Strings.changeLogDivider}
+            </Text>
+          </Divider>
+
           <div className="flex flex-col items-center m-3">
-        {!isLoading ? <NoteCollapseV2 data={notes} /> : <LoadingCard />}
-        </div>
+            {!isLoading ? <NoteCollapseV2 data={notes} /> : <LoadingCard />}
+          </div>
         </div>
       </div>
     </>

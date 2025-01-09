@@ -151,12 +151,12 @@ export const getDaysBetween = (date1: string, date2: string): number => {
   const d2 = normalizeDate(date2);
 
   if (!d1 || !d2) {
-    console.error("Una de las fechas no es válida:", date1, date2); // Muestra las fechas que no son válidas
+    console.error("Una de las fechas no es válida:", date1, date2); // Show dates that are not valid
     return 0;
   }
 
   const differenceInMs = Math.abs(d2.getTime() - d1.getTime());
-  return Math.floor(differenceInMs / (24 * 60 * 60 * 1000)); // Convierte de milisegundos a días
+  return Math.floor(differenceInMs / (24 * 60 * 60 * 1000)); // Convert from milliseconds to days
 };
 
 
@@ -233,13 +233,13 @@ export const getCardStatusAndText = (
         return {
           status: "success",
           text: Strings.open,
-          dateStatus: isExpired ? "Expired" : "Current",
+          dateStatus: isExpired ? Strings.expired : Strings.current,
         };
       } else {
         return {
           status: "success",
           text: Strings.open,
-          dateStatus: "Current",
+          dateStatus: Strings.current,
         };
       }
 
@@ -248,15 +248,14 @@ export const getCardStatusAndText = (
         if (DefiniSolutionDate) {
           const isOnTime = compareDates(DefiniSolutionDate, duDate);
           if (CreatDate) {
-            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate); // Calcula los días entre las fechas
-            
+            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate); // Calculate days between dates
             console.log("compareDates result: ", isOnTime);
             console.log("Days between: ", daysBetween);
           
             return {
               status: "error",
               text: Strings.closed,
-              dateStatus: (isOnTime || daysBetween === 0) ? "On time" : "Expired", // Considera si los días entre las fechas son 0
+              dateStatus: (isOnTime || daysBetween === 0) ? Strings.onTime : Strings.expired,// Consider if the days between dates are 0
             };
           } else {
             return {

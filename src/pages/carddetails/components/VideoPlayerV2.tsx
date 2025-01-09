@@ -10,10 +10,12 @@ interface CardProps {
   data: Evidences[];
 }
 
-const VideosDisplayV2 = ({ data }: CardProps) => {
+const VideoPlayerV2 = ({ data }: CardProps) => {
   const videos = data.filter((evidence) => isVideoURL(evidence.evidenceName));
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(null);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(
+    null
+  );
   const [videoErrors, setVideoErrors] = useState<Set<string>>(new Set());
   const [videoNoVisual, setVideoNoVisual] = useState<Set<string>>(new Set());
 
@@ -81,10 +83,10 @@ const VideosDisplayV2 = ({ data }: CardProps) => {
                 />
               ) : (
                 <video
-                  ref={(el) => {
-                    videoRefs.current[index] = el;
-                    if (el) {
-                      el.onloadeddata = () => checkVideoVisual(videoId, index);
+                  ref={(videoItem) => {
+                    videoRefs.current[index] = videoItem;
+                    if (videoItem) {
+                      videoItem.onloadeddata = () => checkVideoVisual(videoId, index);
                     }
                   }}
                   className="w-[200px] h-auto rounded-lg cursor-pointer"
@@ -142,4 +144,4 @@ const VideosDisplayV2 = ({ data }: CardProps) => {
   );
 };
 
-export default VideosDisplayV2;
+export default VideoPlayerV2;

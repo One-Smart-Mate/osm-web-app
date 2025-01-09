@@ -103,7 +103,7 @@ const Tag = ({ data, rol }: CardProps) => {
       </div>
   
       <div className="flex items-center gap-1 w-full">
-        {dateStatus === "Expired" ? (
+        {dateStatus === Strings.expired ? (
           <div className="bg-red-500 text-white text-center font-bold px-2 py-1 rounded-md w-full">
             Expired
           </div>

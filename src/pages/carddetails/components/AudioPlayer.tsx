@@ -9,7 +9,7 @@ interface CardProps {
   data: Evidences[] | [];
 }
 
-const AudiosDisplayV2 = ({ data }: CardProps) => {
+const AudioPlayer = ({ data }: CardProps) => {
   if (!data || data.length === 0) {
     return (
       <Card
@@ -37,8 +37,8 @@ const AudiosDisplayV2 = ({ data }: CardProps) => {
         {audios.map((audio, index) => (
           <audio
             key={index}
-            ref={(el) => {
-              if (el) audioRefs.current[index] = el;
+            ref={(audioItem) => {
+              if (audioItem) audioRefs.current[index] = audioItem;
             }}
             onPlay={() => handlePlay(index)}
             controls
@@ -50,4 +50,4 @@ const AudiosDisplayV2 = ({ data }: CardProps) => {
   );
 };
 
-export default AudiosDisplayV2;
+export default AudioPlayer;
