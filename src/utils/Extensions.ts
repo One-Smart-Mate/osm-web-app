@@ -151,7 +151,7 @@ export const getDaysBetween = (date1: string, date2: string): number => {
   const d2 = normalizeDate(date2);
 
   if (!d1 || !d2) {
-    console.error("Una de las fechas no es válida:", date1, date2); // Show dates that are not valid
+    console.error("One of the dates is not valid:", date1, date2); // Show dates that are not valid
     return 0;
   }
 
@@ -181,21 +181,21 @@ export const RESPONSIVE_AVATAR = {
 
 const compareDates = (date1: string, date2: string): boolean => {
   if (!date1 || !date2) {
-    throw new Error("Ambas fechas deben proporcionarse.");
+    throw new Error("Both dates must be provided.");
   }
 
   const d1 = new Date(date1);
   const d2 = new Date(date2);
 
   if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
-    throw new Error("Una o ambas fechas no son válidas.");
+    throw new Error("One of the dates is not valid.");
   }
 
   const date1Formatted = d1.toISOString().split("T")[0];
   const date2Formatted = d2.toISOString().split("T")[0];
 
-  console.log("Fecha 1 formateada:", date1Formatted);
-  console.log("Fecha 2 formateada:", date2Formatted);
+  console.log("Formatted Date 1:", date1Formatted);
+  console.log("Formatted Date 2:", date2Formatted);
 
   return date1Formatted <= date2Formatted;
 };
