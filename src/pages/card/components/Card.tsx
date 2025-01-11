@@ -27,7 +27,7 @@ interface CardProps {
 }
 
 const InformationPanel = ({ data, rol }: CardProps) => {
-  const { status, text } = getCardStatusAndText(data.status, data.cardDueDate);
+  const { status, text } = getCardStatusAndText(data.status, data.cardDueDate, data.cardDefinitiveSolutionDate, data.cardCreationDate);
   const navigate = useNavigate();
 
   const evidenceIndicator = (evidences: Evidences[]) => {

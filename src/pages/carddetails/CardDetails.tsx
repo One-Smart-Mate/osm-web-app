@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
 import {
   useGetCardDetailsMutation,
   useGetCardNotesMutation,
 } from "../../services/cardService";
 import { CardDetailsInterface, Evidences } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import InfoCollapse from "./components/InfoCollapse";
-import ProvisionalSolutionCollapse from "./components/ProvisionalSolutionCollapse";
-import DefinitiveSolutionCollapse from "./components/DefinitiveSolutionCollapse";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
   resetCardUpdatedIndicator,
@@ -18,8 +14,15 @@ import {
   setSiteId,
 } from "../../core/genericReducer";
 import { Note } from "../../data/note";
-import NoteCollapse from "./components/NoteCollapse";
 import { Card } from "antd";
+import InfoCollapseV2 from "./components/InfoCollapseV2";
+import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
+import NoteCollapseV2 from "./components/NoteCollapseV2";
+import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
+import PageTitleTag from "../../components/PageTitleTag";
+import { Divider, Typography } from "antd";
+
+const { Text } = Typography;
 
 const CardDetails = () => {
   const [getCardDetails] = useGetCardDetailsMutation();
@@ -97,12 +100,12 @@ const CardDetails = () => {
     <>
       <div className="h-full flex flex-col">
         <div className="flex flex-col items-center m-3">
-          <PageTitle mainText={Strings.cardDetailsOf} subText={cardName} />
+          <PageTitleTag mainText={Strings.cardDetailsOf} subText={cardName} />
         </div>
 
-        <div className="flex flex-col items-center overflow-y-auto overflow-x-clipb gap-2">
+        <div className="flex flex-col overflow-y-auto overflow-x-clipb gap-2">
           {data ? (
-            <InfoCollapse
+            <InfoCollapseV2
               data={data}
               evidences={filterEvidence(data.evidences).creation}
             />
@@ -110,7 +113,7 @@ const CardDetails = () => {
             <LoadingCard />
           )}
           {data ? (
-            <ProvisionalSolutionCollapse
+            <ProvisionalSolutionCollapseV2
               data={data}
               evidences={filterEvidence(data.evidences).provisionalSolution}
             />
@@ -118,14 +121,23 @@ const CardDetails = () => {
             <LoadingCard />
           )}
           {data ? (
-            <DefinitiveSolutionCollapse
+            <DefinitiveSolutionCollapseV2
               data={data}
               evidences={filterEvidence(data.evidences).definitiveSolution}
             />
           ) : (
             <LoadingCard />
           )}
-          {!isLoading ? <NoteCollapse data={notes} /> : <LoadingCard />}
+
+          <Divider style={{ borderColor: "	#808080" }}>
+            <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
+              {Strings.changeLogDivider}
+            </Text>
+          </Divider>
+
+          <div className="flex flex-col items-center m-3">
+            {!isLoading ? <NoteCollapseV2 data={notes} /> : <LoadingCard />}
+          </div>
         </div>
       </div>
     </>

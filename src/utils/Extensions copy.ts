@@ -27,6 +27,7 @@ export const hasAudios = (evidenceArray: Evidences[]) =>
 export const hasImages = (evidenceArray: Evidences[]) =>
   evidenceArray.some((evidence) => isImageURL(evidence.evidenceName));
 
+
 export const generateShortUUID = (): string => {
   const fullUUID = uuidv4();
   const shortUUID = fullUUID.replace(/-/g, "").substring(0, 6).toUpperCase();
@@ -133,32 +134,16 @@ export const getDaysSince = (dateString: string) => {
   return differenceInDays;
 };
 
-export const getDaysBetween = (date1: string, date2: string): number => {
-  if (date1 === null || date2 === null) {
-    return 0;
-  }
-
-  const normalizeDate = (date: string): Date | null => {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) {
-      return null;
-    }
-    d.setHours(0, 0, 0, 0);
-    return d;
-  };
-
-  const d1 = normalizeDate(date1);
-  const d2 = normalizeDate(date2);
-
-  if (!d1 || !d2) {
-    console.error("One of the dates is not valid:", date1, date2); // Show dates that are not valid
-    return 0;
-  }
-
-  const differenceInMs = Math.abs(d2.getTime() - d1.getTime());
-  return Math.floor(differenceInMs / (24 * 60 * 60 * 1000)); // Convert from milliseconds to days
+export const getDaysBetween = (dateString: string, dateString2: string) => {
+  const dateObject: Date = new Date(dateString);
+  const dateObject2: Date = new Date(dateString2);
+  const oneDay = 24 * 60 * 60 * 1000;
+  const differenceInTime = Math.abs(
+    dateObject.getTime() - dateObject2.getTime()
+  );
+  const differenceInDays = Math.round(differenceInTime / oneDay);
+  return differenceInDays;
 };
-
 
 export const RESPONSIVE_LIST = {
   gutter: 20,
@@ -179,27 +164,6 @@ export const RESPONSIVE_AVATAR = {
   xxl: 80,
 };
 
-const compareDates = (date1: string, date2: string): boolean => {
-  if (!date1 || !date2) {
-    throw new Error("Both dates must be provided.");
-  }
-
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-
-  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
-    throw new Error("One of the dates is not valid.");
-  }
-
-  const date1Formatted = d1.toISOString().split("T")[0];
-  const date2Formatted = d2.toISOString().split("T")[0];
-
-  console.log("Formatted Date 1:", date1Formatted);
-  console.log("Formatted Date 2:", date2Formatted);
-
-  return date1Formatted <= date2Formatted;
-};
-
 export const getStatusAndText = (
   input: string
 ): { status: "error" | "success"; text: string } => {
@@ -218,77 +182,34 @@ export const getStatusAndText = (
 
 export const getCardStatusAndText = (
   input: string,
-  duDate?: string,
-  DefiniSolutionDate?: string,
-  CreatDate?: string
-): { status: "error" | "success"; text: string; dateStatus: string; } => {
-  const currentDate = new Date();
+  duDate?: string
+): { status: "error" | "success"; text: string } => {
+  if (input === "A" || input === "P" || input === "V") {
+    if (duDate) {
+      const currentDate = new Date();
+      const dueDateObj = new Date(duDate);
 
-  switch (input) {
-    case "A":
-    case "P":
-    case "V":
-      if (duDate) {
-        const isExpired = compareDates(duDate, currentDate.toISOString());
-        return {
-          status: "success",
-          text: Strings.open,
-          dateStatus: isExpired ? Strings.expired : Strings.current,
-        };
-      } else {
-        return {
-          status: "success",
-          text: Strings.open,
-          dateStatus: Strings.current,
-        };
-      }
+      currentDate.setHours(0, 0, 0, 0);
+      dueDateObj.setHours(0, 0, 0, 0);
 
-    case "R":
-      if (duDate) {
-        if (DefiniSolutionDate) {
-          const isOnTime = compareDates(DefiniSolutionDate, duDate);
-          if (CreatDate) {
-            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate); // Calculate days between dates
-            console.log("compareDates result: ", isOnTime);
-            console.log("Days between: ", daysBetween);
-          
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus: (isOnTime || daysBetween === 0) ? Strings.onTime : Strings.expired,// Consider if the days between dates are 0
-            };
-          } else {
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus: " ",
-            };
-          }
-        } else {
-          return {
-            status: "error",
-            text: Strings.closed,
-            dateStatus: " ",
-          };
-        }
-      } else {
+      if (dueDateObj < currentDate) {
         return {
           status: "error",
-          text: Strings.closed,
-          dateStatus: " ",
+          text: Strings.pastDue,
         };
       }
-
-    default:
-      return {
-        status: "error",
-        text: Strings.tagStatusCanceled,
-        dateStatus: " ", 
-      };
+    }
+    return {
+      status: "success",
+      text: Strings.open,
+    };
+  } else {
+    return {
+      status: "error",
+      text: Strings.closed,
+    };
   }
 };
-
-
 
 export const capitalizeFirstLetter = (input: string): string => {
   if (!input) return "";

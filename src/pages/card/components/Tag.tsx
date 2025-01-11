@@ -27,7 +27,7 @@ interface CardProps {
 }
 
 const Tag = ({ data, rol }: CardProps) => {
-  const { status, text } = getCardStatusAndText(data.status, data.cardDueDate);
+  const { status, text, dateStatus } = getCardStatusAndText(data.status, data.cardDueDate, data.cardDefinitiveSolutionDate, data.cardCreationDate);
   const navigate = useNavigate();
 
   const evidenceIndicator = (evidences: Evidences[]) => {
@@ -103,7 +103,7 @@ const Tag = ({ data, rol }: CardProps) => {
       </div>
   
       <div className="flex items-center gap-1 w-full">
-        {text === "Past due" ? (
+        {dateStatus === Strings.expired ? (
           <div className="bg-red-500 text-white text-center font-bold px-2 py-1 rounded-md w-full">
             Expired
           </div>
@@ -138,7 +138,7 @@ const Tag = ({ data, rol }: CardProps) => {
   
       <span>{Strings.problemDescription}</span>
       <div className="font-bold mb-2">
-        {data.preclassifierCode} {data.commentsAtCardCreation}
+        {data.commentsAtCardCreation || Strings.NA}
       </div>
   
       <span>{Strings.location}</span>

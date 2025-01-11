@@ -25,20 +25,18 @@ export default class Strings {
   static white = "white";
   static updateUser = "Update user";
   static creation = "Creation";
-  static creationDate = "Creation date";
-  static daysSinceCreation = "Days since creation";
+
+
   static definitiveSolution = "Definitive solution";
   static provisionalSolution = "Provisional solution";
-  static appProvisionalUser = "App provisional user";
   static provisionalUser = "Provisional user";
   static provisionalDate = "Provisional date";
   static days = "Days";
-  static appDefinitiveUser = "App definitive user";
-  static definitiveUser = "Definitive user";
+ 
+ 
   static definitiveUsers = "Definitive users";
   static definitiveDate = "Definitive date";
   static provisionalSoluitonApplied = "Provisional solution applied";
-  static definitiveSolutionApplied = "Definitive solution applied";
   static NA = "N/A";
   static noResponsible = "No responsible";
   static noMechanic = "No mechanic";
@@ -236,7 +234,7 @@ export default class Strings {
   static mechanics = "Mechanics";
   static creator = "Creator";
   static comments = "Comments";
-  static anomalyDetected = "Anomaly detected";
+
   static updateMechanic = "Update mechanic";
   static changeLog = "Change log";
   static noDueDate = "No due date";
@@ -251,6 +249,43 @@ export default class Strings {
   static location = "Location: ";
   static createdBy = "Created by: ";
   static problemDescription = "Problem description: ";
+
+   //Tags details re-design
+  static tagStatusCanceled = "Canceled";
+  static tagDate = "Date: ";
+  static tagDays = "Days: ";
+  static ceroDays = "0 days";
+  static tagNumber = "Tag number: ";
+  static tagPriority = "Priority: ";
+  static dateStatus = "Date status: ";
+  static tagMechanic = "Mechanic: ";
+  static tagProvisionalUser = "Provisional user: "
+  static tagProvisionalSoluitonApplied = "Provisional soluiton applied: ";
+  static creationDate = "Creation date: ";
+  static daysSinceCreation = "Days since creation: ";
+  static cero = "0";
+  static anomalyDetected = "Anomaly detected: ";
+  static appProvisionalUser = "App provisional user: ";
+  static appDefinitiveUser = "App definitive user: ";
+  static definitiveUser = "Definitive user: ";
+  static definitiveSolutionApplied = "Definitive solution applied: ";
+
+  //Constants for the dividers
+  static evidencesAtCreationDivider = "Evidences at creation";
+
+
+  static definitiveSolutionDivider = "Definitive solution";
+  static evidencesAtDefinitiveDivider = "Evidences at definitive solution";
+
+  static provisionalSolutionDivider = "Provisional solution";
+  static evidencesAtProvisionalDivider = "Evidences at provisional solution";
+
+  static changeLogDivider = "Change log";
+
+  // Constants for the date status
+  static expired = "Expired"; 
+  static current = "Current";
+  static onTime = "On time";
 
 
   //charts
