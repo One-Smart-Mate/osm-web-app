@@ -100,7 +100,7 @@ const CardDetails = () => {
     <>
       <div className="h-full flex flex-col">
         <div className="flex flex-col items-center m-3">
-          <PageTitleTag mainText={Strings.cardDetailsOf} subText={cardName} />
+          <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
         </div>
 
         <div className="flex flex-col overflow-y-auto overflow-x-clipb gap-2">

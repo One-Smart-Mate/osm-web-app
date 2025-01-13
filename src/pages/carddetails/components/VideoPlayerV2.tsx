@@ -11,11 +11,18 @@ interface CardProps {
 }
 
 const VideoPlayerV2 = ({ data }: CardProps) => {
-  const videos = data.filter((evidence) => isVideoURL(evidence.evidenceName));
+  // Filtra y ordena los videos
+  const videos = data
+    .filter((evidence) => isVideoURL(evidence.evidenceName))
+    .sort((a, b) => {
+      // Ordena de acuerdo al nombre del archivo o según otro criterio si lo prefieres
+      const nameA = a.evidenceName.toLowerCase();
+      const nameB = b.evidenceName.toLowerCase();
+      return nameA.localeCompare(nameB); // Orden ascendente
+    });
+
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(
-    null
-  );
+  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(null);
   const [videoErrors, setVideoErrors] = useState<Set<string>>(new Set());
   const [videoNoVisual, setVideoNoVisual] = useState<Set<string>>(new Set());
 
@@ -120,11 +127,9 @@ const VideoPlayerV2 = ({ data }: CardProps) => {
             )}
             <video
               className="mx-auto w-full"
-              src={
-                videoErrors.has(videos[currentVideoIndex]?.id)
-                  ? "https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png"
-                  : videos[currentVideoIndex]?.evidenceName
-              }
+              src={videoErrors.has(videos[currentVideoIndex]?.id)
+                ? "https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png"
+                : videos[currentVideoIndex]?.evidenceName}
               controls
               autoPlay
             />

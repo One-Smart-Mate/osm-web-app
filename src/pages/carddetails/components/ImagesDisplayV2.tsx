@@ -10,26 +10,36 @@ interface CardProps {
 }
 
 const ImagesDisplayV2 = ({ data }: CardProps) => {
-  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set()); 
-  const images = data.filter((evidence) => isImageURL(evidence.evidenceName));
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  // Ordenar y filtrar imágenes por nombre en orden alfabético ascendente
+  const images = data
+    .filter((evidence) => isImageURL(evidence.evidenceName))
+    .sort((a, b) => {
+      const nameA = a.evidenceName.toLowerCase();
+      const nameB = b.evidenceName.toLowerCase();
+      return nameA.localeCompare(nameB); // Orden alfabético ascendente
+    });
+
+  console.log("Imágenes ordenadas:", images);
 
   const handleImageError = (id: string) => {
-    setImageErrors((prevErrors) => new Set(prevErrors).add(id));
+    setImageErrors((prevErrors) => {
+      const newErrors = new Set(prevErrors);
+      newErrors.add(id);
+      return newErrors;
+    });
   };
 
   return (
     <div>
       {sectionsTitlesCardDetails(Strings.images)}
       {images.length > 0 ? (
-        <Image.PreviewGroup
-          preview={{
-            
-          }}
-        >
-          <div className="flex flex-wrap gap-4">
+        <Image.PreviewGroup preview={{}}>
+          <div className="grid grid-cols-3 gap-4">
             {images.map((image, index) => {
               const imageId = image.id || `fallback-id-${index}`;
-              const hasError = imageErrors.has(image.id);
+              const hasError = imageErrors.has(imageId);
 
               return (
                 <Image
@@ -41,7 +51,7 @@ const ImagesDisplayV2 = ({ data }: CardProps) => {
                       : image.evidenceName
                   }
                   alt={`Image of evidence with ID ${imageId}`}
-                  onError={() => handleImageError(image.id)}
+                  onError={() => handleImageError(imageId)}
                 />
               );
             })}
