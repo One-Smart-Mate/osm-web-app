@@ -157,6 +157,8 @@ const Levels = ({}: Props) => {
     setContextMenuVisible(false);
   };
 
+  
+
   const handleUpdateLevel = () => {
     closeAllDrawers();
     setDrawerType("update");
@@ -176,7 +178,8 @@ const Levels = ({}: Props) => {
     createForm.resetFields();
 
     if (selectedNode?.data) {
-      createForm.setFieldsValue(selectedNode.data);
+      const { levelMachineId, ...filteredData } = selectedNode.data;
+      createForm.setFieldsValue(filteredData);
     }
 
     setDrawerVisible(true);
@@ -264,8 +267,24 @@ const Levels = ({}: Props) => {
 
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
-      handleShowDetails(nodeDatum.id);
+      handleShowDetails(nodeDatum.id); 
     };
+    
+    return (
+      <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+        <text
+          fill="black"
+          strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
+          x={nodeDatum.id === "0" ? -200 : 20}
+          y={nodeDatum.id === "0" ? 0 : 20}
+          style={{ fontSize: "14px" }}
+        >
+          {nodeDatum.name}
+        </text>
+      </g>
+    );
+    
 
     return (
       <g onContextMenu={handleContextMenu} onClick={handleLeftClick}>

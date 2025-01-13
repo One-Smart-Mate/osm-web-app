@@ -520,6 +520,78 @@ static companyLogoTooltip = "Upload the company logo in image format.";
     static no = "No";
     static detailsStatusCancelled = "Cancelled";
     static for = "for"
-    
 
+    static errorFetchingData = "Error fetching data"
+    static namePlaceholder = "Enter the name"
+    static descriptionPlaceholder = "Enter the description"
+    static responsiblePlaceholder = "Select a responsible"
+
+     // General Placeholders
+  static cardTypeTreeNamePlaceholder = "Enter the name";
+  static cardTypeTreeDescriptionPlaceholder = "Enter the description";
+  static cardTypeTreeResponsiblePlaceholder = "Select a responsible";
+  static cardTypeTreeStatusPlaceholder = "Select a status";
+  static cardTypeTreeColorPlaceholder = "Pick a color";
+
+  // Placeholders for Quantity Fields
+  static cardTypeTreeQuantityPicturesPlaceholder = "Enter the number of pictures";
+  static cardTypeTreeQuantityVideosPlaceholder = "Enter the number of videos";
+  static cardTypeTreeQuantityAudiosPlaceholder = "Enter the number of audios";
+
+  // Titles or Section Labels
+  static cardTypeTreeAtCreation = "At Creation";
+  static cardTypeTreeAtProvisionalSolution = "At Provisional Solution";
+  static cardTypeTreeAtDefinitiveSolution = "At Definitive Solution";
+
+  // Error Messages
+  static cardTypeTreeRequiredCardTypeName = "Card type name is required";
+  static cardTypeTreeRequiredDescription = "Description is required";
+  static cardTypeTreeRequiredResponsableId = "Responsible is required";
+  static cardTypeTreeRequiredColor = "Color is required";
+
+  // Notifications
+  static cardTypeTreeSuccessCardTypeUpdated = "Card type successfully updated!";
+  static cardTypeTreeErrorFetchingData = "Error fetching data";
+
+
+/* Card Types and Preclassifier tree*/
+ static cardTypesDrawerTypeCreateCardType = "createCardType";
+ static cardTypesDrawerTypeUpdateCardType = "updateCardType";
+ static cardTypesDrawerTypeCreatePreclassifier = "createPreclassifier";
+ static cardTypesDrawerTypeUpdatePreclassifier = "updatePreclassifier";
+ static cardTypesCreate = "Create Card Type";
+ static cardTypesCancel = "Cancel";
+ static cardTypesEdit = "Edit Card Type";
+ static cardTypesEditPreclassifier = "Edit Preclassifier";
+ static cardTypesCloneCardType = "Clone Card Type";
+ static cardTypesClonePre = "Clone Preclassifier";
+ static cardTypesCreatePreclassifier = "Create Preclassifier";
+ static cardTypesUpdatePreclassifier = "Edit Preclassifier";
+ static cardTypesRoot = "Root";
+ static cardTypesCloneSuffix = "(Clone)";
+ static cardTypesMethodologyError = "Card Type Methodology is required for creation.";
+ static cardTypesLoadingData = "Loading data...";
+ static cardTypesUpdateCardType = "Edit Card Type";
+ static cardTypesCreateCardType = "Create Card Type";
+ static cardTypesClonePreclassifier = "Clone preclassifier"
+ static cardTypesErrorFetchingData = "Error fetching data";
+ static cardTypesNoCardTypeIdError = "No cardTypeId found to create a preclassifier.";
+ static cardTypesOptionEdit = "editCT"
+ static cardTypesOptionClone = "cloneCT"
+ static cardTypesOptionCreate = "createPre"
+ static cardTypesOptionCancel = "cancelCT"
+
+ static cardTypeDetailsTitle = "Card Type Details";
+ static cardTypeDetailsMethodology = "Methodology";
+ static cardTypeDetailsName = "Name";
+ static cardTypeDetailsDescription = "Description";
+ static cardTypeDetailsColor = "Color";
+ static cardTypeDetailsResponsible = "Responsible";
+ static cardTypeDetailsStatus = "Status";
+
+ static preclassifierDetailsTitle = "Preclassifier Details";
+ static preclassifierDetailsCode = "Code";
+ static preclassifierDetailsDescription = "Description";
+ static preclassifierDetailsStatus = "Status";
+ static notSpecified = "Not Specified"
 }
