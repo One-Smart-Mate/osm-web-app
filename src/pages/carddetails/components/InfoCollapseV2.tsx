@@ -281,7 +281,7 @@ const InfoCollapseV2 = ({ data, evidences }: CardProps) => {
 
             <Col span={16}>
 
-              {/* AAnomaly detected */}
+              {/* Anomaly detected */}
               <div className="flex items-center gap-1">
                 <p className="font-semibold text-sm md:text-base">
                   {Strings.anomalyDetected}

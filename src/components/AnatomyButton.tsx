@@ -21,18 +21,18 @@ const AnatomyButton: React.FC<AnatomyButtonProps> = ({
   size = 'middle',
   className = '',
 }) => {
-  // Obtener el color primario del tema global
+  // Get the primary color of the global theme
   const { token } = useToken();
   const primaryColor = token.colorPrimary;
 
 
-  // Establecer el tipo de botón y los estilos correspondientes
+  // Set the button type and corresponding styles
   const antType =
     type === 'danger' ? 'primary' : type === 'outline' ? 'default' : type;
 
 
   const buttonStyles: React.CSSProperties = {
-    borderRadius: '9999px', // Esto asegura que el botón tenga bordes redondeados
+    borderRadius: '9999px', // This ensures that the button has rounded edges
     ...(type === 'danger' && {
       backgroundColor: 'red',
       borderColor: 'red',

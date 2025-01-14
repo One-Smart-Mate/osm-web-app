@@ -10,7 +10,7 @@ const CustomTagV2: React.FC<CustomTagProps> = ({ color, children, ...rest }) => 
   const customErrorColor = "#FF0100";
 
   let textColor;
-  
+
   switch (color) {
     case "success":
       textColor = customSuccesColor;
@@ -19,17 +19,17 @@ const CustomTagV2: React.FC<CustomTagProps> = ({ color, children, ...rest }) => 
       textColor = customErrorColor;
       break;
     default:
-      textColor = "#000"; 
+      textColor = "#000";
   }
 
   return (
     <Tag
       className="rounded-lg text-sm font-bold"
       style={{
-        color: textColor,  
-        backgroundColor: "transparent", 
+        color: textColor,
+        backgroundColor: "transparent",
         border: "none",
-        fontWeight: "bold", 
+        fontWeight: "bold",
       }}
       {...rest}
     >

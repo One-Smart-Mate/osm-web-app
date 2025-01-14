@@ -12,13 +12,13 @@ interface CardProps {
 const ImagesDisplayV2 = ({ data }: CardProps) => {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
-  // Ordenar y filtrar imágenes por nombre en orden alfabético ascendente
+  // Sort and filter images by name in ascending alphabetical order
   const images = data
     .filter((evidence) => isImageURL(evidence.evidenceName))
     .sort((a, b) => {
       const nameA = a.evidenceName.toLowerCase();
       const nameB = b.evidenceName.toLowerCase();
-      return nameA.localeCompare(nameB); // Orden alfabético ascendente
+      return nameA.localeCompare(nameB); // Ascending alphabetical order
     });
 
   console.log("Imágenes ordenadas:", images);

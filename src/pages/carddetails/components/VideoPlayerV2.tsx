@@ -11,14 +11,13 @@ interface CardProps {
 }
 
 const VideoPlayerV2 = ({ data }: CardProps) => {
-  // Filtra y ordena los videos
+  // Filter and sort the videos
   const videos = data
     .filter((evidence) => isVideoURL(evidence.evidenceName))
     .sort((a, b) => {
-      // Ordena de acuerdo al nombre del archivo o según otro criterio si lo prefieres
       const nameA = a.evidenceName.toLowerCase();
       const nameB = b.evidenceName.toLowerCase();
-      return nameA.localeCompare(nameB); // Orden ascendente
+      return nameA.localeCompare(nameB); // Ascending order
     });
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
