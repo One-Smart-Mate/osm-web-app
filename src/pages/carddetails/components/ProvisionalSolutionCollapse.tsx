@@ -1,4 +1,3 @@
-import { Collapse } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { CardDetailsInterface, Evidences } from "../../../data/card/card";
 import {
@@ -8,105 +7,104 @@ import {
   hasImages,
   hasVideos,
 } from "../../../utils/Extensions";
-import EvidenceIndicator from "../../../components/EvidenceIndicator";
-import ImagesCarousel from "./ImagesCarousel";
-import VideosCarousel from "./VideosCarousel";
-import AudiosList from "./AudiosList";
+import { Divider, Typography } from "antd";
+import ImagesDisplayV2 from "./ImagesDisplayV2";
+import AudioPlayer from "./AudioPlayer";
+import VideoPlayerV2 from "./VideoPlayerV2";
+
+const { Text } = Typography;
 
 interface CardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
 }
 
-const ProvisionalSolutionCollapse = ({ data, evidences }: CardProps) => {
+const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
   const { card } = data;
 
   return (
-    <Collapse
-      collapsible={
-        card.cardProvisionalSolutionDate === null ? "disabled" : undefined
-      }
-      defaultActiveKey={
-        card.cardProvisionalSolutionDate !== null ? ["1"] : undefined
-      }
-      className="bg-gray-100 rounded-xl shadow-md md:w-4/5"
-    >
-      <Collapse.Panel
-        header={
-          <>
-            <div className="flex gap-3">
-              <h2 className="text-base font-semibold text-black">
-                {Strings.provisionalSolution}
-              </h2>
-              <p className="text-base text-gray-700">
-                {formatDate(card.cardProvisionalSolutionDate) || Strings.NA}
-              </p>
-            </div>
-          </>
-        }
-        key="1"
+    <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
+      <Divider style={{ borderColor: "#808080"}}>
+        <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
+          {Strings.provisionalSolutionDivider}
+        </Text>
+      </Divider>
+
+      {/* Provisional date */}
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {Strings.tagDate}
+        </span>
+        <p className="text-sm md:text-base">
+          {formatDate(card.cardProvisionalSolutionDate) || Strings.NA}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {Strings.tagDays}
+        </span>
+        <p className="text-sm md:text-base">
+          {getDaysBetween(card.createdAt, card.cardProvisionalSolutionDate) ||
+            Strings.ceroDays}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {Strings.appProvisionalUser}
+        </span>
+        <p className="text-sm md:text-base">
+          {" "}
+          {card.userAppProvisionalSolutionName || Strings.NA}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {Strings.tagProvisionalUser}
+        </span>
+        <p className="text-sm md:text-base">
+          {card.userProvisionalSolutionName || Strings.NA}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {Strings.tagProvisionalSoluitonApplied}
+        </span>
+        <p className="text-sm md:text-base">
+          {card.commentsAtCardProvisionalSolution || Strings.NA}
+        </p>
+      </div>
+
+      <Divider
+        orientation="left"
+        style={{ borderColor: "#808080"}}
+        className="text-sm md:text-base"
       >
-        <div className="flex flex-wrap text-sm gap-2">
-          <div className="flex gap-3 flex-wrap">
-            <div className="flex flex-col gap-1">
-              <p className="font-semibold"> {Strings.days} </p>{" "}
-              <p className="bg-card-fields text-center rounded-lg py-1 px-1 text-white">
-                {getDaysBetween(
-                  card.cardProvisionalSolutionDate,
-                  card.createdAt
-                ) || Strings.NA}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="font-semibold"> {Strings.appProvisionalUser} </p>{" "}
-              <p className="bg-card-fields text-center rounded-lg py-1 px-1 text-white">
-                {card.userAppProvisionalSolutionName || Strings.NA}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="font-semibold"> {Strings.provisionalUser} </p>{" "}
-              <p className="bg-card-fields text-center rounded-lg py-1 px-1 text-white">
-                {card.userProvisionalSolutionName || Strings.NA}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="font-semibold">
-                {" "}
-                {Strings.provisionalSoluitonApplied}{" "}
-              </p>{" "}
-              <p className="bg-card-fields text-center rounded-lg py-1 px-1 text-white">
-                {card.commentsAtCardProvisionalSolution || Strings.NA}
-              </p>
-            </div>
-          </div>
-        </div>
-        <Collapse className="border-black mt-2 rounded-xl shadow-md">
-          <Collapse.Panel
-            key="2"
-            header={
-              <>
-                <div className="flex gap-3">
-                  <h2 className="text-base font-semibold text-black">
-                    {Strings.evidences}
-                  </h2>
-                  {evidences.length === 0 && (
-                    <p className="text-base text-gray-700">{Strings.NA}</p>
-                  )}
-                  {EvidenceIndicator(evidences)}
-                </div>
-              </>
-            }
-          >
-            <div className="flex justify-center gap-2 flex-wrap">
-              {hasImages(evidences) && <ImagesCarousel data={evidences} />}
-              {hasVideos(evidences) && <VideosCarousel data={evidences} />}
-              {hasAudios(evidences) && <AudiosList data={evidences} />}
-            </div>
-          </Collapse.Panel>
-        </Collapse>
-      </Collapse.Panel>
-    </Collapse>
+        {Strings.evidencesAtProvisionalDivider}
+      </Divider>
+
+      <div className="flex gap-3">
+        {evidences.length === 0 && (
+          <p className="text-base text-gray-700">{Strings.NA}</p>
+        )}
+      </div>
+
+      <div className="flex justify-center gap-2 flex-wrap mt-2">
+        {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
+      </div>
+
+      <div className="flex justify-center gap-2 flex-wrap mt-2">
+        {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
+      </div>
+
+      <div className="flex justify-center gap-2 flex-wrap mt-2">
+        {hasAudios(evidences) && <AudioPlayer data={evidences} />}
+      </div>
+    </div>
   );
 };
 
-export default ProvisionalSolutionCollapse;
+export default ProvisionalSolutionCollapseV2;

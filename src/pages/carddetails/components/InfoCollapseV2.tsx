@@ -32,11 +32,12 @@ import UpdateMechanicForm from "./UpdateMechanicForm";
 import { Divider } from "antd";
 
 import { Row, Col } from "antd";
-import VideosDisplayV2 from "./VideoPlayerV2";
+
 import ImagesDisplayV2 from "./ImagesDisplayV2";
-import AudiosDisplayV2 from "./AudioPlayer";
 
 import { theme } from "antd";
+import VideoPlayerV2 from "./VideoPlayerV2";
+import AudioPlayer from "./AudioPlayer";
 
 const { useToken } = theme;
 
@@ -270,7 +271,8 @@ const InfoCollapseV2 = ({ data, evidences }: CardProps) => {
                 </p>
                 <p
                   onClick={() => handleOnOpenModal(Strings.mechanic)}
-                  className="text-left px-1 text-sm md:text-base"
+                  className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white cursor-pointer hover:bg-gray-600"
+                  style={{ backgroundColor: primaryColor }}
                 >
                   {card.mechanicName || Strings.NA}
                 </p>
@@ -279,7 +281,7 @@ const InfoCollapseV2 = ({ data, evidences }: CardProps) => {
 
             <Col span={16}>
 
-              {/* AAnomaly detected */}
+              {/* Anomaly detected */}
               <div className="flex items-center gap-1">
                 <p className="font-semibold text-sm md:text-base">
                   {Strings.anomalyDetected}
@@ -306,7 +308,7 @@ const InfoCollapseV2 = ({ data, evidences }: CardProps) => {
 
         <Divider
           orientation="left"
-          style={{ borderColor: "	#808080" }}
+          style={{ borderColor: "#808080"}}
           className="text-sm md:text-base"
         >
           {Strings.evidencesAtCreationDivider}
@@ -323,11 +325,11 @@ const InfoCollapseV2 = ({ data, evidences }: CardProps) => {
         </div>
 
         <div className="flex gap-2 flex-wrap mt-2 justify-center items-center">
-          {hasVideos(evidences) && <VideosDisplayV2 data={evidences} />}
+          {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
         </div>
 
         <div className="flex gap-2 flex-wrap mt-2 justify-center items-center">
-          {hasAudios(evidences) && <AudiosDisplayV2 data={evidences} />}
+          {hasAudios(evidences) && <AudioPlayer data={evidences} />}
         </div>
       </div>
 

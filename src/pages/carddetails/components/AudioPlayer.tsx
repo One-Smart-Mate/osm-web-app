@@ -19,7 +19,15 @@ const AudioPlayer = ({ data }: CardProps) => {
     );
   }
 
-  const audios = data.filter((evidence) => isAudioURL(evidence.evidenceName));
+  const audios = data
+    .filter((evidence) => isAudioURL(evidence.evidenceName))
+    .sort((a, b) => {
+      // Sort by file name
+      const nameA = a.evidenceName.toLowerCase();
+      const nameB = b.evidenceName.toLowerCase();
+      return nameA.localeCompare(nameB); // Ascending order
+    });
+
   const audioRefs = useRef<HTMLAudioElement[]>([]);
 
   const handlePlay = (currentIndex: number) => {

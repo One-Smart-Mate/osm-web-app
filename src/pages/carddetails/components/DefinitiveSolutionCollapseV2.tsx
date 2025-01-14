@@ -8,9 +8,9 @@ import {
   hasVideos,
 } from "../../../utils/Extensions";
 import { Divider, Typography } from "antd";
-import VideosDisplayV2 from "./VideoPlayerV2";
 import ImagesDisplayV2 from "./ImagesDisplayV2";
-import AudiosDisplayV2 from "./AudioPlayer";
+import VideoPlayerV2 from "./VideoPlayerV2";
+import AudioPlayer from "./AudioPlayer";
 
 const { Text } = Typography;
 
@@ -24,7 +24,7 @@ const DefinitiveSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
 
   return (
     <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
-      <Divider style={{ borderColor: "	#808080" }}>
+      <Divider style={{ borderColor: "#808080"}}>
         <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
           {Strings.definitiveSolutionDivider}
         </Text>
@@ -82,7 +82,7 @@ const DefinitiveSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
 
       <Divider
         orientation="left"
-        style={{ borderColor: "	#808080" }}
+        style={{ borderColor: "#808080"}}
         className="text-sm md:text-base"
       >
         {Strings.evidencesAtDefinitiveDivider}
@@ -99,11 +99,11 @@ const DefinitiveSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
       </div>
 
       <div className="flex justify-center gap-2 flex-wrap mt-2">
-        {hasVideos(evidences) && <VideosDisplayV2 data={evidences} />}
+        {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
       </div>
 
       <div className="flex justify-center gap-2 flex-wrap mt-2">
-        {hasAudios(evidences) && <AudiosDisplayV2 data={evidences} />}
+        {hasAudios(evidences) && <AudioPlayer data={evidences} />}
       </div>
     </div>
   );

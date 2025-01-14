@@ -65,96 +65,96 @@ const Tag = ({ data, rol }: CardProps) => {
 
   return (
     <Card
-    title={
-      <div className="mt-2 flex flex-col items-center">
-        <div className="flex gap-2">
-          <h3 className="text-xl font-semibold text-black truncate">
-            {data.cardTypeMethodologyName} {data.siteCardId}
-          </h3>
-        </div>
-  
-        {evidenceIndicator(data.evidences)}
-      </div>
-    }
-    className="max-w-sm min-h-[300px] mx-auto bg-gray-100 rounded-xl shadow-md"
-    onClick={() => {
-      navigate(buildCardDetailsRoute(), {
-        state: {
-          cardId: data.id,
-          cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
-        },
-      });
-    }}
-    hoverable
-  >
-    <div className="mb-2">
-      <p className="text-[13px] text-center">
-        {formatDate(data.cardCreationDate)}
-      </p>
-    </div>
-  
-    <div className="flex items-center gap-4">
-      {/* Status */}
-      <div className="flex items-center gap-1">
-        <span>{Strings.status}</span>
-        <CustomTagV2 className="w-min text-sm" color={status}>
-          <span className="font-medium">{text}</span>
-        </CustomTagV2>
-      </div>
-  
-      <div className="flex items-center gap-1 w-full">
-        {dateStatus === Strings.expired ? (
-          <div className="bg-red-500 text-white text-center font-bold px-2 py-1 rounded-md w-full">
-            Expired
+      title={
+        <div className="mt-2 flex flex-col items-center">
+          <div className="flex gap-2">
+            <h3 className="text-xl font-semibold text-black truncate">
+              {data.cardTypeMethodologyName} {data.siteCardId}
+            </h3>
           </div>
-        ) : (
-          <>
-            {Strings.dueDate}
-            <span className="text-black font-medium">
-              {data.cardDueDate || Strings.noDueDate}
-            </span>
-          </>
-        )}
-      </div>
-    </div>
-  
-    <div>
-      <div className="w-full flex items-center gap-12">
-        <span>{Strings.cardType}</span>
-        <p
-          className="font-medium p-2 text-center text-xl"
-          style={{ color: `#${data.cardTypeColor}` }}
-        >
-          {data.cardTypeName}
+
+          {evidenceIndicator(data.evidences)}
+        </div>
+      }
+      className="max-w-sm min-h-[300px] mx-auto bg-gray-100 rounded-xl shadow-md"
+      onClick={() => {
+        navigate(buildCardDetailsRoute(), {
+          state: {
+            cardId: data.id,
+            cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
+          },
+        });
+      }}
+      hoverable
+    >
+      <div className="mb-2">
+        <p className="text-[13px] text-center">
+          {formatDate(data.cardCreationDate)}
         </p>
       </div>
-    </div>
-  
-    <div>
-      <span>{Strings.problemType}</span>
-      <div className="font-bold mb-2">
-        {data.preclassifierCode} {data.preclassifierDescription}
+
+      <div className="flex items-center gap-4">
+        {/* Status */}
+        <div className="flex items-center gap-1">
+          <span>{Strings.status}</span>
+          <CustomTagV2 className="w-min text-sm" color={status}>
+            <span className="font-medium">{text}</span>
+          </CustomTagV2>
+        </div>
+
+        <div className="flex items-center gap-1 w-full">
+          {dateStatus === Strings.expired ? (
+            <div className="bg-red-500 text-white text-center font-bold px-2 py-1 rounded-md w-full">
+              Expired
+            </div>
+          ) : (
+            <>
+              {Strings.dueDate}
+              <span className="text-black font-medium">
+                {data.cardDueDate || Strings.noDueDate}
+              </span>
+            </>
+          )}
+        </div>
       </div>
-  
-      <span>{Strings.problemDescription}</span>
-      <div className="font-bold mb-2">
-        {data.commentsAtCardCreation || Strings.NA}
+
+      <div>
+        <div className="w-full flex items-center gap-12">
+          <span>{Strings.cardType}</span>
+          <p
+            className="font-medium p-2 text-center text-xl"
+            style={{ color: `#${data.cardTypeColor}` }}
+          >
+            {data.cardTypeName}
+          </p>
+        </div>
       </div>
-  
-      <span>{Strings.location}</span>
-      <div className="font-bold mb-2">{data.cardLocation}</div>
-    </div>
-  
-    <div>
-      <div className="w-full flex items-center gap-12">
-        <span>{Strings.createdBy}</span>
-        <p className="font-bold p-2 text-center">{data.creatorName}</p>
+
+      <div>
+        <span>{Strings.problemType}</span>
+        <div className="font-bold mb-2">
+          {data.preclassifierCode} {data.preclassifierDescription}
+        </div>
+
+        <span>{Strings.problemDescription}</span>
+        <div className="font-bold mb-2">
+          {data.commentsAtCardCreation || Strings.NA}
+        </div>
+
+        <span>{Strings.location}</span>
+        <div className="font-bold mb-2">{data.cardLocation}</div>
       </div>
-    </div>
-  </Card>
-  
+
+      <div>
+        <div className="w-full flex items-center gap-12">
+          <span>{Strings.createdBy}</span>
+          <p className="font-bold p-2 text-center">{data.creatorName}</p>
+        </div>
+      </div>
+    </Card>
+
   );
-  
+
 };
 
 export default Tag;

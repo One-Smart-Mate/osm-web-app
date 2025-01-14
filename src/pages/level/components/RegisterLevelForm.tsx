@@ -105,7 +105,7 @@ const RegisterLevelForm = ({ form }: FormProps) => {
         </Checkbox>
       </Form.Item>
 
-      {/* Campo oculto */}
+      {/* Hidden field */}
       <Form.Item name="superiorId" hidden>
         <Input type="hidden" />
       </Form.Item>

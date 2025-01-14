@@ -222,7 +222,7 @@ export default class Strings {
   static createNodefor = "Create node for";
 
   static cards = "Cards";
-  static cardDetailsOf = "Card details of";
+  static tagDetailsOf = "Tag details of";
  
   static type = "Type";
   
