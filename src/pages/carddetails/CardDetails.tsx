@@ -129,7 +129,7 @@ const CardDetails = () => {
             <LoadingCard />
           )}
 
-          <Divider style={{ borderColor: "	#808080" }}>
+          <Divider style={{ borderColor: "#808080"}}>
             <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
               {Strings.changeLogDivider}
             </Text>

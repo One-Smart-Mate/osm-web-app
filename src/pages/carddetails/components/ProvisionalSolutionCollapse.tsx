@@ -24,7 +24,7 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
 
   return (
     <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
-      <Divider style={{ borderColor: "	#808080" }}>
+      <Divider style={{ borderColor: "#808080"}}>
         <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
           {Strings.provisionalSolutionDivider}
         </Text>
@@ -80,7 +80,7 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
 
       <Divider
         orientation="left"
-        style={{ borderColor: "	#808080" }}
+        style={{ borderColor: "#808080"}}
         className="text-sm md:text-base"
       >
         {Strings.evidencesAtProvisionalDivider}
