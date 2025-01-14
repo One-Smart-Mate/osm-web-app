@@ -16,7 +16,7 @@ interface FormProps {
 }
 
 const RegisterPreclassifierForm2 = ({ form, initialValues }: FormProps) => {
-  // Efecto para setear valores iniciales
+// Effect to set initial values
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({

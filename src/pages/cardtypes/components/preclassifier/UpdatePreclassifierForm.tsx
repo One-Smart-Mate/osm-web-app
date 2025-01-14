@@ -10,7 +10,7 @@ import Strings from "../../../../utils/localizations/Strings";
 
 interface UpdatePreclassifierForm2Props {
   form: FormInstance;
-  // Pasamos un 'initialValues' con la data del preclassifier a editar
+  //We pass an 'initialValues' with the preclassifier data to edit
   initialValues?: {
     id?: number;
     preclassifierCode?: string;
@@ -37,14 +37,14 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
     })();
   }, [getStatus]);
 
-  // Cuando cambie 'initialValues', seteamos los campos en el form
+  //When 'initialValues' changes, we set the fields in the form
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
         id: initialValues.id,
         code: initialValues.preclassifierCode,
         description: initialValues.preclassifierDescription,
-        status: initialValues.status ?? "A",
+        status: initialValues.status ?? Strings.activeStatus,
       });
     }
   }, [initialValues, form]);

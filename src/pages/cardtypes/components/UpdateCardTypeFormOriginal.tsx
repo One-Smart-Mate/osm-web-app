@@ -149,7 +149,7 @@ import {
                   type="primary"
                   style={btnStyle}
                 >
-                  Color
+                  {Strings.cardTypeDetailsColor}
                 </Button>
               </ColorPicker>
             </Form.Item>

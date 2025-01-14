@@ -55,7 +55,7 @@ import {
         setResponsibles(response1);
         setCatalogs(response2);
     
-        console.log("Catalogs Data:", response2); // Verifica los datos cargados
+        console.log("Catalogs Data:", response2);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

@@ -306,10 +306,6 @@ const Levels = ({}: Props) => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex flex-col gap-2 items-center py-4">
-        <PageTitle mainText={Strings.levelsOf} subText={siteName} />
-      </div>
-
       <div
         ref={containerRef}
         className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
