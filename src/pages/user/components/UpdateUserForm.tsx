@@ -1,4 +1,4 @@
-import { Checkbox, Form, FormInstance, Input, Select } from "antd";
+import { Checkbox, Form, FormInstance, Input, Select, Tooltip } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { FaRegUser } from "react-icons/fa";
 import Strings from "../../../utils/localizations/Strings";
@@ -11,6 +11,7 @@ import { useGetSitesMutation } from "../../../services/siteService";
 import { useGetUsersMutation } from "../../../services/userService";
 import { useAppSelector } from "../../../core/store";
 import { selectCurrentRowData } from "../../../core/genericReducer";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: FormInstance;
@@ -67,6 +68,11 @@ const UpdateUserForm = ({ form }: FormProps) => {
 
   const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
+  const statusOptions = [
+    { value: Strings.activeValue, label: Strings.active },
+    { value: Strings.inactiveValue, label: Strings.inactive },
+  ];
+
   return (
     <Form form={form} layout="vertical">
       <div className="flex flex-col">
@@ -74,86 +80,193 @@ const UpdateUserForm = ({ form }: FormProps) => {
           <Form.Item className="hidden" name="id">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="name"
-            validateFirst
-            rules={[
-              { required: true, message: Strings.requiredUserName },
-              { max: 50 },
-              { pattern: /^[A-Za-z\s]+$/, message: Strings.onlyLetters },
-            ]}
-            className="mr-1 flex-1"
-          >
-            <Input
-              size="large"
-              maxLength={50}
-              addonBefore={<FaRegUser />}
-              placeholder={Strings.name}
-            />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            validateFirst
-            rules={[
-              { required: true, message: Strings.requiredEmail },
-              { validator: validateEmail },
-            ]}
-            className="flex-1"
-          >
-            <Input
-              size="large"
-              maxLength={60}
-              addonBefore={<MailOutlined />}
-              placeholder={Strings.email}
-            />
-          </Form.Item>
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="name"
+              validateFirst
+              rules={[
+                { required: true, message: Strings.requiredUserName },
+                { max: 50 },
+                { pattern: /^[A-Za-z\s]+$/, message: Strings.onlyLetters },
+              ]}
+              className="flex-1"
+            >
+              <Input
+                size="large"
+                maxLength={50}
+                addonBefore={<FaRegUser />}
+                placeholder={Strings.name}
+              />
+            </Form.Item>
+            <Tooltip title={Strings.userNameTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="email"
+              validateFirst
+              rules={[
+                { required: true, message: Strings.requiredEmail },
+                { validator: validateEmail },
+              ]}
+            >
+              <Input
+                size="large"
+                maxLength={60}
+                addonBefore={<MailOutlined />}
+                placeholder={Strings.email}
+              />
+            </Form.Item>
+            <Tooltip title={Strings.userEmailTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
         </div>
         <div className="flex flex-row flex-wrap">
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="password"
+              validateFirst
+              rules={[{ min: 8, message: Strings.passwordLenght }]}
+            >
+              <Input.Password
+                size="large"
+                minLength={8}
+                addonBefore={<LockOutlined />}
+                type="password"
+                placeholder={Strings.updatePassword}
+                visibilityToggle={{
+                  visible: isPasswordVisible,
+                  onVisibleChange: setPasswordVisible,
+                }}
+              />
+            </Form.Item>
+            <Tooltip title={Strings.userPasswordTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="confirmPassword"
+              validateFirst
+              dependencies={["password"]}
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value && getFieldValue("password")) {
+                      return Promise.reject(
+                        new Error(Strings.requiredPassword)
+                      );
+                    }
+                    if (value && getFieldValue("password") !== value) {
+                      return Promise.reject(
+                        new Error(Strings.passwordsDoNotMatch)
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                size="large"
+                addonBefore={<LockOutlined />}
+                placeholder={Strings.confirmPassword}
+              />
+            </Form.Item>
+            <Tooltip title={Strings.userConfirmPasswordTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
+        </div>
+        <div className="flex items-center flex-1">
           <Form.Item
-            name="password"
+            label={
+              <p>
+                {Strings.site} ({Strings.rfc}) - {Strings.userLicense} -{" "}
+                <span className="rounded-xl p-0.5 text-white bg-gray-600">
+                  Current users
+                </span>{" "}
+                /{" "}
+                <span className="rounded-xl p-0.5 text-white bg-gray-800">
+                  User quantity
+                </span>
+              </p>
+            }
+            name="siteId"
             validateFirst
-            rules={[{ min: 8, message: Strings.passwordLenght }]}
-            className="flex-1 mr-1"
+            rules={[{ required: true, message: Strings.requiredSite }]}
+            className="flex-grow"
           >
-            <Input.Password
+            <Select
               size="large"
-              minLength={8}
-              addonBefore={<LockOutlined />}
-              type="password"
-              placeholder={Strings.updatePassword}
-              visibilityToggle={{
-                visible: isPasswordVisible,
-                onVisibleChange: setPasswordVisible,
+              placeholder={Strings.site}
+              value={selectedSite}
+              onChange={setSelectedSite}
+              options={siteOptions}
+              showSearch
+              filterOption={(input, option) => {
+                if (!option) {
+                  return false;
+                }
+                return option.labelText
+                  .toLowerCase()
+                  .includes(input.toLowerCase());
               }}
             />
           </Form.Item>
+          <Tooltip title={Strings.userSiteRfcTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
+        </div>
+        <div className="flex flex-row flex-wrap">
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="uploadCardDataWithDataNet"
+              valuePropName="checked"
+              label={Strings.uploadCardDataWithDataNet}
+            >
+              <Checkbox value={1}>{Strings.enable}</Checkbox>
+            </Form.Item>
+            <Tooltip title={Strings.userUploadCardDataWithDataNetTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
+          <div className="flex items-center flex-1">
+            <Form.Item
+              name="uploadCardEvidenceWithDataNet"
+              valuePropName="checked"
+              label={Strings.uploadCardEvidenceWithDataNet}
+            >
+              <Checkbox value={1}>{Strings.enable}</Checkbox>
+            </Form.Item>
+            <Tooltip title={Strings.userUploadCardEvidenceWithDataNetTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+          </div>
+        </div>
+        <div className="flex items-center flex-1">
           <Form.Item
-            name="confirmPassword"
+            name="roles"
             validateFirst
-            dependencies={["password"]}
-            className="flex-1"
-            rules={[
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value && getFieldValue("password")) {
-                    return Promise.reject(new Error(Strings.requiredPassword));
-                  }
-                  if (value && getFieldValue("password") !== value) {
-                    return Promise.reject(
-                      new Error(Strings.passwordsDoNotMatch)
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              }),
-            ]}
+            rules={[{ required: true, message: Strings.requiredRoles }]}
           >
-            <Input.Password
+            <Select
+              mode="multiple"
               size="large"
-              addonBefore={<LockOutlined />}
-              placeholder={Strings.confirmPassword}
+              placeholder={Strings.roles}
+              value={selectedRoles}
+              onChange={setSelectedRoles}
+              options={filteredOptions.map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
             />
           </Form.Item>
+          <Tooltip title={Strings.userRolesTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
         <Form.Item
           label={
@@ -226,8 +339,18 @@ const UpdateUserForm = ({ form }: FormProps) => {
             }))}
           />
         </Form.Item>
-        <Form.Item className="hidden" name="status">
-          <Input />
+        <Form.Item
+          name="status"
+          label = {Strings.statusUserLabel}
+          validateFirst
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+          className="w-60"
+        >
+          <Select
+            size="large"
+            placeholder={Strings.statusPlaceholder}
+            options={statusOptions}
+          />
         </Form.Item>
       </div>
     </Form>

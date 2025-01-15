@@ -9,7 +9,7 @@ import {
 } from "../../../utils/Extensions";
 import { CardInterface, Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
-import CustomTag from "../../../components/CustomTag";
+import CustomTagV2 from "../../../components/CustomTagV2";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
@@ -26,8 +26,8 @@ interface CardProps {
   rol: UserRoles;
 }
 
-const InformationPanel = ({ data, rol }: CardProps) => {
-  const { status, text } = getCardStatusAndText(data.status, data.cardDueDate, data.cardDefinitiveSolutionDate, data.cardCreationDate);
+const Tag = ({ data, rol }: CardProps) => {
+  const { status, text, dateStatus } = getCardStatusAndText(data.status, data.cardDueDate, data.cardDefinitiveSolutionDate, data.cardCreationDate);
   const navigate = useNavigate();
 
   const evidenceIndicator = (evidences: Evidences[]) => {
@@ -68,19 +68,15 @@ const InformationPanel = ({ data, rol }: CardProps) => {
       title={
         <div className="mt-2 flex flex-col items-center">
           <div className="flex gap-2">
-            <h2 className="text-xl font-semibold text-black">
+            <h3 className="text-xl font-semibold text-black truncate">
               {data.cardTypeMethodologyName} {data.siteCardId}
-            </h2>
-            <div
-              className="w-10 md:flex-1 rounded-lg border border-black"
-              style={{ backgroundColor: `#${data.cardTypeColor}` }}
-            />
+            </h3>
           </div>
 
           {evidenceIndicator(data.evidences)}
         </div>
       }
-      className="max-w-sm h-96 mx-auto bg-gray-100 rounded-xl shadow-md"
+      className="max-w-sm min-h-[300px] mx-auto bg-gray-100 rounded-xl shadow-md"
       onClick={() => {
         navigate(buildCardDetailsRoute(), {
           state: {
@@ -91,56 +87,74 @@ const InformationPanel = ({ data, rol }: CardProps) => {
       }}
       hoverable
     >
-      <div className="grid gap-x-2 md:gap-x-1 gap-y-1 grid-cols-3 text-black font-medium">
-        <span>{Strings.status}</span>
-        <CustomTag className="col-span-2 w-min text-sm" color={status}>
-          {text}
-        </CustomTag>
+      <div className="mb-2">
+        <p className="text-[13px] text-center">
+          {formatDate(data.cardCreationDate)}
+        </p>
+      </div>
 
-        <span>{Strings.cardType}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
+      <div className="flex items-center gap-4">
+        {/* Status */}
+        <div className="flex items-center gap-1">
+          <span>{Strings.status}</span>
+          <CustomTagV2 className="w-min text-sm" color={status}>
+            <span className="font-medium">{text}</span>
+          </CustomTagV2>
+        </div>
+
+        <div className="flex items-center gap-1 w-full">
+          {dateStatus === Strings.expired ? (
+            <div className="bg-red-500 text-white text-center font-bold px-2 py-1 rounded-md w-full">
+              Expired
+            </div>
+          ) : (
+            <>
+              {Strings.dueDate}
+              <span className="text-black font-medium">
+                {data.cardDueDate || Strings.noDueDate}
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <div className="w-full flex items-center gap-12">
+          <span>{Strings.cardType}</span>
+          <p
+            className="font-medium p-2 text-center text-xl"
+            style={{ color: `#${data.cardTypeColor}` }}
+          >
             {data.cardTypeName}
           </p>
         </div>
+      </div>
 
+      <div>
         <span>{Strings.problemType}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {data.preclassifierCode} {data.preclassifierDescription}
-          </p>
+        <div className="font-bold mb-2">
+          {data.preclassifierCode} {data.preclassifierDescription}
+        </div>
+
+        <span>{Strings.problemDescription}</span>
+        <div className="font-bold mb-2">
+          {data.commentsAtCardCreation || Strings.NA}
         </div>
 
         <span>{Strings.location}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {data.cardLocation}
-          </p>
-        </div>
+        <div className="font-bold mb-2">{data.cardLocation}</div>
+      </div>
 
-        <span>{Strings.createdBy}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {data.creatorName}
-          </p>
-        </div>
-
-        <span>{Strings.date}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {formatDate(data.cardCreationDate)}
-          </p>
-        </div>
-
-        <span>{Strings.dueDate}</span>
-        <div className="col-span-2">
-          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {data.cardDueDate || Strings.noDueDate}
-          </p>
+      <div>
+        <div className="w-full flex items-center gap-12">
+          <span>{Strings.createdBy}</span>
+          <p className="font-bold p-2 text-center">{data.creatorName}</p>
         </div>
       </div>
     </Card>
+
   );
+
 };
 
-export default InformationPanel;
+export default Tag;

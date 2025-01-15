@@ -9,8 +9,8 @@ import {
 } from "../../../utils/Extensions";
 import { Divider, Typography } from "antd";
 import ImagesDisplayV2 from "./ImagesDisplayV2";
-import AudioPlayer from "./AudioPlayer";
 import VideoPlayerV2 from "./VideoPlayerV2";
+import AudioPlayer from "./AudioPlayer";
 
 const { Text } = Typography;
 
@@ -19,24 +19,23 @@ interface CardProps {
   evidences: Evidences[];
 }
 
-const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
+const DefinitiveSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
   const { card } = data;
 
   return (
     <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
       <Divider style={{ borderColor: "#808080"}}>
         <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
-          {Strings.provisionalSolutionDivider}
+          {Strings.definitiveSolutionDivider}
         </Text>
       </Divider>
 
-      {/* Provisional date */}
       <div className="flex items-center gap-2">
         <span className="font-semibold text-sm md:text-base">
           {Strings.tagDate}
         </span>
         <p className="text-sm md:text-base">
-          {formatDate(card.cardProvisionalSolutionDate) || Strings.NA}
+          {formatDate(card.cardDefinitiveSolutionDate) || Strings.NA}
         </p>
       </div>
 
@@ -45,36 +44,39 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
           {Strings.tagDays}
         </span>
         <p className="text-sm md:text-base">
-          {getDaysBetween(card.createdAt, card.cardProvisionalSolutionDate) ||
+          {getDaysBetween(card.createdAt, card.cardDefinitiveSolutionDate) ||
             Strings.ceroDays}
         </p>
       </div>
 
       <div className="flex items-center gap-2">
         <span className="font-semibold text-sm md:text-base">
-          {Strings.appProvisionalUser}
+          {Strings.appDefinitiveUser}
+        </span>
+        <p className="text-sm md:text-base">
+          {card.userAppDefinitiveSolutionName || Strings.NA}
+        </p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-sm md:text-base">
+          {" "}
+          {Strings.definitiveUser}
         </span>
         <p className="text-sm md:text-base">
           {" "}
-          {card.userAppProvisionalSolutionName || Strings.NA}
+          {card.userDefinitiveSolutionName || Strings.NA}
         </p>
       </div>
 
       <div className="flex items-center gap-2">
         <span className="font-semibold text-sm md:text-base">
-          {Strings.tagProvisionalUser}
+          {" "}
+          {Strings.definitiveSolutionApplied}
         </span>
         <p className="text-sm md:text-base">
-          {card.userProvisionalSolutionName || Strings.NA}
-        </p>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className="font-semibold text-sm md:text-base">
-          {Strings.tagProvisionalSoluitonApplied}
-        </span>
-        <p className="text-sm md:text-base">
-          {card.commentsAtCardProvisionalSolution || Strings.NA}
+          {" "}
+          {card.commentsAtCardDefinitiveSolution || Strings.NA}
         </p>
       </div>
 
@@ -83,7 +85,7 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
         style={{ borderColor: "#808080"}}
         className="text-sm md:text-base"
       >
-        {Strings.evidencesAtProvisionalDivider}
+        {Strings.evidencesAtDefinitiveDivider}
       </Divider>
 
       <div className="flex gap-3">
@@ -107,4 +109,4 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
   );
 };
 
-export default ProvisionalSolutionCollapseV2;
+export default DefinitiveSolutionCollapseV2;

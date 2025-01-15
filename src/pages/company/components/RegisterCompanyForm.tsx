@@ -8,8 +8,9 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  Tooltip,
 } from "antd";
-import { MailOutlined } from "@ant-design/icons";
+import { MailOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { FaRegBuilding } from "react-icons/fa";
 import { MdOutlineLocalPhone, MdOutlineQrCodeScanner } from "react-icons/md";
 import { SlCompass } from "react-icons/sl";
@@ -53,13 +54,6 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     setFileList(newFileList);
   };
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-
   return (
     <Form form={form} name="registerCompanyForm">
       <div className="flex flex-col">
@@ -71,14 +65,19 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               { required: true, message: Strings.requiredCompanyName },
               { max: 100 },
             ]}
-            className="flex-1 mr-1"
+            className="flex-1 mr-3"
           >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<FaRegBuilding />}
-              placeholder={Strings.companyName}
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                maxLength={100}
+                addonBefore={<FaRegBuilding />}
+                placeholder={Strings.companyName}
+              />
+              <Tooltip title={Strings.companyNameTooltip}>
+                <QuestionCircleOutlined className="ml-1.5 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item
             name="rfc"
@@ -89,19 +88,24 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               { min: 12 },
             ]}
           >
-            <Input
-              size="large"
-              showCount
-              maxLength={13}
-              minLength={12}
-              addonBefore={<MdOutlineQrCodeScanner />}
-              placeholder={Strings.rfc}
-              onInput={(e) =>
-                ((e.target as HTMLInputElement).value = (
-                  e.target as HTMLInputElement
-                ).value.toUpperCase())
-              }
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                showCount
+                maxLength={13}
+                minLength={12}
+                addonBefore={<MdOutlineQrCodeScanner />}
+                placeholder={Strings.rfc}
+                onInput={(e) =>
+                  ((e.target as HTMLInputElement).value = (
+                    e.target as HTMLInputElement
+                  ).value.toUpperCase())
+                }
+              />
+              <Tooltip title={Strings.companyRfcTooltip}>
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
         </div>
         <Form.Item
@@ -111,11 +115,16 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
             { max: 200 },
           ]}
         >
-          <Input
-            size="large"
-            addonBefore={<SlCompass />}
-            placeholder={Strings.companyAddress}
-          />
+          <div className="flex items-center">
+            <Input
+              size="large"
+              addonBefore={<SlCompass />}
+              placeholder={Strings.companyAddress}
+            />
+            <Tooltip title={Strings.companyAddressTooltip}>
+              <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+            </Tooltip>
+          </div>
         </Form.Item>
         <div className="flex flex-row flex-wrap">
           <Form.Item
@@ -124,14 +133,19 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               { required: true, message: Strings.requiredContacName },
               { max: 100 },
             ]}
-            className="flex-1 mr-1"
+            className="flex-1 mr-3"
           >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<IoIosContact />}
-              placeholder={Strings.contact}
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                maxLength={100}
+                addonBefore={<IoIosContact />}
+                placeholder={Strings.contact}
+              />
+              <Tooltip title={Strings.companyContactNameTooltip}>
+                <QuestionCircleOutlined className="ml-1.5 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item
             name="position"
@@ -141,12 +155,17 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
             ]}
             className="flex-1"
           >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<BsDiagram3 />}
-              placeholder={Strings.position}
-            />
+            <div className="flex items-center">
+              <Input
+                size="large"
+                maxLength={100}
+                addonBefore={<BsDiagram3 />}
+                placeholder={Strings.position}
+              />
+              <Tooltip title={Strings.companyPositionTooltip}>
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
         </div>
         <div className="flex justify-between flex-row flex-wrap">
@@ -154,31 +173,46 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
           >
-            <InputNumber
-              size="large"
-              maxLength={10}
-              addonBefore={<MdOutlineLocalPhone />}
-              placeholder={Strings.phone}
-            />
+            <div className="flex items-center">
+              <InputNumber
+                size="large"
+                maxLength={10}
+                addonBefore={<MdOutlineLocalPhone />}
+                placeholder={Strings.phone}
+              />
+              <Tooltip title={Strings.companyPhoneTooltip}>
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item name="extension">
-            <InputNumber
-              size="large"
-              maxLength={5}
-              addonBefore={<TiPlusOutline />}
-              placeholder={Strings.extension}
-            />
+            <div className="flex items-center">
+              <InputNumber
+                size="large"
+                maxLength={5}
+                addonBefore={<TiPlusOutline />}
+                placeholder={Strings.extension}
+              />
+              <Tooltip title={Strings.companyExtensionTooltip}>
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
           <Form.Item
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
           >
-            <InputNumber
-              size="large"
-              maxLength={13}
-              addonBefore={<HiDevicePhoneMobile />}
-              placeholder={Strings.cellular}
-            />
+            <div className="flex items-center">
+              <InputNumber
+                size="large"
+                maxLength={13}
+                addonBefore={<HiDevicePhoneMobile />}
+                placeholder={Strings.cellular}
+              />
+              <Tooltip title={Strings.companyCellularTooltip}>
+                <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+              </Tooltip>
+            </div>
           </Form.Item>
         </div>
         <Form.Item
@@ -189,29 +223,43 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
             { max: 60 },
           ]}
         >
-          <Input
-            size="large"
-            maxLength={60}
-            addonBefore={<MailOutlined />}
-            placeholder={Strings.email}
-          />
+          <div className="flex items-center">
+            <Input
+              size="large"
+              maxLength={60}
+              addonBefore={<MailOutlined />}
+              placeholder={Strings.email}
+            />
+            <Tooltip title={Strings.companyEmailTooltip}>
+              <QuestionCircleOutlined className="ml-2 text-blue-500 text-sm" />
+            </Tooltip>
+          </div>
         </Form.Item>
         <Form.Item
           name="logo"
-          label={Strings.logo}
+          label={<div className="flex items-center">{Strings.logo}</div>}
           getValueFromEvent={(event) => event?.fileList}
           rules={[{ required: true, message: Strings.requiredLogo }]}
+          className="mt-4"
         >
-          <Upload
-            maxCount={1}
-            accept="image/*"
-            listType="picture-card"
-            onPreview={handleOnPreview}
-            onChange={handleChange}
-            fileList={fileList}
-          >
-            {uploadButton}
-          </Upload>
+          <Tooltip title={Strings.companyLogoTooltip}>
+            <QuestionCircleOutlined className="mb-2 text-blue-500 text-xs" />
+          </Tooltip>
+          <div className="flex items-center">
+            <Upload
+              maxCount={1}
+              accept="image/*"
+              listType="picture-card"
+              onPreview={handleOnPreview}
+              onChange={handleChange}
+              fileList={fileList}
+            >
+              <button className="border-0 bg-none" type="button">
+                <PlusOutlined />
+                <div className="mt-2">Upload</div>
+              </button>
+            </Upload>
+          </div>
         </Form.Item>
         <Form.Item>
           {previewImage && (
@@ -230,5 +278,4 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     </Form>
   );
 };
-
 export default RegisterCompanyForm;

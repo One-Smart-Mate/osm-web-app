@@ -22,6 +22,7 @@ const RegisterLevelForm = ({ form }: FormProps) => {
     const responsibles = await getResponsibles(siteId).unwrap();
     setData(responsibles);
   };
+
   useEffect(() => {
     handleGetResponsibles();
   }, []);
@@ -32,70 +33,82 @@ const RegisterLevelForm = ({ form }: FormProps) => {
       label: responsible.name,
     }));
   };
+
   return (
-    <Form form={form} layout="vertical">
-      <div className="flex flex-col">
-        <div className="flex flex-row flex-wrap">
-          <Form.Item
-            name="name"
-            validateFirst
-            rules={[{ required: true, message: Strings.name }, { max: 45 }]}
-            className="mr-1"
-          >
-            <Input
-              size="large"
-              maxLength={45}
-              addonBefore={<LuTextCursor />}
-              placeholder={Strings.name}
-            />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            validateFirst
-            rules={[
-              { required: true, message: Strings.requiredDescription },
-              { max: 100 },
-            ]}
-            className="md:flex-1 w-2/3"
-          >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<BsCardText />}
-              placeholder={Strings.description}
-            />
-          </Form.Item>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          <Form.Item name="responsibleId" className="flex-1">
-            <Select
-              size="large"
-              placeholder={Strings.responsible}
-              options={selectOptions()}
-              showSearch
-              filterOption={(input, option) => {
-                if (!option) {
-                  return false;
-                }
-                return option.label.toLowerCase().includes(input.toLowerCase());
-              }}
-            />
-          </Form.Item>
-          <Form.Item name="levelMachineId" className="md:flex-1">
-            <Input
-              size="large"
-              maxLength={50}
-              addonBefore={<CiBarcode />}
-              placeholder={Strings.levelMachineId}
-            />
-          </Form.Item>
-        </div>
-        <Form.Item name="notify" valuePropName="checked">
-          <Checkbox>
-            <p className="text-base">{Strings.notify}</p>
-          </Checkbox>
-        </Form.Item>
-      </div>
+    <Form
+      form={form}
+      layout="vertical"
+      className="flex flex-col gap-1 w-full"
+    >
+      <Form.Item
+        name="name"
+        validateFirst
+        rules={[
+          { required: true, message: Strings.name },
+          
+        ]}
+      >
+        <Input
+          size="large"
+          maxLength={45}
+          addonBefore={<LuTextCursor />}
+          placeholder={Strings.name}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="description"
+        validateFirst
+        rules={[
+          { required: true, message: Strings.requiredDescription },
+          
+        ]}
+      >
+        <Input
+          size="large"
+          maxLength={100}
+          addonBefore={<BsCardText />}
+          placeholder={Strings.description}
+        />
+      </Form.Item>
+
+      <Form.Item
+  name="responsibleId"
+  rules={[{ required: true, message: Strings.responsibleRequired }]}>
+  <Select
+    size="large"
+    placeholder={Strings.responsible}
+    options={selectOptions()}
+    showSearch
+    filterOption={(input, option) => {
+      if (!option) {
+        return false;
+      }
+      return option.label.toLowerCase().includes(input.toLowerCase());
+    }}
+  />
+</Form.Item>
+
+
+      <Form.Item name="levelMachineId">
+        <Input
+          size="large"
+          maxLength={50}
+          addonBefore={<CiBarcode />}
+          placeholder={Strings.levelMachineId}
+        />
+      </Form.Item>
+
+      <Form.Item name="notify" valuePropName="checked">
+        <Checkbox>
+          <p className="text-base">{Strings.notify}</p>
+        </Checkbox>
+      </Form.Item>
+
+      {/* Hidden field */}
+      <Form.Item name="superiorId" hidden>
+        <Input type="hidden" />
+      </Form.Item>
     </Form>
   );
 };

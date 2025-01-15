@@ -8,6 +8,7 @@ import {
   Input,
   InputNumber,
   Select,
+  Tooltip,
 } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText } from "react-icons/bs";
@@ -22,7 +23,9 @@ import { CardTypesCatalog } from "../../../data/cardtypes/cardTypes";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { useGetCardTypesCatalogsMutation } from "../../../services/CardTypesService";
-type Color = Extract<GetProp<ColorPickerProps, 'value'>, string | { cleared: any }>;
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
+type Color = Extract<GetProp<ColorPickerProps, "value">, string | { cleared: any }>;
 
 interface FormProps {
   form: FormInstance;
@@ -51,6 +54,7 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
     setResponsibles(response1);
     setCatalogs(response2);
   };
+
   useEffect(() => {
     handleGetData();
   }, []);
@@ -67,10 +71,12 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
       label: `${catalog.cardTypeMethodologyName} - ${catalog.cardTypeMethodology}`,
     }));
   };
+
   return (
     <Form form={form}>
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between flex-wrap">
+        {/* Section: Card Type Methodology and Name */}
+        <div className="flex flex-row justify-between flex-wrap items-center">
           <Form.Item
             validateFirst
             rules={[{ required: true, message: Strings.requiredMethodology }]}
@@ -83,6 +89,9 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
               options={catalogsOptions()}
             />
           </Form.Item>
+          <Tooltip title={Strings.cardTypeMethodologyTooltip}>
+            <QuestionCircleOutlined className="mb-6 ml-1 mr-2 text-sm text-blue-500" />
+          </Tooltip>
           <Form.Item
             name="name"
             validateFirst
@@ -99,23 +108,36 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
               placeholder={Strings.name}
             />
           </Form.Item>
+          <Tooltip title={Strings.cardTypeNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
-        <Form.Item
-          name="description"
-          validateFirst
-          rules={[
-            { required: true, message: Strings.requiredDescription },
-            { max: 100 },
-          ]}
-        >
-          <Input
-            size="large"
-            maxLength={100}
-            addonBefore={<BsCardText />}
-            placeholder={Strings.description}
-          />
-        </Form.Item>
-        <div className="flex flex-row flex-wrap">
+
+        {/* Section: Description */}
+        <div className="flex items-center">
+          <Form.Item
+            name="description"
+            validateFirst
+            rules={[
+              { required: true, message: Strings.requiredDescription },
+              { max: 100 },
+            ]}
+            className="flex-grow"
+          >
+            <Input
+              size="large"
+              maxLength={100}
+              addonBefore={<BsCardText />}
+              placeholder={Strings.description}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.cardTypeDescriptionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
+        </div>
+
+        {/* Section: Color and Responsible */}
+        <div className="flex flex-row flex-wrap items-center">
           <Form.Item
             name="color"
             validateFirst
@@ -128,6 +150,9 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
               </Button>
             </ColorPicker>
           </Form.Item>
+          <Tooltip title={Strings.cardTypeColorTooltip}>
+            <QuestionCircleOutlined className="mb-6 mr-2 text-sm text-blue-500" />
+          </Tooltip>
           <Form.Item
             name="responsableId"
             validateFirst
@@ -138,13 +163,17 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
               size="large"
               placeholder={Strings.responsible}
               options={responsibleOptions()}
-              className=""
             />
           </Form.Item>
+          <Tooltip title={Strings.responsibleTooltip}>
+            <QuestionCircleOutlined className="mb-6 ml-2 text-sm text-blue-500" />
+          </Tooltip>
         </div>
+
+        {/* Section: At Creation */}
         <h1 className="font-semibold">{Strings.atCreation}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex items-center">
             <Form.Item name="quantityPicturesCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -153,8 +182,11 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesCreateTooltip}>
+              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityVideosCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -163,7 +195,9 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityVideos}
               />
             </Form.Item>
-
+            <Tooltip title={Strings.quantityVideosCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6  mr-2 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="videosDurationCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -172,8 +206,11 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityAudiosCreate" validateFirst>
               <InputNumber
                 size="large"
@@ -182,11 +219,10 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityAudios}
               />
             </Form.Item>
-            <Form.Item
-              name="audiosDurationCreate"
-              validateFirst
-              className="mr-2"
-            >
+            <Tooltip title={Strings.quantityAudiosCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
+            <Form.Item name="audiosDurationCreate" validateFirst>
               <InputNumber
                 size="large"
                 maxLength={10}
@@ -194,11 +230,16 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationCreateTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
         </div>
+
+        {/* Section: At Provisional Solution */}
         <h1 className="font-semibold">{Strings.atProvisionalSolution}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex items-center">
             <Form.Item name="quantityPicturesPs" validateFirst>
               <InputNumber
                 size="large"
@@ -207,16 +248,22 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesPsTooltip}>
+              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityVideosPs" validateFirst>
               <InputNumber
                 size="large"
                 max={255}
                 addonBefore={<GoDeviceCameraVideo />}
-                placeholder={Strings.videosCreatePs}
+                placeholder={Strings.quantityVideos}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityVideosPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2  mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="videosDurationPs" validateFirst>
               <InputNumber
                 size="large"
@@ -225,17 +272,23 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationPsTooltip}>
+              <QuestionCircleOutlined className="ml-2  mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityAudiosPs" validateFirst>
               <InputNumber
                 size="large"
                 max={255}
                 addonBefore={<IoHeadsetOutline />}
-                placeholder={Strings.audiosCreatePs}
+                placeholder={Strings.quantityAudios}
               />
             </Form.Item>
-            <Form.Item name="audiosDurationPs" validateFirst className="mr-2">
+            <Tooltip title={Strings.quantityAudiosPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 text-sm mb-6  text-blue-500" />
+            </Tooltip>
+            <Form.Item name="audiosDurationPs" validateFirst>
               <InputNumber
                 size="large"
                 maxLength={10}
@@ -243,11 +296,16 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationPsTooltip}>
+              <QuestionCircleOutlined className="ml-2 text-sm mb-6  text-blue-500" />
+            </Tooltip>
           </div>
         </div>
+
+        {/* Section: At Definitive Solution */}
         <h1 className="font-semibold">{Strings.atDefinitiveSolution}</h1>
         <div className="flex flex-col">
-          <div>
+          <div className="flex items-center">
             <Form.Item name="quantityPicturesClose" validateFirst>
               <InputNumber
                 size="large"
@@ -256,8 +314,11 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityPictures}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityPicturesCloseTooltip}>
+              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityVideosClose" validateFirst>
               <InputNumber
                 size="large"
@@ -266,6 +327,9 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityVideos}
               />
             </Form.Item>
+            <Tooltip title={Strings.quantityVideosCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
             <Form.Item name="videosDurationClose" validateFirst>
               <InputNumber
                 size="large"
@@ -274,8 +338,11 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.videosDurationCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
-          <div className="flex gap-1">
+          <div className="flex items-center gap-1">
             <Form.Item name="quantityAudiosClose" validateFirst>
               <InputNumber
                 size="large"
@@ -284,11 +351,10 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.quantityAudios}
               />
             </Form.Item>
-            <Form.Item
-              name="audiosDurationClose"
-              validateFirst
-              className="mr-2"
-            >
+            <Tooltip title={Strings.quantityAudiosCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 mr-2 text-sm text-blue-500" />
+            </Tooltip>
+            <Form.Item name="audiosDurationClose" validateFirst>
               <InputNumber
                 size="large"
                 maxLength={10}
@@ -296,11 +362,13 @@ const RegisterCardTypeForm = ({ form }: FormProps) => {
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
+            <Tooltip title={Strings.audiosDurationCloseTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </div>
         </div>
       </div>
     </Form>
   );
 };
-
 export default RegisterCardTypeForm;

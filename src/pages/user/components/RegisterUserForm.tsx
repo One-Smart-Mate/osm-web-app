@@ -1,4 +1,4 @@
-import { Checkbox, Form, FormInstance, Input, Select } from "antd";
+import { Checkbox, Form, FormInstance, Input, Select, Tooltip } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { FaRegUser } from "react-icons/fa";
 import Strings from "../../../utils/localizations/Strings";
@@ -8,6 +8,7 @@ import { Role } from "../../../data/user/user";
 import { useGetRolesMutation } from "../../../services/roleService";
 import { Site } from "../../../data/site/site";
 import { useGetSitesMutation } from "../../../services/siteService";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: FormInstance;
@@ -70,6 +71,10 @@ const RegisterUserForm = ({ form }: FormProps) => {
               placeholder={Strings.name}
             />
           </Form.Item>
+          <Tooltip title={Strings.userNameTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
+
           <Form.Item
             name="email"
             validateFirst
@@ -86,6 +91,9 @@ const RegisterUserForm = ({ form }: FormProps) => {
               placeholder={Strings.email}
             />
           </Form.Item>
+          <Tooltip title={Strings.userEmailTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item
@@ -109,6 +117,9 @@ const RegisterUserForm = ({ form }: FormProps) => {
               }}
             />
           </Form.Item>
+          <Tooltip title={Strings.userPasswordTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
           <Form.Item
             name="confirmPassword"
             validateFirst
@@ -132,35 +143,44 @@ const RegisterUserForm = ({ form }: FormProps) => {
               placeholder={Strings.confirmPassword}
             />
           </Form.Item>
+          <Tooltip title={Strings.userConfirmPasswordTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
         </div>
-        <Form.Item
-          label={
-            <p>
-              {Strings.site} ({Strings.rfc})
-            </p>
-          }
-          name="siteId"
-          validateFirst
-          rules={[{ required: true, message: Strings.requiredSite }]}
-          className="mr-1"
-        >
-          <Select
-            size="large"
-            placeholder={Strings.site}
-            value={selectedSite}
-            onChange={setSelectedSite}
-            options={siteOptions()}
-            showSearch
-            filterOption={(input, option) => {
-              if (!option) {
-                return false;
-              }
-              return option.labelText
-                .toLowerCase()
-                .includes(input.toLowerCase());
-            }}
-          />
-        </Form.Item>
+        <div className="flex items-center w-full">
+          <Form.Item
+            label={
+              <p>
+                {Strings.site} ({Strings.rfc})
+              </p>
+            }
+            name="siteId"
+            validateFirst
+            rules={[{ required: true, message: Strings.requiredSite }]}
+            className="flex-grow"
+          >
+            <Select
+              size="large"
+              placeholder={Strings.site}
+              value={selectedSite}
+              onChange={setSelectedSite}
+              options={siteOptions()}
+              showSearch
+              filterOption={(input, option) => {
+                if (!option) {
+                  return false;
+                }
+                return option.labelText
+                  ?.toLowerCase()
+                  .includes(input.toLowerCase());
+              }}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.userSiteRfcTooltip}>
+            <QuestionCircleOutlined className="ml-2  text-sm text-blue-500" />
+          </Tooltip>
+        </div>
+
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="uploadCardDataWithDataNet"
@@ -169,6 +189,9 @@ const RegisterUserForm = ({ form }: FormProps) => {
             className="mr-1"
           >
             <Checkbox value={1}>{Strings.enable}</Checkbox>
+            <Tooltip title={Strings.userUploadCardDataWithDataNetTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </Form.Item>
           <Form.Item
             name="uploadCardEvidenceWithDataNet"
@@ -177,26 +200,34 @@ const RegisterUserForm = ({ form }: FormProps) => {
             className="flex-1"
           >
             <Checkbox value={1}>{Strings.enable}</Checkbox>
+            <Tooltip title={Strings.userUploadCardEvidenceWithDataNetTooltip}>
+              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+            </Tooltip>
           </Form.Item>
         </div>
-        <Form.Item
-          name="roles"
-          validateFirst
-          rules={[{ required: true, message: Strings.requiredRoles }]}
-          className="flex-1"
-        >
-          <Select
-            mode="multiple"
-            size="large"
-            placeholder={Strings.roles}
-            value={selectedRoles}
-            onChange={setSelectedRoles}
-            options={filteredOptions.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-          />
-        </Form.Item>
+        <div className="flex items-center w-full">
+          <Form.Item
+            name="roles"
+            validateFirst
+            rules={[{ required: true, message: Strings.requiredRoles }]}
+            className="flex-1"
+          >
+            <Select
+              mode="multiple"
+              size="large"
+              placeholder={Strings.roles}
+              value={selectedRoles}
+              onChange={setSelectedRoles}
+              options={filteredOptions.map((item) => ({
+                value: item.id,
+                label: item.name,
+              }))}
+            />
+          </Form.Item>
+          <Tooltip title={Strings.userRolesTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+          </Tooltip>
+        </div>
       </div>
     </Form>
   );

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Input, List, Space } from "antd";
+import { Input, List, Button } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
+import PageTitleTag from "../../components/PageTitleTag";
 import { useGetCardsMutation } from "../../services/cardService";
 import PaginatedList from "../../components/PaginatedList";
-import InformationPanel from "./components/Card";
+import InformationPanel from "./components/Tag";
 import { CardInterface } from "../../data/card/card";
 import { UserRoles } from "../../utils/Extensions";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -15,7 +15,7 @@ interface CardsProps {
   rol: UserRoles;
 }
 
-const Cards = ({ rol }: CardsProps) => {
+const Tags = ({ rol }: CardsProps) => {
   const [getCards] = useGetCardsMutation();
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
@@ -67,37 +67,61 @@ const Cards = ({ rol }: CardsProps) => {
 
   return (
     <>
+
       <div className="h-full flex flex-col">
-        <div className="flex flex-col items-center m-3">
-          <PageTitle mainText={Strings.tagsOf} subText={siteName} />
-          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
-              <Space className="w-full md:w-auto mb-1 md:mb-0">
-                <Input
-                  className="w-full"
-                  onChange={handleOnSearch}
-                  value={querySearch}
-                  addonAfter={<IoIosSearch />}
-                />
-              </Space>
-            </div>
-            <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto"></div>
+
+
+        <div className="flex flex-col m-4">
+
+          <div className="m-4 mb-6">
+            <PageTitleTag mainText={Strings.tagsOf} subText={siteName} />
           </div>
+
+
+          <div className="flex items-center space-x-4 m-4 mb-6">
+
+            <Input
+              className="w-full h-8 px-8 text-lg"
+              onChange={handleOnSearch}
+              value={querySearch}
+              addonAfter={<IoIosSearch />}
+            />
+
+
+            <Button
+
+              size="large"
+              className="w-64 h-8 px-8 text-lg"
+              type="primary"
+              htmlType="submit"
+            >
+              {Strings.filters}
+            </Button>
+
+          </div>
+
         </div>
+
+
         <div className="flex-1 overflow-y-auto overflow-x-clip">
+
           <PaginatedList
             dataSource={data}
             renderItem={(item: CardInterface, index: number) => (
               <List.Item>
+
+
                 <InformationPanel key={index} data={item} rol={rol} />
               </List.Item>
             )}
             loading={isLoading}
           />
         </div>
+
       </div>
     </>
   );
+
 };
 
-export default Cards;
+export default Tags;

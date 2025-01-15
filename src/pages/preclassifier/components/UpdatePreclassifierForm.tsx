@@ -1,4 +1,4 @@
-import { Form, FormInstance, Input, Select } from "antd";
+import { Form, FormInstance, Input, Select, Tooltip } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText } from "react-icons/bs";
 import { CiBarcode } from "react-icons/ci";
@@ -8,6 +8,7 @@ import { selectCurrentRowData } from "../../../core/genericReducer";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";
 import Preclassifier from "../../../data/preclassifier/preclassifier";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: FormInstance;
@@ -43,7 +44,7 @@ const UpdatePreclassifierForm = ({ form }: FormProps) => {
   return (
     <Form form={form}>
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between flex-wrap">
+        <div className="flex flex-row justify-between ">
           <Form.Item name="id" className="hidden">
             <Input />
           </Form.Item>
@@ -59,6 +60,10 @@ const UpdatePreclassifierForm = ({ form }: FormProps) => {
               placeholder={Strings.code}
             />
           </Form.Item>
+          <Tooltip title={Strings.preclassifierCodeTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-1.5 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item
             name="description"
             validateFirst
@@ -71,13 +76,19 @@ const UpdatePreclassifierForm = ({ form }: FormProps) => {
               placeholder={Strings.description}
             />
           </Form.Item>
+          <Tooltip title={Strings.preclassifierDescriptionTooltip}>
+            <QuestionCircleOutlined className="ml-2 mr-1.5 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
+
           <Form.Item name="status" className="w-60">
             <Select size="large" options={statusOptions()} />
           </Form.Item>
+          <Tooltip title={Strings.preclassifierStatusTooltip}>
+            <QuestionCircleOutlined className="ml-2 mb-6 text-blue-500 text-sm cursor-pointer" />
+          </Tooltip>
         </div>
       </div>
     </Form>
   );
 };
-
 export default UpdatePreclassifierForm;

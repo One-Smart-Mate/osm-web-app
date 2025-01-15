@@ -46,8 +46,8 @@ const AudiosList = ({ data }: CardProps) => {
         renderItem={(audio, index) => (
           <List.Item>
             <audio
-              ref={(el) => {
-                if (el) audioRefs.current[index] = el;
+              ref={(audioItem) => {
+                if (audioItem) audioRefs.current[index] = audioItem;
               }}
               onPlay={() => handlePlay(index)}
               controls
