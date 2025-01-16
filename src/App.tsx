@@ -12,9 +12,12 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import i18n from "./config/i18n";
+
+console.log("Detected Language by i18next:", i18n.language);
 
 function App() {
-
   return (
     <ConfigProvider
       theme={{
@@ -29,7 +32,7 @@ function App() {
           Card: {
             colorBgContainer: "white",
             colorPrimary: "white",
-            colorTextHeading: "#061178", 
+            colorTextHeading: "#061178",
           },
           Table: {
             headerBg: "#001529",
@@ -41,7 +44,6 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
-          
         },
       }}
     >
@@ -76,10 +78,8 @@ function App() {
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
       </Routes>
-
     </ConfigProvider>
   );
 }
 
 export default App;
-
