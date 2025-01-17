@@ -76,6 +76,7 @@ const buildHierarchy = (
       name: node.name,
       nodeType: "cardType",
       children: [],
+      collapsed: false,
     };
     const preclassifiers = preclassifiersMap[node.id] || [];
     if (preclassifiers.length > 0) {
@@ -126,6 +127,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const [createPreForm] = Form.useForm();
   const [updatePreForm] = Form.useForm();
 
+  const [rootMenuVisible, setRootMenuVisible] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const location = useLocation() as unknown as Location & {
@@ -151,6 +154,18 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         : colorValue?.toHex?.() || Strings.empty;
     return c.startsWith("#") ? c.slice(1) : c;
   };
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setRootMenuVisible(false);
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (location?.state?.siteId) {
@@ -372,7 +387,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     setDetailsVisible(true);
   };
   const renderCustomNodeElement = (rd3tProps: any) => {
-    const { nodeDatum } = rd3tProps;
+    const { nodeDatum, toggleNode } = rd3tProps;
 
     const isRoot = nodeDatum.__rd3t.depth === 0;
     const isPreclassifier = nodeDatum.nodeType === "preclassifier";
@@ -388,24 +403,22 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       }
     };
 
-    
     const statusColor = getStatusColor(nodeDatum.status);
 
-    
     const fillColor = statusColor
-      ? statusColor 
-      : nodeDatum.__rd3t.depth === 0 
+      ? statusColor
+      : nodeDatum.__rd3t.depth === 0
       ? "#145695"
-      : nodeDatum.nodeType === "preclassifier" 
+      : nodeDatum.nodeType === "preclassifier"
       ? "#FFFF00"
       : "#145695";
 
-      const textStyles = {
-        fontSize: isRoot ? "26px" :  isPreclassifier ? "16px" : "20px",
-        fontWeight: "300 !important", 
-        fontFamily: "Arial, sans-serif", 
-        fill: "#000", 
-      };
+    const textStyles = {
+      fontSize: isRoot ? "26px" : isPreclassifier ? "16px" : "20px",
+      fontWeight: "300 !important",
+      fontFamily: "Arial, sans-serif",
+      fill: "#000",
+    };
 
     const handleEditPre = () => {
       handleDrawerOpen(
@@ -413,6 +426,13 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         nodeDatum
       );
     };
+
+    const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
+      e.stopPropagation();
+      handleShowDetails(nodeDatum);
+      toggleNode();
+    };
+
     const handleClonePre = () => {
       handleDrawerOpen(
         Strings.cardTypesDrawerTypeCreatePreclassifier,
@@ -424,20 +444,30 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       {
         key: "editPre",
         label: (
-          <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
+          <button
+            className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditPre();
+            }}
+          >
             {Strings.cardTypesEditPreclassifier}
           </button>
         ),
-        onClick: handleEditPre,
       },
       {
         key: "clonePre",
         label: (
-          <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
+          <button
+            className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClonePre();
+            }}
+          >
             {Strings.cardTypesClonePreclassifier}
           </button>
         ),
-        onClick: handleClonePre,
       },
     ];
 
@@ -448,11 +478,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       {
         key: "createCT",
         label: (
-          <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
+          <button
+            className="w-28 bg-green-700 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              setRootMenuVisible(false);
+              handleCreateCardType();
+            }}
+          >
             {Strings.cardTypesCreate}
           </button>
         ),
-        onClick: handleCreateCardType,
       },
     ];
 
@@ -509,7 +545,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
               style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.stopPropagation();
-
+                setRootMenuVisible(false);
                 handleShowDetails(nodeDatum);
               }}
             />
@@ -524,13 +560,19 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     if (isRoot) {
       return (
         <g>
-          <Dropdown menu={{ items: rootMenu }} trigger={["contextMenu"]}>
+          <Dropdown
+            menu={{ items: rootMenu }}
+            trigger={["contextMenu"]}
+            open={rootMenuVisible} // Controla la visibilidad con el estado
+            onOpenChange={(open) => setRootMenuVisible(open)} // Sincroniza el estado
+          >
             <circle
               r={22}
               fill={fillColor}
               style={{ cursor: "pointer" }}
               stroke="none"
               strokeWidth={0}
+              onClick={handleLeftClick}
             />
           </Dropdown>
           <text
@@ -553,18 +595,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
             stroke="none"
             strokeWidth={0}
             fill={fillColor}
-            style={{ cursor: "pointer"}}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleShowDetails(nodeDatum);
-            }}
+            style={{ cursor: "pointer" }}
+            onClick={handleLeftClick}
           />
         </Dropdown>
-        <text
-          x={20}
-          y={35}
-          style={textStyles}
-        >
+        <text x={20} y={35} style={textStyles}>
           {nodeDatum.name}
         </text>
       </g>
@@ -586,6 +621,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
             translate={translate}
             renderCustomNodeElement={renderCustomNodeElement}
             zoomable
+            collapsible={true}
           />
         )}
       </div>
@@ -616,6 +652,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           open={drawerVisible}
           destroyOnClose
           mask={false}
+          className="pr-5"
         >
           {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
             <RegisterCardTypeForm
