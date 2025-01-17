@@ -498,6 +498,82 @@ const resources = {
       no: "No",
       detailsStatusCancelled: "Cancelled",
       for: "for",
+
+
+      errorFetchingData: "Error fetching data",
+namePlaceholder: "Enter the name",
+descriptionPlaceholder: "Enter the description",
+responsiblePlaceholder: "Select a responsible",
+
+// General Placeholders
+cardTypeTreeNamePlaceholder: "Enter the name",
+cardTypeTreeDescriptionPlaceholder: "Enter the description",
+cardTypeTreeResponsiblePlaceholder: "Select a responsible",
+cardTypeTreeStatusPlaceholder: "Select a status",
+cardTypeTreeColorPlaceholder: "Pick a color",
+
+// Placeholders for Quantity Fields
+cardTypeTreeQuantityPicturesPlaceholder: "Enter the number of pictures",
+cardTypeTreeQuantityVideosPlaceholder: "Enter the number of videos",
+cardTypeTreeQuantityAudiosPlaceholder: "Enter the number of audios",
+
+// Titles or Section Labels
+cardTypeTreeAtCreation: "At Creation",
+cardTypeTreeAtProvisionalSolution: "At Provisional Solution",
+cardTypeTreeAtDefinitiveSolution: "At Definitive Solution",
+
+// Error Messages
+cardTypeTreeRequiredCardTypeName: "Card type name is required",
+cardTypeTreeRequiredDescription: "Description is required",
+cardTypeTreeRequiredResponsableId: "Responsible is required",
+cardTypeTreeRequiredColor: "Color is required",
+
+// Notifications
+cardTypeTreeSuccessCardTypeUpdated: "Card type successfully updated!",
+cardTypeTreeErrorFetchingData: "Error fetching data",
+
+/* Card Types and Preclassifier tree */
+cardTypesDrawerTypeCreateCardType: "createCardType",
+cardTypesDrawerTypeUpdateCardType: "updateCardType",
+cardTypesDrawerTypeCreatePreclassifier: "createPreclassifier",
+cardTypesDrawerTypeUpdatePreclassifier: "updatePreclassifier",
+cardTypesCreate: "Create Card Type",
+cardTypesCancel: "Cancel",
+cardTypesEdit: "Edit Card Type",
+cardTypesEditPreclassifier: "Edit Preclassifier",
+cardTypesCloneCardType: "Clone Card Type",
+cardTypesClonePre: "Clone Preclassifier",
+cardTypesCreatePreclassifier: "Create Preclassifier",
+cardTypesUpdatePreclassifier: "Edit Preclassifier",
+cardTypesRoot: "Root",
+cardTypesCloneSuffix: "(Clone)",
+cardTypesMethodologyError: "Card Type Methodology is required for creation.",
+cardTypesLoadingData: "Loading data...",
+cardTypesUpdateCardType: "Edit Card Type",
+cardTypesCreateCardType: "Create Card Type",
+cardTypesClonePreclassifier: "Clone preclassifier",
+cardTypesErrorFetchingData: "Error fetching data",
+cardTypesNoCardTypeIdError: "No cardTypeId found to create a preclassifier.",
+cardTypesOptionEdit: "editCT",
+cardTypesOptionClone: "cloneCT",
+cardTypesOptionCreate: "createPre",
+cardTypesOptionCancel: "cancelCT",
+
+cardTypeDetailsTitle: "Card Type Details",
+cardTypeDetailsMethodology: "Methodology",
+cardTypeDetailsName: "Name",
+cardTypeDetailsDescription: "Description",
+cardTypeDetailsColor: "Color",
+cardTypeDetailsResponsible: "Responsible",
+cardTypeDetailsStatus: "Status",
+
+preclassifierDetailsTitle: "Preclassifier Details",
+preclassifierDetailsCode: "Code",
+preclassifierDetailsDescription: "Description",
+preclassifierDetailsStatus: "Status",
+notSpecified: "Not Specified",
+
+
     },
   },
   es: {
@@ -508,11 +584,11 @@ const resources = {
       usersSB: "Usuarios",
       siteUsersSB: "Usuarios del Sitio",
       sitesSB: "Sitios",
-      cardTypesSB: "Tipos de tarjeta",
+      cardTypesSB: "Tipos de Etiqueta",
       preclassifiersSB: "Preclasificadores",
       levelsSB: "Niveles",
-      cardsSB: "Tarjetas",
-      cardDetailsSB: "Detalles de Tarjeta",
+      cardsSB: "Etiquetas",
+      cardDetailsSB: "Detalles de Etiqueta",
       chartsSB: "Gráficos",
 
       login: "Iniciar sesión",
@@ -527,9 +603,9 @@ const resources = {
       logout: "Cerrar sesión",
       updatePassword: "Actualizar contraseña",
       confirmPassword: "Confirmar contraseña",
-      uploadCardDataWithDataNet: "Cargar tarjeta con datos de red",
+      uploadCardDataWithDataNet: "Cargar Etiqueta con datos de red",
       uploadCardEvidenceWithDataNet:
-        "Cargar evidencia de tarjeta con datos de red",
+        "Cargar evidencia de Etiqueta con datos de red",
       searchRecord: "Buscar registro",
       clearFiltersAndSorters: "Limpiar filtros y ordenadores",
       empty: "",
@@ -627,8 +703,8 @@ const resources = {
       // site actions
       viewPriorities: "Ver prioridades",
       viewLevels: "Ver niveles",
-      viewCardTypes: "Ver tipos de tarjeta",
-      viewCards: "Ver tarjetas",
+      viewCardTypes: "Ver tipos de Etiqueta",
+      viewCards: "Ver Etiquetas",
       viewCharts: "Ver gráficos",
       viewUsers: "Ver usuarios",
       importUsers: "Importar usuarios",
@@ -681,8 +757,8 @@ const resources = {
       name: "Nombre",
       color: "Color",
       responsible: "Responsable",
-      cardTypeMethodology: "Metodología del tipo de tarjeta",
-      cardTypesOf: "Tipos de tarjeta de",
+      cardTypeMethodology: "Metodología del tipo de Etiqueta",
+      cardTypesOf: "Tipos de Etiqueta de",
       quantityPictures: "Cantidad de imágenes",
       quantityAudios: "Cantidad de audios",
       quantityVideos: "Cantidad de videos",
@@ -697,7 +773,7 @@ const resources = {
       // cardtype methodology
       M: "M",
       C: "C",
-      updateCardType: "Actualizar tipo de tarjeta",
+      updateCardType: "Actualizar tipo de Etiqueta",
 
       // roles
       roles: "Roles",
@@ -706,7 +782,7 @@ const resources = {
       // errors card type form
       requiredMethodology: "Por favor, selecciona la metodología",
       requiredCardTypeName:
-        "Por favor, introduce el nombre del tipo de tarjeta",
+        "Por favor, introduce el nombre del tipo de Etiqueta",
       requiredColor: "Por favor, selecciona un color",
 
       // CardTypes actions
@@ -732,15 +808,15 @@ const resources = {
       createSite: "Crear sitio para",
       updateSite: "Actualizar sitio",
       createPreclassifier: "Crear preclasificador",
-      createCardType: "Crear tipo de tarjeta para",
+      createCardType: "Crear tipo de Etiqueta para",
       createLevel: "Crear nivel para",
       updateLevel: "Actualizar nivel",
       createNodefor: "Crear nodo para",
 
-      cards: "Tarjetas",
+      cards: "Etiquetas",
       tagDetailsOf: "Detalles de la etiqueta de",
       type: "Tipo",
-      cardNumber: "Número de tarjeta",
+      cardNumber: "Número de Etiqueta",
       area: "Área",
       date: "Fecha",
       mechanic: "Mecánico",
@@ -802,13 +878,13 @@ const resources = {
       creators: "Creadores",
       machines: "Máquinas",
       tagMonitoring: "Monitoreo de etiquetas",
-      totalCards: "Total de tarjetas",
+      totalCards: "Total de Etiquetas",
       total: "Total",
       areaChart: "Área",
       machine: "Máquina",
       machineLocation: "Ubicación de la máquina",
       creatorChart: "Creador",
-      cardName: "Nombre de la tarjeta",
+      cardName: "Nombre de la Etiqueta",
       preclassifierChart: "Preclasificador",
       year: "Año:",
       week: "Semana:",
@@ -970,9 +1046,9 @@ const resources = {
       userSiteRfcTooltip:
         "Seleccione el RFC del sitio al que se asignará el usuario.",
       userUploadCardDataWithDataNetTooltip:
-        "Habilite esta opción si el usuario puede cargar datos de tarjetas utilizando DataNet.",
+        "Habilite esta opción si el usuario puede cargar datos de Etiquetas utilizando DataNet.",
       userUploadCardEvidenceWithDataNetTooltip:
-        "Habilite esta opción si el usuario puede cargar evidencias de tarjetas utilizando DataNet.",
+        "Habilite esta opción si el usuario puede cargar evidencias de Etiquetas utilizando DataNet.",
       userRolesTooltip: "Seleccione uno o más roles para asignar al usuario.",
       requiredStatus: "El estado es obligatorio",
       statusPlaceholder: "Seleccione un estado",
@@ -980,15 +1056,15 @@ const resources = {
       inactiveValue: "I",
       statusUserLabel: "Estado del usuario",
       cardTypeMethodologyTooltip:
-        "Seleccione la metodología asociada con este tipo de tarjeta.",
+        "Seleccione la metodología asociada con este tipo de Etiqueta.",
       cardTypeNameTooltip:
-        "Proporcione un nombre único para el tipo de tarjeta. Máximo 45 caracteres.",
+        "Proporcione un nombre único para el tipo de Etiqueta. Máximo 45 caracteres.",
       cardTypeDescriptionTooltip:
-        "Describa brevemente el propósito del tipo de tarjeta. Máximo 100 caracteres.",
+        "Describa brevemente el propósito del tipo de Etiqueta. Máximo 100 caracteres.",
       cardTypeColorTooltip:
-        "Elija un color para representar visualmente este tipo de tarjeta.",
+        "Elija un color para representar visualmente este tipo de Etiqueta.",
       responsibleTooltip:
-        "Seleccione la persona responsable de gestionar este tipo de tarjeta.",
+        "Seleccione la persona responsable de gestionar este tipo de Etiqueta.",
       quantityPicturesCreateTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de creación.",
       quantityVideosCreateTooltip:
@@ -1021,8 +1097,8 @@ const resources = {
       audiosDurationCloseTooltip:
         "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución definitiva.",
       cardTypeStatusTooltip:
-        "Seleccione el estado actual del tipo de tarjeta. Esto determina si el tipo de tarjeta está activo o inactivo en el sistema.",
-      statusCardTypeTooltip: "Puede cambiar el estado del tipo de tarjeta",
+        "Seleccione el estado actual del tipo de Etiqueta. Esto determina si el tipo de Etiqueta está activo o inactivo en el sistema.",
+      statusCardTypeTooltip: "Puede cambiar el estado del tipo de Etiqueta",
       createNotification: "Crear Notificación",
       notificationName: "Nombre de la Notificación",
       requiredName: "El nombre de la notificación es obligatorio.",
@@ -1053,6 +1129,81 @@ const resources = {
       no: "No",
       detailsStatusCancelled: "Cancelado",
       for: "para",
+
+      errorFetchingData: "Error al obtener datos",
+namePlaceholder: "Introduce el nombre",
+descriptionPlaceholder: "Introduce la descripción",
+responsiblePlaceholder: "Selecciona un responsable",
+
+// General Placeholders
+cardTypeTreeNamePlaceholder: "Introduce el nombre",
+cardTypeTreeDescriptionPlaceholder: "Introduce la descripción",
+cardTypeTreeResponsiblePlaceholder: "Selecciona un responsable",
+cardTypeTreeStatusPlaceholder: "Selecciona un estado",
+cardTypeTreeColorPlaceholder: "Selecciona un color",
+
+// Placeholders for Quantity Fields
+cardTypeTreeQuantityPicturesPlaceholder: "Introduce la cantidad de imágenes",
+cardTypeTreeQuantityVideosPlaceholder: "Introduce la cantidad de videos",
+cardTypeTreeQuantityAudiosPlaceholder: "Introduce la cantidad de audios",
+
+// Titles or Section Labels
+cardTypeTreeAtCreation: "En la creación",
+cardTypeTreeAtProvisionalSolution: "En la solución provisional",
+cardTypeTreeAtDefinitiveSolution: "En la solución definitiva",
+
+// Error Messages
+cardTypeTreeRequiredCardTypeName: "El nombre del tipo de Etiqueta es obligatorio",
+cardTypeTreeRequiredDescription: "La descripción es obligatoria",
+cardTypeTreeRequiredResponsableId: "El responsable es obligatorio",
+cardTypeTreeRequiredColor: "El color es obligatorio",
+
+// Notifications
+cardTypeTreeSuccessCardTypeUpdated: "¡El tipo de Etiqueta se actualizó con éxito!",
+cardTypeTreeErrorFetchingData: "Error al obtener datos",
+
+/* Card Types and Preclassifier tree */
+cardTypesDrawerTypeCreateCardType: "crearTipoEtiqueta",
+cardTypesDrawerTypeUpdateCardType: "actualizarTipoEtiqueta",
+cardTypesDrawerTypeCreatePreclassifier: "crearPreclasificador",
+cardTypesDrawerTypeUpdatePreclassifier: "actualizarPreclasificador",
+cardTypesCreate: "Crear Tipo de Etiqueta",
+cardTypesCancel: "Cancelar",
+cardTypesEdit: "Editar Tipo de Etiqueta",
+cardTypesEditPreclassifier: "Editar Preclasificador",
+cardTypesCloneCardType: "Clonar Tipo de Etiqueta",
+cardTypesClonePre: "Clonar Preclasificador",
+cardTypesCreatePreclassifier: "Crear Preclasificador",
+cardTypesUpdatePreclassifier: "Editar Preclasificador",
+cardTypesRoot: "Raíz",
+cardTypesCloneSuffix: "(Clon)",
+cardTypesMethodologyError: "La metodología del tipo de Etiqueta es obligatoria para la creación.",
+cardTypesLoadingData: "Cargando datos...",
+cardTypesUpdateCardType: "Editar Tipo de Etiqueta",
+cardTypesCreateCardType: "Crear Tipo de Etiqueta",
+cardTypesClonePreclassifier: "Clonar Preclasificador",
+cardTypesErrorFetchingData: "Error al obtener datos",
+cardTypesNoCardTypeIdError: "No se encontró el ID del tipo de Etiqueta para crear un preclasificador.",
+cardTypesOptionEdit: "editarCT",
+cardTypesOptionClone: "clonerCT",
+cardTypesOptionCreate: "createPre",
+cardTypesOptionCancel: "cancelCT",
+
+cardTypeDetailsTitle: "Detalles del Tipo de Etiqueta",
+cardTypeDetailsMethodology: "Metodología",
+cardTypeDetailsName: "Nombre",
+cardTypeDetailsDescription: "Descripción",
+cardTypeDetailsColor: "Color",
+cardTypeDetailsResponsible: "Responsable",
+cardTypeDetailsStatus: "Estado",
+
+preclassifierDetailsTitle: "Detalles del Preclasificador",
+preclassifierDetailsCode: "Código",
+preclassifierDetailsDescription: "Descripción",
+preclassifierDetailsStatus: "Estado",
+notSpecified: "No especificado",
+
+
     },
   },
 };

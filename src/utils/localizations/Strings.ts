@@ -432,8 +432,8 @@ class StringsBase {
   static userRolesTooltip = "userRolesTooltip";
   static requiredStatus = "requiredStatus";
   static statusPlaceholder = "statusPlaceholder";
-  static activeValue = "A";
-  static inactiveValue = "I";
+  static activeValue = "activeValue";
+  static inactiveValue = "inactiveValue";
   static statusUserLabel = "statusUserLabel";
   static cardTypeMethodologyTooltip = "cardTypeMethodologyTooltip";
   static cardTypeNameTooltip = "cardTypeNameTooltip";
@@ -478,9 +478,9 @@ class StringsBase {
   static levelsTreeOptionClone = "levelsTreeOptionClone";
   static levelDetailsTitle = "levelDetailsTitle";
   static errorOnSubmit = "errorOnSubmit";
-  static drawerTypeCreate = "create";
-  static drawerTypeEdit = "update";
-  static drawerTypeClone = "clone";
+  static drawerTypeCreate = "drawerTypeCreate";
+  static drawerTypeEdit = "drawerTypeEdit";
+  static drawerTypeClone = "drawerTypeClone";
   static loading = "loading";
   static noData = "noData";
   static errorFetchingLevelData = "errorFetchingLevelData";
@@ -488,6 +488,81 @@ class StringsBase {
   static no = "no";
   static detailsStatusCancelled = "detailsStatusCancelled";
   static for = "for";
+
+  static errorFetchingData = "errorFetchingData";
+static namePlaceholder = "namePlaceholder";
+static descriptionPlaceholder = "descriptionPlaceholder";
+static responsiblePlaceholder = "responsiblePlaceholder";
+
+// General Placeholders
+static cardTypeTreeNamePlaceholder = "cardTypeTreeNamePlaceholder";
+static cardTypeTreeDescriptionPlaceholder = "cardTypeTreeDescriptionPlaceholder";
+static cardTypeTreeResponsiblePlaceholder = "cardTypeTreeResponsiblePlaceholder";
+static cardTypeTreeStatusPlaceholder = "cardTypeTreeStatusPlaceholder";
+static cardTypeTreeColorPlaceholder = "cardTypeTreeColorPlaceholder";
+
+// Placeholders for Quantity Fields
+static cardTypeTreeQuantityPicturesPlaceholder = "cardTypeTreeQuantityPicturesPlaceholder";
+static cardTypeTreeQuantityVideosPlaceholder = "cardTypeTreeQuantityVideosPlaceholder";
+static cardTypeTreeQuantityAudiosPlaceholder = "cardTypeTreeQuantityAudiosPlaceholder";
+
+// Titles or Section Labels
+static cardTypeTreeAtCreation = "cardTypeTreeAtCreation";
+static cardTypeTreeAtProvisionalSolution = "cardTypeTreeAtProvisionalSolution";
+static cardTypeTreeAtDefinitiveSolution = "cardTypeTreeAtDefinitiveSolution";
+
+// Error Messages
+static cardTypeTreeRequiredCardTypeName = "cardTypeTreeRequiredCardTypeName";
+static cardTypeTreeRequiredDescription = "cardTypeTreeRequiredDescription";
+static cardTypeTreeRequiredResponsableId = "cardTypeTreeRequiredResponsableId";
+static cardTypeTreeRequiredColor = "cardTypeTreeRequiredColor";
+
+// Notifications
+static cardTypeTreeSuccessCardTypeUpdated = "cardTypeTreeSuccessCardTypeUpdated";
+static cardTypeTreeErrorFetchingData = "cardTypeTreeErrorFetchingData";
+
+/* Card Types and Preclassifier tree */
+static cardTypesDrawerTypeCreateCardType = "cardTypesDrawerTypeCreateCardType";
+static cardTypesDrawerTypeUpdateCardType = "cardTypesDrawerTypeUpdateCardType";
+static cardTypesDrawerTypeCreatePreclassifier = "cardTypesDrawerTypeCreatePreclassifier";
+static cardTypesDrawerTypeUpdatePreclassifier = "cardTypesDrawerTypeUpdatePreclassifier";
+static cardTypesCreate = "cardTypesCreate";
+static cardTypesCancel = "cardTypesCancel";
+static cardTypesEdit = "cardTypesEdit";
+static cardTypesEditPreclassifier = "cardTypesEditPreclassifier";
+static cardTypesCloneCardType = "cardTypesCloneCardType";
+static cardTypesClonePre = "cardTypesClonePre";
+static cardTypesCreatePreclassifier = "cardTypesCreatePreclassifier";
+static cardTypesUpdatePreclassifier = "cardTypesUpdatePreclassifier";
+static cardTypesRoot = "cardTypesRoot";
+static cardTypesCloneSuffix = "cardTypesCloneSuffix";
+static cardTypesMethodologyError = "cardTypesMethodologyError";
+static cardTypesLoadingData = "cardTypesLoadingData";
+static cardTypesUpdateCardType = "cardTypesUpdateCardType";
+static cardTypesCreateCardType = "cardTypesCreateCardType";
+static cardTypesClonePreclassifier = "cardTypesClonePreclassifier";
+static cardTypesErrorFetchingData = "cardTypesErrorFetchingData";
+static cardTypesNoCardTypeIdError = "cardTypesNoCardTypeIdError";
+static cardTypesOptionEdit = "cardTypesOptionEdit";
+static cardTypesOptionClone = "cardTypesOptionClone";
+static cardTypesOptionCreate = "cardTypesOptionCreate";
+static cardTypesOptionCancel = "cardTypesOptionCancel";
+
+static cardTypeDetailsTitle = "cardTypeDetailsTitle";
+static cardTypeDetailsMethodology = "cardTypeDetailsMethodology";
+static cardTypeDetailsName = "cardTypeDetailsName";
+static cardTypeDetailsDescription = "cardTypeDetailsDescription";
+static cardTypeDetailsColor = "cardTypeDetailsColor";
+static cardTypeDetailsResponsible = "cardTypeDetailsResponsible";
+static cardTypeDetailsStatus = "cardTypeDetailsStatus";
+
+static preclassifierDetailsTitle = "preclassifierDetailsTitle";
+static preclassifierDetailsCode = "preclassifierDetailsCode";
+static preclassifierDetailsDescription = "preclassifierDetailsDescription";
+static preclassifierDetailsStatus = "preclassifierDetailsStatus";
+static notSpecified = "notSpecified";
+
+
 }
 
 const Strings = new Proxy(StringsBase, {

@@ -1,386 +1,374 @@
 import {
-  Button,
-  ColorPicker,
-  ColorPickerProps,
   Form,
   FormInstance,
-  GetProp,
   Input,
-  InputNumber,
   Select,
+  ColorPicker,
+  InputNumber,
   Tooltip,
+  Button,
 } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import { BsCardText } from "react-icons/bs";
-import { AiOutlinePicture } from "react-icons/ai";
-import { LuTextCursor } from "react-icons/lu";
-import { CardTypeUpdateForm } from "../../../data/cardtypes/cardTypes";
 import { useAppSelector } from "../../../core/store";
-import {
-  selectCurrentRowData,
-  selectSiteId,
-} from "../../../core/genericReducer";
-import { useEffect, useMemo, useState } from "react";
+import { selectSiteId } from "../../../core/genericReducer";
+import { useEffect, useState } from "react";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
+import { useGetStatusMutation } from "../../../services/statusService";
 import { Responsible } from "../../../data/user/user";
+import { AiOutlinePicture } from "react-icons/ai";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { IoHeadsetOutline } from "react-icons/io5";
-import { useGetStatusMutation } from "../../../services/statusService";
-import { Status } from "../../../data/status/status";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-
-type Color = Extract<
-  GetProp<ColorPickerProps, "value">,
-  string | { cleared: any }
->;
 
 interface FormProps {
   form: FormInstance;
+  onFinish: (values: any) => void;
+  initialValues: any;
 }
 
-const UpdateCardTypeForm = ({ form }: FormProps) => {
-  const rowData = useAppSelector(
-    selectCurrentRowData
-  ) as unknown as CardTypeUpdateForm;
+type Color = string;
+
+const UpdateCardTypeForm = ({ form, initialValues }: FormProps) => {
   const [getResponsibles] = useGetSiteResponsiblesMutation();
-  const [getStatus] = useGetStatusMutation();
+  const [] = useGetStatusMutation();
   const siteId = useAppSelector(selectSiteId);
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
-  const [statuses, setStatuses] = useState<Status[]>([]);
-  const [color, setColor] = useState<Color>(Strings.empty);
-
-  const bgColor = useMemo<string>(
-    () => (typeof color === "string" ? color : color!.toHexString()),
-    [color]
-  );
-
-  const btnStyle: React.CSSProperties = {
-    backgroundColor: bgColor,
-  };
+  const [color, setColor] = useState<Color>("FFFFFF");
 
   const handleGetData = async () => {
-    const [responsiblesResponse, statusResponse] = await Promise.all([
-      getResponsibles(siteId).unwrap(),
-      getStatus().unwrap(),
-    ]);
-    setResponsibles(responsiblesResponse);
-    setStatuses(statusResponse);
+    if (!siteId) {
+      console.error("siteId is undefined.");
+      return;
+    }
+
+    try {
+      const responsiblesResponse = await getResponsibles(siteId).unwrap();
+      setResponsibles(responsiblesResponse);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const responsibleOptions = () => {
-    return responsibles.map((responsible) => ({
+  const responsibleOptions = () =>
+    responsibles.map((responsible) => ({
       value: responsible.id,
       label: responsible.name,
     }));
-  };
-  const statusOptions = () => {
-    return statuses.map((status) => ({
-      value: status.statusCode,
-      label: status.statusName,
-    }));
-  };
+
+  const statusOptions = [
+    { value: Strings.activeStatus, label: Strings.active },
+    { value: Strings.detailsOptionS, label: Strings.detailsStatusSuspended },
+    { value: Strings.C, label: Strings.tagStatusCanceled },
+  ];
+
   useEffect(() => {
-    form.setFieldsValue({ ...rowData });
-    setColor(`#${rowData.color}`);
     handleGetData();
   }, []);
+
+  useEffect(() => {
+    if (initialValues && responsibles.length > 0) {
+      const matchedResponsible = responsibles.find(
+        (res) => res.id === initialValues.responsableId
+      );
+      form.setFieldsValue({
+        ...initialValues,
+        responsableId: matchedResponsible ? matchedResponsible.id : undefined,
+        color: initialValues.color || "FFFFFF",
+      });
+      setColor(initialValues.color || "FFFFFF");
+    }
+  }, [initialValues, responsibles, form]);
+
   return (
-    <Form form={form}>
-      <div className="flex flex-col">
-        <div className="flex flex-row justify-between flex-wrap">
-          <Form.Item className="hidden" name="id">
-            <Input />
-          </Form.Item>
-          <Form.Item className="hidden" name="methodology">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            validateFirst
-            rules={[
-              { required: true, message: Strings.requiredCardTypeName },
-              { max: 45 },
-            ]}
-            className="flex-1"
-          >
-            <Input
-              addonBefore={<LuTextCursor />}
-              size="large"
-              maxLength={45}
-              placeholder={Strings.name}
-            />
-          </Form.Item>
-          <Tooltip title={Strings.cardTypeNameTooltip}>
-            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
-          </Tooltip>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={(values) => {
+        console.log("Form Submitted:", values);
+      }}
+    >
+      <Form.Item name="id" className="hidden">
+        <Input />
+      </Form.Item>
+      <Form.Item name="methodology" className="hidden">
+        <Input />
+      </Form.Item>
+
+      <div className="flex flex-col w-full space-y-6">
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-2">
+            <Form.Item
+              name="name"
+              label={Strings.name}
+              rules={[
+                { required: true, message: Strings.requiredCardTypeName },
+              ]}
+              className="flex-1"
+            >
+              <Input placeholder={Strings.namePlaceholder} />
+            </Form.Item>
+            <Tooltip title={Strings.cardTypeNameTooltip}>
+              <QuestionCircleOutlined className="text-blue-500 mb-6 mt-6" />
+            </Tooltip>
+          </div>
+          <div className="flex items-center gap-2">
+            <Form.Item
+              name="description"
+              label={Strings.description}
+              rules={[{ required: true, message: Strings.requiredDescription }]}
+              className="flex-1"
+            >
+              <Input placeholder={Strings.descriptionPlaceholder} />
+            </Form.Item>
+            <Tooltip title={Strings.cardTypeDescriptionTooltip}>
+              <QuestionCircleOutlined className="text-blue-500 mb-6 mt-6" />
+            </Tooltip>
+          </div>
         </div>
-        <div className="flex items-center w-full">
-          <Form.Item
-            name="description"
-            validateFirst
-            rules={[
-              { required: true, message: Strings.requiredDescription },
-              { max: 100 },
-            ]}
-            className="flex-grow"
-          >
-            <Input
-              size="large"
-              maxLength={100}
-              addonBefore={<BsCardText />}
-              placeholder={Strings.description}
-            />
-          </Form.Item>
-          <Tooltip title={Strings.cardTypeDescriptionTooltip}>
-            <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
-          </Tooltip>
-        </div>
-        <div className="flex flex-row flex-wrap">
-          <Form.Item
-            name="color"
-            validateFirst
-            rules={[{ required: true, message: Strings.requiredColor }]}
-            className="mr-3"
-          >
-            <ColorPicker value={color} onChange={setColor}>
-              <Button
-                size="large"
-                className="w-32"
-                type="primary"
-                style={btnStyle}
+
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-2">
+            <Form.Item name="color" label="Color" className="flex-none">
+              <ColorPicker
+                value={color}
+                onChange={(value) => {
+                  const selectedColor =
+                    typeof value === "string" ? value : value.toHexString();
+                  const colorWithoutHash = selectedColor.startsWith("#")
+                    ? selectedColor.slice(1)
+                    : selectedColor;
+
+                  setColor(colorWithoutHash);
+                  form.setFieldValue("color", colorWithoutHash);
+                }}
               >
-                Color
-              </Button>
-            </ColorPicker>
-          </Form.Item>
-          <Tooltip title={Strings.cardTypeColorTooltip}>
-            <QuestionCircleOutlined className="ml-0 mr-3 mb-6 text-sm text-blue-500" />
-          </Tooltip>
+                <Button
+                  size="large"
+                  style={{
+                    backgroundColor: `#${color}`,
+                    color: "#000",
+                  }}
+                >
+                  {Strings.color}
+                </Button>
+              </ColorPicker>
+            </Form.Item>
+            <Tooltip title={Strings.cardTypeColorTooltip}>
+              <QuestionCircleOutlined className="text-blue-500 mb-6 mt-6" />
+            </Tooltip>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Form.Item
+              name="responsableId"
+              label={Strings.responsible}
+              rules={[
+                { required: true, message: Strings.requiredResponsableId },
+              ]}
+              className="flex-1"
+            >
+              <Select
+                options={responsibleOptions()}
+                placeholder={Strings.responsiblePlaceholder}
+              />
+            </Form.Item>
+            <Tooltip title={Strings.responsibleTooltip}>
+              <QuestionCircleOutlined className="text-blue-500 mb-6 mt-6" />
+            </Tooltip>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
           <Form.Item
-            name="responsableId"
-            validateFirst
-            rules={[{ required: true, message: Strings.requiredResponsableId }]}
+            name="status"
+            label={Strings.status}
+            rules={[{ required: true, message: Strings.requiredStatus }]}
             className="w-60"
           >
             <Select
               size="large"
-              placeholder={Strings.responsible}
-              options={responsibleOptions()}
-              className=""
+              options={statusOptions}
+              placeholder={Strings.statusPlaceholder}
             />
           </Form.Item>
-          <Tooltip title={Strings.responsibleTooltip}>
-            <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
-          </Tooltip>
         </div>
-        <h1 className="font-semibold">{Strings.atCreation}</h1>
-        <div className="flex flex-col">
-          <div className="flex">
-            <Form.Item name="quantityPicturesCreate" validateFirst>
+
+        <h2 className="font-semibold mt-6">{Strings.atCreation}</h2>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityPicturesCreate">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<AiOutlinePicture />}
-                placeholder={Strings.quantityPictures}
+                placeholder={Strings.cardTypeTreeQuantityPicturesPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityPicturesCreateTooltip}>
-              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
-          <div className="flex gap-1">
-            <Form.Item name="quantityVideosCreate" validateFirst>
+
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityVideosCreate">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<GoDeviceCameraVideo />}
-                placeholder={Strings.quantityVideos}
+                placeholder={Strings.cardTypeTreeQuantityVideosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityVideosCreateTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-            <Form.Item name="videosDurationCreate" validateFirst>
+            <Form.Item name="videosDurationCreate">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<GoDeviceCameraVideo />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.videosDurationCreateTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
-          <div className="flex gap-1">
-            <Form.Item name="quantityAudiosCreate" validateFirst>
+
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityAudiosCreate">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<IoHeadsetOutline />}
-                placeholder={Strings.quantityAudios}
+                placeholder={Strings.cardTypeTreeQuantityAudiosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityAudiosCreateTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-            <Form.Item
-              name="audiosDurationCreate"
-              validateFirst
-              className="mr-2"
-            >
+            <Form.Item name="audiosDurationCreate">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<IoHeadsetOutline />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.audiosDurationCreateTooltip}>
-              <QuestionCircleOutlined className="mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
         </div>
-        <h1 className="font-semibold">{Strings.atProvisionalSolution}</h1>
-        <div className="flex flex-col">
-          <div className="flex">
-            <Form.Item name="quantityPicturesPs" validateFirst>
+
+        <h2 className="font-semibold mt-6">{Strings.atProvisionalSolution}</h2>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityPicturesPs">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<AiOutlinePicture />}
-                placeholder={Strings.quantityPictures}
+                placeholder={Strings.cardTypeTreeQuantityPicturesPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityPicturesPsTooltip}>
-              <QuestionCircleOutlined className="ml-3 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
-          <div className="flex gap-1">
-            <Form.Item name="quantityVideosPs" validateFirst>
+
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityVideosPs">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<GoDeviceCameraVideo />}
-                placeholder={Strings.videosCreatePs}
+                placeholder={Strings.cardTypeTreeQuantityVideosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityVideosPsTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-            <Form.Item name="videosDurationPs" validateFirst>
+            <Form.Item name="videosDurationPs">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<GoDeviceCameraVideo />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.videosDurationPsTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
-          <div className="flex gap-1">
-            <Form.Item name="quantityAudiosPs" validateFirst>
+
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityAudiosPs">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<IoHeadsetOutline />}
-                placeholder={Strings.audiosCreatePs}
+                placeholder={Strings.cardTypeTreeQuantityAudiosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityAudiosPsTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-            <Form.Item name="audiosDurationPs" validateFirst className="mr-2">
+            <Form.Item name="audiosDurationPs">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<IoHeadsetOutline />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.audiosDurationPsTooltip}>
-              <QuestionCircleOutlined className="ml-0 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
         </div>
-        <h1 className="font-semibold">{Strings.atDefinitiveSolution}</h1>
-        <div className="flex flex-col">
-          <div className="flex items-center w-full">
-            <Form.Item name="quantityPicturesClose" validateFirst>
+
+        <h2 className="font-semibold mt-6">{Strings.atDefinitiveSolution}</h2>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityPicturesClose">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<AiOutlinePicture />}
-                placeholder={Strings.quantityPictures}
+                placeholder={Strings.cardTypeTreeQuantityPicturesPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityPicturesCloseTooltip}>
-              <QuestionCircleOutlined className="ml-3 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
 
-          <div className="flex gap-1 items-center">
-            <Form.Item name="quantityVideosClose" validateFirst>
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityVideosClose">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<GoDeviceCameraVideo />}
-                placeholder={Strings.quantityVideos}
+                placeholder={Strings.cardTypeTreeQuantityVideosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityVideosCloseTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-
-            <Form.Item name="videosDurationClose" validateFirst>
+            <Form.Item name="videosDurationClose">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<GoDeviceCameraVideo />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.videosDurationCloseTooltip}>
-              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
 
-          <div className="flex gap-1 items-center">
-            <Form.Item name="quantityAudiosClose" validateFirst>
+          <div className="flex items-center gap-2">
+            <Form.Item name="quantityAudiosClose">
               <InputNumber
-                size="large"
-                max={255}
                 addonBefore={<IoHeadsetOutline />}
-                placeholder={Strings.quantityAudios}
+                placeholder={Strings.cardTypeTreeQuantityAudiosPlaceholder}
               />
             </Form.Item>
             <Tooltip title={Strings.quantityAudiosCloseTooltip}>
-              <QuestionCircleOutlined className="ml-2 mr-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
-
-            <Form.Item name="audiosDurationClose" validateFirst>
+            <Form.Item name="audiosDurationClose">
               <InputNumber
-                size="large"
-                maxLength={10}
                 addonBefore={<IoHeadsetOutline />}
                 placeholder={Strings.durationInSeconds}
               />
             </Form.Item>
             <Tooltip title={Strings.audiosDurationCloseTooltip}>
-              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
+              <QuestionCircleOutlined className="text-blue-500 mb-6" />
             </Tooltip>
           </div>
         </div>
-            <div className="flex">
-            <Form.Item className="w-60" name="status">
-          <Select size="large" options={statusOptions()} />
-        </Form.Item>
-        <Tooltip title={Strings.statusCardTypeTooltip}>
-              <QuestionCircleOutlined className="ml-3.5 mr-2 mb-6 text-sm text-blue-500" />
-            </Tooltip>
-            </div>
+
+        <div className="flex justify-end gap-4 mt-4">
+          <Button type="primary" htmlType="submit">
+            {Strings.save}
+          </Button>
+        </div>
       </div>
     </Form>
   );

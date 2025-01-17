@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Tree from "react-d3-tree";
 import Strings from "../../utils/localizations/Strings";
-import PageTitle from "../../components/PageTitle";
 import LevelDetails from "./components/LevelDetails";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -48,6 +47,9 @@ interface Props {
 }
 
 const Levels = ({}: Props) => {
+
+  const contextMenuRef = useRef<HTMLDivElement | null>(null);
+
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
 
@@ -83,6 +85,25 @@ const Levels = ({}: Props) => {
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
 
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target as Node)
+      ) {
+        setContextMenuVisible(false); 
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [contextMenuVisible]);
+  
+
   useEffect(() => {
     handleGetLevels();
   }, [location.state]);
@@ -96,6 +117,8 @@ const Levels = ({}: Props) => {
       }
     };
 
+
+    
     updateDrawerPlacement();
     window.addEventListener("resize", updateDrawerPlacement);
 
@@ -157,6 +180,8 @@ const Levels = ({}: Props) => {
     setContextMenuVisible(false);
   };
 
+  
+
   const handleUpdateLevel = () => {
     closeAllDrawers();
     setDrawerType("update");
@@ -174,16 +199,13 @@ const Levels = ({}: Props) => {
     closeAllDrawers();
     setDrawerType("clone");
     createForm.resetFields();
-
+      console.log(selectedNode?.data);
     if (selectedNode?.data) {
-      createForm.setFieldsValue(selectedNode.data);
+      const { name, description,levelMachineId,  ...filteredData } = selectedNode.data;
+      createForm.setFieldsValue(filteredData);
     }
 
     setDrawerVisible(true);
-    setContextMenuVisible(false);
-  };
-
-  const handleCloseContextMenu = () => {
     setContextMenuVisible(false);
   };
 
@@ -238,9 +260,24 @@ const Levels = ({}: Props) => {
   };
 
   const renderCustomNodeElement = (rd3tProps: any) => {
-    const { nodeDatum } = rd3tProps;
-    const isLeaf = !nodeDatum.children || nodeDatum.children.length === 0;
-    const fillColor = isLeaf ? "#ffff00" : "#145695";
+    const { nodeDatum, toggleNode } = rd3tProps; 
+
+    
+
+    const getFillColor = (status: string | undefined) => {
+      switch (status) {
+        case Strings.detailsOptionC:
+          return "#383838"; 
+        case Strings.detailsOptionS:
+          return "#999999"; 
+        case Strings.activeStatus:
+        default:
+          return "#145695"; 
+      }
+    };
+
+    const fillColor = getFillColor(nodeDatum.status); 
+
 
     const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
       e.preventDefault();
@@ -264,8 +301,27 @@ const Levels = ({}: Props) => {
 
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
-      handleShowDetails(nodeDatum.id);
+      setContextMenuVisible(false); 
+      handleShowDetails(nodeDatum.id); 
+      toggleNode(); 
     };
+    
+    
+    return (
+      <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+        <text
+          fill="black"
+          strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
+          x={nodeDatum.id === "0" ? -200 : 20}
+          y={nodeDatum.id === "0" ? 0 : 20}
+          style={{ fontSize: "14px" }}
+        >
+          {nodeDatum.name}
+        </text>
+      </g>
+    );
+    
 
     return (
       <g onContextMenu={handleContextMenu} onClick={handleLeftClick}>
@@ -287,14 +343,13 @@ const Levels = ({}: Props) => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex flex-col gap-2 items-center py-4">
-        <PageTitle mainText={Strings.levelsOf} subText={siteName} />
-      </div>
-
       <div
         ref={containerRef}
         className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
+        onPointerDown={() => {
+          setContextMenuVisible(false); 
+        }}
       >
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
@@ -304,10 +359,10 @@ const Levels = ({}: Props) => {
           treeData.length > 0 && (
             <Tree
               data={treeData}
-              collapsible={false}
               orientation="horizontal"
               translate={translate}
               renderCustomNodeElement={renderCustomNodeElement}
+              collapsible={true}
             />
           )
         )}
@@ -329,12 +384,6 @@ const Levels = ({}: Props) => {
               >
                 {Strings.levelsTreeOptionCreate}
               </Button>
-              <Button
-                className="w-28 bg-red-700 text-white mx-auto"
-                onClick={handleCloseContextMenu}
-              >
-                {Strings.levelsTreeOptionClose}
-              </Button>
             </>
           ) : (
             <>
@@ -355,12 +404,6 @@ const Levels = ({}: Props) => {
                 onClick={handleCloneLevel}
               >
                 {Strings.levelsTreeOptionClone}
-              </Button>
-              <Button
-                className="w-28 bg-red-700 text-white mx-auto"
-                onClick={handleCloseContextMenu}
-              >
-                {Strings.levelsTreeOptionClose}
               </Button>
             </>
           )}
