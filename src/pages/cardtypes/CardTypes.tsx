@@ -377,17 +377,35 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const isRoot = nodeDatum.__rd3t.depth === 0;
     const isPreclassifier = nodeDatum.nodeType === "preclassifier";
 
-    const fillColor = isRoot
+    const getStatusColor = (status: string | undefined) => {
+      switch (status) {
+        case Strings.detailsOptionS:
+          return "#999999";
+        case Strings.detailsOptionC:
+          return "#383838";
+        default:
+          return null;
+      }
+    };
+
+    
+    const statusColor = getStatusColor(nodeDatum.status);
+
+    
+    const fillColor = statusColor
+      ? statusColor 
+      : nodeDatum.__rd3t.depth === 0 
       ? "#145695"
-      : isPreclassifier
+      : nodeDatum.nodeType === "preclassifier" 
       ? "#FFFF00"
       : "#145695";
 
-    const textStyles = {
-      fontSize: isRoot ? "26px" : "16px",
-      fontWeight: "light",
-      fill: "#000",
-    };
+      const textStyles = {
+        fontSize: isRoot ? "26px" :  isPreclassifier ? "16px" : "20px",
+        fontWeight: "300 !important", 
+        fontFamily: "Arial, sans-serif", 
+        fill: "#000", 
+      };
 
     const handleEditPre = () => {
       handleDrawerOpen(
@@ -401,7 +419,6 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         nodeDatum
       );
     };
-    const handleCancelPre = () => {};
 
     const preMenu = [
       {
@@ -422,22 +439,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         ),
         onClick: handleClonePre,
       },
-      {
-        key: "cancelPre",
-        label: (
-          <button className="w-28 bg-red-700 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesCancel}
-          </button>
-        ),
-        onClick: handleCancelPre,
-      },
     ];
 
     const handleCreateCardType = () => {
       handleDrawerOpen(Strings.cardTypesDrawerTypeCreateCardType);
     };
-    const handleCancelRoot = () => {};
-
     const rootMenu = [
       {
         key: "createCT",
@@ -447,15 +453,6 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           </button>
         ),
         onClick: handleCreateCardType,
-      },
-      {
-        key: "cancelRoot",
-        label: (
-          <button className="w-28 bg-red-700 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesCancel}
-          </button>
-        ),
-        onClick: handleCancelRoot,
       },
     ];
 
@@ -470,8 +467,6 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         cardTypeId: nodeDatum.id,
       });
     };
-    const handleCancelCT = () => {};
-
     const ctMenu = [
       {
         key: Strings.cardTypesOptionEdit,
@@ -499,15 +494,6 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           </button>
         ),
         onClick: handleCreatePre,
-      },
-      {
-        key: Strings.cardTypesOptionCancel,
-        label: (
-          <button className="w-28 bg-red-700 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesCancel}
-          </button>
-        ),
-        onClick: handleCancelCT,
       },
     ];
 
@@ -539,12 +525,18 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       return (
         <g>
           <Dropdown menu={{ items: rootMenu }} trigger={["contextMenu"]}>
-            <circle r={22} fill={fillColor} style={{ cursor: "pointer" }} stroke="none" strokeWidth={0} />
+            <circle
+              r={22}
+              fill={fillColor}
+              style={{ cursor: "pointer" }}
+              stroke="none"
+              strokeWidth={0}
+            />
           </Dropdown>
           <text
-            x={-200}
-            y={-40}
-            style={{ fontSize: "18px", fill: "#1e88e5", fontWeight: "normal" }}
+            x={-300}
+            y={-50}
+            style={{ fontSize: "24px", fontWeight: "normal" }}
           >
             {Strings.cardType}{" "}
             {location.state?.siteName || Strings.defaultSiteName}
@@ -558,10 +550,10 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         <Dropdown menu={{ items: ctMenu }} trigger={["contextMenu"]}>
           <circle
             r={18}
-             stroke="none"
+            stroke="none"
             strokeWidth={0}
             fill={fillColor}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer"}}
             onClick={(e) => {
               e.stopPropagation();
               handleShowDetails(nodeDatum);
@@ -571,7 +563,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         <text
           x={20}
           y={35}
-          style={{ fontSize: "16px", fill: "#000", fontWeight: "normal" }}
+          style={textStyles}
         >
           {nodeDatum.name}
         </text>
