@@ -389,8 +389,23 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const renderCustomNodeElement = (rd3tProps: any) => {
     const { nodeDatum, toggleNode } = rd3tProps;
 
+    
+
     const isRoot = nodeDatum.__rd3t.depth === 0;
     const isPreclassifier = nodeDatum.nodeType === "preclassifier";
+
+
+    const getCollapsedState = (nodeId: string): boolean => {
+      const storedState = localStorage.getItem(`node_${nodeId}_collapsed`);
+      return storedState === "true"; // Convertir a booleano
+    };
+    
+    const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
+      localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
+    };
+    
+    const isCollapsed = getCollapsedState(nodeDatum.id);
+  nodeDatum.__rd3t.collapsed = isCollapsed;
 
     const getStatusColor = (status: string | undefined) => {
       switch (status) {
@@ -430,6 +445,10 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
       handleShowDetails(nodeDatum);
+
+      const newCollapsedState = !nodeDatum.__rd3t.collapsed;
+    setCollapsedState(nodeDatum.id, newCollapsedState);
+
       toggleNode();
     };
 

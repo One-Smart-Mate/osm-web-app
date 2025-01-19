@@ -42,12 +42,13 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
+const isLeafNode = (node: any) => !node.children || node.children.length === 0;
+
 interface Props {
   role: UserRoles;
 }
 
 const Levels = ({}: Props) => {
-
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [createForm] = Form.useForm();
@@ -85,24 +86,22 @@ const Levels = ({}: Props) => {
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
 
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         contextMenuRef.current &&
         !contextMenuRef.current.contains(event.target as Node)
       ) {
-        setContextMenuVisible(false); 
+        setContextMenuVisible(false);
       }
     };
-  
+
     document.addEventListener("click", handleClickOutside);
-  
+
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, [contextMenuVisible]);
-  
 
   useEffect(() => {
     handleGetLevels();
@@ -117,8 +116,6 @@ const Levels = ({}: Props) => {
       }
     };
 
-
-    
     updateDrawerPlacement();
     window.addEventListener("resize", updateDrawerPlacement);
 
@@ -161,7 +158,6 @@ const Levels = ({}: Props) => {
     setDetailsVisible(false);
     setDrawerVisible(false);
   };
-  
 
   const handleCreateLevel = () => {
     closeAllDrawers();
@@ -180,8 +176,6 @@ const Levels = ({}: Props) => {
     setContextMenuVisible(false);
   };
 
-  
-
   const handleUpdateLevel = () => {
     closeAllDrawers();
     setDrawerType("update");
@@ -199,9 +193,10 @@ const Levels = ({}: Props) => {
     closeAllDrawers();
     setDrawerType("clone");
     createForm.resetFields();
-      console.log(selectedNode?.data);
+    console.log(selectedNode?.data);
     if (selectedNode?.data) {
-      const { name, description,levelMachineId,  ...filteredData } = selectedNode.data;
+      const { name, description, levelMachineId, ...filteredData } =
+        selectedNode.data;
       createForm.setFieldsValue(filteredData);
     }
 
@@ -260,24 +255,34 @@ const Levels = ({}: Props) => {
   };
 
   const renderCustomNodeElement = (rd3tProps: any) => {
-    const { nodeDatum, toggleNode } = rd3tProps; 
+    const { nodeDatum, toggleNode } = rd3tProps;
 
-    
+    const getCollapsedState = (nodeId: string): boolean => {
+      const storedState = localStorage.getItem(`node_${nodeId}_collapsed`);
+      return storedState === "true";
+    };
+
+    const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
+      localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
+    };
+
+    const isCollapsed = getCollapsedState(nodeDatum.id);
+
+    nodeDatum.__rd3t.collapsed = isCollapsed;
 
     const getFillColor = (status: string | undefined) => {
       switch (status) {
         case Strings.detailsOptionC:
-          return "#383838"; 
+          return "#383838";
         case Strings.detailsOptionS:
-          return "#999999"; 
+          return "#999999";
         case Strings.activeStatus:
         default:
-          return "#145695"; 
+          return isLeafNode(nodeDatum) ? "#FFFF00" : "#145695";
       }
     };
 
-    const fillColor = getFillColor(nodeDatum.status); 
-
+    const fillColor = getFillColor(nodeDatum.status);
 
     const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
       e.preventDefault();
@@ -301,30 +306,18 @@ const Levels = ({}: Props) => {
 
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
-      setContextMenuVisible(false); 
-      handleShowDetails(nodeDatum.id); 
-      toggleNode(); 
+      setContextMenuVisible(false);
+
+      const newCollapsedState = !nodeDatum.__rd3t.collapsed;
+      setCollapsedState(nodeDatum.id, newCollapsedState);
+
+      handleShowDetails(nodeDatum.id);
+
+      toggleNode();
     };
-    
-    
-    return (
-      <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
-        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
-        <text
-          fill="black"
-          strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
-          x={nodeDatum.id === "0" ? -200 : 20}
-          y={nodeDatum.id === "0" ? 0 : 20}
-          style={{ fontSize: "14px" }}
-        >
-          {nodeDatum.name}
-        </text>
-      </g>
-    );
-    
 
     return (
-      <g onContextMenu={handleContextMenu} onClick={handleLeftClick}>
+      <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
         <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
         <text
           fill="black"
@@ -348,7 +341,7 @@ const Levels = ({}: Props) => {
         className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
         onPointerDown={() => {
-          setContextMenuVisible(false); 
+          setContextMenuVisible(false);
         }}
       >
         {isLoading ? (
@@ -412,15 +405,11 @@ const Levels = ({}: Props) => {
 
       {detailsVisible && selectedLevelId && (
         <Drawer
-          mask={false} 
-          maskClosable={false} 
-          title={
-            Strings.levelDetailsTitle.concat(
-              selectedNode?.data?.name
-                ? `: ${selectedNode.data.name}`
-                : ""
-            )
-          }
+          mask={false}
+          maskClosable={false}
+          title={Strings.levelDetailsTitle.concat(
+            selectedNode?.data?.name ? `: ${selectedNode.data.name}` : ""
+          )}
           placement={drawerPlacement}
           height={drawerPlacement === "bottom" ? "50vh" : undefined}
           width={drawerPlacement === "right" ? 400 : undefined}
@@ -438,27 +427,27 @@ const Levels = ({}: Props) => {
       )}
 
       <Drawer
- title={
-  drawerType === Strings.drawerTypeCreate
-    ? Strings.levelsTreeOptionCreate.concat(
-        selectedNode?.data?.name
-          ? ` ${Strings.for} "${selectedNode.data.name}"`
-          : Strings.empty
-      )
-    : drawerType === Strings.drawerTypeEdit
-    ? Strings.levelsTreeOptionEdit.concat(
-        selectedNode?.data?.name
-          ? ` "${selectedNode.data.name}" ${Strings.level}`
-          : Strings.empty
-      )
-    : drawerType === Strings.drawerTypeClone
-    ? Strings.levelsTreeOptionClone.concat(
-        selectedNode?.data?.name
-          ? ` "${selectedNode.data.name}" ${Strings.level}`
-          : Strings.empty
-      )
-    : Strings.empty
-}
+        title={
+          drawerType === Strings.drawerTypeCreate
+            ? Strings.levelsTreeOptionCreate.concat(
+                selectedNode?.data?.name
+                  ? ` ${Strings.for} "${selectedNode.data.name}"`
+                  : Strings.empty
+              )
+            : drawerType === Strings.drawerTypeEdit
+            ? Strings.levelsTreeOptionEdit.concat(
+                selectedNode?.data?.name
+                  ? ` "${selectedNode.data.name}" ${Strings.level}`
+                  : Strings.empty
+              )
+            : drawerType === Strings.drawerTypeClone
+            ? Strings.levelsTreeOptionClone.concat(
+                selectedNode?.data?.name
+                  ? ` "${selectedNode.data.name}" ${Strings.level}`
+                  : Strings.empty
+              )
+            : Strings.empty
+        }
         placement={drawerPlacement}
         height={drawerPlacement === "bottom" ? "50vh" : undefined}
         width={drawerPlacement === "right" ? 400 : undefined}
@@ -467,8 +456,8 @@ const Levels = ({}: Props) => {
         destroyOnClose
         closable={true}
         className="drawer-responsive"
-        mask={false} 
-        maskClosable={false} 
+        mask={false}
+        maskClosable={false}
       >
         <Form.Provider
           onFormFinish={async (_name, { values }) => {
@@ -487,7 +476,10 @@ const Levels = ({}: Props) => {
                 type="primary"
                 loading={isLoading}
                 onClick={() => {
-                  if (drawerType === Strings.drawerTypeCreate || drawerType === Strings.drawerTypeClone) {
+                  if (
+                    drawerType === Strings.drawerTypeCreate ||
+                    drawerType === Strings.drawerTypeClone
+                  ) {
                     createForm.submit();
                   } else if (drawerType === Strings.drawerTypeEdit) {
                     updateForm.submit();
