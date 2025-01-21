@@ -396,8 +396,9 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
 
 
     const getCollapsedState = (nodeId: string): boolean => {
-      const storedState = localStorage.getItem(`node_${nodeId}_collapsed`);
-      return storedState === "true"; // Convertir a booleano
+      const storedState:string | null = (localStorage.getItem(`node_${nodeId}_collapsed`)) ;
+      const booleanState: boolean = JSON.parse(storedState ?? Strings.false); // Parse the state
+      return booleanState;  
     };
     
     const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
@@ -582,8 +583,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           <Dropdown
             menu={{ items: rootMenu }}
             trigger={["contextMenu"]}
-            open={rootMenuVisible} // Controla la visibilidad con el estado
-            onOpenChange={(open) => setRootMenuVisible(open)} // Sincroniza el estado
+            open={rootMenuVisible} 
+            onOpenChange={(open) => setRootMenuVisible(open)} 
           >
             <circle
               r={22}
