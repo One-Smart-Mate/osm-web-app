@@ -81,12 +81,12 @@ const ResetPassword = () => {
         <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
           <Meta
             title={
-              <h1 className="text-center text-3xl block font-semibold text-white">
+              <h1 className="text-center text-3xl block font-semibold">
                 {Strings.resetPassword}
               </h1>
             }
             description={
-              <p className="block text-base text-white">
+              <p className="block text-bas">
                 {Strings.sendCodeMessage}
               </p>
             }
@@ -100,7 +100,7 @@ const ResetPassword = () => {
             <Form.Item name="email" rules={[{ validator: validateEmail }]}>
               <Input
                 size="large"
-                addonBefore={<MailOutlined className="text-white" />}
+                addonBefore={<MailOutlined className="" />}
                 placeholder={Strings.email}
               />
             </Form.Item>
@@ -124,12 +124,12 @@ const ResetPassword = () => {
         <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
           <Meta
             title={
-              <h1 className="text-center text-3xl block font-semibold text-white">
+              <h1 className="text-center text-3xl block font-semibol">
                 {Strings.enterCode}
               </h1>
             }
             description={
-              <p className="block text-base text-white">
+              <p className="block text-base">
                 {Strings.enterTheCode}
               </p>
             }
