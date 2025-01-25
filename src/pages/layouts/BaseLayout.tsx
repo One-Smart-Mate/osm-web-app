@@ -173,7 +173,7 @@ const BaseLayout: React.FC = () => {
           />
         </Header>
         <Content
-          className="p-3 mt-6 ml-4 mr-4"
+          className="p-2 mt-3 ml-3 mr-3"
           style={contentStyle(colorBgContainer, borderRadiusLG)}
         >
           <span className="absolute bottom-0 right-8 text-xs md:text-sm">
