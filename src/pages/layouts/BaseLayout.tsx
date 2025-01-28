@@ -20,6 +20,7 @@ import {
 } from "../../utils/Extensions";
 import Logout from "../auth/Logout";
 import Routes, { UnauthorizedRoute } from "../../utils/Routes";
+import LanguageDropdown from "./LanguageDropdown";
 
 const { Header, Sider, Content } = Layout;
 
@@ -164,13 +165,14 @@ const BaseLayout: React.FC = () => {
         </div>
       </Sider>
       <Layout>
-        <Header style={headerStyle(colorBgContainer)}>
+        <Header style={headerStyle(colorBgContainer)} className="d-flex justify-between">
           <Button
             type="text"
             icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!isCollapsed)}
-            style={buttonSiderStyle}
+            style={buttonSiderStyle}  
           />
+          <LanguageDropdown />
         </Header>
         <Content
           className="p-2 mt-3 ml-3 mr-3"

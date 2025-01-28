@@ -9,6 +9,10 @@ const mechanic = "mechanic";
 const localAdmin = "local_admin";
 const localSisAdmin = "local_sis_admin";
 
+const enOption = "English";
+const esOption = "Español"
+
+
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -20,4 +24,6 @@ export default {
   mechanic,
   localAdmin,
   localSisAdmin,
+  esOption,
+  enOption
 };
