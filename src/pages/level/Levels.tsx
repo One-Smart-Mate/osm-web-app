@@ -48,7 +48,7 @@ interface Props {
   role: UserRoles;
 }
 
-const Levels = ({}: Props) => {
+const Levels = ({role}: Props) => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [createForm] = Form.useForm();
@@ -361,7 +361,7 @@ const Levels = ({}: Props) => {
         )}
       </div>
 
-      {contextMenuVisible && (
+      {contextMenuVisible && role !== UserRoles.LOCALSYSADMIN &&(
         <div
           className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
           style={{
