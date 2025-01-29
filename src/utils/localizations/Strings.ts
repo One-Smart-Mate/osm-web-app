@@ -563,6 +563,12 @@ static preclassifierDetailsStatus = "preclassifierDetailsStatus";
 static notSpecified = "notSpecified";
 static false = "false"
 
+ //PDF 
+ static tagDetails = "tagDetails"
+ static problemDetails= "problemDetails"
+ static sharePDF= "sharePDF"
+ static namePDF = "namePDF"
+
 }
 
 const Strings = new Proxy(StringsBase, {

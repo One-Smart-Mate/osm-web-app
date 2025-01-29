@@ -20,7 +20,7 @@ const CompanyCard = ({ data }: CompanyCardProps) => {
     {
       key: "1",
       label: (
-        <ViewSitesButton companyId={data.id} companyName={data.name} />
+        <ViewSitesButton companyId={data.id} companyName={data.name} companyAddress={data.address} companyPhone={data.phone} companyLogo={data.logo}  />
       ),
     },
     {

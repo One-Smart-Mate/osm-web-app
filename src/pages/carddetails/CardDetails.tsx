@@ -21,6 +21,9 @@ import NoteCollapseV2 from "./components/NoteCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
 import PageTitleTag from "../../components/PageTitleTag";
 import { Divider, Typography } from "antd";
+import PdfContent from "./components/PDFContent";
+import ExportPdfButton from "./components/ButtonPDF";
+
 
 const { Text } = Typography;
 
@@ -103,7 +106,14 @@ const CardDetails = () => {
           <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
         </div>
 
+        <div className="ms-auto my-5 mx-12">
+          <ExportPdfButton targetId="pdf-content" filename={Strings.namePDF} />
+        </div>
+        <br />
+
         <div className="flex flex-col overflow-y-auto overflow-x-clipb gap-2">
+
+
           {data ? (
             <InfoCollapseV2
               data={data}
@@ -129,7 +139,7 @@ const CardDetails = () => {
             <LoadingCard />
           )}
 
-          <Divider style={{ borderColor: "#808080"}}>
+          <Divider style={{ borderColor: "#808080" }}>
             <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
               {Strings.changeLogDivider}
             </Text>
@@ -138,6 +148,15 @@ const CardDetails = () => {
           <div className="flex flex-col items-center m-3">
             {!isLoading ? <NoteCollapseV2 data={notes} /> : <LoadingCard />}
           </div>
+
+          <div className="App">
+            <div style={{ opacity: 0 }}>
+              <div id="pdf-content">
+                <PdfContent />
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </>

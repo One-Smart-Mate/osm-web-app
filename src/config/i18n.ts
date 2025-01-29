@@ -200,7 +200,7 @@ const resources = {
       // Tags re-design
       tagsOf: "Tags of",
       filters: "Filters",
-      status: "Status ",
+      status: "Status: ",
       dueDate: "Due date: ",
       cardType: "Tag type: ",
       problemType: "Problem type: ",
@@ -572,7 +572,13 @@ preclassifierDetailsCode: "Code",
 preclassifierDetailsDescription: "Description",
 preclassifierDetailsStatus: "Status",
 notSpecified: "Not Specified",
-false: "false"
+false: "false",
+
+//PDF
+tagDetails : "Tag details",
+problemDetails: "Problem details",
+sharePDF: "Share PDF",
+namePDF: "Tag details.pdf"
 
     },
   },
@@ -830,7 +836,7 @@ false: "false"
       // Tags re-design
       tagsOf: "Etiquetas de",
       filters: "Filtros",
-      status: "Estado ",
+      status: "Estado: ",
       dueDate: "Fecha de vencimiento: ",
       cardType: "Tipo de etiqueta: ",
       problemType: "Tipo de problema: ",
@@ -1202,7 +1208,13 @@ preclassifierDetailsCode: "Código",
 preclassifierDetailsDescription: "Descripción",
 preclassifierDetailsStatus: "Estado",
 notSpecified: "No especificado",
-false: "false"
+false: "false",
+
+//PDF 
+tagDetails : "Detalles de la tarjeta",
+problemDetails: "Detalles del problema",
+sharePDF: "Compartir PDF",
+namePDF: "Detalles de la tarjeta.pdf"
 
     },
   },
