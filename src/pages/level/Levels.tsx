@@ -361,7 +361,7 @@ const Levels = ({role}: Props) => {
         )}
       </div>
 
-      {contextMenuVisible && role !== UserRoles.LOCALSYSADMIN &&(
+      {contextMenuVisible && (role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN) &&(
         <div
           className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
           style={{
