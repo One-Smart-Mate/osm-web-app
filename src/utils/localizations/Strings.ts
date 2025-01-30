@@ -569,6 +569,11 @@ static false = "false"
  static sharePDF= "sharePDF"
  static namePDF = "namePDF"
 
+
+ //Login 
+ static logImgDesc = "logImgDesc"
+ static enSub = "enSub"
+
 }
 
 const Strings = new Proxy(StringsBase, {
