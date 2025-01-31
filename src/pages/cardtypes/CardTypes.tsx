@@ -1,206 +1,726 @@
-import { useEffect, useState } from "react";
-import { Form, Input, List, Space } from "antd";
-import { IoIosSearch } from "react-icons/io";
-import Strings from "../../utils/localizations/Strings";
-import CustomButton from "../../components/CustomButtons";
+import { Drawer, Dropdown, Form, Spin } from "antd";
+import { useEffect, useRef, useState } from "react";
+import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
-import CardTypesTable from "./components/CardTypesTable";
-import { CardTypes } from "../../data/cardtypes/cardTypes";
-import PaginatedList from "../../components/PaginatedList";
-import CardTypesCard from "./components/CardTypesCard";
-import ModalForm from "../../components/ModalForm";
+import Strings from "../../utils/localizations/Strings";
 import RegisterCardTypeForm from "./components/RegisterCardTypeForm";
-import { CreateCardType } from "../../data/cardtypes/cardTypes.request";
+import UpdateCardTypeForm from "./components/UpdateCardTypeForm";
+import RegisterPreclassifierForm2 from "./components/preclassifier/RegisterPreclassifierForm";
+import UpdatePreclassifierForm2 from "./components/preclassifier/UpdatePreclassifierForm";
 import {
   NotificationSuccess,
   handleErrorNotification,
   handleSucccessNotification,
 } from "../../utils/Notifications";
 import {
-  resetCardTypeUpdatedIndicator,
-  selectCardTypeUpdatedIndicator,
-  setSiteId,
-} from "../../core/genericReducer";
-import { useAppDispatch, useAppSelector } from "../../core/store";
-import PageTitle from "../../components/PageTitle";
+  useCreateCardTypeMutation,
+  useGetCardTypesMutation,
+  useUpdateCardTypeMutation,
+} from "../../services/CardTypesService";
+import {
+  useCreatePreclassifierMutation,
+  useGetPreclassifiersMutation,
+  useUpdatePreclassifierMutation,
+} from "../../services/preclassifierService";
+import { setSiteId } from "../../core/genericReducer";
+import { useAppDispatch } from "../../core/store";
+import { CardTypes } from "../../data/cardtypes/cardTypes";
+import {
+  CreateCardType,
+  UpdateCardTypeReq,
+} from "../../data/cardtypes/cardTypes.request";
+import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
 import { UserRoles } from "../../utils/Extensions";
-import { UnauthorizedRoute } from "../../utils/Routes";
-import { useCreateCardTypeMutation, useGetCardTypesMutation } from "../../services/CardTypesService";
+import CardTypeDetails from "./components/CardTypeDetails";
+import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 
-interface CardTypeProps {
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState<boolean>(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [matches, query]);
+
+  return matches;
+}
+
+interface LocationState {
+  siteId: string;
+  siteName: string;
+}
+
+type DrawerType =
+  | typeof Strings.cardTypesDrawerTypeCreateCardType
+  | typeof Strings.cardTypesDrawerTypeUpdateCardType
+  | typeof Strings.cardTypesDrawerTypeCreatePreclassifier
+  | typeof Strings.cardTypesDrawerTypeUpdatePreclassifier
+  | null;
+
+const buildHierarchy = (
+  data: CardTypes[],
+  siteId: string,
+  preclassifiersMap: { [cardTypeId: string]: any[] }
+) => {
+  const map: { [key: string]: any } = {};
+  const tree: any[] = [];
+
+  data.forEach((node) => {
+    map[node.id] = {
+      ...node,
+      name: node.name,
+      nodeType: "cardType",
+      children: [],
+      collapsed: false,
+    };
+    const preclassifiers = preclassifiersMap[node.id] || [];
+    if (preclassifiers.length > 0) {
+      map[node.id].children = preclassifiers.map((pc) => ({
+        ...pc,
+        name: pc.preclassifierDescription,
+        nodeType: "preclassifier",
+        cardTypeId: pc.cardTypeId,
+        children: [],
+      }));
+    }
+  });
+
+  data.forEach((node) => {
+    if (`${node.siteId}` === `${siteId}`) {
+      tree.push(map[node.id]);
+    } else if (map[node.siteId]) {
+      map[node.siteId].children.push(map[node.id]);
+    }
+  });
+
+  return tree;
+};
+
+interface CardTypesTreeProps {
   rol: UserRoles;
 }
 
-const CardTypess = ({ rol }: CardTypeProps) => {
+const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const [getCardTypes] = useGetCardTypesMutation();
-  const [isLoading, setLoading] = useState(false);
-  const location = useLocation();
-  const [data, setData] = useState<CardTypes[]>([]);
-  const [querySearch, setQuerySearch] = useState(Strings.empty);
-  const [dataBackup, setDataBackup] = useState<CardTypes[]>([]);
-  const [modalIsOpen, setModalOpen] = useState(false);
-  const [registerCardType] = useCreateCardTypeMutation();
-  const [modalIsLoading, setModalLoading] = useState(false);
-  const dispatch = useAppDispatch();
-  const isCardTypeUpdated = useAppSelector(selectCardTypeUpdatedIndicator);
+  const [createCardType] = useCreateCardTypeMutation();
+  const [updateCardType] = useUpdateCardTypeMutation();
+  const [getPreclassifiers] = useGetPreclassifiersMutation();
+  const [createPreclassifier] = useCreatePreclassifierMutation();
+  const [updatePreclassifier] = useUpdatePreclassifierMutation();
+
+  const [treeData, setTreeData] = useState<any[]>([]);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerType, setDrawerType] = useState<DrawerType>(null);
+  const [formData, setFormData] = useState<any>(null);
+
+  const [detailsVisible, setDetailsVisible] = useState(false);
+  const [detailsNode, setDetailsNode] = useState<any>(null);
+
+  const [createForm] = Form.useForm();
+  const [updateForm] = Form.useForm();
+  const [createPreForm] = Form.useForm();
+  const [updatePreForm] = Form.useForm();
+
+  const [rootMenuVisible, setRootMenuVisible] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const location = useLocation() as unknown as Location & {
+    state: LocationState;
+  };
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const stripCloneSuffix = (original: string) => {
+    return original.replace(/\(Clone.*\)$/i, Strings.empty).trim();
+  };
+
+  const formatColor = (colorValue: any) => {
+    if (!colorValue) return "transparent";
+    let c =
+      typeof colorValue === "string"
+        ? colorValue
+        : colorValue?.toHex?.() || Strings.empty;
+    return c.startsWith("#") ? c.slice(1) : c;
+  };
 
   useEffect(() => {
-    if (isCardTypeUpdated) {
-      handleGetPriorities();
-      dispatch(resetCardTypeUpdatedIndicator());
-    }
-  }, [isCardTypeUpdated, dispatch]);
+    const handleClickOutside = () => {
+      setRootMenuVisible(false);
+    };
 
-  const handleOnClickCreateButton = () => {
-    setModalOpen(true);
-  };
-  const handleOnCancelButton = () => {
-    if (!modalIsLoading) {
-      setModalOpen(false);
-    }
-  };
+    document.addEventListener("click", handleClickOutside);
 
-  const handleOnSearch = (event: any) => {
-    const getSearch = event.target.value;
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
-    if (getSearch.length > 0) {
-      const filterData = dataBackup.filter((item) => search(item, getSearch));
-
-      setData(filterData);
+  useEffect(() => {
+    if (location?.state?.siteId) {
+      handleLoadData(location.state.siteId);
     } else {
-      setData(dataBackup);
+      navigate("/unauthorized");
     }
-    setQuerySearch(getSearch);
-  };
-
-  const search = (item: CardTypes, search: string) => {
-    const { name, methodology } = item;
-
-    return (
-      name.toLowerCase().includes(search.toLowerCase()) ||
-      methodology.toLowerCase().includes(search.toLowerCase())
-    );
-  };
-
-  const handleGetPriorities = async () => {
-    if (!location.state) {
-      navigate(UnauthorizedRoute);
-      return;
-    }
-    setLoading(true);
-    const response = await getCardTypes(location.state.siteId).unwrap();
-    setData(response);
-    setDataBackup(response);
-    dispatch(setSiteId(location.state.siteId));
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    handleGetPriorities();
   }, [location.state]);
 
-  const handleOnFormCreateFinish = async (values: any) => {
+  const handleLoadData = async (siteId: string) => {
+    setLoading(true);
     try {
-      setModalLoading(true);
-      const aux = values.cardTypeMethodology.split(" - ");
-      const cardTypeMethodology = aux[1];
-      const methodologyName = aux[0];
-      await registerCardType(
-        new CreateCardType(
+      const cardTypesResponse = await getCardTypes(siteId).unwrap();
+
+      const promises = cardTypesResponse.map(async (ct) => {
+        const preclassResp = await getPreclassifiers(String(ct.id)).unwrap();
+        return { cardTypeId: ct.id, preclassifiers: preclassResp };
+      });
+
+      const results = await Promise.all(promises);
+      const preclassMap: { [key: string]: any[] } = {};
+
+      results.forEach((r) => {
+        preclassMap[r.cardTypeId] = r.preclassifiers;
+      });
+
+      const hierarchy = buildHierarchy(cardTypesResponse, siteId, preclassMap);
+      setTreeData([
+        {
+          name: `${Strings.cardType} ${location.state.siteName}`,
+          nodeType: "cardType",
+          children: hierarchy,
+        },
+      ]);
+
+      dispatch(setSiteId(siteId));
+
+      if (containerRef.current) {
+        const { offsetWidth, offsetHeight } = containerRef.current;
+        setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
+      }
+    } catch (err) {
+      console.error(Strings.cardTypesErrorFetchingData, err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerVisible(false);
+    setDrawerType(null);
+    setFormData(null);
+    setSelectedNode(null);
+
+    createForm.resetFields();
+    updateForm.resetFields();
+    createPreForm.resetFields();
+    updatePreForm.resetFields();
+  };
+
+  const handleDrawerOpen = (type: DrawerType, data: any = null) => {
+    setDrawerType(type);
+    setDrawerVisible(true);
+    setSelectedNode(data || null);
+
+    let nextFormData: any = data || {};
+
+    if (type === Strings.cardTypesDrawerTypeCreateCardType && data) {
+      const baseName = stripCloneSuffix(data.name);
+      const formattedMethodology =
+        typeof data.cardTypeMethodology === "string"
+          ? data.cardTypeMethodology
+          : `${data.cardTypeMethodologyName || Strings.empty} - ${
+              data.cardTypeMethodology || Strings.empty
+            }`;
+
+      nextFormData = {
+        ...data,
+        cardTypeMethodology: formattedMethodology,
+        name: `${baseName} ${Strings.cardTypesCloneSuffix}`,
+      };
+    }
+
+    if (type === Strings.cardTypesDrawerTypeCreateCardType && !data) {
+      nextFormData = {};
+    }
+
+    if (type === Strings.cardTypesDrawerTypeCreatePreclassifier && data) {
+      if (data.preclassifierCode) {
+        const baseDesc = stripCloneSuffix(
+          data.preclassifierDescription || Strings.empty
+        );
+        nextFormData = {
+          ...data,
+          code: data.preclassifierCode,
+          description: `${baseDesc} ${Strings.cardTypesCloneSuffix}`,
+          cardTypeId: data.cardTypeId,
+        };
+      } else {
+        nextFormData = {
+          ...data,
+          code: Strings.empty,
+          description: Strings.empty,
+          cardTypeId: data.cardTypeId,
+        };
+      }
+    }
+
+    setFormData(nextFormData);
+  };
+
+  const handleOnFormFinish = async (values: any) => {
+    try {
+      setLoading(true);
+
+      if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
+        if (!values.cardTypeMethodology) {
+          throw new Error(Strings.cardTypesMethodologyError);
+        }
+
+        const aux = values.cardTypeMethodology.split(" - ");
+        const cardTypeMethodology = aux[1];
+        const methodologyName = aux[0];
+
+        const newCardType = new CreateCardType(
           cardTypeMethodology,
           Number(location.state.siteId),
           methodologyName,
-          values.name.trim(),
-          values.description.trim(),
-          values.color.toHex(),
-          Number(values.responsableId),
-          Number(values.quantityPicturesCreate),
-          Number(values.quantityAudiosCreate),
-          Number(values.quantityVideosCreate),
-          Number(values.audiosDurationCreate),
-          Number(values.videosDurationCreate),
-          Number(values.quantityPicturesClose),
-          Number(values.quantityAudiosClose),
-          Number(values.quantityVideosClose),
-          Number(values.audiosDurationClose),
-          Number(values.videosDurationClose),
-          Number(values.quantityPicturesPs),
-          Number(values.quantityAudiosPs),
-          Number(values.quantityVideosPs),
-          Number(values.audiosDurationPs),
-          Number(values.videosDurationPs)
-        )
-      ).unwrap();
-      setModalOpen(false);
-      handleGetPriorities();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+          values.name?.trim() || Strings.empty,
+          values.description?.trim() || Strings.empty,
+          formatColor(values.color),
+          Number(values.responsableId || 0),
+          Number(values.quantityPicturesCreate || 0),
+          Number(values.quantityAudiosCreate || 0),
+          Number(values.quantityVideosCreate || 0),
+          Number(values.audiosDurationCreate || 0),
+          Number(values.videosDurationCreate || 0),
+          Number(values.quantityPicturesClose || 0),
+          Number(values.quantityAudiosClose || 0),
+          Number(values.quantityVideosClose || 0),
+          Number(values.audiosDurationClose || 0),
+          Number(values.videosDurationClose || 0),
+          Number(values.quantityPicturesPs || 0),
+          Number(values.quantityAudiosPs || 0),
+          Number(values.quantityVideosPs || 0),
+          Number(values.audiosDurationPs || 0),
+          Number(values.videosDurationPs || 0)
+        );
+        await createCardType(newCardType).unwrap();
+        handleSucccessNotification(NotificationSuccess.REGISTER);
+      } else if (
+        drawerType === Strings.cardTypesDrawerTypeUpdateCardType &&
+        selectedNode
+      ) {
+        const updatedCardType = new UpdateCardTypeReq(
+          Number(selectedNode.id),
+          values.methodology?.trim() || Strings.empty,
+          values.name?.trim() || Strings.empty,
+          values.description?.trim() || Strings.empty,
+          formatColor(values.color),
+          Number(values.responsableId || 0),
+          Number(values.quantityPicturesCreate || 0),
+          Number(values.quantityAudiosCreate || 0),
+          Number(values.quantityVideosCreate || 0),
+          Number(values.audiosDurationCreate || 0),
+          Number(values.videosDurationCreate || 0),
+          Number(values.quantityPicturesClose || 0),
+          Number(values.quantityAudiosClose || 0),
+          Number(values.quantityVideosClose || 0),
+          Number(values.audiosDurationClose || 0),
+          Number(values.videosDurationClose || 0),
+          Number(values.quantityPicturesPs || 0),
+          Number(values.quantityAudiosPs || 0),
+          Number(values.quantityVideosPs || 0),
+          Number(values.audiosDurationPs || 0),
+          Number(values.videosDurationPs || 0),
+          values.status || Strings.active.toUpperCase()
+        );
+        await updateCardType(updatedCardType).unwrap();
+        handleSucccessNotification(NotificationSuccess.UPDATE);
+      } else if (
+        drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
+      ) {
+        if (!formData?.cardTypeId) {
+          throw new Error(Strings.cardTypesNoCardTypeIdError);
+        }
+        const newPre = new CreatePreclassifier(
+          values.code?.trim() || Strings.empty,
+          values.description?.trim() || Strings.empty,
+          Number(formData.cardTypeId)
+        );
+        await createPreclassifier(newPre).unwrap();
+        handleSucccessNotification(NotificationSuccess.REGISTER);
+      } else if (
+        drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier &&
+        selectedNode
+      ) {
+        const payload = {
+          id: Number(selectedNode.id),
+          preclassifierCode: values.code?.trim() || Strings.empty,
+          preclassifierDescription: values.description?.trim() || Strings.empty,
+          status: values.status || Strings.activeStatus,
+        };
+        await updatePreclassifier(payload).unwrap();
+        handleSucccessNotification(NotificationSuccess.UPDATE);
+      }
+
+      setDrawerVisible(false);
+      await handleLoadData(location.state.siteId);
     } catch (error) {
       handleErrorNotification(error);
     } finally {
-      setModalLoading(false);
+      setLoading(false);
     }
   };
 
-  const siteName = location?.state?.siteName || Strings.empty;
+  const handleShowDetails = (node: any) => {
+    setDetailsNode(node);
+    setDetailsVisible(true);
+  };
+  const renderCustomNodeElement = (rd3tProps: any) => {
+    const { nodeDatum, toggleNode } = rd3tProps;
+
+    
+
+    const isRoot = nodeDatum.__rd3t.depth === 0;
+    const isPreclassifier = nodeDatum.nodeType === "preclassifier";
+
+
+    const getCollapsedState = (nodeId: string): boolean => {
+      const storedState:string | null = (localStorage.getItem(`node_${nodeId}_collapsed`)) ;
+      const booleanState: boolean = JSON.parse(storedState ?? Strings.false); // Parse the state
+      return booleanState;  
+    };
+    
+    const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
+      localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
+    };
+    
+    const isCollapsed = getCollapsedState(nodeDatum.id);
+  nodeDatum.__rd3t.collapsed = isCollapsed;
+
+    const getStatusColor = (status: string | undefined) => {
+      switch (status) {
+        case Strings.detailsOptionS:
+          return "#999999";
+        case Strings.detailsOptionC:
+          return "#383838";
+        default:
+          return null;
+      }
+    };
+
+    const statusColor = getStatusColor(nodeDatum.status);
+
+    const fillColor = statusColor
+      ? statusColor
+      : nodeDatum.__rd3t.depth === 0
+      ? "#145695"
+      : nodeDatum.nodeType === "preclassifier"
+      ? "#FFFF00"
+      : "#145695";
+
+    const textStyles = {
+      fontSize: isRoot ? "26px" : isPreclassifier ? "16px" : "20px",
+      fontWeight: "300 !important",
+      fontFamily: "Arial, sans-serif",
+      fill: "#000",
+    };
+
+    const handleEditPre = () => {
+      handleDrawerOpen(
+        Strings.cardTypesDrawerTypeUpdatePreclassifier,
+        nodeDatum
+      );
+    };
+
+    const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
+      e.stopPropagation();
+      handleShowDetails(nodeDatum);
+
+      const newCollapsedState = !nodeDatum.__rd3t.collapsed;
+    setCollapsedState(nodeDatum.id, newCollapsedState);
+
+      toggleNode();
+    };
+
+    const handleClonePre = () => {
+      handleDrawerOpen(
+        Strings.cardTypesDrawerTypeCreatePreclassifier,
+        nodeDatum
+      );
+    };
+
+    const preMenu = [
+      {
+        key: "editPre",
+        label: (
+          <button
+            className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditPre();
+            }}
+          >
+            {Strings.cardTypesEditPreclassifier}
+          </button>
+        ),
+      },
+      {
+        key: "clonePre",
+        label: (
+          <button
+            className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClonePre();
+            }}
+          >
+            {Strings.cardTypesClonePreclassifier}
+          </button>
+        ),
+      },
+    ];
+
+    const handleCreateCardType = () => {
+      handleDrawerOpen(Strings.cardTypesDrawerTypeCreateCardType);
+    };
+    const rootMenu = [
+      {
+        key: "createCT",
+        label: (
+          <button
+            className="w-28 bg-green-700 text-white p-2 rounded-md text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              setRootMenuVisible(false);
+              handleCreateCardType();
+            }}
+          >
+            {Strings.cardTypesCreate}
+          </button>
+        ),
+      },
+    ];
+
+    const handleEditCT = () => {
+      handleDrawerOpen(Strings.cardTypesDrawerTypeUpdateCardType, nodeDatum);
+    };
+    const handleCloneCT = () => {
+      handleDrawerOpen(Strings.cardTypesDrawerTypeCreateCardType, nodeDatum);
+    };
+    const handleCreatePre = () => {
+      handleDrawerOpen(Strings.cardTypesDrawerTypeCreatePreclassifier, {
+        cardTypeId: nodeDatum.id,
+      });
+    };
+    const ctMenu = [
+      {
+        key: Strings.cardTypesOptionEdit,
+        label: (
+          <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
+            {Strings.cardTypesEdit}
+          </button>
+        ),
+        onClick: handleEditCT,
+      },
+      {
+        key: Strings.cardTypesOptionClone,
+        label: (
+          <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
+            {Strings.cardTypesCloneCardType}
+          </button>
+        ),
+        onClick: handleCloneCT,
+      },
+      {
+        key: Strings.cardTypesOptionCreate,
+        label: (
+          <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
+            {Strings.cardTypesCreatePreclassifier}
+          </button>
+        ),
+        onClick: handleCreatePre,
+      },
+    ];
+
+    if (isPreclassifier) {
+      return (
+        <g>
+          <Dropdown menu={{ items: preMenu }} trigger={["contextMenu"]}>
+            <circle
+              r={18}
+              fill={fillColor}
+              stroke="none"
+              strokeWidth={0}
+              style={{ cursor: "pointer" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setRootMenuVisible(false);
+                handleShowDetails(nodeDatum);
+              }}
+            />
+          </Dropdown>
+          <text x={25} y={5} style={textStyles}>
+            {nodeDatum.name}
+          </text>
+        </g>
+      );
+    }
+
+    if (isRoot) {
+      return (
+        <g>
+          <Dropdown
+            menu={{ items: rootMenu }}
+            trigger={["contextMenu"]}
+            open={rootMenuVisible} 
+            onOpenChange={(open) => setRootMenuVisible(open)} 
+          >
+            <circle
+              r={22}
+              fill={fillColor}
+              style={{ cursor: "pointer" }}
+              stroke="none"
+              strokeWidth={0}
+              onClick={handleLeftClick}
+            />
+          </Dropdown>
+          <text
+            x={-300}
+            y={-50}
+            style={{ fontSize: "24px", fontWeight: "normal" }}
+          >
+            {Strings.cardType}{" "}
+            {location.state?.siteName || Strings.defaultSiteName}
+          </text>
+        </g>
+      );
+    }
+
+    return (
+      <g>
+        <Dropdown menu={{ items: ctMenu }} trigger={["contextMenu"]}>
+          <circle
+            r={18}
+            stroke="none"
+            strokeWidth={0}
+            fill={fillColor}
+            style={{ cursor: "pointer" }}
+            onClick={handleLeftClick}
+          />
+        </Dropdown>
+        <text x={20} y={35} style={textStyles}>
+          {nodeDatum.name}
+        </text>
+      </g>
+    );
+  };
 
   return (
-    <>
-      <div className="h-full flex flex-col">
-        <div className="flex flex-col gap-2 items-center m-3">
-          <PageTitle mainText={Strings.cardTypesOf} subText={siteName} />
-          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
-              <Space className="w-full md:w-auto mb-1 md:mb-0">
-                <Input
-                  className="w-full"
-                  onChange={handleOnSearch}
-                  value={querySearch}
-                  addonAfter={<IoIosSearch />}
-                />
-              </Space>
-            </div>
-            <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-              <CustomButton
-                type="success"
-                onClick={handleOnClickCreateButton}
-                className="w-full md:w-auto"
-              >
-                {Strings.create}
-              </CustomButton>
-            </div>
+    <div className="flex flex-col h-full overflow-hidden">
+      <div ref={containerRef} className="relative flex-1 overflow-hidden">
+        {loading && (
+          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75 z-10">
+            <Spin spinning={loading} tip={Strings.cardTypesLoadingData} />
           </div>
-        </div>
-        <div className="flex-1 overflow-auto hidden lg:block">
-          <CardTypesTable data={data} isLoading={isLoading} rol={rol} />
-        </div>
-        <div className="flex-1 overflow-auto lg:hidden">
-          <PaginatedList
-            dataSource={data}
-            renderItem={(item: CardTypes, index: number) => (
-              <List.Item>
-                <CardTypesCard key={index} data={item} rol={rol} />
-              </List.Item>
-            )}
-            loading={isLoading}
+        )}
+        {!loading && treeData.length > 0 && (
+          <Tree
+            data={treeData}
+            orientation="horizontal"
+            translate={translate}
+            renderCustomNodeElement={renderCustomNodeElement}
+            zoomable
+            collapsible={true}
           />
-        </div>
+        )}
       </div>
       <Form.Provider
         onFormFinish={async (_, { values }) => {
-          await handleOnFormCreateFinish(values);
+          await handleOnFormFinish(values);
         }}
       >
-        <ModalForm
-          open={modalIsOpen}
-          onCancel={handleOnCancelButton}
-          FormComponent={RegisterCardTypeForm}
-          title={Strings.createCardType.concat(` ${siteName}`)}
-          isLoading={modalIsLoading}
-        />
+        <Drawer
+          title={
+            drawerType === Strings.cardTypesDrawerTypeCreateCardType
+              ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
+                ? Strings.cardTypesCloneCardType
+                : Strings.cardTypesCreateCardType
+              : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
+              ? Strings.cardTypesUpdateCardType
+              : drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
+              ? formData?.description?.includes(Strings.cardTypesCloneSuffix)
+                ? Strings.cardTypesClonePreclassifier
+                : Strings.cardTypesCreatePreclassifier
+              : drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
+              ? Strings.cardTypesUpdatePreclassifier
+              : Strings.empty
+          }
+          placement={isMobile ? "bottom" : "right"}
+          width={isMobile ? "100%" : 400}
+          onClose={handleDrawerClose}
+          open={drawerVisible}
+          destroyOnClose
+          mask={false}
+          className="pr-5"
+        >
+          {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
+            <RegisterCardTypeForm
+              form={createForm}
+              onFinish={handleOnFormFinish}
+              rol={rol}
+              initialValues={formData}
+            />
+          )}
+          {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
+            <UpdateCardTypeForm
+              form={updateForm}
+              initialValues={formData}
+              onFinish={handleOnFormFinish}
+            />
+          )}
+          {drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier && (
+            <RegisterPreclassifierForm2
+              form={createPreForm}
+              initialValues={formData}
+            />
+          )}
+          {drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier && (
+            <UpdatePreclassifierForm2
+              form={updatePreForm}
+              initialValues={formData}
+            />
+          )}
+        </Drawer>
       </Form.Provider>
-    </>
+      <Drawer
+        title={Strings.details}
+        placement={isMobile ? "bottom" : "right"}
+        width={isMobile ? "100%" : 400}
+        onClose={() => setDetailsVisible(false)}
+        open={detailsVisible}
+        destroyOnClose
+        mask={false}
+      >
+        {detailsNode && detailsNode.nodeType === "cardType" && (
+          <CardTypeDetails nodeData={detailsNode} />
+        )}
+        {detailsNode && detailsNode.nodeType === "preclassifier" && (
+          <PreclassifierDetails nodeData={detailsNode} />
+        )}
+      </Drawer>
+    </div>
   );
 };
 
-export default CardTypess;
+export default CardTypesTree;

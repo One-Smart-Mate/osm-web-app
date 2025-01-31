@@ -15,9 +15,10 @@ import {
 } from "../../../core/genericReducer";
 import ModalUpdateForm from "../../../components/ModalUpdateForm";
 import { UpdateCardTypeReq } from "../../../data/cardtypes/cardTypes.request";
-import UpdateCardTypeForm from "./UpdateCardTypeForm";
+
 import { AggregationColor } from "antd/es/color-picker/color";
 import { useGetCardTypeMutation, useUpdateCardTypeMutation } from '../../../services/CardTypesService';
+import UpdateCardTypeFormOriginal from "./UpdateCardTypeFormOriginal";
 
 interface ButtonEditProps {
   id: string;
@@ -100,7 +101,7 @@ const UpdateCardType = ({ id }: ButtonEditProps) => {
         <ModalUpdateForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={UpdateCardTypeForm}
+          FormComponent={UpdateCardTypeFormOriginal}
           title={Strings.updateCardType}
           isLoading={modalIsLoading}
         />

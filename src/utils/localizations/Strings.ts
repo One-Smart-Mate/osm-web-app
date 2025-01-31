@@ -1,326 +1,319 @@
-export default class Strings {
-  static login = "Log in";
-  static sendCode = "Send code";
-  static logout = "Log out";
-  static password = "Password";
-  static newPassword = "New password";
-  static updatePassword = "Update password";
-  static confirmPassword = "Confirm password";
-  static uploadCardDataWithDataNet = "Upload card with data net";
-  static uploadCardEvidenceWithDataNet = "Upload card evidence with data net";
-  
- 
-  static searchRecord = "Search record";
-  static clearFiltersAndSorters = "Clear filters and sorters";
-  static empty = "";
-  static welcome = "Welcome!";
-  static resetPassword = "Reset password";
-  static sendCodeMessage =
-    "Enter your email address and we will send you a code to reset your password.";
-  static enterTheCode =
-    "Enter the code that we have sent to you in your e-mail. Please note that the code expires in 24 hours.";
-  static enterTheNewPassword = "Please enter the new password.";
-  static logoutModalTittle = "Are you sure you want to log out?";
-  static logutModalContent = "You are about to log out of your account.";
+import i18n from "../../config/i18n";
+
+class StringsBase {
+  // For the Routes.tsx sidebar
+  static notificationsSB = "notificationsSB";
+  static companiesSB = "companiesSB";
+  static prioritiesSB = "prioritiesSB";
+  static usersSB = "usersSB";
+  static siteUsersSB = "siteUsersSB";
+  static sitesSB = "sitesSB";
+  static cardTypesSB = "cardTypesSB";
+  static preclassifiersSB = "preclassifiersSB";
+  static levelsSB = "levelsSB";
+  static cardsSB = "cardsSB";
+  static cardDetailsSB = "cardDetailsSB";
+  static chartsSB = "chartsSB";
+
+  // Rooutes
+  static companyParam = "companyParam";
+  static siteParam = "siteParam";
+  static cardParam = "cardParam";
+  static cardTypeParam = "cardTypeParam";
+  static colon = "colon";
+
+  static login = "login";
+  static sendCode = "sendCode";
+  static logout = "logout";
+  static password = "password";
+  static newPassword = "newPassword";
+  static updatePassword = "updatePassword";
+  static confirmPassword = "confirmPassword";
+  static uploadCardDataWithDataNet = "uploadCardDataWithDataNet";
+  static uploadCardEvidenceWithDataNet = "uploadCardEvidenceWithDataNet";
+  static searchRecord = "searchRecord";
+  static clearFiltersAndSorters = "clearFiltersAndSorters";
+  static empty = "empty";
+  static welcome = "welcome";
+  static resetPassword = "resetPassword";
+  static sendCodeMessage = "sendCodeMessage";
+  static enterTheCode = "enterTheCode";
+  static enterTheNewPassword = "enterTheNewPassword";
+  static logoutModalTittle = "logoutModalTittle";
+  static logutModalContent = "logutModalContent";
   static white = "white";
-  static updateUser = "Update user";
-  static creation = "Creation";
-
-
-  static definitiveSolution = "Definitive solution";
-  static provisionalSolution = "Provisional solution";
-  static provisionalUser = "Provisional user";
-  static provisionalDate = "Provisional date";
-  static days = "Days";
- 
- 
-  static definitiveUsers = "Definitive users";
-  static definitiveDate = "Definitive date";
-  static provisionalSoluitonApplied = "Provisional solution applied";
-  static NA = "N/A";
-  static noResponsible = "No responsible";
-  static noMechanic = "No mechanic";
-  static noDefinitiveUser = "No definitive user";
-  static images = "Images";
-  static videos = "Videos";
-  static audios = "Audios";
-  static evidences = "Evidences";
-  static none = "None";
+  static updateUser = "updateUser";
+  static creation = "creation";
+  static definitiveSolution = "definitiveSolution";
+  static provisionalSolution = "provisionalSolution";
+  static provisionalUser = "provisionalUser";
+  static provisionalDate = "provisionalDate";
+  static days = "days";
+  static definitiveUsers = "definitiveUsers";
+  static definitiveDate = "definitiveDate";
+  static provisionalSoluitonApplied = "provisionalSoluitonApplied";
+  static NA = "NA";
+  static noResponsible = "noResponsible";
+  static noMechanic = "noMechanic";
+  static noDefinitiveUser = "noDefinitiveUser";
+  static images = "images";
+  static videos = "videos";
+  static audios = "audios";
+  static evidences = "evidences";
+  static none = "none";
 
   // Login re-design
-  static entrepriseName = "OSM";
-  static email = "Email";
-  static loginText = "Get a complete overview of all your company's maintenance needs before they turn into costly repairs."
-  static forgotPassword = "Forgot password?";
+  static entrepriseName = "entrepriseName";
+  static email = "email";
+  static loginText = "loginText";
+  static forgotPassword = "forgotPassword";
 
-  //errors login form
-  static requiredEmail = "Please input your e-mail address!";
-  static requiredPassword = "Please input your password!";
-  static requiredValidEmailAddress = "Please enter a valid e-mail address!";
-  static requiredInfo = "please enter the information";
+  // errors login form
+  static requiredEmail = "requiredEmail";
+  static requiredPassword = "requiredPassword";
+  static requiredValidEmailAddress = "requiredValidEmailAddress";
+  static requiredInfo = "requiredInfo";
 
-  //errors user form
-  static requiredUserName = "Please enter the user name";
-  static requiredSite = "Please select a site";
-  static requiredRoles = "Please assing at least one role";
-  static requiredConfirmPassword = "Please confirnm your password";
-  static passwordsDoNotMatch = "Password do not match";
-  static onlyLetters = "Please input only letters";
-  static passwordLenght = "Password must have at least 8 characters";
-  static uploadFileRequired = "Please upload a file";
+  // errors user form
+  static requiredUserName = "requiredUserName";
+  static requiredSite = "requiredSite";
+  static requiredRoles = "requiredRoles";
+  static requiredConfirmPassword = "requiredConfirmPassword";
+  static passwordsDoNotMatch = "passwordsDoNotMatch";
+  static onlyLetters = "onlyLetters";
+  static passwordLenght = "passwordLenght";
+  static uploadFileRequired = "uploadFileRequired";
 
-  //errors company form
-  static requiredCompanyName = "Please enter the company name";
-  static requiredRFC = "Please enter the RFC";
-  static requiredContacName = "Please enter the contact name";
-  static requiredPosition = "Please enter the contact position";
-  static requiredAddress = "Please enter the address";
-  static requiredPhone = "Please enter the phone number";
-  static requiredExtension = "Please enter a extension";
-  static requiredCellular = "Please enter the cellular";
-  static requiredLogo = "Please upload the logo";
+  // errors company form
+  static requiredCompanyName = "requiredCompanyName";
+  static requiredRFC = "requiredRFC";
+  static requiredContacName = "requiredContacName";
+  static requiredPosition = "requiredPosition";
+  static requiredAddress = "requiredAddress";
+  static requiredPhone = "requiredPhone";
+  static requiredExtension = "requiredExtension";
+  static requiredCellular = "requiredCellular";
+  static requiredLogo = "requiredLogo";
 
-  //errors priority form
-  static requiredCode = "Please enter the code";
-  static requiredDescription = "Please enter the description";
-  static requiredDaysNumber = "Please enter the days number";
-  static requiredResponsableId = "Please select the responsible";
-  static requiredMechanic = "Please select the mechanic";
-  static requiredPriority = "Required priority";
+  // errors priority form
+  static requiredCode = "requiredCode";
+  static requiredDescription = "requiredDescription";
+  static requiredDaysNumber = "requiredDaysNumber";
+  static requiredResponsableId = "requiredResponsableId";
+  static requiredMechanic = "requiredMechanic";
+  static requiredPriority = "requiredPriority";
 
-  //company
-  static logo = "Logo";
-  static companyName = "Name";
-  static rfc = "RFC";
-  static companyAddress = "Address";
-  static contact = "Contact";
-  static position = "Position";
-  static phone = "Phone";
-  static extension = "Extension";
-  static cellular = "Cellular";
+  // company
+  static logo = "logo";
+  static companyName = "companyName";
+  static rfc = "rfc";
+  static companyAddress = "companyAddress";
+  static contact = "contact";
+  static position = "position";
+  static phone = "phone";
+  static extension = "extension";
+  static cellular = "cellular";
 
   //This logo will be removed when firebase upload is implemented.
-  static logoTemp =
-    "https://th.bing.com/th/id/OIG4.jIj.NbKiwFNdl.C3Ltft?pid=ImgGn";
+  static logoTemp = "logoTemp";
   static noExtension = "No extension";
 
-  //company actions
-  static viewSites = "View sites";
+  // company actions
+  static viewSites = "viewSites";
 
-  //levels
-  static notify = " Notify";
+  // levels
+  static notify = "notify";
 
-  //site actions
-  static viewPriorities = "View priorities";
-  static viewLevels = "View levels";
-  static viewCardTypes = "View card types";
-  static viewCards = "View cards";
-  static viewCharts = "View charts";
-  static viewUsers = "View users";
-  static importUsers = "Import users";
+  // site actions
+  static viewPriorities = "viewPriorities";
+  static viewLevels = "viewLevels";
+  static viewCardTypes = "viewCardTypes";
+  static viewCards = "viewCards";
+  static viewCharts = "viewCharts";
+  static viewUsers = "viewUsers";
+  static importUsers = "importUsers";
 
-  //erros sites form
-  static requiredLatitud = "Please enter the latitud";
-  static requiredLongitud = "Please enter de Longitud";
-  static requiredSiteCode = "Please enter the site code";
-  static requiredSiteBusinessName = "Please enter the business name";
-  static requiredSiteType = "Please enter the site type";
-  static requiredDueDate = "Please enter the due date";
-  static requiredMonthlyPayment = "Please enter the monthly payment";
-  static requiredCurrency = "Please selet the currency";
-  static requiredAppHistoryDays = "Please enter app history days";
+  // errors sites form
+  static requiredLatitud = "requiredLatitud";
+  static requiredLongitud = "requiredLongitud";
+  static requiredSiteCode = "requiredSiteCode";
+  static requiredSiteBusinessName = "requiredSiteBusinessName";
+  static requiredSiteType = "requiredSiteType";
+  static requiredDueDate = "requiredDueDate";
+  static requiredMonthlyPayment = "requiredMonthlyPayment";
+  static requiredCurrency = "requiredCurrency";
+  static requiredAppHistoryDays = "requiredAppHistoryDays";
   static companies = "companies";
-  static companiesUpperCase = "Companies";
-  static users = "Users";
-  static usersOf = "Users of";
-  static requiredUserLicense = "Please select the user license";
-  static enable = "Enable";
+  static companiesUpperCase = "companiesUpperCase";
+  static users = "users";
+  static usersOf = "usersOf";
+  static requiredUserLicense = "requiredUserLicense";
+  static enable = "enable";
 
-  //Import users form
-  static dragFile = "Click or drag file to this area to upload";
-  static singleUpload = "Support for a single upload .xlsx";
+  // Import users form
+  static dragFile = "dragFile";
+  static singleUpload = "singleUpload";
 
-  //sites
-  static site = "Site";
-  static sitesOf = "Sites of";
-  static yourSitesOfCompany = "Your sites of Company";
+  // sites
+  static site = "site";
+  static sitesOf = "sitesOf";
+  static yourSitesOfCompany = "yourSitesOfCompany";
   static sites = "sites";
-  static latitud = "Latitud";
-  static longitud = "Longitud";
-  static siteCode = "Site code";
-  static siteBusinessName = "Site business name";
-  static siteType = "Site type";
-
-  static monthlyPayment = "Monthly payment";
-  static currency = "Currency";
-  static appHistoryDays = "App history days";
-  static userLicense = "User license";
-  static concurrent = "Concurrent";
-  static named = "Named";
+  static latitud = "latitud";
+  static longitud = "longitud";
+  static siteCode = "siteCode";
+  static siteBusinessName = "siteBusinessName";
+  static siteType = "siteType";
+  static monthlyPayment = "monthlyPayment";
+  static currency = "currency";
+  static appHistoryDays = "appHistoryDays";
+  static userLicense = "userLicense";
+  static concurrent = "concurrent";
+  static named = "named";
   static concurrente = "concurrente";
   static nombrado = "nombrado";
-  static quantity = "Quantity";
-  static requiredAdditionalField = "Please input the additional field";
+  static quantity = "quantity";
+  static requiredAdditionalField = "requiredAdditionalField";
 
-  //CardTypes
-  static methodology = "Methodology name";
-  static name = "Name";
-  static color = "Color";
-  static responsible = "Responsible";
-  static cardTypeMethodology = "Card Type Methodology";
-  static cardTypesOf = "Card types of";
-  static quantityPictures = "Quantity pictures";
-  static quantityAudios = "Quantity audios";
-  static quantityVideos = "Quantity videos";
-  static picturesCreatePs = "Pictures create provisional solution";
-  static audiosCreatePs = "Audios create provisional solution";
-  static videosCreatePs = "Videos create provisional solution";
-  static durationInSeconds = "Duration in seconds";
-  static atCreation = "At creation";
-  static atProvisionalSolution = "At provisional solution";
-  static atDefinitiveSolution = "At definitive solution";
-  //cardtype methodology
+  // CardTypes
+  static methodology = "methodology";
+  static name = "name";
+  static color = "color";
+  static responsible = "responsible";
+  static cardTypeMethodology = "cardTypeMethodology";
+  static cardTypesOf = "cardTypesOf";
+  static quantityPictures = "quantityPictures";
+  static quantityAudios = "quantityAudios";
+  static quantityVideos = "quantityVideos";
+  static picturesCreatePs = "picturesCreatePs";
+  static audiosCreatePs = "audiosCreatePs";
+  static videosCreatePs = "videosCreatePs";
+  static durationInSeconds = "durationInSeconds";
+  static atCreation = "atCreation";
+  static atProvisionalSolution = "atProvisionalSolution";
+  static atDefinitiveSolution = "atDefinitiveSolution";
+
+  // cardtype methodology
   static M = "M";
   static C = "C";
-  static updateCardType = "Update card type";
+  static updateCardType = "updateCardType";
 
-  //roles
-  static roles = "Roles";
-  static createNode = "Create node";
+  static roles = "roles";
+  static createNode = "createNode";
 
-  //errors card type form
-  static requiredMethodology = "Please select the methodology";
-  static requiredCardTypeName = "Please enter the card type name";
-  static requiredColor = "Please select a color";
+  static requiredMethodology = "requiredMethodology";
+  static requiredCardTypeName = "requiredCardTypeName";
+  static requiredColor = "requiredColor";
 
-  //CardTypes actions
-  static viewPreclassifiers = "View preclassifiers";
+  static viewPreclassifiers = "viewPreclassifiers";
 
-  //Priority
-  static prioritiesOf = "Priorities of";
-  static priority = "Priority";
-  static code = "Code";
-  static enterCode = "Enter the code!";
-  static description = "Description";
-  static levelMachineId = "Level machine id";
-  static daysNumber = "Days number";
-  static updatePriority = "Update priority";
+  static prioritiesOf = "prioritiesOf";
+  static priority = "priority";
+  static code = "code";
+  static enterCode = "enterCode";
+  static description = "description";
+  static levelMachineId = "levelMachineId";
+  static daysNumber = "daysNumber";
+  static updatePriority = "updatePriority";
 
-  //Card titles
-  static createCompany = "Create company";
-  static updateCompany = "Update company";
-  static createPriority = "Create priority for";
-  static createUserFor = "Create user for";
-  static importUsersFor = "Import users for";
-  static createUser = "Create user";
-  static createSite = "Create site for";
-  static updateSite = "Update site";
-  static createPreclassifier = "Create Preclassifier";
-  static createCardType = "Create card type for";
-  static createLevel = "Create level for";
-  static updateLevel = "Update level";
-  static createNodefor = "Create node for";
+  static createCompany = "createCompany";
+  static updateCompany = "updateCompany";
+  static createPriority = "createPriority";
+  static createUserFor = "createUserFor";
+  static importUsersFor = "importUsersFor";
+  static createUser = "createUser";
+  static createSite = "createSite";
+  static updateSite = "updateSite";
+  static createPreclassifier = "createPreclassifier";
+  static createCardType = "createCardType";
+  static createLevel = "createLevel";
+  static updateLevel = "updateLevel";
+  static createNodefor = "createNodefor";
 
-  static cards = "Cards";
-  static tagDetailsOf = "Tag details of";
- 
-  static type = "Type";
-  
-  static cardNumber = "Card Number";
-  static area = "Area";
- 
-  static date = "Date";
-  static mechanic = "Mechanic";
-  static mechanics = "Mechanics";
-  static creator = "Creator";
-  static comments = "Comments";
+  static cards = "cards";
+  static tagDetailsOf = "tagDetailsOf";
+  static type = "type";
+  static cardNumber = "cardNumber";
+  static area = "area";
+  static date = "date";
+  static mechanic = "mechanic";
+  static mechanics = "mechanics";
+  static creator = "creator";
+  static comments = "comments";
+  static updateMechanic = "updateMechanic";
+  static changeLog = "changeLog";
+  static noDueDate = "noDueDate";
 
-  static updateMechanic = "Update mechanic";
-  static changeLog = "Change log";
-  static noDueDate = "No due date";
+  static tagsOf = "tagsOf";
+  static filters = "filters";
+  static status = "status";
+  static dueDate = "dueDate";
+  static cardType = "cardType";
+  static problemType = "problemType";
+  static location = "location";
+  static createdBy = "createdBy";
+  static problemDescription = "problemDescription";
 
-  //Tags re-design
-  static tagsOf = "Tags of";
-  static filters = "Filters";
-  static status = "Status ";
-  static dueDate = "Due date: ";
-  static cardType = "Tag type: ";
-  static problemType = "Problem type: ";
-  static location = "Location: ";
-  static createdBy = "Created by: ";
-  static problemDescription = "Problem description: ";
+  static tagStatusCanceled = "tagStatusCanceled";
+  static tagDate = "tagDate";
+  static tagDays = "tagDays";
+  static ceroDays = "ceroDays";
+  static tagNumber = "tagNumber";
+  static tagPriority = "tagPriority";
+  static dateStatus = "dateStatus";
+  static tagMechanic = "tagMechanic";
+  static tagProvisionalUser = "tagProvisionalUser";
+  static tagProvisionalSoluitonApplied = "tagProvisionalSoluitonApplied";
+  static creationDate = "creationDate";
+  static daysSinceCreation = "daysSinceCreation";
+  static cero = "cero";
+  static anomalyDetected = "anomalyDetected";
+  static appProvisionalUser = "appProvisionalUser";
+  static appDefinitiveUser = "appDefinitiveUser";
+  static definitiveUser = "definitiveUser";
+  static definitiveSolutionApplied = "definitiveSolutionApplied";
 
-   //Tags details re-design
-  static tagStatusCanceled = "Canceled";
-  static tagDate = "Date: ";
-  static tagDays = "Days: ";
-  static ceroDays = "0 days";
-  static tagNumber = "Tag number: ";
-  static tagPriority = "Priority: ";
-  static dateStatus = "Date status: ";
-  static tagMechanic = "Mechanic: ";
-  static tagProvisionalUser = "Provisional user: "
-  static tagProvisionalSoluitonApplied = "Provisional soluiton applied: ";
-  static creationDate = "Creation date: ";
-  static daysSinceCreation = "Days since creation: ";
-  static cero = "0";
-  static anomalyDetected = "Anomaly detected: ";
-  static appProvisionalUser = "App provisional user: ";
-  static appDefinitiveUser = "App definitive user: ";
-  static definitiveUser = "Definitive user: ";
-  static definitiveSolutionApplied = "Definitive solution applied: ";
+  static evidencesAtCreationDivider = "evidencesAtCreationDivider";
+  static definitiveSolutionDivider = "definitiveSolutionDivider";
+  static evidencesAtDefinitiveDivider = "evidencesAtDefinitiveDivider";
+  static provisionalSolutionDivider = "provisionalSolutionDivider";
+  static evidencesAtProvisionalDivider = "evidencesAtProvisionalDivider";
+  static changeLogDivider = "changeLogDivider";
 
-  //Constants for the dividers
-  static evidencesAtCreationDivider = "Evidences at creation";
+  static expired = "expired";
+  static current = "current";
+  static onTime = "onTime";
 
+  static chartsOf = "chartsOf";
+  static anomalies = "anomalies";
+  static areas = "areas";
+  static creators = "creators";
+  static machines = "machines";
+  static tagMonitoring = "tagMonitoring";
+  static totalCards = "totalCards";
+  static total = "total";
+  static areaChart = "areaChart";
+  static machine = "machine";
+  static machineLocation = "machineLocation";
+  static creatorChart = "creatorChart";
+  static cardName = "cardName";
+  static preclassifierChart = "preclassifierChart";
+  static year = "year";
+  static week = "week";
+  static cumulativeIssued = "cumulativeIssued";
+  static cumulativeEradicated = "cumulativeEradicated";
 
-  static definitiveSolutionDivider = "Definitive solution";
-  static evidencesAtDefinitiveDivider = "Evidences at definitive solution";
+  static edit = "edit";
+  static create = "create";
+  static save = "save";
+  static cancel = "cancel";
+  static actions = "actions";
+  static delete = "delete";
+  static confirm = "confirm";
 
-  static provisionalSolutionDivider = "Provisional solution";
-  static evidencesAtProvisionalDivider = "Evidences at provisional solution";
+  static tagVersion = "tagVersion";
 
-  static changeLogDivider = "Change log";
-
-  // Constants for the date status
-  static expired = "Expired"; 
-  static current = "Current";
-  static onTime = "On time";
-
-
-  //charts
-  static chartsOf = "Charts of";
-  static anomalies = "Anomalies";
-  static areas = "Areas";
-  static creators = "Creators";
-  static machines = "Machines";
-  static tagMonitoring = "Tag monitoring";
-  static totalCards = "Total cards";
-  static total = "Total";
-  static areaChart = "Area";
-  static machine = "Machine";
- 
-  static machineLocation = "Machine location";
-  static creatorChart = "Creator";
-  static cardName = "Card name";
-  static preclassifierChart = "Preclassifier";
-  static year = "Year:";
-  static week = "Week:";
-  static cumulativeIssued = "Cumulative issued:";
-  static cumulativeEradicated = "Cumulative eradicated:";
-
-  //general actions
-  static edit = "Edit";
-  static create = "Create";
-  static save = "Save";
-  static cancel = "Cancel";
-  static actions = "Actions";
-  static delete = "Delete";
-  static confirm = "Confirm";
-
-  static tagVersion = import.meta.env.VITE_AP_VERSION;
-
-  //Evidence type
+  // Tipo de evidencia
   static AUCR = "AUCR";
   static AUCL = "AUCL";
   static AUPS = "AUPS";
@@ -331,195 +324,255 @@ export default class Strings {
   static IMPS = "IMPS";
   static IMCL = "IMCL";
 
-  //status
-  static active = "Active";
-  static activeStatus = "A";
-  static inactive = "Inactive";
-  static open = "Open";
-  static closed = "Closed";
-  static pastDue = "Past due";
+  // Estado
+  static active = "active";
+  static activeStatus = "activeStatus";
+  static inactive = "inactive";
+  static open = "open";
+  static closed = "closed";
+  static pastDue = "pastDue";
 
-  static preclassifiersof = "Preclassifiers of";
-  static preclassifier = "Preclassifier";
-  static updatePreclassifier = "Update preclassifier";
-  static levelsof = "Levels of";
+  static preclassifiersof = "preclassifiersof";
+  static preclassifier = "preclassifier";
+  static updatePreclassifier = "updatePreclassifier";
+  static levelsof = "levelsof";
 
-  //erros pages
-  static notFoundPageTitle = "404";
-  static notFoundPageSubTitle = "Sorry, the page you visited does not exist.";
-  static unauthorizedPageTitle = "403";
-  static unauthorizedPageSubTitle =
-    "Sorry, you are not authorized to access this page.";
-  static goBack = "Go back";
+  // Páginas de error
+  static notFoundPageTitle = "notFoundPageTitle";
+  static notFoundPageSubTitle = "notFoundPageSubTitle";
+  static unauthorizedPageTitle = "unauthorizedPageTitle";
+  static unauthorizedPageSubTitle = "unauthorizedPageSubTitle";
+  static goBack = "goBack";
 
-  static companyParam = ":company";
-  static siteParam = ":site";
-  static cardParam = ":card";
-  static cardTypeParam = ":cardType";
-  static colon = ":";
+  static downloadData = "downloadData";
 
-  static downloadData = "Download data";
-  //Rangepricker presets
-  static last7days = "Last 7 Days";
-  static last14days = "Last 14 Days";
-  static last30days = "Last 30 Days";
-  static last90days = "Last 90 Days";
+  // Presets de selector de rango
+  static last7days = "last7days";
+  static last14days = "last14days";
+  static last30days = "last30days";
+  static last90days = "last90days";
 
-  static failedToDownload = "Failed to download";
+  static failedToDownload = "failedToDownload";
 
-  //warning notifications
-  static restrictedAccessMessage =
-    "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.";        
-    
-    // Levels Tree
-    static close = "Close";
-    static createLevelBtn = "Create Level";
-    static updateLevelTree = "Update Level";
-    static details = "Details";
-    static levelsOf = "Levels of ";
-    static newLevel = " New Level";
-    static level = "Level";
-    static errorFetchingLevels = "Error fetching levels";
-    static errorSavingLevel = "Error saving level";
-    static defaultSiteName = "Site Name";
-    static detailsOptionA = "A"
-    static detailsOptionS = "S"
-    static detailsOptionC = "C"
-    static detailsStatusActive = "Active"
-    static detailsStatusSuspended = "Suspended"
-    static detailsStatsCancelled = "Cancelled"
-    static levelOptions = "Level Options"
-    
+  // Notificaciones de advertencia
+  static restrictedAccessMessage = "restrictedAccessMessage";
 
+  // Árbol de niveles
+  static close = "close";
+  static createLevelBtn = "createLevelBtn";
+  static updateLevelTree = "updateLevelTree";
+  static details = "details";
+  static levelsOf = "levelsOf";
+  static newLevel = "newLevel";
+  static level = "level";
+  static errorFetchingLevels = "errorFetchingLevels";
+  static errorSavingLevel = "errorSavingLevel";
+  static defaultSiteName = "defaultSiteName";
+  static detailsOptionA = "detailsOptionA";
+  static detailsOptionS = "detailsOptionS";
+  static detailsOptionC = "detailsOptionC";
+  static detailsStatusActive = "detailsStatusActive";
+  static detailsStatusSuspended = "detailsStatusSuspended";
+  static detailsStatsCancelled = "detailsStatsCancelled";
+  static levelOptions = "levelOptions";
 
+  // Tooltips de preclasificadores
+  static preclassifierCodeTooltip = "preclassifierCodeTooltip";
+  static preclassifierDescriptionTooltip = "preclassifierDescriptionTooltip";
+  static preclassifierStatusTooltip = "preclassifierStatusTooltip";
 
-  // Create Update preclassifier tooltips
-  static preclassifierCodeTooltip = "Enter the preclassifier code.";
-  static preclassifierDescriptionTooltip = "Provide a detailed description for the preclassifier. Maximum length: 100 characters.";
-  static preclassifierStatusTooltip = "Select the status of the preclassifier.";
+  // Tooltips del formulario de prioridades
+  static priorityCodeTooltip = "priorityCodeTooltip";
+  static priorityDescriptionTooltip = "priorityDescriptionTooltip";
+  static priorityDaysNumberTooltip = "priorityDaysNumberTooltip";
 
-  // Register Priority Form Tooltips
-  static priorityCodeTooltip = "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.";
-  static priorityDescriptionTooltip = "A brief description of the priority. Use clear, concise language. Maximum 50 characters.";
-  static priorityDaysNumberTooltip = "The number of days associated with this priority. Must be a positive number.";
+  // Tooltips de formularios basados en SiteEntity
+  static siteNameTooltip = "siteNameTooltip";
+  static siteRfcTooltip = "siteRfcTooltip";
+  static siteBusinessNameTooltip = "siteBusinessNameTooltip";
+  static siteTypeTooltip = "siteTypeTooltip";
+  static siteLatitudeTooltip = "siteLatitudeTooltip";
+  static siteLongitudeTooltip = "siteLongitudeTooltip";
+  static siteAddressTooltip = "siteAddressTooltip";
+  static siteContactTooltip = "siteContactTooltip";
+  static sitePositionTooltip = "sitePositionTooltip";
+  static sitePhoneTooltip = "sitePhoneTooltip";
+  static siteExtensionTooltip = "siteExtensionTooltip";
+  static siteCellularTooltip = "siteCellularTooltip";
+  static siteEmailTooltip = "siteEmailTooltip";
+  static siteDueDateTooltip = "siteDueDateTooltip";
+  static siteMonthlyPaymentTooltip = "siteMonthlyPaymentTooltip";
+  static siteCurrencyTooltip = "siteCurrencyTooltip";
+  static siteAppHistoryDaysTooltip = "siteAppHistoryDaysTooltip";
+  static siteLogoTooltip = "siteLogoTooltip";
+  static siteCodeTooltip = "siteCodeTooltip";
+  static appHistoryDaysTooltip = "appHistoryDaysTooltip";
 
+  // Tooltips de registro/actualización de empresa
+  static companyNameTooltip = "companyNameTooltip";
+  static companyRfcTooltip = "companyRfcTooltip";
+  static companyAddressTooltip = "companyAddressTooltip";
+  static companyContactNameTooltip = "companyContactNameTooltip";
+  static companyPositionTooltip = "companyPositionTooltip";
+  static companyPhoneTooltip = "companyPhoneTooltip";
+  static companyExtensionTooltip = "companyExtensionTooltip";
+  static companyCellularTooltip = "companyCellularTooltip";
+  static companyEmailTooltip = "companyEmailTooltip";
+  static companyLogoTooltip = "companyLogoTooltip";
 
-// Form tooltips based on SiteEntity
-static siteNameTooltip = "Enter the name of the site . Maximum length: 100 characters.";
-static siteRfcTooltip = "Enter the  RFC for the company associated with the site. It should be exactly 13 characters long for companies.";
-static siteBusinessNameTooltip = "Enter the legal business name of the site, as registered officially. Maximum length: 100 characters.";
-static siteTypeTooltip = "Specify the type of the site (e.g., office, warehouse, retail). Maximum length: 20 characters.";
-static siteLatitudeTooltip = "Enter the latitude coordinates of the site. Use a format with up to 11 characters, e.g., '19.432608'.";
-static siteLongitudeTooltip = "Enter the longitude coordinates of the site. Use a format with up to 11 characters, e.g., '-99.133209'.";
-static siteAddressTooltip = "Provide the complete physical address of the site, including street, city, and ZIP code. Maximum length: 200 characters.";
-static siteContactTooltip = "Enter the name of the primary contact person for this site. Maximum length: 100 characters.";
-static sitePositionTooltip = "Specify the position or job title of the contact person (e.g., Manager, Supervisor). Maximum length: 100 characters.";
-static sitePhoneTooltip = "Provide the main contact phone number, including area code. Maximum length: 13 characters.";
-static siteExtensionTooltip = "If applicable, specify the phone extension for the contact person. Maximum length: 10 characters.";
-static siteCellularTooltip = "Provide a mobile phone number for the contact person. Maximum length: 13 characters.";
-static siteEmailTooltip = "Provide the email address of the contact person. Ensure it is valid and has a maximum length of 60 characters.";
-static siteDueDateTooltip = "Select the due date for site-related payments or obligations. Format: YYYY-MM-DD.";
-static siteMonthlyPaymentTooltip = "Specify the monthly payment amount for the site in decimal format, e.g., '1200.00'.";
-static siteCurrencyTooltip = "Select the currency for financial transactions related to this site. Use ISO 4217 codes (e.g., USD, MXN).";
-static siteAppHistoryDaysTooltip = "Enter the number of days to retain the site's application history. ";
-static siteLogoTooltip = "Upload the site's logo. Accepted formats: JPG, PNG.";
-static siteCodeTooltip = "Auto-generated site code.";
-static appHistoryDaysTooltip = "Enter the number of days the application's history will be retained.";
+  static userNameTooltip = "userNameTooltip";
+  static userEmailTooltip = "userEmailTooltip";
+  static userPasswordTooltip = "userPasswordTooltip";
+  static userConfirmPasswordTooltip = "userConfirmPasswordTooltip";
+  static userSiteRfcTooltip = "userSiteRfcTooltip";
+  static userUploadCardDataWithDataNetTooltip =
+    "userUploadCardDataWithDataNetTooltip";
+  static userUploadCardEvidenceWithDataNetTooltip =
+    "userUploadCardEvidenceWithDataNetTooltip";
+  static userRolesTooltip = "userRolesTooltip";
+  static requiredStatus = "requiredStatus";
+  static statusPlaceholder = "statusPlaceholder";
+  static activeValue = "activeValue";
+  static inactiveValue = "inactiveValue";
+  static statusUserLabel = "statusUserLabel";
+  static cardTypeMethodologyTooltip = "cardTypeMethodologyTooltip";
+  static cardTypeNameTooltip = "cardTypeNameTooltip";
+  static cardTypeDescriptionTooltip = "cardTypeDescriptionTooltip";
+  static cardTypeColorTooltip = "cardTypeColorTooltip";
+  static responsibleTooltip = "responsibleTooltip";
+  static quantityPicturesCreateTooltip = "quantityPicturesCreateTooltip";
+  static quantityVideosCreateTooltip = "quantityVideosCreateTooltip";
+  static videosDurationCreateTooltip = "videosDurationCreateTooltip";
+  static quantityAudiosCreateTooltip = "quantityAudiosCreateTooltip";
+  static audiosDurationCreateTooltip = "audiosDurationCreateTooltip";
+  static quantityPicturesPsTooltip = "quantityPicturesPsTooltip";
+  static quantityVideosPsTooltip = "quantityVideosPsTooltip";
+  static videosDurationPsTooltip = "videosDurationPsTooltip";
+  static quantityAudiosPsTooltip = "quantityAudiosPsTooltip";
+  static audiosDurationPsTooltip = "audiosDurationPsTooltip";
 
+  static quantityPicturesCloseTooltip = "quantityPicturesCloseTooltip";
+  static quantityVideosCloseTooltip = "quantityVideosCloseTooltip";
+  static videosDurationCloseTooltip = "videosDurationCloseTooltip";
+  static quantityAudiosCloseTooltip = "quantityAudiosCloseTooltip";
+  static audiosDurationCloseTooltip = "audiosDurationCloseTooltip";
+  static cardTypeStatusTooltip = "cardTypeStatusTooltip";
+  static statusCardTypeTooltip = "statusCardTypeTooltip";
+  static createNotification = "createNotification";
+  static notificationName = "notificationName";
+  static requiredName = "requiredName";
+  static notificationDescription = "notificationDescription";
+  static notificationsRequiredDescription = "notificationsRequiredDescription";
+  static notificationsSite = "notificationsSite";
+  static notificationsSelectSite = "notificationsSelectSite";
+  static notificationsRequiredSite = "notificationsRequiredSite";
+  static notificationsSelectUsers = "notificationsSelectUsers";
+  static notificationsRequiredUsers = "notificationsRequiredUsers";
+  static notificationsSave = "notificationsSave";
+  static notificationsCancel = "notificationsCancel";
+  static searchUsers = "searchUsers";
+  static responsibleRequired = "responsibleRequired";
+  static levelsTreeOptionCreate = "levelsTreeOptionCreate";
+  static levelsTreeOptionClose = "levelsTreeOptionClose";
+  static levelsTreeOptionEdit = "levelsTreeOptionEdit";
+  static levelsTreeOptionClone = "levelsTreeOptionClone";
+  static levelDetailsTitle = "levelDetailsTitle";
+  static errorOnSubmit = "errorOnSubmit";
+  static drawerTypeCreate = "drawerTypeCreate";
+  static drawerTypeEdit = "drawerTypeEdit";
+  static drawerTypeClone = "drawerTypeClone";
+  static loading = "loading";
+  static noData = "noData";
+  static errorFetchingLevelData = "errorFetchingLevelData";
+  static yes = "yes";
+  static no = "no";
+  static detailsStatusCancelled = "detailsStatusCancelled";
+  static for = "for";
 
-// Register / Update Company Tooltips
-static companyNameTooltip = "Legal name of the company";
-static companyRfcTooltip = "The RFC (Federal Taxpayer Registry) must consist of 12 characters for individuals or 13 characters for legal entities. It includes letters and numbers: the first letters correspond to the name or business name, followed by the date of incorporation or birth, and a verification digit. Ensure it matches the official format.";
-static companyAddressTooltip = "Complete address of the company, including street and city.";
-static companyContactNameTooltip = "Name of the primary contact person.";
-static companyPositionTooltip = "Job position of the contact person.";
-static companyPhoneTooltip = "Company's landline number.";
-static companyExtensionTooltip = "Extension for the phone number (if applicable).";
-static companyCellularTooltip = "Primary mobile phone number.";
-static companyEmailTooltip = "Official company email address.";
-static companyLogoTooltip = "Upload the company logo in image format.";
+  static errorFetchingData = "errorFetchingData";
+static namePlaceholder = "namePlaceholder";
+static descriptionPlaceholder = "descriptionPlaceholder";
+static responsiblePlaceholder = "responsiblePlaceholder";
 
-  // Register / Update Users Form Tooltips
-  static userNameTooltip = "Enter the full name of the user. Only letters are allowed.";
-  static userEmailTooltip = "Enter a valid email address for the user.";
-  static userPasswordTooltip = "Enter a secure password. It must be at least 8 characters long.";
-  static userConfirmPasswordTooltip = "Confirm the password to ensure it matches the original.";
-  static userSiteRfcTooltip = "Select the RFC of the site to which the user will be assigned.";
-  static userUploadCardDataWithDataNetTooltip = "Enable this option if the user can upload card data using DataNet.";
-  static userUploadCardEvidenceWithDataNetTooltip = "Enable this option if the user can upload card evidence using DataNet.";
-  static userRolesTooltip = "Select one or more roles to assign to the user.";
+// General Placeholders
+static cardTypeTreeNamePlaceholder = "cardTypeTreeNamePlaceholder";
+static cardTypeTreeDescriptionPlaceholder = "cardTypeTreeDescriptionPlaceholder";
+static cardTypeTreeResponsiblePlaceholder = "cardTypeTreeResponsiblePlaceholder";
+static cardTypeTreeStatusPlaceholder = "cardTypeTreeStatusPlaceholder";
+static cardTypeTreeColorPlaceholder = "cardTypeTreeColorPlaceholder";
 
+// Placeholders for Quantity Fields
+static cardTypeTreeQuantityPicturesPlaceholder = "cardTypeTreeQuantityPicturesPlaceholder";
+static cardTypeTreeQuantityVideosPlaceholder = "cardTypeTreeQuantityVideosPlaceholder";
+static cardTypeTreeQuantityAudiosPlaceholder = "cardTypeTreeQuantityAudiosPlaceholder";
 
-  // User status
-    static requiredStatus= "Status is required"
-    static statusPlaceholder = "Choose a status"
-    static activeValue = "A"
-    static inactiveValue = "I"
-    static statusUserLabel = "User status"
+// Titles or Section Labels
+static cardTypeTreeAtCreation = "cardTypeTreeAtCreation";
+static cardTypeTreeAtProvisionalSolution = "cardTypeTreeAtProvisionalSolution";
+static cardTypeTreeAtDefinitiveSolution = "cardTypeTreeAtDefinitiveSolution";
 
+// Error Messages
+static cardTypeTreeRequiredCardTypeName = "cardTypeTreeRequiredCardTypeName";
+static cardTypeTreeRequiredDescription = "cardTypeTreeRequiredDescription";
+static cardTypeTreeRequiredResponsableId = "cardTypeTreeRequiredResponsableId";
+static cardTypeTreeRequiredColor = "cardTypeTreeRequiredColor";
 
-    // Register / Update Card-Type Form Tooltips
-    static cardTypeMethodologyTooltip = "Select the methodology associated with this card type.";
-    static cardTypeNameTooltip = "Provide a unique name for the card type. Maximum 45 characters.";
-    static cardTypeDescriptionTooltip = "Briefly describe the purpose of the card type. Maximum 100 characters.";
-    static cardTypeColorTooltip = "Choose a color to visually represent this card type.";
-    static responsibleTooltip = "Select the person responsible for managing this card type.";
+// Notifications
+static cardTypeTreeSuccessCardTypeUpdated = "cardTypeTreeSuccessCardTypeUpdated";
+static cardTypeTreeErrorFetchingData = "cardTypeTreeErrorFetchingData";
 
-    static quantityPicturesCreateTooltip = "Enter the number of pictures required at the creation stage.";
-    static quantityVideosCreateTooltip = "Specify the number of videos required at the creation stage.";
-    static videosDurationCreateTooltip = "Provide the total duration (in seconds) of videos for the creation stage.";
-    static quantityAudiosCreateTooltip = "Specify the number of audio files required at the creation stage.";
-    static audiosDurationCreateTooltip = "Provide the total duration (in seconds) of audio files for the creation stage.";
+/* Card Types and Preclassifier tree */
+static cardTypesDrawerTypeCreateCardType = "cardTypesDrawerTypeCreateCardType";
+static cardTypesDrawerTypeUpdateCardType = "cardTypesDrawerTypeUpdateCardType";
+static cardTypesDrawerTypeCreatePreclassifier = "cardTypesDrawerTypeCreatePreclassifier";
+static cardTypesDrawerTypeUpdatePreclassifier = "cardTypesDrawerTypeUpdatePreclassifier";
+static cardTypesCreate = "cardTypesCreate";
+static cardTypesCancel = "cardTypesCancel";
+static cardTypesEdit = "cardTypesEdit";
+static cardTypesEditPreclassifier = "cardTypesEditPreclassifier";
+static cardTypesCloneCardType = "cardTypesCloneCardType";
+static cardTypesClonePre = "cardTypesClonePre";
+static cardTypesCreatePreclassifier = "cardTypesCreatePreclassifier";
+static cardTypesUpdatePreclassifier = "cardTypesUpdatePreclassifier";
+static cardTypesRoot = "cardTypesRoot";
+static cardTypesCloneSuffix = "cardTypesCloneSuffix";
+static cardTypesMethodologyError = "cardTypesMethodologyError";
+static cardTypesLoadingData = "cardTypesLoadingData";
+static cardTypesUpdateCardType = "cardTypesUpdateCardType";
+static cardTypesCreateCardType = "cardTypesCreateCardType";
+static cardTypesClonePreclassifier = "cardTypesClonePreclassifier";
+static cardTypesErrorFetchingData = "cardTypesErrorFetchingData";
+static cardTypesNoCardTypeIdError = "cardTypesNoCardTypeIdError";
+static cardTypesOptionEdit = "cardTypesOptionEdit";
+static cardTypesOptionClone = "cardTypesOptionClone";
+static cardTypesOptionCreate = "cardTypesOptionCreate";
+static cardTypesOptionCancel = "cardTypesOptionCancel";
 
-    static quantityPicturesPsTooltip = "Enter the number of pictures required at the provisional solution stage.";
-    static quantityVideosPsTooltip = "Specify the number of videos required at the provisional solution stage.";
-    static videosDurationPsTooltip = "Provide the total duration (in seconds) of videos for the provisional solution stage.";
-    static quantityAudiosPsTooltip = "Specify the number of audio files required at the provisional solution stage.";
-    static audiosDurationPsTooltip = "Provide the total duration (in seconds) of audio files for the provisional solution stage.";
+static cardTypeDetailsTitle = "cardTypeDetailsTitle";
+static cardTypeDetailsMethodology = "cardTypeDetailsMethodology";
+static cardTypeDetailsName = "cardTypeDetailsName";
+static cardTypeDetailsDescription = "cardTypeDetailsDescription";
+static cardTypeDetailsColor = "cardTypeDetailsColor";
+static cardTypeDetailsResponsible = "cardTypeDetailsResponsible";
+static cardTypeDetailsStatus = "cardTypeDetailsStatus";
 
-    static quantityPicturesCloseTooltip = "Enter the number of pictures required at the definitive solution stage.";
-    static quantityVideosCloseTooltip = "Specify the number of videos required at the definitive solution stage.";
-    static videosDurationCloseTooltip = "Provide the total duration (in seconds) of videos for the definitive solution stage.";
-    static quantityAudiosCloseTooltip = "Specify the number of audio files required at the definitive solution stage.";
-    static audiosDurationCloseTooltip = "Provide the total duration (in seconds) of audio files for the definitive solution stage.";  
-
-    static cardTypeStatusTooltip = "Select the current status of the card type. It determines whether the card type is active or inactive in the system.";
-    static statusCardTypeTooltip = "You can change the status of the card type"
-
-    // Custom Push Notifications 
-    static createNotification = "Create Notification";
-    static notificationName = "Notification Name";
-    static requiredName = "The notification name is required.";
-    static notificationDescription = "Notification Description";
-    static notificationsRequiredDescription = "The description is required.";
-    static notificationsSite = "Site";
-    static notificationsSelectSite = "Select a site";
-    static notificationsRequiredSite = "You must select a site.";
-    static notificationsSelectUsers = "Select Users";
-    static notificationsRequiredUsers = "You must select at least one user.";
-    static notificationsSave = "Save";
-    static notificationsCancel = "Cancel";
-    static searchUsers = "Search User"
-
-    
-    static responsibleRequired = "Responsible Required"
-    static levelsTreeOptionCreate = "Create";
-    static levelsTreeOptionClose = "Close";
-    static levelsTreeOptionEdit = "Edit";
-    static levelsTreeOptionClone = "Clone";
-    static levelDetailsTitle = "Level Details";
-    static errorOnSubmit = "Error on submit";
-    static drawerTypeCreate = "create"
-    static drawerTypeEdit = "update"
-    static drawerTypeClone = "clone"
-    
-    static loading = "Loading";
-    static noData = "No data";
-    static errorFetchingLevelData = "Error fetching level data";
-    static yes = "Yes";
-    static no = "No";
-    static detailsStatusCancelled = "Cancelled";
-    static for = "for"
-    
+static preclassifierDetailsTitle = "preclassifierDetailsTitle";
+static preclassifierDetailsCode = "preclassifierDetailsCode";
+static preclassifierDetailsDescription = "preclassifierDetailsDescription";
+static preclassifierDetailsStatus = "preclassifierDetailsStatus";
+static notSpecified = "notSpecified";
+static false = "false"
 
 }
+
+const Strings = new Proxy(StringsBase, {
+  get(target, prop) {
+    if (typeof prop === "string" && prop in target) {
+      return i18n.t((target as any)[prop]);
+    }
+    console.warn(`No translation for: ${String(prop)}`);
+    return (target as any)[prop];
+  },
+});
+
+export default Strings;
