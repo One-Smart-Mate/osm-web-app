@@ -65,6 +65,58 @@ const resources = {
       evidences: "Evidences",
       none: "None",
 
+      email: "Email",
+loginText:
+  "Get a comprehensive view of all your company's maintenance needs before they turn into costly repairs.",
+forgotPassword: "Forgot your password?",
+
+// errors login form
+requiredEmail: "Please enter your email address.",
+requiredPassword: "Please enter your password.",
+requiredValidEmailAddress: "Please enter a valid email address.",
+requiredInfo: "Please provide the information.",
+
+// errors user form
+requiredUserName: "Please enter the user's name.",
+requiredSite: "Please select a site.",
+requiredRoles: "Please assign at least one role.",
+requiredConfirmPassword: "Please confirm your password.",
+passwordsDoNotMatch: "Passwords do not match.",
+onlyLetters: "Please enter letters only.",
+passwordLenght: "The password must be at least 8 characters long.",
+uploadFileRequired: "Please upload a file.",
+logoutModalContent: "You are about to log out of your account.",
+provisionalSolutionApplied: "Provisional solution applied",
+
+// errors company form
+requiredCompanyName: "Please enter the company's name.",
+requiredRFC: "Please enter the RFC.",
+requiredContacName: "Please enter the contact name.",
+requiredPosition: "Please enter the contact's position.",
+requiredAddress: "Please enter the address.",
+requiredPhone: "Please enter the phone number.",
+requiredExtension: "Please enter an extension.",
+requiredCellular: "Please enter the cell phone number.",
+requiredLogo: "Please upload the logo.",
+
+// errors priority form
+requiredCode: "Please enter the code.",
+requiredDescription: "Please enter the description.",
+requiredDaysNumber: "Please enter the number of days.",
+requiredResponsableId: "Please select the person in charge.",
+requiredMechanic: "Please select the mechanic.",
+requiredPriority: "Priority required.",
+
+
+      companyName: "Name",
+      rfc: "RFC",
+      companyAddress: "Address",
+      contact: "Contact",
+      position: "Position",
+      phone: "Phone",
+      extension: "Extension",
+      cellular: "Mobile Phone",
+
       logoTemp: "https://th.bing.com/th/id/OIG4.jIj.NbKiwFNdl.C3Ltft?pid=ImgGn",
       // company actions
       viewSites: "View sites",
@@ -350,6 +402,7 @@ const resources = {
       priorityDaysNumberTooltip:
         "The number of days associated with this priority. Must be a positive number.",
 
+        entrepriseName: "OSM",
       // Form tooltips based on SiteEntity
       siteNameTooltip:
         "Enter the name of the site . Maximum length: 100 characters.",
@@ -590,11 +643,11 @@ namePDF: "Tag details.pdf"
       usersSB: "Usuarios",
       siteUsersSB: "Usuarios del Sitio",
       sitesSB: "Sitios",
-      cardTypesSB: "Tipos de Etiqueta",
+      cardTypesSB: "Tipos de Tarjeta",
       preclassifiersSB: "Preclasificadores",
       levelsSB: "Niveles",
-      cardsSB: "Etiquetas",
-      cardDetailsSB: "Detalles de Etiqueta",
+      cardsSB: "Tarjetas",
+      cardDetailsSB: "Detalles de Tarjeta",
       chartsSB: "Gráficos",
 
       login: "Iniciar sesión",
@@ -609,9 +662,9 @@ namePDF: "Tag details.pdf"
       logout: "Cerrar sesión",
       updatePassword: "Actualizar contraseña",
       confirmPassword: "Confirmar contraseña",
-      uploadCardDataWithDataNet: "Cargar Etiqueta con datos de red",
+      uploadCardDataWithDataNet: "Cargar Tarjeta con datos de red",
       uploadCardEvidenceWithDataNet:
-        "Cargar evidencia de Etiqueta con datos de red",
+        "Cargar evidencia de Tarjeta con datos de red",
       searchRecord: "Buscar registro",
       clearFiltersAndSorters: "Limpiar filtros y ordenadores",
       empty: "",
@@ -667,6 +720,8 @@ namePDF: "Tag details.pdf"
       onlyLetters: "Por favor, introduce solo letras.",
       passwordLenght: "La contraseña debe tener al menos 8 caracteres.",
       uploadFileRequired: "Por favor, sube un archivo.",
+      logoutModalContent: "Estás a punto de cerrar la sesión de tu cuenta.",
+      provisionalSolutionApplied: "Solución provisional aplicada",
 
       // errors company form
       requiredCompanyName: "Por favor, introduce el nombre de la empresa.",
@@ -709,8 +764,8 @@ namePDF: "Tag details.pdf"
       // site actions
       viewPriorities: "Ver prioridades",
       viewLevels: "Ver niveles",
-      viewCardTypes: "Ver tipos de Etiqueta",
-      viewCards: "Ver Etiquetas",
+      viewCardTypes: "Ver tipos de Tarjeta",
+      viewCards: "Ver Tarjetas",
       viewCharts: "Ver gráficos",
       viewUsers: "Ver usuarios",
       importUsers: "Importar usuarios",
@@ -763,8 +818,8 @@ namePDF: "Tag details.pdf"
       name: "Nombre",
       color: "Color",
       responsible: "Responsable",
-      cardTypeMethodology: "Metodología del tipo de Etiqueta",
-      cardTypesOf: "Tipos de Etiqueta de",
+      cardTypeMethodology: "Metodología del tipo de Tarjeta",
+      cardTypesOf: "Tipos de Tarjeta de",
       quantityPictures: "Cantidad de imágenes",
       quantityAudios: "Cantidad de audios",
       quantityVideos: "Cantidad de videos",
@@ -779,7 +834,7 @@ namePDF: "Tag details.pdf"
       // cardtype methodology
       M: "M",
       C: "C",
-      updateCardType: "Actualizar tipo de Etiqueta",
+      updateCardType: "Actualizar tipo de Tarjeta",
 
       // roles
       roles: "Roles",
@@ -788,7 +843,7 @@ namePDF: "Tag details.pdf"
       // errors card type form
       requiredMethodology: "Por favor, selecciona la metodología",
       requiredCardTypeName:
-        "Por favor, introduce el nombre del tipo de Etiqueta",
+        "Por favor, introduce el nombre del tipo de Tarjeta",
       requiredColor: "Por favor, selecciona un color",
 
       // CardTypes actions
@@ -814,15 +869,15 @@ namePDF: "Tag details.pdf"
       createSite: "Crear sitio para",
       updateSite: "Actualizar sitio",
       createPreclassifier: "Crear preclasificador",
-      createCardType: "Crear tipo de Etiqueta para",
+      createCardType: "Crear tipo de Tarjeta para",
       createLevel: "Crear nivel para",
       updateLevel: "Actualizar nivel",
       createNodefor: "Crear nodo para",
 
-      cards: "Etiquetas",
-      tagDetailsOf: "Detalles de la etiqueta de",
+      cards: "Tarjetas",
+      tagDetailsOf: "Detalles de la Tarjeta de",
       type: "Tipo",
-      cardNumber: "Número de Etiqueta",
+      cardNumber: "Número de Tarjeta",
       area: "Área",
       date: "Fecha",
       mechanic: "Mecánico",
@@ -834,11 +889,11 @@ namePDF: "Tag details.pdf"
       noDueDate: "Sin fecha de vencimiento",
 
       // Tags re-design
-      tagsOf: "Etiquetas de",
+      tagsOf: "Tarjetas de",
       filters: "Filtros",
       status: "Estado: ",
       dueDate: "Fecha de vencimiento: ",
-      cardType: "Tipo de etiqueta: ",
+      cardType: "Tipo de Tarjeta: ",
       problemType: "Tipo de problema: ",
       location: "Ubicación: ",
       createdBy: "Creado por: ",
@@ -849,7 +904,7 @@ namePDF: "Tag details.pdf"
       tagDate: "Fecha: ",
       tagDays: "Días: ",
       ceroDays: "0 días",
-      tagNumber: "Número de etiqueta: ",
+      tagNumber: "Número de Tarjeta: ",
       tagPriority: "Prioridad: ",
       dateStatus: "Estado de la fecha: ",
       tagMechanic: "Mecánico: ",
@@ -883,14 +938,14 @@ namePDF: "Tag details.pdf"
       areas: "Áreas",
       creators: "Creadores",
       machines: "Máquinas",
-      tagMonitoring: "Monitoreo de etiquetas",
-      totalCards: "Total de Etiquetas",
+      tagMonitoring: "Monitoreo de Tarjetas",
+      totalCards: "Total de Tarjetas",
       total: "Total",
       areaChart: "Área",
       machine: "Máquina",
       machineLocation: "Ubicación de la máquina",
       creatorChart: "Creador",
-      cardName: "Nombre de la Etiqueta",
+      cardName: "Nombre de la Tarjeta",
       preclassifierChart: "Preclasificador",
       year: "Año:",
       week: "Semana:",
@@ -1052,9 +1107,9 @@ namePDF: "Tag details.pdf"
       userSiteRfcTooltip:
         "Seleccione el RFC del sitio al que se asignará el usuario.",
       userUploadCardDataWithDataNetTooltip:
-        "Habilite esta opción si el usuario puede cargar datos de Etiquetas utilizando DataNet.",
+        "Habilite esta opción si el usuario puede cargar datos de Tarjetas utilizando DataNet.",
       userUploadCardEvidenceWithDataNetTooltip:
-        "Habilite esta opción si el usuario puede cargar evidencias de Etiquetas utilizando DataNet.",
+        "Habilite esta opción si el usuario puede cargar evidencias de Tarjetas utilizando DataNet.",
       userRolesTooltip: "Seleccione uno o más roles para asignar al usuario.",
       requiredStatus: "El estado es obligatorio",
       statusPlaceholder: "Seleccione un estado",
@@ -1062,15 +1117,15 @@ namePDF: "Tag details.pdf"
       inactiveValue: "I",
       statusUserLabel: "Estado del usuario",
       cardTypeMethodologyTooltip:
-        "Seleccione la metodología asociada con este tipo de Etiqueta.",
+        "Seleccione la metodología asociada con este tipo de Tarjeta.",
       cardTypeNameTooltip:
-        "Proporcione un nombre único para el tipo de Etiqueta. Máximo 45 caracteres.",
+        "Proporcione un nombre único para el tipo de Tarjeta. Máximo 45 caracteres.",
       cardTypeDescriptionTooltip:
-        "Describa brevemente el propósito del tipo de Etiqueta. Máximo 100 caracteres.",
+        "Describa brevemente el propósito del tipo de Tarjeta. Máximo 100 caracteres.",
       cardTypeColorTooltip:
-        "Elija un color para representar visualmente este tipo de Etiqueta.",
+        "Elija un color para representar visualmente este tipo de Tarjeta.",
       responsibleTooltip:
-        "Seleccione la persona responsable de gestionar este tipo de Etiqueta.",
+        "Seleccione la persona responsable de gestionar este tipo de Tarjeta.",
       quantityPicturesCreateTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de creación.",
       quantityVideosCreateTooltip:
@@ -1103,8 +1158,8 @@ namePDF: "Tag details.pdf"
       audiosDurationCloseTooltip:
         "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución definitiva.",
       cardTypeStatusTooltip:
-        "Seleccione el estado actual del tipo de Etiqueta. Esto determina si el tipo de Etiqueta está activo o inactivo en el sistema.",
-      statusCardTypeTooltip: "Puede cambiar el estado del tipo de Etiqueta",
+        "Seleccione el estado actual del tipo de Tarjeta. Esto determina si el tipo de Tarjeta está activo o inactivo en el sistema.",
+      statusCardTypeTooltip: "Puede cambiar el estado del tipo de Tarjeta",
       createNotification: "Crear Notificación",
       notificationName: "Nombre de la Notificación",
       requiredName: "El nombre de la notificación es obligatorio.",
@@ -1159,43 +1214,43 @@ cardTypeTreeAtProvisionalSolution: "En la solución provisional",
 cardTypeTreeAtDefinitiveSolution: "En la solución definitiva",
 
 // Error Messages
-cardTypeTreeRequiredCardTypeName: "El nombre del tipo de Etiqueta es obligatorio",
+cardTypeTreeRequiredCardTypeName: "El nombre del tipo de Tarjeta es obligatorio",
 cardTypeTreeRequiredDescription: "La descripción es obligatoria",
 cardTypeTreeRequiredResponsableId: "El responsable es obligatorio",
 cardTypeTreeRequiredColor: "El color es obligatorio",
 
 // Notifications
-cardTypeTreeSuccessCardTypeUpdated: "¡El tipo de Etiqueta se actualizó con éxito!",
+cardTypeTreeSuccessCardTypeUpdated: "¡El tipo de Tarjeta se actualizó con éxito!",
 cardTypeTreeErrorFetchingData: "Error al obtener datos",
 
 /* Card Types and Preclassifier tree */
-cardTypesDrawerTypeCreateCardType: "crearTipoEtiqueta",
-cardTypesDrawerTypeUpdateCardType: "actualizarTipoEtiqueta",
+cardTypesDrawerTypeCreateCardType: "crearTipoTarjeta",
+cardTypesDrawerTypeUpdateCardType: "actualizarTipoTarjeta",
 cardTypesDrawerTypeCreatePreclassifier: "crearPreclasificador",
 cardTypesDrawerTypeUpdatePreclassifier: "actualizarPreclasificador",
-cardTypesCreate: "Crear Tipo de Etiqueta",
+cardTypesCreate: "Crear Tipo de Tarjeta",
 cardTypesCancel: "Cancelar",
-cardTypesEdit: "Editar Tipo de Etiqueta",
+cardTypesEdit: "Editar Tipo de Tarjeta",
 cardTypesEditPreclassifier: "Editar Preclasificador",
-cardTypesCloneCardType: "Clonar Tipo de Etiqueta",
+cardTypesCloneCardType: "Clonar Tipo de Tarjeta",
 cardTypesClonePre: "Clonar Preclasificador",
 cardTypesCreatePreclassifier: "Crear Preclasificador",
 cardTypesUpdatePreclassifier: "Editar Preclasificador",
 cardTypesRoot: "Raíz",
 cardTypesCloneSuffix: "(Clon)",
-cardTypesMethodologyError: "La metodología del tipo de Etiqueta es obligatoria para la creación.",
+cardTypesMethodologyError: "La metodología del tipo de Tarjeta es obligatoria para la creación.",
 cardTypesLoadingData: "Cargando datos...",
-cardTypesUpdateCardType: "Editar Tipo de Etiqueta",
-cardTypesCreateCardType: "Crear Tipo de Etiqueta",
+cardTypesUpdateCardType: "Editar Tipo de Tarjeta",
+cardTypesCreateCardType: "Crear Tipo de Tarjeta",
 cardTypesClonePreclassifier: "Clonar Preclasificador",
 cardTypesErrorFetchingData: "Error al obtener datos",
-cardTypesNoCardTypeIdError: "No se encontró el ID del tipo de Etiqueta para crear un preclasificador.",
+cardTypesNoCardTypeIdError: "No se encontró el ID del tipo de Tarjeta para crear un preclasificador.",
 cardTypesOptionEdit: "editarCT",
 cardTypesOptionClone: "clonerCT",
 cardTypesOptionCreate: "createPre",
 cardTypesOptionCancel: "cancelCT",
 
-cardTypeDetailsTitle: "Detalles del Tipo de Etiqueta",
+cardTypeDetailsTitle: "Detalles del Tipo de Tarjeta",
 cardTypeDetailsMethodology: "Metodología",
 cardTypeDetailsName: "Nombre",
 cardTypeDetailsDescription: "Descripción",
@@ -1219,36 +1274,17 @@ namePDF: "Detalles de la tarjeta.pdf"
     },
   },
 };
-
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    debug: true,
+    debug: true,          
     resources,
     fallbackLng: "es",
-    interpolation: {
-      escapeValue: false,
-    },
     detection: {
-      order: [
-        "navigator",
-        "querystring",
-        "cookie",
-        "localStorage",
-        "sessionStorage",
-        "htmlTag",
-        "path",
-        "subdomain",
-      ],
-      lookupQuerystring: "lng",
-      lookupCookie: "i18next",
-      lookupLocalStorage: "i18nextLng",
-      lookupSessionStorage: "i18nextLng",
-      caches: ["localStorage", "cookie"],
-    },
-    supportedLngs: ["en", "es"],
-    nonExplicitSupportedLngs: true,
+      order: ["localStorage"],
+      caches: ["localStorage"],
+      cleanCode: true,
+    } as any,
   });
-
 export default i18n;
