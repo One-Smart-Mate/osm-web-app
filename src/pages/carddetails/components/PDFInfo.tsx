@@ -1,4 +1,3 @@
-import { Form } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -6,35 +5,14 @@ import {
 } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
 import { CardDetailsInterface } from "../../../data/card/card";
-import { useState } from "react";
-import UpdatePriorityForm from "./UpdatePriorityForm";
-import {
-  useUpdateCardMechanicMutation,
-  useUpdateCardPriorityMutation,
-} from "../../../services/cardService";
-import {
-  UpdateCardMechanic,
-  UpdateCardPriority,
-} from "../../../data/card/card.request";
-import { useAppDispatch, useAppSelector } from "../../../core/store";
-import { selectCurrentUser } from "../../../core/authReducer";
-import {
-  handleErrorNotification,
-  handleSucccessNotification,
-  NotificationSuccess,
-} from "../../../utils/Notifications";
-import { setCardUpdatedIndicator } from "../../../core/genericReducer";
-import UpdateMechanicForm from "./UpdateMechanicForm";
 import { Divider, Typography } from "antd";
 
 import { Row, Col } from "antd";
 
 
-import { theme } from "antd";
+
 import CustomTagV2 from "../../../components/CustomTagV2";
 
-
-const { useToken } = theme;
 const { Text } = Typography;
 
 
@@ -43,15 +21,6 @@ interface CardProps {
 }
 
 const PDFInfo = ({ data }: CardProps) => {
-  const [modalIsLoading, setModalLoading] = useState(false);
-  const [modalIsOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(Strings.empty);
-  const currentUser = useAppSelector(selectCurrentUser);
-  const [updateCardPriority] = useUpdateCardPriorityMutation();
-  const [updateCardMechanic] = useUpdateCardMechanicMutation();
-  const dispatch = useAppDispatch();
-  const { token } = useToken();
-  const primaryColor = token.colorPrimary;
 
   const { card } = data;
   const cardStatus = getCardStatusAndText(
@@ -61,62 +30,6 @@ const PDFInfo = ({ data }: CardProps) => {
     card.cardCreationDate
   );
 
-
-  const handleOnOpenModal = (modalType: string) => {
-    setModalOpen(true);
-    setModalType(modalType);
-  };
-  const handleOnCancelButton = () => {
-    if (!modalIsLoading) {
-      setModalOpen(false);
-    }
-  };
-
-  const selectFormByModalType = (modalType: string) => {
-    if (modalType === Strings.priority) {
-      return UpdatePriorityForm;
-    } else {
-      return UpdateMechanicForm;
-    }
-  };
-
-  const selecTitleByModalType = (modalType: string) => {
-    if (modalType === Strings.priority) {
-      return Strings.updatePriority;
-    } else {
-      return Strings.updateMechanic;
-    }
-  };
-
-  const handleOnFormUpdateFinish = async (values: any) => {
-    try {
-      setModalLoading(true);
-      if (modalType === Strings.priority) {
-        await updateCardPriority(
-          new UpdateCardPriority(
-            Number(card.id),
-            Number(values.priorityId),
-            Number(currentUser.userId)
-          )
-        ).unwrap();
-      } else {
-        await updateCardMechanic(
-          new UpdateCardMechanic(
-            Number(card.id),
-            Number(values.mechanicId),
-            Number(currentUser.userId)
-          )
-        ).unwrap();
-      }
-      setModalOpen(false);
-      dispatch(setCardUpdatedIndicator());
-      handleSucccessNotification(NotificationSuccess.UPDATE);
-    } catch (error) {
-      handleErrorNotification(error);
-    } finally {
-      setModalLoading(false);
-    }
-  };
 
   return (
     <>
@@ -204,7 +117,7 @@ const PDFInfo = ({ data }: CardProps) => {
                 <span className="font-semibold text-xl md:text-xl">
                   {Strings.daysSinceCreation}
                 </span>
-                <p className="text-center font-semibold text-xl md:text-xl">
+                <p className="text-center text-xl md:text-xl">
                   {getDaysSince(card.createdAt) || Strings.cero}
                 </p>
               </div>
@@ -218,7 +131,7 @@ const PDFInfo = ({ data }: CardProps) => {
           <Row gutter={15} className="mb-3">
 
             <Col span={8}>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-col items-start">
                 <span className="font-semibold text-xl md:text-xl">
                   {Strings.dueDate}
                 </span>
@@ -229,14 +142,11 @@ const PDFInfo = ({ data }: CardProps) => {
             </Col>
 
             <Col span={8}>
-              <div className="flex items-center gap-1">
-                <p className="font-semibold text-xl md:text-xl">
+              <div className="flex flex-col items-start">
+                <span className="font-semibold text-xl md:text-xl">
                   {Strings.tagPriority}
-                </p>
-                <p
-                  onClick={() => handleOnOpenModal(Strings.priority)}
-                  className="text-xl md:text-xl"
-                >
+                </span>
+                <p className="text-left px-1 text-xl md:text-xl"> {Strings.priority}
                   {card.priorityCode
                     ? `${card.priorityCode} - ${card.priorityDescription}`
                     : Strings.NA}
@@ -246,7 +156,7 @@ const PDFInfo = ({ data }: CardProps) => {
 
 
             <Col span={8}>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-col items-start">
                 <span className="font-semibold text-xl md:text-xl">
                   {Strings.dateStatus}
                 </span>
