@@ -2,6 +2,8 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
+
+//ENGLISH
 const resources = {
   en: {
     translation: {
@@ -631,8 +633,13 @@ false: "false",
 tagDetails : "Tag details",
 problemDetails: "Problem details",
 sharePDF: "Share PDF",
-namePDF: "Tag details.pdf"
+namePDF: "Tag details.pdf",
 
+//Login Refactor
+logImgDesc: "Log In Image",
+enSub: "One Smart Mate"
+
+//SPANISH
     },
   },
   es: {
@@ -1269,7 +1276,10 @@ false: "false",
 tagDetails : "Detalles de la tarjeta",
 problemDetails: "Detalles del problema",
 sharePDF: "Compartir PDF",
-namePDF: "Detalles de la tarjeta.pdf"
+namePDF: "Detalles de la tarjeta.pdf",
+
+logImgDesc: "Imagen del Log In",
+enSub: "One Smart Mate"
 
     },
   },
