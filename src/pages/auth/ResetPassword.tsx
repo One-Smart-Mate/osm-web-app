@@ -81,7 +81,7 @@ const ResetPassword = () => {
         <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
           <Meta
             title={
-              <h1 className="text-center text-3xl block font-semibol">
+              <h1 className="text-center text-3xl block font-semibold">
                 {Strings.resetPassword}
               </h1>
             }
@@ -124,7 +124,7 @@ const ResetPassword = () => {
         <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
           <Meta
             title={
-              <h1 className="text-center text-3xl block font-semibold">
+              <h1 className="text-center text-3xl block font-semibol">
                 {Strings.enterCode}
               </h1>
             }
