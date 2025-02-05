@@ -1,11 +1,15 @@
 export const headerStyle = (colorBgContainer: string) => ({
-  padding: 0,
+  paddingLeft: 7,
   background: colorBgContainer,
+  margin: 0,
+  height: 30,
+  display: "flex"
 });
 export const buttonSiderStyle = {
-  fontSize: "16px",
-  width: 64,
-  height: 64,
+  fontSize: "14px",
+  width: 30,
+  height: 30,
+  marginTop: 1
 };
 export const contentStyle = (
   colorBgContainer: string,

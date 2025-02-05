@@ -61,6 +61,19 @@ const Sites = ({ rol }: SitesProps) => {
       navigate(UnauthorizedRoute);
       return;
     }
+
+
+    const companyInfo = {
+      companyId: location.state.companyId,
+      companyName: location.state.companyName,
+      companyAddress: location.state.companyAddress,
+      companyPhone: location.state.companyPhone,
+      companyLogo: location.state.companyLogo,
+    };
+
+    sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
+
+
     const user = getSessionUser() as User;
     setLoading(true);
     var response;
