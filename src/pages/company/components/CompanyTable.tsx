@@ -131,7 +131,8 @@ const CompanyTable = ({ data, isLoading }: CompaniesTableProps) => {
     showExpandColumn: false,
     expandedRowRender: (data: Company) => (
       <Space className="flex justify-end">
-        <ViewSitesButton companyId={data.id} companyName={data.name} />
+        <ViewSitesButton companyId={data.id} companyName={data.name} companyAddress={data.address} companyPhone={data.phone} companyLogo={data.logo}  />
+        
         <UpdateCompany data={data} />
       </Space>
     ),
