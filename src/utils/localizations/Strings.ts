@@ -574,6 +574,11 @@ static false = "false"
  static logImgDesc = "logImgDesc"
  static enSub = "enSub"
 
+ static selectRole = "selectRole"
+ static assignedTo = "assignedTo";
+ static assignUser = "assignUser"
+
+ static notCardInfoFound = "notCardInfoFound"
 }
 
 const Strings = new Proxy(StringsBase, {

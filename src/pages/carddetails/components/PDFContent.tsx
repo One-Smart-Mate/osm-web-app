@@ -46,7 +46,7 @@ const PdfContent = () => {
   }, [isCardUpdated, dispatch]);
 
   const handleGetCards = async () => {
-    if (!location.state) {
+    if (!location.state && !window.location.href.includes("external")) {
       navigate(UnauthorizedRoute);
       return;
     }

@@ -7,6 +7,10 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
+      notCardInfoFound: "No data found for this tag",
+      assignUser: "Assign User",
+      assignedTo: "Assigned to:",
+      selectRole: "Select",
       notificationsSB: "Notifications",
       companiesSB: "Companies",
       prioritiesSB: "Priorities",
@@ -639,11 +643,16 @@ namePDF: "Tag details.pdf",
 logImgDesc: "Log In Image",
 enSub: "One Smart Mate"
 
+
 //SPANISH
     },
   },
   es: {
     translation: {
+      notCardInfoFound: "No se encontró información para esta tarjeta.",
+      assignUser: "Asignar Usuario",
+      assignedTo: "Asignada a:",
+      selectRole: "Seleccionar",
       notificationsSB: "Notificaciones",
       companiesSB: "Empresas",
       prioritiesSB: "Prioridades",

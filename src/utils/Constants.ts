@@ -4,10 +4,14 @@ const DATE_FORMAT = "YYYY-MM-DD";
 const AUDIO_FORMATS = ["mp3", "wav"];
 const VIDEO_FORMATS = ["mp4", "webm"];
 const IMAGE_FORMATS = ["jpg", "jpeg", "png"];
+
 const ihSisAdmin = "IH_sis_admin";
 const mechanic = "mechanic";
 const localAdmin = "local_admin";
 const localSisAdmin = "local_sis_admin";
+const operator = "operator";
+const externalProvider = "external_provider";
+const id = "Id";
 
 const enOption = "English";
 const esOption = "Español"
@@ -24,6 +28,9 @@ export default {
   mechanic,
   localAdmin,
   localSisAdmin,
+  operator,
+  externalProvider,
+  id,
   esOption,
   enOption
 };

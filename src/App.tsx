@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import {ConfigProvider } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
 import { Route, Routes } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import i18n from "./config/i18n";
+import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
 
 console.log("Detected Language by i18next:", i18n.language);
 
@@ -48,6 +49,8 @@ function App() {
       }}
     >
       <Routes>
+      <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
+
         <Route index path="/" element={<LoginPage />} />
         <Route path={ResetPasswordRoute} element={<ResetPassword />} />
         <Route element={<PrivateRoutes />}>
