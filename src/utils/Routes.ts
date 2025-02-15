@@ -19,6 +19,8 @@ const CardDetails = "/card/:card/details";
 const AdminPrefix = "/admin";
 const SysadminPrefix = "/sys-admin";
 const LocalAdminPrefix = "/local-admin";
+const PublicCardDetailsRoute = "/public/card/:cardId/details";
+
 
 export default {
   AdminDirectionHome,
@@ -38,4 +40,5 @@ export default {
   Site,
   Company,
   CardType,
+  PublicCardDetailsRoute
 };

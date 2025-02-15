@@ -78,12 +78,29 @@ export const userService = apiSlice.injectEndpoints({
         };
       },
     }),
-    sendCustomNotification: builder.mutation<void, { siteId: number; userIds: number[]; title: string; description: string }>({
+    sendCustomNotification: builder.mutation<
+      void,
+      { siteId: number; userIds: number[]; title: string; description: string }
+    >({
       query: (notificationData) => ({
         url: "/notifications/send-custom-notification",
         method: "POST",
         body: { ...notificationData },
       }),
+    }),
+    getUsersByRole: builder.mutation<
+      Responsible[],
+      { siteId: string; roleName: string }
+    >({
+      query: ({ siteId, roleName }) => `/users/site/${siteId}/role/${roleName}`,
+
+      transformResponse: (response: {
+        data: Responsible[];
+        status: number;
+        message: string;
+      }) => {
+        return response.data;
+      },
     }),
   }),
 });
@@ -100,5 +117,6 @@ export const {
   useResetPasswordMutation,
   useGetSiteUsersMutation,
   useImportUsersMutation,
-  useSendCustomNotificationMutation
+  useSendCustomNotificationMutation,
+  useGetUsersByRoleMutation,
 } = userService;
