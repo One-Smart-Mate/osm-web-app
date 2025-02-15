@@ -20,6 +20,7 @@ import { Divider, Typography } from "antd";
 import PDFInfo from "./PDFInfo";
 import PDFSolution from "./PDFSolution";
 import PDFDefinitive from "./PDFDefinitive";
+import Constants from "../../../utils/Constants";
 
 const { Text } = Typography;
 
@@ -46,7 +47,7 @@ const PdfContent = () => {
   }, [isCardUpdated, dispatch]);
 
   const handleGetCards = async () => {
-    if (!location.state && !window.location.href.includes("external")) {
+    if (!location.state && !window.location.href.includes(Constants.externalProviderConstant)) {
       navigate(UnauthorizedRoute);
       return;
     }

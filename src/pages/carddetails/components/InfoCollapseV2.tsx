@@ -35,6 +35,7 @@ import { theme } from "antd";
 import VideoPlayerV2 from "./VideoPlayerV2";
 import AudioPlayer from "./AudioPlayer";
 import { useLocation } from "react-router-dom";
+import Constants from "../../../utils/Constants";
 
 const { useToken } = theme;
 
@@ -47,7 +48,7 @@ interface CardProps {
 const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
   const location = useLocation();
 
-  const isPublicRoute = location.pathname.includes("/external/");
+  const isPublicRoute = location.pathname.includes(Constants.externalProviderRouteVal);
 
   const [modalIsLoading, setModalLoading] = useState(false);
   const [modalIsOpen, setModalOpen] = useState(false);

@@ -103,8 +103,6 @@ const CardDetails = () => {
         getCardDetails(cardId).unwrap(),
         getNotes(cardId).unwrap(),
       ]);
-      console.log("Respuesta de getCardDetails:", responseData);
-
       const cardData =
         responseData?.card !== null
           ? responseData.card
@@ -123,7 +121,7 @@ const CardDetails = () => {
         dispatch(setSiteId(cardData.siteId));
       }
     } catch (error) {
-      console.error("Error al cargar los detalles de la tarjeta:", error);
+      throw error;
     } finally {
       setLoading(false);
     }

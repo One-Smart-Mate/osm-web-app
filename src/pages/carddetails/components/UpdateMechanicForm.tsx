@@ -62,11 +62,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const onFinish = async (values: any) => {
     
-    if (finalCardId === undefined || finalCardName === undefined) {
-      return;
-    }
-    
-    if (definitiveSolutionExists) {
+    if (finalCardId === undefined || finalCardName === undefined || definitiveSolutionExists) {
       return;
     }
     
