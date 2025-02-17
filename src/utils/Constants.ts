@@ -16,6 +16,9 @@ const id = "Id";
 const enOption = "English";
 const esOption = "Español"
 
+const externalProviderRouteVal = "/external/"
+const externalProviderConstant = "external"
+
 
 export default {
   PAGE_SIZE,
@@ -32,5 +35,7 @@ export default {
   externalProvider,
   id,
   esOption,
-  enOption
+  enOption,
+  externalProviderRouteVal,
+  externalProviderConstant
 };

@@ -646,6 +646,7 @@ namePDF: "Tag details.pdf",
 logImgDesc: "Log In Image",
 enSub: "One Smart Mate"
 
+
 //SPANISH
     },
   },

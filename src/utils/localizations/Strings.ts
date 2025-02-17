@@ -583,8 +583,6 @@ static false = "false"
  static commentsTag = "commentsTag"
  static noCommentsTag = "noCommentsTag"
  static associatedTags = "associatedTags"
-
-
 }
 
 const Strings = new Proxy(StringsBase, {
