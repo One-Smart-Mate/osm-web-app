@@ -2,7 +2,6 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-
 //ENGLISH
 const resources = {
   en: {
@@ -63,7 +62,7 @@ const resources = {
       provisionalSoluitonApplied: "Provisional solution applied",
       NA: "N/A",
       noResponsible: "No responsible",
-      noMechanic: "No mechanic",
+      noMechanic: "No responsible",
       noDefinitiveUser: "No definitive user",
       images: "Images",
       videos: "Videos",
@@ -72,47 +71,46 @@ const resources = {
       none: "None",
 
       email: "Email",
-loginText:
-  "Get a comprehensive view of all your company's maintenance needs before they turn into costly repairs.",
-forgotPassword: "Forgot your password?",
+      loginText:
+        "Get a comprehensive view of all your company's maintenance needs before they turn into costly repairs.",
+      forgotPassword: "Forgot your password?",
 
-// errors login form
-requiredEmail: "Please enter your email address.",
-requiredPassword: "Please enter your password.",
-requiredValidEmailAddress: "Please enter a valid email address.",
-requiredInfo: "Please provide the information.",
+      // errors login form
+      requiredEmail: "Please enter your email address.",
+      requiredPassword: "Please enter your password.",
+      requiredValidEmailAddress: "Please enter a valid email address.",
+      requiredInfo: "Please provide the information.",
 
-// errors user form
-requiredUserName: "Please enter the user's name.",
-requiredSite: "Please select a site.",
-requiredRoles: "Please assign at least one role.",
-requiredConfirmPassword: "Please confirm your password.",
-passwordsDoNotMatch: "Passwords do not match.",
-onlyLetters: "Please enter letters only.",
-passwordLenght: "The password must be at least 8 characters long.",
-uploadFileRequired: "Please upload a file.",
-logoutModalContent: "You are about to log out of your account.",
-provisionalSolutionApplied: "Provisional solution applied",
+      // errors user form
+      requiredUserName: "Please enter the user's name.",
+      requiredSite: "Please select a site.",
+      requiredRoles: "Please assign at least one role.",
+      requiredConfirmPassword: "Please confirm your password.",
+      passwordsDoNotMatch: "Passwords do not match.",
+      onlyLetters: "Please enter letters only.",
+      passwordLenght: "The password must be at least 8 characters long.",
+      uploadFileRequired: "Please upload a file.",
+      logoutModalContent: "You are about to log out of your account.",
+      provisionalSolutionApplied: "Provisional solution applied",
 
-// errors company form
-requiredCompanyName: "Please enter the company's name.",
-requiredRFC: "Please enter the RFC.",
-requiredContacName: "Please enter the contact name.",
-requiredPosition: "Please enter the contact's position.",
-requiredAddress: "Please enter the address.",
-requiredPhone: "Please enter the phone number.",
-requiredExtension: "Please enter an extension.",
-requiredCellular: "Please enter the cell phone number.",
-requiredLogo: "Please upload the logo.",
+      // errors company form
+      requiredCompanyName: "Please enter the company's name.",
+      requiredRFC: "Please enter the RFC.",
+      requiredContacName: "Please enter the contact name.",
+      requiredPosition: "Please enter the contact's position.",
+      requiredAddress: "Please enter the address.",
+      requiredPhone: "Please enter the phone number.",
+      requiredExtension: "Please enter an extension.",
+      requiredCellular: "Please enter the cell phone number.",
+      requiredLogo: "Please upload the logo.",
 
-// errors priority form
-requiredCode: "Please enter the code.",
-requiredDescription: "Please enter the description.",
-requiredDaysNumber: "Please enter the number of days.",
-requiredResponsableId: "Please select the person in charge.",
-requiredMechanic: "Please select the mechanic.",
-requiredPriority: "Priority required.",
-
+      // errors priority form
+      requiredCode: "Please enter the code.",
+      requiredDescription: "Please enter the description.",
+      requiredDaysNumber: "Please enter the number of days.",
+      requiredResponsableId: "Please select the person in charge.",
+      requiredMechanic: "Please select the mechanic.",
+      requiredPriority: "Priority required.",
 
       companyName: "Name",
       rfc: "RFC",
@@ -248,7 +246,7 @@ requiredPriority: "Priority required.",
       area: "Area",
       date: "Date",
       mechanic: "Mechanic",
-      mechanics: "Mechanics",
+      mechanics: "Responsibles",
       creator: "Creator",
       comments: "Comments",
       updateMechanic: "Update mechanic",
@@ -304,7 +302,7 @@ requiredPriority: "Priority required.",
       anomalies: "Anomalies",
       areas: "Areas",
       creators: "Creators",
-      machines: "Machines",
+      machines: "Zones",
       tagMonitoring: "Tag monitoring",
       totalCards: "Total cards",
       total: "Total",
@@ -408,7 +406,7 @@ requiredPriority: "Priority required.",
       priorityDaysNumberTooltip:
         "The number of days associated with this priority. Must be a positive number.",
 
-        entrepriseName: "OSM",
+      entrepriseName: "OSM",
       // Form tooltips based on SiteEntity
       siteNameTooltip:
         "Enter the name of the site . Maximum length: 100 characters.",
@@ -558,93 +556,93 @@ requiredPriority: "Priority required.",
       detailsStatusCancelled: "Cancelled",
       for: "for",
 
-
       errorFetchingData: "Error fetching data",
-namePlaceholder: "Enter the name",
-descriptionPlaceholder: "Enter the description",
-responsiblePlaceholder: "Select a responsible",
+      namePlaceholder: "Enter the name",
+      descriptionPlaceholder: "Enter the description",
+      responsiblePlaceholder: "Select a responsible",
 
-// General Placeholders
-cardTypeTreeNamePlaceholder: "Enter the name",
-cardTypeTreeDescriptionPlaceholder: "Enter the description",
-cardTypeTreeResponsiblePlaceholder: "Select a responsible",
-cardTypeTreeStatusPlaceholder: "Select a status",
-cardTypeTreeColorPlaceholder: "Pick a color",
+      // General Placeholders
+      cardTypeTreeNamePlaceholder: "Enter the name",
+      cardTypeTreeDescriptionPlaceholder: "Enter the description",
+      cardTypeTreeResponsiblePlaceholder: "Select a responsible",
+      cardTypeTreeStatusPlaceholder: "Select a status",
+      cardTypeTreeColorPlaceholder: "Pick a color",
 
-// Placeholders for Quantity Fields
-cardTypeTreeQuantityPicturesPlaceholder: "Enter the number of pictures",
-cardTypeTreeQuantityVideosPlaceholder: "Enter the number of videos",
-cardTypeTreeQuantityAudiosPlaceholder: "Enter the number of audios",
+      // Placeholders for Quantity Fields
+      cardTypeTreeQuantityPicturesPlaceholder: "Enter the number of pictures",
+      cardTypeTreeQuantityVideosPlaceholder: "Enter the number of videos",
+      cardTypeTreeQuantityAudiosPlaceholder: "Enter the number of audios",
 
-// Titles or Section Labels
-cardTypeTreeAtCreation: "At Creation",
-cardTypeTreeAtProvisionalSolution: "At Provisional Solution",
-cardTypeTreeAtDefinitiveSolution: "At Definitive Solution",
+      // Titles or Section Labels
+      cardTypeTreeAtCreation: "At Creation",
+      cardTypeTreeAtProvisionalSolution: "At Provisional Solution",
+      cardTypeTreeAtDefinitiveSolution: "At Definitive Solution",
 
-// Error Messages
-cardTypeTreeRequiredCardTypeName: "Card type name is required",
-cardTypeTreeRequiredDescription: "Description is required",
-cardTypeTreeRequiredResponsableId: "Responsible is required",
-cardTypeTreeRequiredColor: "Color is required",
+      // Error Messages
+      cardTypeTreeRequiredCardTypeName: "Card type name is required",
+      cardTypeTreeRequiredDescription: "Description is required",
+      cardTypeTreeRequiredResponsableId: "Responsible is required",
+      cardTypeTreeRequiredColor: "Color is required",
 
-// Notifications
-cardTypeTreeSuccessCardTypeUpdated: "Card type successfully updated!",
-cardTypeTreeErrorFetchingData: "Error fetching data",
+      // Notifications
+      cardTypeTreeSuccessCardTypeUpdated: "Card type successfully updated!",
+      cardTypeTreeErrorFetchingData: "Error fetching data",
 
-/* Card Types and Preclassifier tree */
-cardTypesDrawerTypeCreateCardType: "createCardType",
-cardTypesDrawerTypeUpdateCardType: "updateCardType",
-cardTypesDrawerTypeCreatePreclassifier: "createPreclassifier",
-cardTypesDrawerTypeUpdatePreclassifier: "updatePreclassifier",
-cardTypesCreate: "Create Card Type",
-cardTypesCancel: "Cancel",
-cardTypesEdit: "Edit Card Type",
-cardTypesEditPreclassifier: "Edit Preclassifier",
-cardTypesCloneCardType: "Clone Card Type",
-cardTypesClonePre: "Clone Preclassifier",
-cardTypesCreatePreclassifier: "Create Preclassifier",
-cardTypesUpdatePreclassifier: "Edit Preclassifier",
-cardTypesRoot: "Root",
-cardTypesCloneSuffix: "(Clone)",
-cardTypesMethodologyError: "Card Type Methodology is required for creation.",
-cardTypesLoadingData: "Loading data...",
-cardTypesUpdateCardType: "Edit Card Type",
-cardTypesCreateCardType: "Create Card Type",
-cardTypesClonePreclassifier: "Clone preclassifier",
-cardTypesErrorFetchingData: "Error fetching data",
-cardTypesNoCardTypeIdError: "No cardTypeId found to create a preclassifier.",
-cardTypesOptionEdit: "editCT",
-cardTypesOptionClone: "cloneCT",
-cardTypesOptionCreate: "createPre",
-cardTypesOptionCancel: "cancelCT",
+      /* Card Types and Preclassifier tree */
+      cardTypesDrawerTypeCreateCardType: "createCardType",
+      cardTypesDrawerTypeUpdateCardType: "updateCardType",
+      cardTypesDrawerTypeCreatePreclassifier: "createPreclassifier",
+      cardTypesDrawerTypeUpdatePreclassifier: "updatePreclassifier",
+      cardTypesCreate: "Create Card Type",
+      cardTypesCancel: "Cancel",
+      cardTypesEdit: "Edit Card Type",
+      cardTypesEditPreclassifier: "Edit Preclassifier",
+      cardTypesCloneCardType: "Clone Card Type",
+      cardTypesClonePre: "Clone Preclassifier",
+      cardTypesCreatePreclassifier: "Create Preclassifier",
+      cardTypesUpdatePreclassifier: "Edit Preclassifier",
+      cardTypesRoot: "Root",
+      cardTypesCloneSuffix: "(Clone)",
+      cardTypesMethodologyError:
+        "Card Type Methodology is required for creation.",
+      cardTypesLoadingData: "Loading data...",
+      cardTypesUpdateCardType: "Edit Card Type",
+      cardTypesCreateCardType: "Create Card Type",
+      cardTypesClonePreclassifier: "Clone preclassifier",
+      cardTypesErrorFetchingData: "Error fetching data",
+      cardTypesNoCardTypeIdError:
+        "No cardTypeId found to create a preclassifier.",
+      cardTypesOptionEdit: "editCT",
+      cardTypesOptionClone: "cloneCT",
+      cardTypesOptionCreate: "createPre",
+      cardTypesOptionCancel: "cancelCT",
 
-cardTypeDetailsTitle: "Card Type Details",
-cardTypeDetailsMethodology: "Methodology",
-cardTypeDetailsName: "Name",
-cardTypeDetailsDescription: "Description",
-cardTypeDetailsColor: "Color",
-cardTypeDetailsResponsible: "Responsible",
-cardTypeDetailsStatus: "Status",
+      cardTypeDetailsTitle: "Card Type Details",
+      cardTypeDetailsMethodology: "Methodology",
+      cardTypeDetailsName: "Name",
+      cardTypeDetailsDescription: "Description",
+      cardTypeDetailsColor: "Color",
+      cardTypeDetailsResponsible: "Responsible",
+      cardTypeDetailsStatus: "Status",
 
-preclassifierDetailsTitle: "Preclassifier Details",
-preclassifierDetailsCode: "Code",
-preclassifierDetailsDescription: "Description",
-preclassifierDetailsStatus: "Status",
-notSpecified: "Not Specified",
-false: "false",
+      preclassifierDetailsTitle: "Preclassifier Details",
+      preclassifierDetailsCode: "Code",
+      preclassifierDetailsDescription: "Description",
+      preclassifierDetailsStatus: "Status",
+      notSpecified: "Not Specified",
+      false: "false",
 
-//PDF
-tagDetails : "Tag details",
-problemDetails: "Problem details",
-sharePDF: "Share PDF",
-namePDF: "Tag details.pdf",
+      //PDF
+      tagDetails: "Tag details",
+      problemDetails: "Problem details",
+      sharePDF: "Share PDF",
+      namePDF: "Tag details.pdf",
 
-//Login Refactor
-logImgDesc: "Log In Image",
-enSub: "One Smart Mate"
+      //Login Refactor
+      logImgDesc: "Log In Image",
+      enSub: "One Smart Mate",
 
-
-//SPANISH
+      //SPANISH
     },
   },
   es: {
@@ -706,7 +704,7 @@ enSub: "One Smart Mate"
       provisionalSoluitonApplied: "Solución provisional aplicada",
       NA: "N/D",
       noResponsible: "Sin responsable",
-      noMechanic: "Sin mecánico",
+      noMechanic: "Sin responsable",
       noDefinitiveUser: "Sin usuario definitivo",
       images: "Imágenes",
       videos: "Videos",
@@ -897,7 +895,7 @@ enSub: "One Smart Mate"
       area: "Área",
       date: "Fecha",
       mechanic: "Mecánico",
-      mechanics: "Mecánicos",
+      mechanics: "Responsables",
       creator: "Creador",
       comments: "Comentarios",
       updateMechanic: "Actualizar mecánico",
@@ -953,7 +951,7 @@ enSub: "One Smart Mate"
       anomalies: "Anomalías",
       areas: "Áreas",
       creators: "Creadores",
-      machines: "Máquinas",
+      machines: "Zonas",
       tagMonitoring: "Monitoreo de Tarjetas",
       totalCards: "Total de Tarjetas",
       total: "Total",
@@ -1208,88 +1206,92 @@ enSub: "One Smart Mate"
       for: "para",
 
       errorFetchingData: "Error al obtener datos",
-namePlaceholder: "Introduce el nombre",
-descriptionPlaceholder: "Introduce la descripción",
-responsiblePlaceholder: "Selecciona un responsable",
+      namePlaceholder: "Introduce el nombre",
+      descriptionPlaceholder: "Introduce la descripción",
+      responsiblePlaceholder: "Selecciona un responsable",
 
-// General Placeholders
-cardTypeTreeNamePlaceholder: "Introduce el nombre",
-cardTypeTreeDescriptionPlaceholder: "Introduce la descripción",
-cardTypeTreeResponsiblePlaceholder: "Selecciona un responsable",
-cardTypeTreeStatusPlaceholder: "Selecciona un estado",
-cardTypeTreeColorPlaceholder: "Selecciona un color",
+      // General Placeholders
+      cardTypeTreeNamePlaceholder: "Introduce el nombre",
+      cardTypeTreeDescriptionPlaceholder: "Introduce la descripción",
+      cardTypeTreeResponsiblePlaceholder: "Selecciona un responsable",
+      cardTypeTreeStatusPlaceholder: "Selecciona un estado",
+      cardTypeTreeColorPlaceholder: "Selecciona un color",
 
-// Placeholders for Quantity Fields
-cardTypeTreeQuantityPicturesPlaceholder: "Introduce la cantidad de imágenes",
-cardTypeTreeQuantityVideosPlaceholder: "Introduce la cantidad de videos",
-cardTypeTreeQuantityAudiosPlaceholder: "Introduce la cantidad de audios",
+      // Placeholders for Quantity Fields
+      cardTypeTreeQuantityPicturesPlaceholder:
+        "Introduce la cantidad de imágenes",
+      cardTypeTreeQuantityVideosPlaceholder: "Introduce la cantidad de videos",
+      cardTypeTreeQuantityAudiosPlaceholder: "Introduce la cantidad de audios",
 
-// Titles or Section Labels
-cardTypeTreeAtCreation: "En la creación",
-cardTypeTreeAtProvisionalSolution: "En la solución provisional",
-cardTypeTreeAtDefinitiveSolution: "En la solución definitiva",
+      // Titles or Section Labels
+      cardTypeTreeAtCreation: "En la creación",
+      cardTypeTreeAtProvisionalSolution: "En la solución provisional",
+      cardTypeTreeAtDefinitiveSolution: "En la solución definitiva",
 
-// Error Messages
-cardTypeTreeRequiredCardTypeName: "El nombre del tipo de Tarjeta es obligatorio",
-cardTypeTreeRequiredDescription: "La descripción es obligatoria",
-cardTypeTreeRequiredResponsableId: "El responsable es obligatorio",
-cardTypeTreeRequiredColor: "El color es obligatorio",
+      // Error Messages
+      cardTypeTreeRequiredCardTypeName:
+        "El nombre del tipo de Tarjeta es obligatorio",
+      cardTypeTreeRequiredDescription: "La descripción es obligatoria",
+      cardTypeTreeRequiredResponsableId: "El responsable es obligatorio",
+      cardTypeTreeRequiredColor: "El color es obligatorio",
 
-// Notifications
-cardTypeTreeSuccessCardTypeUpdated: "¡El tipo de Tarjeta se actualizó con éxito!",
-cardTypeTreeErrorFetchingData: "Error al obtener datos",
+      // Notifications
+      cardTypeTreeSuccessCardTypeUpdated:
+        "¡El tipo de Tarjeta se actualizó con éxito!",
+      cardTypeTreeErrorFetchingData: "Error al obtener datos",
 
-/* Card Types and Preclassifier tree */
-cardTypesDrawerTypeCreateCardType: "crearTipoTarjeta",
-cardTypesDrawerTypeUpdateCardType: "actualizarTipoTarjeta",
-cardTypesDrawerTypeCreatePreclassifier: "crearPreclasificador",
-cardTypesDrawerTypeUpdatePreclassifier: "actualizarPreclasificador",
-cardTypesCreate: "Crear Tipo de Tarjeta",
-cardTypesCancel: "Cancelar",
-cardTypesEdit: "Editar Tipo de Tarjeta",
-cardTypesEditPreclassifier: "Editar Preclasificador",
-cardTypesCloneCardType: "Clonar Tipo de Tarjeta",
-cardTypesClonePre: "Clonar Preclasificador",
-cardTypesCreatePreclassifier: "Crear Preclasificador",
-cardTypesUpdatePreclassifier: "Editar Preclasificador",
-cardTypesRoot: "Raíz",
-cardTypesCloneSuffix: "(Clon)",
-cardTypesMethodologyError: "La metodología del tipo de Tarjeta es obligatoria para la creación.",
-cardTypesLoadingData: "Cargando datos...",
-cardTypesUpdateCardType: "Editar Tipo de Tarjeta",
-cardTypesCreateCardType: "Crear Tipo de Tarjeta",
-cardTypesClonePreclassifier: "Clonar Preclasificador",
-cardTypesErrorFetchingData: "Error al obtener datos",
-cardTypesNoCardTypeIdError: "No se encontró el ID del tipo de Tarjeta para crear un preclasificador.",
-cardTypesOptionEdit: "editarCT",
-cardTypesOptionClone: "clonerCT",
-cardTypesOptionCreate: "createPre",
-cardTypesOptionCancel: "cancelCT",
+      /* Card Types and Preclassifier tree */
+      cardTypesDrawerTypeCreateCardType: "crearTipoTarjeta",
+      cardTypesDrawerTypeUpdateCardType: "actualizarTipoTarjeta",
+      cardTypesDrawerTypeCreatePreclassifier: "crearPreclasificador",
+      cardTypesDrawerTypeUpdatePreclassifier: "actualizarPreclasificador",
+      cardTypesCreate: "Crear Tipo de Tarjeta",
+      cardTypesCancel: "Cancelar",
+      cardTypesEdit: "Editar Tipo de Tarjeta",
+      cardTypesEditPreclassifier: "Editar Preclasificador",
+      cardTypesCloneCardType: "Clonar Tipo de Tarjeta",
+      cardTypesClonePre: "Clonar Preclasificador",
+      cardTypesCreatePreclassifier: "Crear Preclasificador",
+      cardTypesUpdatePreclassifier: "Editar Preclasificador",
+      cardTypesRoot: "Raíz",
+      cardTypesCloneSuffix: "(Clon)",
+      cardTypesMethodologyError:
+        "La metodología del tipo de Tarjeta es obligatoria para la creación.",
+      cardTypesLoadingData: "Cargando datos...",
+      cardTypesUpdateCardType: "Editar Tipo de Tarjeta",
+      cardTypesCreateCardType: "Crear Tipo de Tarjeta",
+      cardTypesClonePreclassifier: "Clonar Preclasificador",
+      cardTypesErrorFetchingData: "Error al obtener datos",
+      cardTypesNoCardTypeIdError:
+        "No se encontró el ID del tipo de Tarjeta para crear un preclasificador.",
+      cardTypesOptionEdit: "editarCT",
+      cardTypesOptionClone: "clonerCT",
+      cardTypesOptionCreate: "createPre",
+      cardTypesOptionCancel: "cancelCT",
 
-cardTypeDetailsTitle: "Detalles del Tipo de Tarjeta",
-cardTypeDetailsMethodology: "Metodología",
-cardTypeDetailsName: "Nombre",
-cardTypeDetailsDescription: "Descripción",
-cardTypeDetailsColor: "Color",
-cardTypeDetailsResponsible: "Responsable",
-cardTypeDetailsStatus: "Estado",
+      cardTypeDetailsTitle: "Detalles del Tipo de Tarjeta",
+      cardTypeDetailsMethodology: "Metodología",
+      cardTypeDetailsName: "Nombre",
+      cardTypeDetailsDescription: "Descripción",
+      cardTypeDetailsColor: "Color",
+      cardTypeDetailsResponsible: "Responsable",
+      cardTypeDetailsStatus: "Estado",
 
-preclassifierDetailsTitle: "Detalles del Preclasificador",
-preclassifierDetailsCode: "Código",
-preclassifierDetailsDescription: "Descripción",
-preclassifierDetailsStatus: "Estado",
-notSpecified: "No especificado",
-false: "false",
+      preclassifierDetailsTitle: "Detalles del Preclasificador",
+      preclassifierDetailsCode: "Código",
+      preclassifierDetailsDescription: "Descripción",
+      preclassifierDetailsStatus: "Estado",
+      notSpecified: "No especificado",
+      false: "false",
 
-//PDF 
-tagDetails : "Detalles de la tarjeta",
-problemDetails: "Detalles del problema",
-sharePDF: "Compartir PDF",
-namePDF: "Detalles de la tarjeta.pdf",
+      //PDF
+      tagDetails: "Detalles de la tarjeta",
+      problemDetails: "Detalles del problema",
+      sharePDF: "Compartir PDF",
+      namePDF: "Detalles de la tarjeta.pdf",
 
-logImgDesc: "Imagen del Log In",
-enSub: "One Smart Mate"
-
+      logImgDesc: "Imagen del Log In",
+      enSub: "One Smart Mate",
     },
   },
 };
@@ -1297,7 +1299,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    debug: true,          
+    debug: true,
     resources,
     fallbackLng: "es",
     detection: {
