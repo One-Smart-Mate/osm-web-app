@@ -144,10 +144,10 @@ const InformationPanel = ({ data, rol }: CardProps) => {
           </p>
         </div>
 
-        <span>{"Comments:"}</span>
+        <span>{Strings.commentsTag}:</span>
         <div className="col-span-2">
           <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
-            {data.commentsAtCardCreation || "No comments"}
+            {data.commentsAtCardCreation || Strings.noCommentsTag}
           </p>
         </div>
       </div>
