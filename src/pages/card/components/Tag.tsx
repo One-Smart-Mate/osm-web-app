@@ -1,4 +1,3 @@
-import { Card } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -20,6 +19,7 @@ import {
   localAdminCardDetails,
   sysAdminCardDetails,
 } from "../../routes/Routes";
+import CustomCard from "../../../components/CustomCard";
 
 interface CardProps {
   data: CardInterface;
@@ -64,18 +64,8 @@ const Tag = ({ data, rol }: CardProps) => {
   };
 
   return (
-    <Card
-      title={
-        <div className="mt-2 flex flex-col items-center">
-          <div className="flex gap-2">
-            <h3 className="text-xl font-semibold text-black truncate">
-              {data.cardTypeMethodologyName} {data.siteCardId}
-            </h3>
-          </div>
 
-          {evidenceIndicator(data.evidences)}
-        </div>
-      }
+    <CustomCard
       className="max-w-sm min-h-[300px] mx-auto bg-gray-100 rounded-xl shadow-md"
       onClick={() => {
         navigate(buildCardDetailsRoute(), {
@@ -87,6 +77,16 @@ const Tag = ({ data, rol }: CardProps) => {
       }}
       hoverable
     >
+      <div className="text-center">
+        <h3 className="text-xl font-semibold text-black truncate">
+          {data.cardTypeMethodologyName} {data.siteCardId}
+        </h3>
+        <div className="flex justify-center items-center">
+          {evidenceIndicator(data.evidences)}
+        </div>
+
+      </div>
+
       <div className="mb-2">
         <p className="text-[13px] text-center">
           {formatDate(data.cardCreationDate)}
@@ -122,7 +122,7 @@ const Tag = ({ data, rol }: CardProps) => {
         <div className="w-full flex items-center gap-12">
           <span>{Strings.cardType}</span>
           <p
-            className="font-medium p-2 text-center text-xl"
+            className="font-medium p-2 text-center text-base"
             style={{ color: `#${data.cardTypeColor}` }}
           >
             {data.cardTypeName}
@@ -136,7 +136,7 @@ const Tag = ({ data, rol }: CardProps) => {
           {data.preclassifierCode} {data.preclassifierDescription}
         </div>
 
-        <span>{Strings.problemDescription}</span>
+        <span>{Strings.anomalyDetected}</span>
         <div className="font-bold mb-2">
           {data.commentsAtCardCreation || Strings.NA}
         </div>
@@ -151,7 +151,8 @@ const Tag = ({ data, rol }: CardProps) => {
           <p className="font-bold p-2 text-center">{data.creatorName}</p>
         </div>
       </div>
-    </Card>
+    </CustomCard>
+
 
   );
 

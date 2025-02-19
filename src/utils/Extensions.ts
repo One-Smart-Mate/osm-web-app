@@ -107,20 +107,23 @@ export const formatDate = (date: string | null) => {
   }
 
   const options: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: "America/Chicago",
-    timeZoneName: "short",
+    weekday: "long",  // Day of the week
+    year: "numeric",  // Complete year
+    month: "long",    // Complete name of the month
+    day: "numeric",   // Day
+    hour: "numeric",  // Hour with two digits
+    minute: "numeric",// Minutes with two digits
+    timeZoneName: "short", // Short name of the timezone
   };
-  const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-    dateObject
-  );
+
+  // Use the automatic timezone
+  const formattedDate = new Intl.DateTimeFormat("en-US", options).format(dateObject);
+
   return formattedDate;
 };
+
+
+
 
 export const getDaysSince = (dateString: string) => {
   const dateObject: Date = new Date(dateString);
