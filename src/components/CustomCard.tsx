@@ -5,7 +5,7 @@ interface CustomCardProps {
   title?: string;
   extra?: React.ReactNode;
   children: React.ReactNode;
-  [key: string]: any;  // Permite pasar cualquier otra prop válida de `Card`
+  [key: string]: any;  // Allows passing any other valid prop of `Card`.
 }
 
 const CustomCard: React.FC<CustomCardProps> = ({ title, extra, children, ...rest }) => {

@@ -43,8 +43,8 @@ const Tags = ({ rol }: CardsProps) => {
   };
 
   const statusMapping: { [key: string]: string[] } = {
-    A: ["abierto", "open"],
-    R: ["cerrado", "closed"],
+    A: [Strings.open],
+    R: [Strings.closed],
   };
   
   const search = (item: CardInterface, search: string) => {
@@ -55,7 +55,7 @@ const Tags = ({ rol }: CardsProps) => {
     } = item;
   
    // If the state exists in the mapping, convert it to a string; otherwise, use the original value.
-    const statusText = statusMapping[status]?.join(" ").toLowerCase() || status.toLowerCase();  
+    const statusText = statusMapping[status]?.join(" ").toLowerCase() || String(status).toLowerCase();  
   
     return (
       String(siteCardId).toLowerCase().includes(search.toLowerCase()) ||
@@ -70,7 +70,6 @@ const Tags = ({ rol }: CardsProps) => {
       cardTypeMethodologyName.toLowerCase().includes(search.toLowerCase())
     );
   };
-  
   
 
   const handleGetCards = async () => {

@@ -366,7 +366,6 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
           orientation="left"
           style={{ borderColor: "#808080" }}
           className="text-sm md:text-base"
-          style={{ borderColor: "#808080" }}
         >
           {Strings.evidencesAtCreationDivider}
         </Divider>
