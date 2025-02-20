@@ -15,7 +15,7 @@ const PageTitleTag: React.FC<Props> = ({ mainText, subText }) => {
   const primaryColor = token.colorPrimary;
 
   return (
-    <h1 className="text-3xl md:text-3xl font-semibold text-black">
+    <h1 className="text-base md:text-3xl font-semibold text-black">
       {mainText}{" "}
       <span className="font-bold" style={{ color: primaryColor }}>
         {subText}

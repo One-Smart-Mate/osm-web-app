@@ -147,11 +147,12 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
 
   return (
     <>
-      <div className="px-8 md:px-16 py-4">
-        <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4">
-          <Row gutter={15}>
-            <Col span={8}>
-              <div className="flex items-center gap-1">
+      <div className="px-4">
+        <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
+
+          <Row gutter={15} >
+            <Col xs={12} sm={12} md={8}>
+              <div className="flex items-center gap-1" >
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.tagNumber}
                 </span>
@@ -160,7 +161,8 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 </p>
               </div>
             </Col>
-            <Col span={8}>
+
+            <Col xs={12} sm={12} md={6}>
               <div className="flex items-center gap-1">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.cardType}
@@ -173,30 +175,24 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 </p>
               </div>
             </Col>
-            <Col span={3}>
+
+            <Col xs={12} sm={12} md={4}>
               <div className="flex items-center gap-1">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.status}
                 </span>
-                {isPublicRoute ? (
-                  <span
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {cardStatus.text}
-                  </span>
-                ) : (
-                  <span
-                    onClick={() => handleOnOpenModal(Strings.status)}
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white cursor-pointer hover:bg-gray-600"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {cardStatus.text}
-                  </span>
-                )}
+
+                <span
+                  className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white hover:bg-gray-600"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {" "}
+                  {cardStatus.text}{" "}
+                </span>
               </div>
             </Col>
-            <Col span={5}>
+
+            <Col xs={12} sm={12} md={5}>
               <div className="flex items-center gap-1">
                 <p className="font-semibold text-sm md:text-base">
                   {Strings.tagPriority}
@@ -225,18 +221,19 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
             </Col>
           </Row>
 
-          <Row gutter={15}>
-            <Col span={8}>
+          <Row gutter={15} className="xs:mb-4">
+            <Col xs={12} sm={12} md={8}>
               <div className="flex flex-col items-start">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.creationDate}
                 </span>
-                <p className="text-left px-1 text-sm md:text-base">
+                <p className="text-left px-1 text-sm md:text-base sm:mb-4">
                   {formatDate(card.createdAt) || Strings.NA}
                 </p>
               </div>
             </Col>
-            <Col span={8}>
+
+            <Col xs={12} sm={12} md={6}>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.dueDate}
@@ -246,7 +243,8 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 </p>
               </div>
             </Col>
-            <Col span={3}>
+
+            <Col xs={12} sm={12} md={4}>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.dateStatus}
@@ -262,7 +260,8 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 </p>
               </div>
             </Col>
-            <Col span={5}>
+
+            <Col xs={12} sm={12} md={5}>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.daysSinceCreation}
@@ -275,7 +274,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
           </Row>
 
           <Row gutter={15}>
-            <Col span={8}>
+            <Col xs={12} sm={12} md={8}>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.problemType}
@@ -287,7 +286,8 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 </p>
               </div>
             </Col>
-            <Col span={16}>
+
+            <Col xs={12} sm={12} md={16}>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm md:text-base">
                   {Strings.location}
@@ -300,7 +300,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
           </Row>
 
           <Row gutter={15}>
-            <Col span={8}>
+            <Col xs={12} sm={12} md={8}>
               <div className="flex items-center gap-1">
                 <p className="font-semibold text-sm md:text-base">
                   {Strings.assignedTo}
@@ -323,7 +323,9 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 )}
               </div>
             </Col>
-            <Col span={16}>
+
+            <Col xs={12} sm={12} md={16}>
+              {/* Anomaly detected */}
               <div className="flex items-center gap-1">
                 <p className="font-semibold text-sm md:text-base">
                   {Strings.anomalyDetected}
@@ -335,22 +337,34 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
             </Col>
           </Row>
 
-          <div className="flex flex-wrap items-center gap-4 md:gap-8">
-            <div className="flex items-center gap-1">
-              <p className="font-semibold text-sm md:text-base">
-                {Strings.createdBy}
-              </p>
-              <p className="text-sm md:text-base">
-                {card.creatorName || Strings.NA}
-              </p>
-            </div>
+          
+
+          <Row gutter={15}>
+            <Col xs={12} sm={12} md={16}>
+
+                      {/* Created by */}
+          <div className="flex items-center gap-1">
+            <p className="font-semibold text-sm md:text-base">
+              {Strings.createdBy}
+            </p>
+            <p className="text-sm md:text-base">
+              {card.creatorName || Strings.NA}
+            </p>
           </div>
+
+            </Col>
+          </Row>
+
+          
         </div>
+
+
+        
 
         <Divider
           orientation="left"
-          className="text-sm md:text-base"
           style={{ borderColor: "#808080" }}
+          className="text-sm md:text-base"
         >
           {Strings.evidencesAtCreationDivider}
         </Divider>
