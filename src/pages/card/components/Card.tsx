@@ -27,10 +27,15 @@ interface CardProps {
 }
 
 const InformationPanel = ({ data, rol }: CardProps) => {
-  const { status, text } = getCardStatusAndText(data.status, data.cardDueDate, data.cardDefinitiveSolutionDate, data.cardCreationDate);
+  const { status, text } = getCardStatusAndText(
+    data.status,
+    data.cardDueDate,
+    data.cardDefinitiveSolutionDate,
+    data.cardCreationDate
+  );
   const navigate = useNavigate();
 
-  const evidenceIndicator = (evidences: Evidences[]) => {
+  const evidenceIndicator = (evidences: Evidences[] = []) => {
     const elements = useMemo(() => {
       const elems: JSX.Element[] = [];
       if (hasImages(evidences)) {
@@ -65,6 +70,7 @@ const InformationPanel = ({ data, rol }: CardProps) => {
 
   return (
     <Card
+      style={{ height: "auto" }}
       title={
         <div className="mt-2 flex flex-col items-center">
           <div className="flex gap-2">
@@ -76,7 +82,6 @@ const InformationPanel = ({ data, rol }: CardProps) => {
               style={{ backgroundColor: `#${data.cardTypeColor}` }}
             />
           </div>
-
           {evidenceIndicator(data.evidences)}
         </div>
       }
@@ -136,6 +141,13 @@ const InformationPanel = ({ data, rol }: CardProps) => {
         <div className="col-span-2">
           <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
             {data.cardDueDate || Strings.noDueDate}
+          </p>
+        </div>
+
+        <span>{Strings.commentsTag}:</span>
+        <div className="col-span-2">
+          <p className="max-w-48 w-fit text-white bg-card-fields rounded-lg p-1">
+            {data.commentsAtCardCreation || Strings.noCommentsTag}
           </p>
         </div>
       </div>

@@ -8,6 +8,18 @@ import { apiSlice } from "./apiSlice";
 
 export const cardService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getCardsByLevel: builder.mutation<
+      CardInterface[],
+      { levelId: string; siteId: string }
+    >({
+      query: ({ levelId, siteId }) =>
+        `/card/by-level/${levelId}?siteId=${siteId}`,
+      transformResponse: (response: {
+        data: CardInterface[];
+        status: number;
+        message: string;
+      }) => response.data,
+    }),
     getCards: builder.mutation<CardInterface[], string>({
       query: (siteId) => `/card/all/${siteId}`,
       transformResponse: (response: { data: CardInterface[] }) => response.data,
@@ -82,6 +94,7 @@ export const cardService = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetCardsByLevelMutation,
   useGetCardsMutation,
   useGetCardDetailsMutation,
   useGetCardNotesMutation,

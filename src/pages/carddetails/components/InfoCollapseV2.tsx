@@ -37,6 +37,7 @@ import AudioPlayer from "./AudioPlayer";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 
+
 const { useToken } = theme;
 
 interface CardProps {
@@ -47,9 +48,7 @@ interface CardProps {
 
 const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
   const location = useLocation();
-
   const isPublicRoute = location.pathname.includes(Constants.externalProviderRouteVal);
-
   const [modalIsLoading, setModalLoading] = useState(false);
   const [modalIsOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState(Strings.empty);

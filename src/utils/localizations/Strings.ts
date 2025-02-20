@@ -579,6 +579,10 @@ static false = "false"
  static assignUser = "assignUser"
 
  static notCardInfoFound = "notCardInfoFound"
+
+ static commentsTag = "commentsTag"
+ static noCommentsTag = "noCommentsTag"
+ static associatedTags = "associatedTags"
 }
 
 const Strings = new Proxy(StringsBase, {

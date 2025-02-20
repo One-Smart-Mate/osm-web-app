@@ -48,7 +48,7 @@ interface Props {
   role: UserRoles;
 }
 
-const Levels = ({role}: Props) => {
+const Levels = ({ role }: Props) => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [createForm] = Form.useForm();
@@ -85,6 +85,8 @@ const Levels = ({role}: Props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
+
+  const siteId = location.state.siteId;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -361,47 +363,48 @@ const Levels = ({role}: Props) => {
         )}
       </div>
 
-      {contextMenuVisible && (role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN) &&(
-        <div
-          className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
-          style={{
-            top: contextMenuPos.y,
-            left: contextMenuPos.x,
-          }}
-        >
-          {isRootNode ? (
-            <>
-              <Button
-                className="w-28 bg-green-700 text-white mx-auto"
-                onClick={handleCreateLevel}
-              >
-                {Strings.levelsTreeOptionCreate}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                className="w-28 bg-green-700 text-white mx-auto"
-                onClick={handleCreateLevel}
-              >
-                {Strings.levelsTreeOptionCreate}
-              </Button>
-              <Button
-                className="w-28 bg-blue-700 text-white mx-auto"
-                onClick={handleUpdateLevel}
-              >
-                {Strings.levelsTreeOptionEdit}
-              </Button>
-              <Button
-                className="w-28 bg-yellow-500 text-white mx-auto"
-                onClick={handleCloneLevel}
-              >
-                {Strings.levelsTreeOptionClone}
-              </Button>
-            </>
-          )}
-        </div>
-      )}
+      {contextMenuVisible &&
+        (role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN) && (
+          <div
+            className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
+            style={{
+              top: contextMenuPos.y,
+              left: contextMenuPos.x,
+            }}
+          >
+            {isRootNode ? (
+              <>
+                <Button
+                  className="w-28 bg-green-700 text-white mx-auto"
+                  onClick={handleCreateLevel}
+                >
+                  {Strings.levelsTreeOptionCreate}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="w-28 bg-green-700 text-white mx-auto"
+                  onClick={handleCreateLevel}
+                >
+                  {Strings.levelsTreeOptionCreate}
+                </Button>
+                <Button
+                  className="w-28 bg-blue-700 text-white mx-auto"
+                  onClick={handleUpdateLevel}
+                >
+                  {Strings.levelsTreeOptionEdit}
+                </Button>
+                <Button
+                  className="w-28 bg-yellow-500 text-white mx-auto"
+                  onClick={handleCloneLevel}
+                >
+                  {Strings.levelsTreeOptionClone}
+                </Button>
+              </>
+            )}
+          </div>
+        )}
 
       {detailsVisible && selectedLevelId && (
         <Drawer
@@ -422,6 +425,7 @@ const Levels = ({role}: Props) => {
           <LevelDetails
             levelId={selectedLevelId}
             onClose={handleCloseDetails}
+            siteId={siteId}
           />
         </Drawer>
       )}

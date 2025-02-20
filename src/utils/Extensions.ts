@@ -18,13 +18,16 @@ export const isVideoURL = (url: string) => {
   return Constants.VIDEO_FORMATS.some((ext) => url.includes(ext));
 };
 
-export const hasVideos = (evidenceArray: Evidences[]) =>
+export const hasVideos = (evidenceArray?: Evidences[]): boolean =>
+  Array.isArray(evidenceArray) &&
   evidenceArray.some((evidence) => isVideoURL(evidence.evidenceName));
 
-export const hasAudios = (evidenceArray: Evidences[]) =>
+export const hasAudios = (evidenceArray?: Evidences[]): boolean =>
+  Array.isArray(evidenceArray) &&
   evidenceArray.some((evidence) => isAudioURL(evidence.evidenceName));
 
-export const hasImages = (evidenceArray: Evidences[]) =>
+export const hasImages = (evidenceArray?: Evidences[]): boolean =>
+  Array.isArray(evidenceArray) &&
   evidenceArray.some((evidence) => isImageURL(evidence.evidenceName));
 
 export const generateShortUUID = (): string => {
@@ -151,14 +154,13 @@ export const getDaysBetween = (date1: string, date2: string): number => {
   const d2 = normalizeDate(date2);
 
   if (!d1 || !d2) {
-    console.error("One of the dates is not valid:", date1, date2); // Show dates that are not valid
+    console.error("One of the dates is not valid:", date1, date2);
     return 0;
   }
 
   const differenceInMs = Math.abs(d2.getTime() - d1.getTime());
-  return Math.floor(differenceInMs / (24 * 60 * 60 * 1000)); // Convert from milliseconds to days
+  return Math.floor(differenceInMs / (24 * 60 * 60 * 1000));
 };
-
 
 export const RESPONSIVE_LIST = {
   gutter: 20,
@@ -221,7 +223,7 @@ export const getCardStatusAndText = (
   duDate?: string,
   DefiniSolutionDate?: string,
   CreatDate?: string
-): { status: "error" | "success"; text: string; dateStatus: string; } => {
+): { status: "error" | "success"; text: string; dateStatus: string } => {
   const currentDate = new Date();
 
   switch (input) {
@@ -248,14 +250,17 @@ export const getCardStatusAndText = (
         if (DefiniSolutionDate) {
           const isOnTime = compareDates(DefiniSolutionDate, duDate);
           if (CreatDate) {
-            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate); // Calculate days between dates
+            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
             console.log("compareDates result: ", isOnTime);
             console.log("Days between: ", daysBetween);
-          
+
             return {
               status: "error",
               text: Strings.closed,
-              dateStatus: (isOnTime || daysBetween === 0) ? Strings.onTime : Strings.expired,// Consider if the days between dates are 0
+              dateStatus:
+                isOnTime || daysBetween === 0
+                  ? Strings.onTime
+                  : Strings.expired,
             };
           } else {
             return {
@@ -283,12 +288,10 @@ export const getCardStatusAndText = (
       return {
         status: "error",
         text: Strings.tagStatusCanceled,
-        dateStatus: " ", 
+        dateStatus: " ",
       };
   }
 };
-
-
 
 export const capitalizeFirstLetter = (input: string): string => {
   if (!input) return "";

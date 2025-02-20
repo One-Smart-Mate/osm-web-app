@@ -7,6 +7,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
+      associatedTags: "Associated Tags",
+      commentsTag: "Comments:",
+      noCommentsTag: "No comments",
       notCardInfoFound: "No data found for this tag",
       assignUser: "Assign User",
       assignedTo: "Assigned to:",
@@ -649,6 +652,9 @@ enSub: "One Smart Mate"
   },
   es: {
     translation: {
+      associatedTags: "Tarjetas asociadas",
+      commentsTag: "Comentarios:",
+      noCommentsTag: "Sin comentarios",
       notCardInfoFound: "No se encontró información para esta tarjeta.",
       assignUser: "Asignar Usuario",
       assignedTo: "Asignada a:",
