@@ -19,6 +19,19 @@ const esOption = "Español"
 const externalProviderRouteVal = "/external/"
 const externalProviderConstant = "external"
 
+// Level Clonation
+const responsibleId = "responsibleId";
+const siteId = "siteId";
+const superiorId = "superiorId";
+const name = "name";
+const description = "description";
+const levelMachineId = "levelMachineId";
+const notify = "notify";
+
+const cloneBridge = "_clone_";
+const nodeStartBridgeCollapsed = "node_";
+const nodeEndBridgeCollapserd = "_collapsed";
+
 
 export default {
   PAGE_SIZE,
@@ -37,5 +50,15 @@ export default {
   esOption,
   enOption,
   externalProviderRouteVal,
-  externalProviderConstant
+  externalProviderConstant,
+  responsibleId,
+  siteId,
+  superiorId,
+  name,
+  description,
+  levelMachineId,
+  notify,
+  cloneBridge,
+  nodeStartBridgeCollapsed,
+  nodeEndBridgeCollapserd
 };
