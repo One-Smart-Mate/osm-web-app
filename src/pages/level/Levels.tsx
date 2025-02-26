@@ -393,7 +393,7 @@ const Levels = ({ role }: Props) => {
             )}
             {isCloning && (
               <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-opacity-50 z-50">
-                <Spin size="large" tip="Clonando nodos, por favor espere..." />
+                <Spin size="large" tip={Strings.cloningLevelsMessage} />
               </div>
             )}
           </>

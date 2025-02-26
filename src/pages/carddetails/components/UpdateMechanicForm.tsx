@@ -38,16 +38,17 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const [siteUsers, setSiteUsers] = useState<UserTable[]>([]);
   const [, setLoading] = useState(false);
 
+
+  const fetchSiteUsers = async () => {
+    try {
+      const response = await getSiteUsers(siteId).unwrap();
+      setSiteUsers(response);
+    } catch (error) {
+      
+    }
+  };
   useEffect(() => {
     if (!siteId) return;
-    const fetchSiteUsers = async () => {
-      try {
-        const response = await getSiteUsers(siteId).unwrap();
-        setSiteUsers(response);
-      } catch (error) {
-        
-      }
-    };
     fetchSiteUsers();
   }, [siteId, getSiteUsers]);
 
@@ -65,7 +66,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
     }
     setLoading(true);
     try {
-      const currentUserId = 1; 
+      const currentUserId = selectedUserId; 
       await updateCardMechanic({
         cardId: Number(finalCardId),
         mechanicId: Number(selectedUserId),

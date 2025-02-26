@@ -587,6 +587,8 @@ static false = "false"
  static copy = "copy";
  static errorGettingLevelId = "errorGettingLevelId";
  static errorCloningTheLevel = "errorCloningTheLevel";
+ static cloningLevelsMessage = "cloningLevelsMessage";
+
 
 }
 
