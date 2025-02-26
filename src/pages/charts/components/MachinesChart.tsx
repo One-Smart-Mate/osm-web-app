@@ -9,7 +9,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useGetMachinesChartDataMutation } from "../../../services/chartService";
+import {
+  useGetMachinesByAreaIdChartDataMutation,
+} from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
 import { Methodology } from "../../../data/charts/charts";
 import CustomLegend from "../../../components/CustomLegend";
@@ -23,6 +25,7 @@ export interface ChartProps {
   endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
+  areaId?: number;
 }
 
 const MachinesChart = ({
@@ -31,8 +34,9 @@ const MachinesChart = ({
   endDate,
   methodologies,
   rol,
+  areaId,
 }: ChartProps) => {
-  const [getMachines] = useGetMachinesChartDataMutation();
+  const [getMachines] = useGetMachinesByAreaIdChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [selectedMachineName, setSelectedMachineName] = useState(Strings.empty);
@@ -50,11 +54,20 @@ const MachinesChart = ({
   });
 
   const handleGetData = async () => {
+    console.log("areaId DESDE MACHINES HANDLEDATA INICIO ", areaId);
+    if(areaId === undefined) {
+      return; 
+    }
     const response = await getMachines({
       siteId,
       startDate,
       endDate,
+      areaId,
     }).unwrap();
+    console.log("areaId DESDE MACHINES HANDLEDATA FINAL ", areaId);
+
+    console.log("Respuesta API:", response);
+
     const nodeMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!nodeMap[item.nodeName]) {
@@ -69,12 +82,18 @@ const MachinesChart = ({
       );
     });
     const transformedData = Object.values(nodeMap);
+
+    console.log("Datos transformados: #1", transformedData); 
+    
     setTransformedData(transformedData);
   };
-
+  console.log("areaId DESDE MACHINES: ", areaId);
   useEffect(() => {
+    // if(areaId !== undefined) {
+    //   handleGetData();
+    // }
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate,areaId]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({
