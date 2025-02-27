@@ -47,8 +47,6 @@ const Charts = ({ rol }: Props) => {
   const [endDate, setEndDate] = useState(Strings.empty);
 
   const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(undefined);
-  console.log("AreaIdDESDEAREA:", selectedAreaId)
-  //Reload de component MachineChart when select an area
 
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {

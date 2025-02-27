@@ -75,11 +75,11 @@ const AreasChart = ({
       if (transformedData.length > 0 && areaId == null) {
         const defaultAreaId = transformedData[0].areaId;
         setAreaId(defaultAreaId);
-        console.log("Default areaId:", defaultAreaId);
+        
         onAreaSelect?.(defaultAreaId);
       }      
     } catch (error) {
-      console.error("❌ Error en getAreas:", error);
+      console.error(error);
     }
   };
 
@@ -96,7 +96,6 @@ const AreasChart = ({
     });
   
     setAreaId(data.areaId); 
-    console.log("Nuevo desde Areas: "+areaId);
     const normalizedCardTypeName = cardTypeName.toLowerCase();
     setSelectedTotalCards(data[normalizedCardTypeName]);
     setAreaName(data.area);

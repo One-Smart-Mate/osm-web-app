@@ -54,7 +54,7 @@ const MachinesChart = ({
   });
 
   const handleGetData = async () => {
-    console.log("areaId DESDE MACHINES HANDLEDATA INICIO ", areaId);
+
     if(areaId === undefined) {
       return; 
     }
@@ -64,9 +64,6 @@ const MachinesChart = ({
       endDate,
       areaId,
     }).unwrap();
-    console.log("areaId DESDE MACHINES HANDLEDATA FINAL ", areaId);
-
-    console.log("Respuesta API:", response);
 
     const nodeMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
@@ -82,16 +79,10 @@ const MachinesChart = ({
       );
     });
     const transformedData = Object.values(nodeMap);
-
-    console.log("Datos transformados: #1", transformedData); 
     
     setTransformedData(transformedData);
   };
-  console.log("areaId DESDE MACHINES: ", areaId);
   useEffect(() => {
-    // if(areaId !== undefined) {
-    //   handleGetData();
-    // }
     handleGetData();
   }, [startDate, endDate,areaId]);
 
