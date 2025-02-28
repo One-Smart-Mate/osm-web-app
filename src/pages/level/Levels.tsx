@@ -29,6 +29,34 @@ import {
 import { CreateLevel } from "../../data/level/level.request";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { UserRoles } from "../../utils/Extensions";
+import Constants from "../../utils/Constants";
+import { notification } from "antd";
+
+const buildHierarchy = (data: Level[]) => {
+  const map: { [key: string]: any } = {};
+  const tree: any[] = [];
+
+  data.forEach((node) => {
+    map[node.id] = {
+      ...node,
+      attributes: {},
+      children: [],
+    };
+  });
+
+  data.forEach((node) => {
+    const superiorId = node.superiorId;
+    if (superiorId === "0" || !superiorId) {
+      tree.push(map[node.id]);
+    } else if (map[superiorId]) {
+      map[superiorId].children.push(map[node.id]);
+    }
+  });
+
+  return tree;
+};
+
+const isLeafNode = (node: any) => !node.children || node.children.length === 0;
 
 interface Props {
   rol: UserRoles;
@@ -107,30 +135,157 @@ const Levels = ({ rol }: Props) => {
       return;
     }
     setLoading(true);
-    const response = await getLevels(location.state.siteId).unwrap();
-    setData(response);
-    setDataBackup(response);
-    dispatch(setSiteId(location.state.siteId));
-    setLoading(false);
+    try {
+      const response = await getLevels(location.state.siteId).unwrap();
+      setTreeData([
+        {
+          name: Strings.levelsOf.concat(siteName),
+          id: "0",
+          children: buildHierarchy(response),
+        },
+      ]);
+      dispatch(setSiteId(location.state.siteId));
+      if (containerRef.current) {
+        const { offsetWidth, offsetHeight } = containerRef.current;
+        setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
+      }
+    } catch (error) {
+      console.error(Strings.errorFetchingLevels);
+      notification.error({
+        message: "Fetching Error",
+        description: "There was an error while fetching levels. Please try again later.",
+        placement: "topRight",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    handleGetLevels();
-  }, [location.state]);
+  const closeAllDrawers = () => {
+    setDetailsVisible(false);
+    setDrawerVisible(false);
+  };
 
-  const handleOnFormCreateFinish = async (values: any) => {
-    try {
-      setModalLoading(true);
-      if (values.responsibleId && values.responsibleId !== "0") {
-        values.responsibleId = Number(values.responsibleId);
-      } else {
-        values.responsibleId = null;
+  const handleCreateLevel = () => {
+    closeAllDrawers();
+    const supId = selectedNode?.data?.id;
+    if (supId === "0") {
+      createForm.setFieldsValue({ superiorId: null });
+    } else if (!supId) {
+      return;
+    } else {
+      createForm.setFieldsValue({ superiorId: supId });
+    }
+    setDrawerType("create");
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
+  };
+
+  const handleUpdateLevel = () => {
+    closeAllDrawers();
+    setDrawerType("update");
+    updateForm.resetFields();
+    if (selectedNode?.data) {
+      updateForm.setFieldsValue(selectedNode.data);
+    }
+    setFormData(selectedNode?.data || {});
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
+  };
+
+  const cloneSubtree = async (
+    node: any,
+    newSuperiorId: number | null = null,
+    isRoot: boolean = false
+  ): Promise<Level> => {
+    const allowedProperties = [
+      Constants.responsibleId,
+      Constants.siteId,
+      Constants.superiorId,
+      Constants.name,
+      Constants.description,
+      Constants.levelMachineId,
+      Constants.notify,
+    ];
+    const payload = allowedProperties.reduce((acc: any, key: string) => {
+      if (node[key] !== undefined) {
+        if ([Constants.responsibleId, Constants.siteId, Constants.superiorId, Constants.notify].includes(key)) {
+          acc[key] = node[key] !== null ? Number(node[key]) : node[key];
+        } else {
+          acc[key] = node[key];
+        }
       }
-      await registerLevel(
-        new CreateLevel(
-          values.name.trim(),
-          values.description.trim(),
-          values.responsibleId,
+      return acc;
+    }, {});
+    if (!payload.siteId && location.state?.siteId) {
+      payload.siteId = Number(location.state.siteId);
+    }
+    payload.superiorId =
+      newSuperiorId !== null
+        ? newSuperiorId
+        : payload.superiorId !== undefined
+        ? Number(payload.superiorId)
+        : 0;
+    if (payload.levelMachineId && payload.levelMachineId.trim() !== Strings.empty) {
+      payload.levelMachineId = `${payload.levelMachineId}${Constants.cloneBridge}${node.id}`;
+    } else {
+      payload.levelMachineId = null;
+    }
+
+    payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
+    const newNodeData = await createLevel(payload).unwrap();
+    const parentId = Number(newNodeData.id);
+    if (isNaN(parentId)) {
+      throw new Error(Strings.errorGettingLevelId);
+    }
+    if (node.children && node.children.length > 0) {
+      for (const child of node.children) {
+        await cloneSubtree(child, parentId, false);
+      }
+    }
+    return newNodeData;
+  };
+
+  const handleCloneLevel = async () => {
+    if (!selectedNode?.data) return;
+    try {
+      setIsCloning(true);
+
+      await cloneSubtree(selectedNode.data, null, true);
+      await handleGetLevels();
+    } catch (error) {
+      console.error(Strings.errorCloningTheLevel, error);
+      notification.error({
+        message: "Cloning Error",
+        description: "There was an error while cloning the level. Please try again later.",
+        placement: "topRight",
+      });
+    } finally {
+      setIsCloning(false);
+      setContextMenuVisible(false);
+    }
+  };
+
+  const handleCloseDetails = () => {
+    setDetailsVisible(false);
+    setSelectedLevelId(null);
+  };
+
+  const handleDrawerClose = () => {
+    createForm.resetFields();
+    updateForm.resetFields();
+    setDrawerVisible(false);
+    setDrawerType(null);
+  };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      if (drawerType === "create") {
+        const supIdNum = Number(values.superiorId);
+        const newNode = new CreateNode(
+          values.name?.trim(),
+          values.description?.trim(),
+          Number(values.responsibleId) || 0,
           Number(location.state.siteId),
           values.levelMachineId && values.levelMachineId.trim(),
           values.notify ? 1 : 0
@@ -140,7 +295,12 @@ const Levels = ({ rol }: Props) => {
       handleGetLevels();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
-      handleErrorNotification(error);
+      console.error(Strings.errorOnSubmit);
+      notification.error({
+        message: "Submiting Error",
+        description: "There was an error while submiting. Please try again later.",
+        placement: "topRight",
+      });
     } finally {
       setModalLoading(false);
     }

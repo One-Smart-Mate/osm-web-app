@@ -63,6 +63,7 @@ const UpdatePreclassierButton = ({ preclassifierId }: ButtonEditProps) => {
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
       handleErrorNotification(error);
+      console.log("Error al actualizar el preclasificador:", error);
     } finally {
       setModalLoading(false);
     }

@@ -35,10 +35,16 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
 
   const handleOnClickEditButton = async () => {
     setDataLoading(true);
-    const site = await getLevel(levelId).unwrap();
-    dispatch(setRowData(site));
-    setModalOpen(true);
-    setDataLoading(false);
+    try {
+      const site = await getLevel(levelId).unwrap();
+      dispatch(setRowData(site));
+      setModalOpen(true);
+    } catch (error) {
+      console.log("Error in obtaining data:", error);
+      handleErrorNotification(error);
+    } finally {
+      setDataLoading(false);
+    }
   };
 
   const handleOnCancelButton = () => {
@@ -71,6 +77,7 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
       dispatch(setLevelUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Level update error:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

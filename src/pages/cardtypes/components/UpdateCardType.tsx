@@ -81,6 +81,7 @@ const UpdateCardType = ({ id }: ButtonEditProps) => {
       dispatch(setCardTypeUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Error during update:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

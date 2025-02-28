@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { Form, Input, List, Space } from "antd";
-import { IoIosSearch } from "react-icons/io";
-import Strings from "../../utils/localizations/Strings";
-import CustomButton from "../../components/CustomButtons";
+import { Drawer, Dropdown, Form, Spin, notification } from "antd";
+import { useEffect, useRef, useState } from "react";
+import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardTypesTable from "./components/CardTypesTable";
 import { CardTypes } from "../../data/cardtypes/cardTypes";
@@ -52,26 +50,60 @@ const CardTypess = ({ rol }: CardTypeProps) => {
     }
   }, [isCardTypeUpdated, dispatch]);
 
-  const handleOnClickCreateButton = () => {
-    setModalOpen(true);
-  };
-  const handleOnCancelButton = () => {
-    if (!modalIsLoading) {
-      setModalOpen(false);
+  const handleLoadData = async (siteId: string) => {
+    setLoading(true);
+    try {
+      const cardTypesResponse = await getCardTypes(siteId).unwrap();
+
+      const promises = cardTypesResponse.map(async (ct) => {
+        const preclassResp = await getPreclassifiers(String(ct.id)).unwrap();
+        return { cardTypeId: ct.id, preclassifiers: preclassResp };
+      });
+
+      const results = await Promise.all(promises);
+      const preclassMap: { [key: string]: any[] } = {};
+
+      results.forEach((r) => {
+        preclassMap[r.cardTypeId] = r.preclassifiers;
+      });
+
+      const hierarchy = buildHierarchy(cardTypesResponse, siteId, preclassMap);
+      setTreeData([
+        {
+          name: `${Strings.cardType} ${location.state.siteName}`,
+          nodeType: "cardType",
+          children: hierarchy,
+        },
+      ]);
+
+      dispatch(setSiteId(siteId));
+
+      if (containerRef.current) {
+        const { offsetWidth, offsetHeight } = containerRef.current;
+        setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
+      }
+    } catch (err) {
+      console.error(Strings.cardTypesErrorFetchingData, err);
+      notification.error({
+        message: "Error",
+        description: "Error fetching data",
+        placement: "topRight",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleOnSearch = (event: any) => {
-    const getSearch = event.target.value;
+  const handleDrawerClose = () => {
+    setDrawerVisible(false);
+    setDrawerType(null);
+    setFormData(null);
+    setSelectedNode(null);
 
-    if (getSearch.length > 0) {
-      const filterData = dataBackup.filter((item) => search(item, getSearch));
-
-      setData(filterData);
-    } else {
-      setData(dataBackup);
-    }
-    setQuerySearch(getSearch);
+    createForm.resetFields();
+    updateForm.resetFields();
+    createPreForm.resetFields();
+    updatePreForm.resetFields();
   };
 
   const search = (item: CardTypes, search: string) => {
@@ -136,6 +168,7 @@ const CardTypess = ({ rol }: CardTypeProps) => {
       handleGetPriorities();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.error("Error in form submission:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

@@ -24,9 +24,8 @@ import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { Responsible } from "../../../data/user/user";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { IoHeadsetOutline } from "react-icons/io5";
-import { useGetStatusMutation } from "../../../services/statusService";
-import { Status } from "../../../data/status/status";
-type Color = Extract<GetProp<ColorPickerProps, 'value'>, string | { cleared: any }>;
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { notification } from "antd";
 
 interface FormProps {
   form: FormInstance;
@@ -53,12 +52,22 @@ const UpdateCardTypeForm = ({ form }: FormProps) => {
   };
 
   const handleGetData = async () => {
-    const [responsiblesResponse, statusResponse] = await Promise.all([
-      getResponsibles(siteId).unwrap(),
-      getStatus().unwrap(),
-    ]);
-    setResponsibles(responsiblesResponse);
-    setStatuses(statusResponse);
+    if (!siteId) {
+      console.error("siteId is undefined.");
+      return;
+    }
+
+    try {
+      const responsiblesResponse = await getResponsibles(siteId).unwrap();
+      setResponsibles(responsiblesResponse);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      notification.error({
+        message: "Fetching Error",
+        description: "There was an error fetching your data. Please try again later.",
+        placement: "topRight",
+      });
+    }
   };
 
   const responsibleOptions = () => {

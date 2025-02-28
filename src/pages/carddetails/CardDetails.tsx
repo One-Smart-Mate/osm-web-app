@@ -18,8 +18,49 @@ import {
   setSiteId,
 } from "../../core/genericReducer";
 import { Note } from "../../data/note";
-import NoteCollapse from "./components/NoteCollapse";
-import { Card } from "antd";
+import { Card, Divider, Typography } from "antd";
+import InfoCollapseV2 from "./components/InfoCollapseV2";
+import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
+import NoteCollapseV2 from "./components/NoteCollapseV2";
+import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
+import PageTitleTag from "../../components/PageTitleTag";
+import PdfContent from "./components/PDFContent";
+import ExportPdfButton from "./components/ButtonPDF";
+import { notification } from "antd";
+
+const { Text } = Typography;
+
+const defaultCard: CardInterface = {
+  id: "",
+  siteId: "",
+  siteCardId: "",
+  status: "",
+  cardCreationDate: "",
+  cardDueDate: "",
+  preclassifierCode: "",
+  preclassifierDescription: "",
+  areaName: "",
+  creatorName: "",
+  cardTypeMethodologyName: "",
+  cardTypeName: "Información no disponible",
+  cardTypeColor: "",
+  priorityCode: "",
+  priorityDescription: "",
+  commentsAtCardCreation: "",
+  mechanicName: "",
+  userProvisionalSolutionName: "",
+  cardProvisionalSolutionDate: "",
+  commentsAtCardProvisionalSolution: "",
+  userDefinitiveSolutionName: "",
+  cardDefinitiveSolutionDate: "",
+  commentsAtCardDefinitiveSolution: "",
+  evidences: [],
+  createdAt: "",
+  responsableName: "",
+  userAppProvisionalSolutionName: "",
+  userAppDefinitiveSolutionName: "",
+  cardLocation: "",
+};
 
 const CardDetails = () => {
   const [getCardDetails] = useGetCardDetailsMutation();
@@ -32,6 +73,49 @@ const CardDetails = () => {
   const cardId = location?.state?.cardId || Strings.empty;
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
   const [isLoading, setLoading] = useState(false);
+
+  const [getCardDetails] = useGetCardDetailsMutation();
+  const [getNotes] = useGetCardNotesMutation();
+
+  const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
+
+  const handleGetCards = async () => {
+    setLoading(true);
+    try {
+      const [responseData, responseNotes] = await Promise.all([
+        getCardDetails(cardId).unwrap(),
+        getNotes(cardId).unwrap(),
+      ]);
+      const cardData =
+        responseData?.card !== null
+          ? responseData.card
+          : { ...defaultCard, siteId: paramSiteId || "" };
+
+      const modifiedResponse: CardDetailsInterface = {
+        ...responseData,
+        card: cardData,
+        evidences: responseData?.evidences || [],
+      };
+
+      setData(modifiedResponse);
+      setNotes(responseNotes);
+
+      if (cardData && cardData.siteId && cardData.siteId !== "") {
+        dispatch(setSiteId(cardData.siteId));
+      }
+    } catch (error) {
+      console.error("Error getting card details:", error);
+      notification.error({
+        message: "Loading Error",
+        description: "There was an error loading card details. Please try again.",
+        placement: "topRight",
+      });
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isCardUpdated) {
