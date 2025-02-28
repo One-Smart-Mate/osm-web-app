@@ -9,6 +9,7 @@ import { useUpdateCardMechanicMutation } from "../../../services/cardService";
 import { UserTable } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
+import { notification } from "antd";
 
 interface FormProps {
   form: FormInstance;
@@ -45,7 +46,13 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
       const response = await getSiteUsers(siteId).unwrap();
       setSiteUsers(response);
     } catch (error) {
-      throw error;
+      console.log("Error fetching site users:", error);
+      notification.error({
+        message: "Fetching Error",
+        description: "Error fetching site users:",
+        placement: "topRight",
+      });
+      
     }
   };
 
@@ -89,6 +96,12 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         return;
       }
     } catch (error) {
+      console.log("Error during card mechanic update:", error);
+      notification.error({
+        message: "Update Error",
+        description: "Error during card mechanic update",
+        placement: "topRight",
+      });
     } finally {
       setLoading(false);
     }

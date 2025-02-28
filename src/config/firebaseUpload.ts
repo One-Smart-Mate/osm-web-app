@@ -1,6 +1,7 @@
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuid } from 'uuid';
+import { notification } from "antd";
 
 interface UploadFile {
   name: string;
@@ -16,6 +17,11 @@ export const uploadImageToFirebaseAndGetURL = async (directory: string, file: Up
     return downloadURL;
   } catch (error) {
     console.error("Error uploading file to Firebase: ", error);
+    notification.error({
+      message: "Upload Error",
+      description: "An error occurred while uploading the file to Firebase. Please try again.",
+      placement: "topRight",
+    });
     throw error;
   }
 };

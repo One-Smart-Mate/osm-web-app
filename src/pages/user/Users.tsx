@@ -104,6 +104,7 @@ const Users = () => {
       handleGetUsers();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.log("Error during user creation:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

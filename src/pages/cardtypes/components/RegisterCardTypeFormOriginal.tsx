@@ -24,6 +24,7 @@ import {
   import { GoDeviceCameraVideo } from "react-icons/go";
   import { useGetCardTypesCatalogsMutation } from "../../../services/CardTypesService";
   import { QuestionCircleOutlined } from "@ant-design/icons";
+  import { notification } from "antd";
   
   type Color = Extract<GetProp<ColorPickerProps, "value">, string | { cleared: any }>;
   
@@ -58,6 +59,11 @@ import {
         console.log("Catalogs Data:", response2);
       } catch (error) {
         console.error("Error fetching data:", error);
+        notification.error({
+          message: "Error",
+          description: "Error fetching data",
+          placement: "topRight",
+        });
       }
     };
     

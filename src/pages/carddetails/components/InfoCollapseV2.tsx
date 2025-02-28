@@ -37,7 +37,6 @@ import AudioPlayer from "./AudioPlayer";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 
-
 const { useToken } = theme;
 
 interface CardProps {
@@ -139,6 +138,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
       dispatch(setCardUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log(error)
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

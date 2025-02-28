@@ -26,6 +26,7 @@ import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollaps
 import PageTitleTag from "../../components/PageTitleTag";
 import PdfContent from "./components/PDFContent";
 import ExportPdfButton from "./components/ButtonPDF";
+import { notification } from "antd";
 
 const { Text } = Typography;
 
@@ -121,6 +122,13 @@ const CardDetails = () => {
         dispatch(setSiteId(cardData.siteId));
       }
     } catch (error) {
+      console.error("Error getting card details:", error);
+      notification.error({
+        message: "Loading Error",
+        description: "There was an error loading card details. Please try again.",
+        placement: "topRight",
+      });
+      
       throw error;
     } finally {
       setLoading(false);

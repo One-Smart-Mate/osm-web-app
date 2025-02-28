@@ -115,6 +115,7 @@ const Preclassifiers = () => {
       handleGetPriorities();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.log("Error occurred while registering preclassifier:", error)
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

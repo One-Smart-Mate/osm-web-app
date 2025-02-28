@@ -59,6 +59,7 @@ const RegisterNodeButton = ({ superiorId, nodesName }: Props) => {
       dispatch(setLevelCreatedIndicator());
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.log('Error during level creation:', error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

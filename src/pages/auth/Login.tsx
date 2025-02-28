@@ -76,6 +76,7 @@ const LoginPage = () => {
       dispatch(setCredentials({ ...data }));
       handleNavigation(data);
     } catch (error) {
+      console.error("Login error:", error);
       handleErrorNotification(error);
     }
   };

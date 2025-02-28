@@ -42,6 +42,7 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
       dispatch(setRowData(site));
       setModalOpen(true);
     } catch (error) {
+      console.log("Error in obtaining data:", error);
       handleErrorNotification(error);
     } finally {
       setDataLoading(false);
@@ -72,6 +73,7 @@ const UpdateLevelButton = ({ levelId }: ButtonEditProps) => {
       dispatch(setLevelUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Level update error:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

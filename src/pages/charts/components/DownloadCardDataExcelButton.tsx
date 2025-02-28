@@ -4,6 +4,7 @@ import { handleErrorNotification } from "../../../utils/Notifications";
 import CustomButton from "../../../components/CustomButtons";
 import { MdOutlineFileDownload } from "react-icons/md";
 import Strings from "../../../utils/localizations/Strings";
+import { notification } from "antd";
 
 interface Props {
   siteId: string;
@@ -28,6 +29,12 @@ const DownloadCarDataExceButton = ({ siteId }: Props) => {
       }
     } catch (error) {
       handleErrorNotification(error, Strings.failedToDownload);
+      notification.error({
+        message: "Download Error",
+        description: "Error when trying to download the file",
+        placement: "topRight",
+      });
+
     } finally {
       setLoading(false);
     }

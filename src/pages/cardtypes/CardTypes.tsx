@@ -1,4 +1,4 @@
-import { Drawer, Dropdown, Form, Spin } from "antd";
+import { Drawer, Dropdown, Form, Spin, notification } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -209,6 +209,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       }
     } catch (err) {
       console.error(Strings.cardTypesErrorFetchingData, err);
+      notification.error({
+        message: "Error",
+        description: "Error fetching data",
+        placement: "topRight",
+      });
     } finally {
       setLoading(false);
     }
@@ -387,6 +392,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       setDrawerVisible(false);
       await handleLoadData(location.state.siteId);
     } catch (error) {
+      console.error("Error in form submission:", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
