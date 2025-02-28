@@ -63,7 +63,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const onFinish = async (values: any) => {
     const selectedUserId = values.mechanicId;
-
     if (!selectedUserId) {
       return;
     }
