@@ -21,13 +21,11 @@ interface FormProps {
 const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const siteId = useAppSelector(selectSiteId);
   const location = useLocation();
-  const state =
-    (location.state as { cardId?: number; cardName?: string; card?: any }) ||
-    {};
+  const state = (location.state as { cardId?: number; cardName?: string; card?: any }) || {};
   const finalCardId = cardId !== undefined ? cardId : state.cardId;
   const finalCardName = cardName !== undefined ? cardName : state.cardName;
 
-  const cardFromState = card !== undefined ? card : state.card || {};
+  const cardFromState = card !== undefined ? card : (state.card || {});
   const definitiveSolutionExists =
     cardFromState.userAppDefinitiveSolutionId != null &&
     cardFromState.userAppDefinitiveSolutionName != null &&
@@ -75,13 +73,12 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
     }
     setLoading(true);
     try {
-      const currentUserId = selectedUserId;
+      const currentUserId = selectedUserId; 
       await updateCardMechanic({
         cardId: Number(finalCardId),
         mechanicId: Number(selectedUserId),
-        idOfUpdatedBy: Number(currentUserId),
+        idOfUpdatedBy: currentUserId,
       }).unwrap();
-
       const isExternalProvider = selectedUser.roles.some(
         (role) => role.name === Constants.externalProvider
       );

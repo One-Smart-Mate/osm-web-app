@@ -392,8 +392,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       setDrawerVisible(false);
       await handleLoadData(location.state.siteId);
     } catch (error) {
-      console.error("Error in form submission:", error);
       handleErrorNotification(error);
+      console.error("Error in form submission:", error);
     } finally {
       setLoading(false);
     }
