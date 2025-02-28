@@ -46,7 +46,7 @@ export const chartService = apiSlice.injectEndpoints({
       { siteId: string; startDate?: string; endDate?: string }
     >({
       query: ({ siteId, startDate, endDate }) => {
-        let url = `/card/site/areas/${siteId}`;
+        let url = `/card/site/areas/more/${siteId}`;
         if (startDate || endDate) {
           url += `?${startDate ? `startDate=${startDate}&` : ""}${
             endDate ? `endDate=${endDate}` : ""
@@ -67,6 +67,32 @@ export const chartService = apiSlice.injectEndpoints({
             endDate ? `endDate=${endDate}` : ""
           }`;
         }
+        return url;
+      },
+      transformResponse: (response: { data: Machine[] }) => response.data,
+    }),
+
+    getMachinesByAreaIdChartData: builder.mutation<
+      Machine[],
+      {
+        siteId: string;
+        startDate?: string;
+        endDate?: string;
+        areaId?: number;
+      }
+    >({
+      query: ({ siteId, startDate, endDate, areaId }) => {
+         const siteIdInt = parseInt(siteId, 10);
+        let url = `/card/site/area/machines/${siteIdInt}/${areaId}`;
+        const params = [];
+
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+
+        if (params.length) {
+          url += `?${params.join("&")}`;
+        }
+
         return url;
       },
       transformResponse: (response: { data: Machine[] }) => response.data,
@@ -133,4 +159,5 @@ export const {
   useGetMachinesChartDataMutation,
   useGetMechanicsChartDataMutation,
   useGetDefinitiveUsersChartDataMutation,
+  useGetMachinesByAreaIdChartDataMutation 
 } = chartService;
