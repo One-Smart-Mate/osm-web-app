@@ -583,8 +583,14 @@ static false = "false"
  static commentsTag = "commentsTag"
  static noCommentsTag = "noCommentsTag"
  static associatedTags = "associatedTags"
+
   static tagsIssued = "tagsIssued"
   static tagsEradicated = "tagsEradicated"
+
+ static copy = "copy";
+ static errorGettingLevelId = "errorGettingLevelId";
+ static errorCloningTheLevel = "errorCloningTheLevel";
+ static cloningLevelsMessage = "cloningLevelsMessage";
 
 }
 

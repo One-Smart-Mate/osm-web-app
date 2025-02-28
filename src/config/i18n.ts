@@ -8,6 +8,10 @@ const resources = {
     translation: {
       tagsIssued: "Tags issued",
       tagsEradicated: "Tags eradicated",
+      cloningLevelsMessage: "Cloning levels...",
+      errorCloningTheLevel: "Error cloning the tree: ",
+      errorGettingLevelId: "Error getting level id",
+      copy: "(copy)",
       associatedTags: "Associated Tags",
       commentsTag: "Comments:",
       noCommentsTag: "No comments",
@@ -654,6 +658,10 @@ const resources = {
     translation: {
       tagsIssued: "Tarjetas emitidas",
       tagsEradicated: "Tarjetas erradicadas",
+      cloningLevelsMessage: "Clonando niveles...",
+      errorCloningTheLevel: "Error al clonar el arbol: ",
+      errorGettingLevelId: "Error al obtener el id del nivel",
+      copy: "(copia)",
       associatedTags: "Tarjetas asociadas",
       commentsTag: "Comentarios:",
       noCommentsTag: "Sin comentarios",

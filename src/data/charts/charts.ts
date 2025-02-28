@@ -15,6 +15,7 @@ export interface Area {
   area: string;
   totalCards: number;
   cardTypeName: string;
+  areaId: number;
 }
 
 export interface Machine {
