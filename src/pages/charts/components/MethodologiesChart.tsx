@@ -1,4 +1,7 @@
-import { Methodology } from "../../../data/charts/charts";
+import { useState } from "react";
+import { useSearchCardsQuery } from "../../../services/cardService";
+import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import Strings from "../../../utils/localizations/Strings";
 import {
   Cell,
   Pie,
@@ -7,15 +10,43 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { Methodology } from "../../../data/charts/charts";
 import { CardTypesCatalog } from "../../../data/cardtypes/cardTypes";
-import Strings from "../../../utils/localizations/Strings";
+import { UserRoles } from "../../../utils/Extensions";
 
 export interface ChartProps {
+  siteId: string; 
   methodologies: Methodology[];
   methodologiesCatalog: CardTypesCatalog[];
 }
 
-const MethodologiesChart = ({ methodologies }: ChartProps) => {
+const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
+  const [open, setOpen] = useState(false);
+  const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
+  const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
+  const [searchParams, setSearchParams] = useState<{
+    siteId: string;
+    cardTypeName: string;
+  } | null>(null);
+
+  
+  const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
+    skip: !searchParams,
+  });
+
+  
+  const handleOnClick = (data: any) => {
+    const cardTypeName = data.payload.methodology;
+    const params = { siteId, cardTypeName };
+    console.log("Search Params:", params);
+    setSearchParams(params);
+    setSelectedTotalCards(data.payload.totalCards);
+    setCardTypeName(cardTypeName);
+    setOpen(true);
+  };
+  
+
+  
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -57,43 +88,56 @@ const MethodologiesChart = ({ methodologies }: ChartProps) => {
   };
 
   return (
-    <ResponsiveContainer width={"100%"} height={"100%"}>
-      <PieChart>
-        <Pie
-          stroke="black"
-          dataKey="totalCards"
-          data={methodologies}
-          cx="50%"
-          cy="45%"
-          outerRadius={100}
-          labelLine={false}
-          label={renderCustomizedLabel}
-        >
-          {methodologies.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={`#${entry.color}`} />
-          ))}
-        </Pie>
-        <Tooltip
-          content={({ payload }) => (
-            <div>
-              {payload?.map((item, index) => (
-                <div
-                  className="bg-card-fields md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
-                  key={index}
-                >
-                  <p>
-                    {Strings.cardName} {item.payload.methodology}
-                  </p>
-                  <p>
-                    {Strings.totalCards} {item.payload.totalCards}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        />
-      </PieChart>
-    </ResponsiveContainer>
+    <>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            stroke="black"
+            dataKey="totalCards"
+            data={methodologies}
+            cx="50%"
+            cy="45%"
+            outerRadius={100}
+            labelLine={false}
+            label={renderCustomizedLabel}
+            onClick={handleOnClick} 
+          >
+            {methodologies.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={`#${entry.color}`} />
+            ))}
+          </Pie>
+          <Tooltip
+            content={({ payload }) => (
+              <div>
+                {payload?.map((item, index) => (
+                  <div
+                    className="bg-card-fields md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
+                    key={index}
+                  >
+                    <p>
+                      {Strings.cardName} {item.payload.methodology}
+                    </p>
+                    <p>
+                      {Strings.totalCards} {item.payload.totalCards}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+      {/* Componente para mostrar la lista de cards/tags */}
+      <CustomDrawerCardList
+        open={open}
+        dataSource={searchData}
+        isLoading={isFetching}
+        label={Strings.cardType} 
+        onClose={() => setOpen(false)}
+        totalCards={selectedTotalCards}
+        text={selectedCardTypeName}
+        cardTypeName={selectedCardTypeName} rol={UserRoles.IHSISADMIN}      />
+    </>
   );
 };
 

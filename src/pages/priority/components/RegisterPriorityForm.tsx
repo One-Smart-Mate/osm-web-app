@@ -66,6 +66,7 @@ const RegisterPriorityForm = ({ form }: FormProps) => {
           <div className="flex items-center">
             <InputNumber
               size="large"
+              min={0} 
               maxLength={3}
               addonBefore={<AiOutlineFieldNumber />}
               placeholder={Strings.daysNumber}

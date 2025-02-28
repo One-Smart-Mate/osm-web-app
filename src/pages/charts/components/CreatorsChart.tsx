@@ -93,7 +93,7 @@ const CreatorsChart = ({
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<CustomLegend />} verticalAlign="top" />
           <CartesianGrid strokeDasharray="3 3" />
-          <YAxis />
+          <YAxis tickFormatter={(value: any) => Math.round(Number(value)).toString()}/>
           <XAxis
             dataKey={"creator"}
             angle={-15}

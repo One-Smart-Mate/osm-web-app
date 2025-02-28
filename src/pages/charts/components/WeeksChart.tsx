@@ -38,14 +38,14 @@ const WeeksChart = ({ siteId }: ChartProps) => {
             className="w-5 rounded-lg"
             style={{ background: payload[0].color }}
           />
-          <h1 className="md:text-sm text-xs">Tags issued</h1>
+          <h1 className="md:text-sm text-xs">{Strings.tagsIssued}</h1>
         </div>
         <div className="flex gap-1">
           <div
             className="w-5 rounded-lg"
             style={{ background: payload[1].color }}
           />
-          <h1 className="md:text-sm text-xs">Tags eradicated</h1>
+          <h1 className="md:text-sm text-xs">{Strings.tagsEradicated}</h1>
         </div>
       </div>
     );
@@ -61,7 +61,7 @@ const WeeksChart = ({ siteId }: ChartProps) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="week" />
-        <YAxis />
+        <YAxis tickFormatter={(value: any) => Math.round(Number(value)).toString()} />
         <Tooltip
           content={(props) => {
             if (props.active && props.payload && props.payload.length) {

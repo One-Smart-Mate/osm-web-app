@@ -6,6 +6,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
+      tagsIssued: "Tags issued",
+      tagsEradicated: "Tags eradicated",
       associatedTags: "Associated Tags",
       commentsTag: "Comments:",
       noCommentsTag: "No comments",
@@ -650,6 +652,8 @@ const resources = {
   },
   es: {
     translation: {
+      tagsIssued: "Tarjetas emitidas",
+      tagsEradicated: "Tarjetas erradicadas",
       associatedTags: "Tarjetas asociadas",
       commentsTag: "Comentarios:",
       noCommentsTag: "Sin comentarios",
