@@ -6,6 +6,10 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
+      cloningLevelsMessage: "Cloning levels...",
+      errorCloningTheLevel: "Error cloning the tree: ",
+      errorGettingLevelId: "Error getting level id",
+      copy: "(copy)",
       associatedTags: "Associated Tags",
       commentsTag: "Comments:",
       noCommentsTag: "No comments",
@@ -650,6 +654,10 @@ const resources = {
   },
   es: {
     translation: {
+      cloningLevelsMessage: "Clonando niveles...",
+      errorCloningTheLevel: "Error al clonar el arbol: ",
+      errorGettingLevelId: "Error al obtener el id del nivel",
+      copy: "(copia)",
       associatedTags: "Tarjetas asociadas",
       commentsTag: "Comentarios:",
       noCommentsTag: "Sin comentarios",

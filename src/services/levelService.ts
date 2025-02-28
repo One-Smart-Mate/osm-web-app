@@ -8,13 +8,14 @@ export const levelService = apiSlice.injectEndpoints({
       query: (siteId) => `/level/site/${siteId}`,
       transformResponse: (response: { data: Level[] }) => response.data,
     }),
-    createLevel: builder.mutation<void, CreateLevel>({
+    createLevel: builder.mutation<Level, CreateLevel>({
       query: (level) => ({
         url: "/level/create",
         method: "POST",
         body: { ...level },
       }),
-    }),
+      transformResponse: (response: { data: Level }) => response.data,
+    }),  
     getlevel: builder.mutation<Level, string>({
       query: (id) => `/level/${id}`,
       transformResponse: (response: { data: Level }) => response.data,

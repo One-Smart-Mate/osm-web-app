@@ -17,6 +17,7 @@ import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { CreateNode } from "../../data/level/level.request";
 import { UserRoles } from "../../utils/Extensions";
+import Constants from "../../utils/Constants";
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -68,10 +69,12 @@ const Levels = ({ role }: Props) => {
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
+  const [isCloning, setIsCloning] = useState(false);
+
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerType, setDrawerType] = useState<
-    "create" | "update" | "clone" | null
-  >(null);
+  const [drawerType, setDrawerType] = useState<"create" | "update" | null>(
+    null
+  );
   const [formData, setFormData] = useState<any>({});
 
   const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
@@ -85,8 +88,7 @@ const Levels = ({ role }: Props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
-
-  const siteId = location.state.siteId;
+  const siteId = location.state?.siteId;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -99,7 +101,6 @@ const Levels = ({ role }: Props) => {
     };
 
     document.addEventListener("click", handleClickOutside);
-
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
@@ -120,7 +121,6 @@ const Levels = ({ role }: Props) => {
 
     updateDrawerPlacement();
     window.addEventListener("resize", updateDrawerPlacement);
-
     return () => {
       window.removeEventListener("resize", updateDrawerPlacement);
     };
@@ -131,11 +131,9 @@ const Levels = ({ role }: Props) => {
       navigate(UnauthorizedRoute);
       return;
     }
-
     setLoading(true);
     try {
       const response = await getLevels(location.state.siteId).unwrap();
-
       setTreeData([
         {
           name: Strings.levelsOf.concat(siteName),
@@ -144,7 +142,6 @@ const Levels = ({ role }: Props) => {
         },
       ]);
       dispatch(setSiteId(location.state.siteId));
-
       if (containerRef.current) {
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
@@ -164,7 +161,6 @@ const Levels = ({ role }: Props) => {
   const handleCreateLevel = () => {
     closeAllDrawers();
     const supId = selectedNode?.data?.id;
-
     if (supId === "0") {
       createForm.setFieldsValue({ superiorId: null });
     } else if (!supId) {
@@ -172,7 +168,6 @@ const Levels = ({ role }: Props) => {
     } else {
       createForm.setFieldsValue({ superiorId: supId });
     }
-
     setDrawerType("create");
     setDrawerVisible(true);
     setContextMenuVisible(false);
@@ -182,7 +177,6 @@ const Levels = ({ role }: Props) => {
     closeAllDrawers();
     setDrawerType("update");
     updateForm.resetFields();
-
     if (selectedNode?.data) {
       updateForm.setFieldsValue(selectedNode.data);
     }
@@ -191,19 +185,72 @@ const Levels = ({ role }: Props) => {
     setContextMenuVisible(false);
   };
 
-  const handleCloneLevel = () => {
-    closeAllDrawers();
-    setDrawerType("clone");
-    createForm.resetFields();
-    console.log(selectedNode?.data);
-    if (selectedNode?.data) {
-      const { name, description, levelMachineId, ...filteredData } =
-        selectedNode.data;
-      createForm.setFieldsValue(filteredData);
+  const cloneSubtree = async (
+    node: any,
+    newSuperiorId: number | null = null,
+    isRoot: boolean = false
+  ): Promise<Level> => {
+    const allowedProperties = [
+      Constants.responsibleId,
+      Constants.siteId,
+      Constants.superiorId,
+      Constants.name,
+      Constants.description,
+      Constants.levelMachineId,
+      Constants.notify,
+    ];
+    const payload = allowedProperties.reduce((acc: any, key: string) => {
+      if (node[key] !== undefined) {
+        if ([Constants.responsibleId, Constants.siteId, Constants.superiorId, Constants.notify].includes(key)) {
+          acc[key] = node[key] !== null ? Number(node[key]) : node[key];
+        } else {
+          acc[key] = node[key];
+        }
+      }
+      return acc;
+    }, {});
+    if (!payload.siteId && location.state?.siteId) {
+      payload.siteId = Number(location.state.siteId);
+    }
+    payload.superiorId =
+      newSuperiorId !== null
+        ? newSuperiorId
+        : payload.superiorId !== undefined
+        ? Number(payload.superiorId)
+        : 0;
+    if (payload.levelMachineId && payload.levelMachineId.trim() !== Strings.empty) {
+      payload.levelMachineId = `${payload.levelMachineId}${Constants.cloneBridge}${node.id}`;
+    } else {
+      payload.levelMachineId = null;
     }
 
-    setDrawerVisible(true);
-    setContextMenuVisible(false);
+    payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
+    const newNodeData = await createLevel(payload).unwrap();
+    const parentId = Number(newNodeData.id);
+    if (isNaN(parentId)) {
+      throw new Error(Strings.errorGettingLevelId);
+    }
+    if (node.children && node.children.length > 0) {
+      for (const child of node.children) {
+        await cloneSubtree(child, parentId, false);
+      }
+    }
+    return newNodeData;
+  };
+
+  const handleCloneLevel = async () => {
+    if (!selectedNode?.data) return;
+    try {
+      setIsCloning(true);
+
+      await cloneSubtree(selectedNode.data, null, true);
+      await handleGetLevels();
+    } catch (error) {
+      console.error(Strings.errorCloningTheLevel, error);
+    } finally {
+      setIsCloning(false);
+      setContextMenuVisible(false);
+    }
   };
 
   const handleCloseDetails = () => {
@@ -220,19 +267,17 @@ const Levels = ({ role }: Props) => {
 
   const handleSubmit = async (values: any) => {
     try {
-      if (drawerType === "create" || drawerType === "clone") {
+      if (drawerType === "create") {
         const supIdNum = Number(values.superiorId);
-
         const newNode = new CreateNode(
           values.name?.trim(),
           values.description?.trim(),
           Number(values.responsibleId) || 0,
           Number(location.state.siteId),
           supIdNum,
-          values.levelMachineId?.trim() || "",
+          values.levelMachineId?.trim() || Strings.empty,
           values.notify ? 1 : 0
         );
-
         await createLevel(newNode).unwrap();
       } else if (drawerType === "update") {
         const { superiorId, ...updateValues } = values;
@@ -243,10 +288,8 @@ const Levels = ({ role }: Props) => {
             ? Number(values.responsibleId)
             : null,
         };
-
         await updateLevel(updatePayload).unwrap();
       }
-
       await handleGetLevels();
       handleDrawerClose();
     } catch (error) {
@@ -258,20 +301,15 @@ const Levels = ({ role }: Props) => {
 
   const renderCustomNodeElement = (rd3tProps: any) => {
     const { nodeDatum, toggleNode } = rd3tProps;
-
     const getCollapsedState = (nodeId: string): boolean => {
-      const storedState = localStorage.getItem(`node_${nodeId}_collapsed`);
+      const storedState = localStorage.getItem(`${Constants.nodeStartBridgeCollapsed}${nodeId}${Constants.nodeEndBridgeCollapserd}`);
       return storedState === "true";
     };
-
     const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
-      localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
+      localStorage.setItem(`${Constants.nodeStartBridgeCollapsed}${nodeId}${Constants.nodeEndBridgeCollapserd}`, isCollapsed.toString());
     };
-
     const isCollapsed = getCollapsedState(nodeDatum.id);
-
     nodeDatum.__rd3t.collapsed = isCollapsed;
-
     const getFillColor = (status: string | undefined) => {
       switch (status) {
         case Strings.detailsOptionC:
@@ -283,9 +321,7 @@ const Levels = ({ role }: Props) => {
           return isLeafNode(nodeDatum) ? "#FFFF00" : "#145695";
       }
     };
-
     const fillColor = getFillColor(nodeDatum.status);
-
     const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
       e.preventDefault();
       if (containerRef.current) {
@@ -296,7 +332,6 @@ const Levels = ({ role }: Props) => {
       setSelectedNode({ data: nodeDatum });
       setContextMenuVisible(true);
     };
-
     const handleShowDetails = (nodeId: string) => {
       if (nodeId !== "0") {
         closeAllDrawers();
@@ -305,19 +340,14 @@ const Levels = ({ role }: Props) => {
         setContextMenuVisible(false);
       }
     };
-
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
       setContextMenuVisible(false);
-
       const newCollapsedState = !nodeDatum.__rd3t.collapsed;
       setCollapsedState(nodeDatum.id, newCollapsedState);
-
       handleShowDetails(nodeDatum.id);
-
       toggleNode();
     };
-
     return (
       <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
         <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
@@ -351,15 +381,22 @@ const Levels = ({ role }: Props) => {
             <Spin size="large" />
           </div>
         ) : (
-          treeData.length > 0 && (
-            <Tree
-              data={treeData}
-              orientation="horizontal"
-              translate={translate}
-              renderCustomNodeElement={renderCustomNodeElement}
-              collapsible={true}
-            />
-          )
+          <>
+            {treeData.length > 0 && (
+              <Tree
+                data={treeData}
+                orientation="horizontal"
+                translate={translate}
+                renderCustomNodeElement={renderCustomNodeElement}
+                collapsible={true}
+              />
+            )}
+            {isCloning && (
+              <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-opacity-50 z-50">
+                <Spin size="large" tip={Strings.cloningLevelsMessage} />
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -432,20 +469,14 @@ const Levels = ({ role }: Props) => {
 
       <Drawer
         title={
-          drawerType === Strings.drawerTypeCreate
+          drawerType === "create"
             ? Strings.levelsTreeOptionCreate.concat(
                 selectedNode?.data?.name
                   ? ` ${Strings.for} "${selectedNode.data.name}"`
                   : Strings.empty
               )
-            : drawerType === Strings.drawerTypeEdit
+            : drawerType === "update"
             ? Strings.levelsTreeOptionEdit.concat(
-                selectedNode?.data?.name
-                  ? ` "${selectedNode.data.name}" ${Strings.level}`
-                  : Strings.empty
-              )
-            : drawerType === Strings.drawerTypeClone
-            ? Strings.levelsTreeOptionClone.concat(
                 selectedNode?.data?.name
                   ? ` "${selectedNode.data.name}" ${Strings.level}`
                   : Strings.empty
@@ -469,23 +500,19 @@ const Levels = ({ role }: Props) => {
           }}
         >
           <div className="drawer-content">
-            {drawerType === "create" || drawerType === "clone" ? (
+            {drawerType === "create" ? (
               <RegisterLevelForm form={createForm} />
             ) : drawerType === "update" ? (
               <UpdateLevelForm form={updateForm} initialValues={formData} />
             ) : null}
-
             <div className="mt-4 flex justify-end">
               <Button
                 type="primary"
                 loading={isLoading}
                 onClick={() => {
-                  if (
-                    drawerType === Strings.drawerTypeCreate ||
-                    drawerType === Strings.drawerTypeClone
-                  ) {
+                  if (drawerType === "create") {
                     createForm.submit();
-                  } else if (drawerType === Strings.drawerTypeEdit) {
+                  } else if (drawerType === "update") {
                     updateForm.submit();
                   }
                 }}
