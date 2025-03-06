@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/*Applying these styles to the menu was the only solution*/
+.ant-menu-item, 
+.ant-menu-submenu-title, 
+.ant-menu-title-content {
+  color: white !important;
+}
+
+.ant-menu-item:hover, 
+.ant-menu-submenu-title:hover {
+  color: white !important;
+}
+
+.ant-menu-item-selected .ant-menu-item-icon, 
+.ant-menu-item-selected .ant-menu-title-content {
+  color: white !important;
+}
