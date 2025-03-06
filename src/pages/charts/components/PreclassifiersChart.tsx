@@ -77,7 +77,7 @@ const PreclassifiersChart = ({
       <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={preclassifiers} margin={{ bottom: 80 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <YAxis dataKey={"totalCards"} />
+          <YAxis dataKey={"totalCards"} tickFormatter={(value: any) => Math.round(Number(value)).toString()}  />
           <XAxis
             dataKey={"preclassifier"}
             angle={-20}

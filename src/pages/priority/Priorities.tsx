@@ -103,7 +103,7 @@ const Priorities = () => {
           Number(location?.state?.siteId),
           values.code.trim(),
           values.description.trim(),
-          values.daysNumber
+          Number(values.daysNumber)
         )
       ).unwrap();
       setModalOpen(false);

@@ -151,6 +151,7 @@ const Charts = ({ rol }: Props) => {
                         <MethodologiesChart
                           methodologies={methodologies}
                           methodologiesCatalog={methodologiesCatalog}
+                          siteId={siteId}
                         />
                       </div>
                     </div>

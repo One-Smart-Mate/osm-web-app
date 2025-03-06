@@ -373,6 +373,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         handleSucccessNotification(NotificationSuccess.UPDATE);
       }
 
+    if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
+      createForm.resetFields();
+    } else if (drawerType === Strings.cardTypesDrawerTypeUpdateCardType) {
+      updateForm.resetFields();
+    } else if (drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier) {
+      createPreForm.resetFields();
+    } else if (drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier) {
+      updatePreForm.resetFields();
+    }
+
+
       setDrawerVisible(false);
       await handleLoadData(location.state.siteId);
     } catch (error) {
