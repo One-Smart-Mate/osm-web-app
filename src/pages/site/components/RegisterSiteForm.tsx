@@ -38,6 +38,8 @@ import { Currency } from "../../../data/currency/currency";
 import { useAppSelector } from "../../../core/store";
 import { selectGeneratedSiteCode } from "../../../core/genericReducer";
 
+import { uploadImageToFirebaseAndGetURL } from "../../../config/firebaseUpload";
+
 interface FormProps {
   form: FormInstance;
 }
@@ -81,7 +83,6 @@ const RegisterSiteForm = ({ form }: FormProps) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
@@ -99,6 +100,20 @@ const RegisterSiteForm = ({ form }: FormProps) => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+
+  const customUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      const uploadedUrl = await uploadImageToFirebaseAndGetURL("site", {
+        name: file.name,
+        originFileObj: file,
+      });
+
+      onSuccess(uploadedUrl, file);
+    } catch (error) {
+      onError(error);
+    }
+  };
 
   return (
     <Form form={form}>
@@ -360,7 +375,7 @@ const RegisterSiteForm = ({ form }: FormProps) => {
             />
           </Form.Item>
           <Tooltip title={Strings.siteDueDateTooltip}>
-            <QuestionCircleOutlined className="ml-0.5  mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
+            <QuestionCircleOutlined className="ml-0.5 mb-6 mr-2 text-blue-500 text-sm cursor-pointer" />
           </Tooltip>
 
           <Form.Item
@@ -430,6 +445,7 @@ const RegisterSiteForm = ({ form }: FormProps) => {
               onPreview={handleOnPreview}
               onChange={handleChange}
               fileList={fileList}
+              customRequest={customUpload}
             >
               {uploadButton}
             </Upload>
