@@ -10,17 +10,22 @@ import {
   UploadProps,
   Tooltip,
 } from "antd";
-import { MailOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  MailOutlined,
+  QuestionCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { FaRegBuilding } from "react-icons/fa";
 import { MdOutlineLocalPhone, MdOutlineQrCodeScanner } from "react-icons/md";
 import { SlCompass } from "react-icons/sl";
 import { IoIosContact } from "react-icons/io";
-import { PlusOutlined } from "@ant-design/icons";
 import { BsDiagram3 } from "react-icons/bs";
 import { HiDevicePhoneMobile } from "react-icons/hi2";
 import { TiPlusOutline } from "react-icons/ti";
 import Strings from "../../../utils/localizations/Strings";
 import { useState } from "react";
+
+import { uploadImageToFirebaseAndGetURL } from "../../../config/firebaseUpload";
 
 interface FormProps {
   form: FormInstance;
@@ -45,13 +50,26 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as FileType);
     }
-
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+  };
+
+  const customUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      const uploadedUrl = await uploadImageToFirebaseAndGetURL("company", {
+        name: file.name,
+        originFileObj: file,
+      });
+
+      onSuccess(uploadedUrl, file);
+    } catch (error) {
+      onError(error);
+    }
   };
 
   return (
@@ -253,6 +271,7 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
               onPreview={handleOnPreview}
               onChange={handleChange}
               fileList={fileList}
+              customRequest={customUpload}
             >
               <button className="border-0 bg-none" type="button">
                 <PlusOutlined />
@@ -278,4 +297,5 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     </Form>
   );
 };
+
 export default RegisterCompanyForm;

@@ -20,11 +20,13 @@ interface FormProps {
 const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const siteId = useAppSelector(selectSiteId);
   const location = useLocation();
-  const state = (location.state as { cardId?: number; cardName?: string; card?: any }) || {};
+  const state =
+    (location.state as { cardId?: number; cardName?: string; card?: any }) ||
+    {};
   const finalCardId = cardId !== undefined ? cardId : state.cardId;
   const finalCardName = cardName !== undefined ? cardName : state.cardName;
 
-  const cardFromState = card !== undefined ? card : (state.card || {});
+  const cardFromState = card !== undefined ? card : state.card || {};
   const definitiveSolutionExists =
     cardFromState.userAppDefinitiveSolutionId != null &&
     cardFromState.userAppDefinitiveSolutionName != null &&
@@ -38,15 +40,15 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const [siteUsers, setSiteUsers] = useState<UserTable[]>([]);
   const [, setLoading] = useState(false);
 
-
   const fetchSiteUsers = async () => {
     try {
       const response = await getSiteUsers(siteId).unwrap();
       setSiteUsers(response);
     } catch (error) {
-      
+      throw error;
     }
   };
+
   useEffect(() => {
     if (!siteId) return;
     fetchSiteUsers();
@@ -54,6 +56,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const onFinish = async (values: any) => {
     const selectedUserId = values.mechanicId;
+
     if (!selectedUserId) {
       return;
     }
@@ -66,12 +69,13 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
     }
     setLoading(true);
     try {
-      const currentUserId = selectedUserId; 
+      const currentUserId = selectedUserId;
       await updateCardMechanic({
         cardId: Number(finalCardId),
         mechanicId: Number(selectedUserId),
-        idOfUpdatedBy: currentUserId,
+        idOfUpdatedBy: Number(currentUserId),
       }).unwrap();
+
       const isExternalProvider = selectedUser.roles.some(
         (role) => role.name === Constants.externalProvider
       );
@@ -81,6 +85,8 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
           cardId: Number(finalCardId),
           cardName: finalCardName,
         }).unwrap();
+      } else {
+        return;
       }
     } catch (error) {
     } finally {
@@ -90,11 +96,17 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   return (
     <Form form={form} onFinish={onFinish}>
-      <Form.Item label={Strings.assignUser} name={Constants.mechanic+Constants.id}>
+      <Form.Item
+        label={Strings.assignUser}
+        name={Constants.mechanic + Constants.id}
+      >
         <Select placeholder={`${Strings.selectRole} `} allowClear>
           {siteUsers.map((user) => (
             <Select.Option key={user.id} value={user.id}>
-              {user.name}
+              {user.name}{" "}
+              {user.roles && user.roles.length > 0
+                ? `(${user.roles.map((role) => role.name).join(", ")})`
+                : ""}
             </Select.Option>
           ))}
         </Select>
