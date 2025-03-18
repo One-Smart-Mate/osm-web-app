@@ -231,6 +231,15 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     updatePreForm.resetFields();
   };
 
+  const search = (item: CardTypes, search: string) => {
+    const { name, methodology } = item;
+
+    return (
+      name.toLowerCase().includes(search.toLowerCase()) ||
+      methodology.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+
   const handleDrawerOpen = (type: DrawerType, data: any = null) => {
     setDrawerType(type);
     setDrawerVisible(true);
