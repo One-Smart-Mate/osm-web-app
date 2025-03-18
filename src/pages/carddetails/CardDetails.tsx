@@ -96,6 +96,12 @@ const CardDetails = () => {
   const [getNotes] = useGetCardNotesMutation();
 
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
+  const [isLoading, setLoading] = useState(false);
+
+  const [getCardDetails] = useGetCardDetailsMutation();
+  const [getNotes] = useGetCardNotesMutation();
+
+  const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
 
   const handleGetCards = async () => {
     setLoading(true);
@@ -128,7 +134,7 @@ const CardDetails = () => {
         description: "There was an error loading card details. Please try again.",
         placement: "topRight",
       });
-      
+
       throw error;
     } finally {
       setLoading(false);

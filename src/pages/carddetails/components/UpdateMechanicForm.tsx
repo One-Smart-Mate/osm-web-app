@@ -21,13 +21,11 @@ interface FormProps {
 const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const siteId = useAppSelector(selectSiteId);
   const location = useLocation();
-  const state =
-    (location.state as { cardId?: number; cardName?: string; card?: any }) ||
-    {};
+  const state = (location.state as { cardId?: number; cardName?: string; card?: any }) || {};
   const finalCardId = cardId !== undefined ? cardId : state.cardId;
   const finalCardName = cardName !== undefined ? cardName : state.cardName;
 
-  const cardFromState = card !== undefined ? card : state.card || {};
+  const cardFromState = card !== undefined ? card : (state.card || {});
   const definitiveSolutionExists =
     cardFromState.userAppDefinitiveSolutionId != null &&
     cardFromState.userAppDefinitiveSolutionName != null &&
@@ -40,6 +38,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const [siteUsers, setSiteUsers] = useState<UserTable[]>([]);
   const [, setLoading] = useState(false);
+
 
   const fetchSiteUsers = async () => {
     try {
@@ -55,7 +54,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
       
     }
   };
-
   useEffect(() => {
     if (!siteId) return;
     fetchSiteUsers();
@@ -63,7 +61,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const onFinish = async (values: any) => {
     const selectedUserId = values.mechanicId;
-
     if (!selectedUserId) {
       return;
     }
@@ -76,13 +73,12 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
     }
     setLoading(true);
     try {
-      const currentUserId = selectedUserId;
+      const currentUserId = selectedUserId; 
       await updateCardMechanic({
         cardId: Number(finalCardId),
         mechanicId: Number(selectedUserId),
-        idOfUpdatedBy: Number(currentUserId),
+        idOfUpdatedBy: currentUserId,
       }).unwrap();
-
       const isExternalProvider = selectedUser.roles.some(
         (role) => role.name === Constants.externalProvider
       );
@@ -92,8 +88,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
           cardId: Number(finalCardId),
           cardName: finalCardName,
         }).unwrap();
-      } else {
-        return;
       }
     } catch (error) {
       console.log("Error during card mechanic update:", error);
