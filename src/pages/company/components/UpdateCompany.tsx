@@ -72,6 +72,7 @@ const UpdateCompany = ({ data }: ButtonEditProps) => {
       dispatch(setCompanyUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.error("Error updating company:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

@@ -40,6 +40,7 @@ const ResetPassword = () => {
       setEmail(values.email.trim());
       setShowEnterCodeSection(true);
     } catch (error) {
+      console.error("Error al enviar el código al email:", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
@@ -53,6 +54,7 @@ const ResetPassword = () => {
       setCode(values.code);
       setShowChangePasswordSection(true);
     } catch (error) {
+      console.error("Error al verificar el código:", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
@@ -69,6 +71,7 @@ const ResetPassword = () => {
       navigate(Routes.Login);
       handleSucccessNotification(NotificationSuccess.RESET_PASSWORD);
     } catch (error) {
+      console.error("Error al cambiar la contraseña:", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);

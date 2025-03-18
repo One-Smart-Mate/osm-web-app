@@ -91,6 +91,7 @@ const UpdateSite = ({ siteId }: ButtonEditProps) => {
       dispatch(setSiteUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Error occurred during site update:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

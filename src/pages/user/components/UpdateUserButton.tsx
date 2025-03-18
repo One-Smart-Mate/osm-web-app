@@ -75,6 +75,7 @@ const UpdateUserButton = ({
       dispatch(setUserUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Error updating user:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

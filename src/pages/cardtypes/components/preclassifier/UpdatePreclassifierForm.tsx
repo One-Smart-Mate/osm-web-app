@@ -7,6 +7,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useGetStatusMutation } from "../../../../services/statusService";
 import { Status } from "../../../../data/status/status";
 import Strings from "../../../../utils/localizations/Strings";
+import { notification } from "antd";
 
 interface UpdatePreclassifierForm2Props {
   form: FormInstance;
@@ -33,6 +34,11 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
         setStatuses(statusResponse);
       } catch (err) {
         console.error("Error fetching status", err);
+        notification.error({
+          message: "Fetching Error",
+          description: "Error fetching status",
+          placement: "topRight",
+        });
       }
     })();
   }, [getStatus]);

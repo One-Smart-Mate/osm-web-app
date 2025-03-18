@@ -6,6 +6,7 @@ import {
 } from "firebase/storage";
 import { storage } from "./firebase"; // Assuming you have initialized Firebase Storage correctly in ./firebase
 import { v4 as uuid } from "uuid";
+import { notification } from "antd";
 
 interface UploadFile {
   name: string;
@@ -30,6 +31,11 @@ export const updateImageToFirebaseAndGetURL = async (
     return downloadURL;
   } catch (error) {
     console.error("Error updating/deleting file in Firebase: ", error);
+    notification.error({
+      message: "Upload Error",
+      description: "An error occurred while updating/deleting the file. Please try again.",
+      placement: "topRight",
+    });
     throw error;
   }
 };
