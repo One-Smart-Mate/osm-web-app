@@ -19,6 +19,7 @@ import { AiOutlinePicture } from "react-icons/ai";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { notification } from "antd";
 
 interface FormProps {
   form: FormInstance;
@@ -46,6 +47,11 @@ const UpdateCardTypeForm = ({ form, initialValues }: FormProps) => {
       setResponsibles(responsiblesResponse);
     } catch (error) {
       console.error("Error fetching data:", error);
+      notification.error({
+        message: "Fetching Error",
+        description: "There was an error fetching your data. Please try again later.",
+        placement: "topRight",
+      });
     }
   };
 

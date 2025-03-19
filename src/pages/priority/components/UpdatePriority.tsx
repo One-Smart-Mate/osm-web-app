@@ -63,6 +63,7 @@ const UpdatePriority = ({ priorityId }: ButtonEditProps) => {
       dispatch(setPriorityUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log("Error during update:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

@@ -1,4 +1,4 @@
-import { Form, FormInstance, Select } from "antd";
+import { Form, FormInstance, Select, notification } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../core/store";
@@ -9,6 +9,7 @@ import { useUpdateCardMechanicMutation } from "../../../services/cardService";
 import { UserTable } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
+
 
 interface FormProps {
   form: FormInstance;
@@ -38,13 +39,18 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   const [updateCardMechanic] = useUpdateCardMechanicMutation();
 
   const [siteUsers, setSiteUsers] = useState<UserTable[]>([]);
-  const [, setLoading] = useState(false);
 
   const fetchSiteUsers = async () => {
     try {
       const response = await getSiteUsers(siteId).unwrap();
       setSiteUsers(response);
     } catch (error) {
+      console.log("Error fetching site users:", error);
+      notification.error({
+        message: "Error",
+        description: "Failed to load site users. Please try again later.",
+        placement: "topRight",
+      });
       throw error;
     }
   };
@@ -67,7 +73,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
     if (!selectedUser) {
       return;
     }
-    setLoading(true);
+
     try {
       const currentUserId = selectedUserId;
       await updateCardMechanic({
@@ -89,8 +95,12 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         return;
       }
     } catch (error) {
-    } finally {
-      setLoading(false);
+      console.log("Error updating card mechanic or sending assignment:", error);
+      notification.error({
+        message: "Error",
+        description: "Failed to update mechanic or send assignment. Please try again later.",
+        placement: "topRight",
+      });
     }
   };
 

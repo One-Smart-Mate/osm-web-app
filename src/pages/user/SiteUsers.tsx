@@ -165,6 +165,7 @@ const SiteUsers = ({ rol }: Props) => {
       handleGetUsers();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.log('An error occurred:', error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

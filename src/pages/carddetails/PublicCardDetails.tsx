@@ -16,6 +16,7 @@ import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionColla
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
 import NoteCollapseV2 from "./components/NoteCollapseV2";
 import Strings from "../../utils/localizations/Strings";
+import { notification } from "antd";
 
 const { Text } = Typography;
 
@@ -87,6 +88,12 @@ const PublicCardDetails = () => {
       setData(modifiedResponse);
       setNotes(responseNotes);
     } catch (err) {
+      console.log("Error fetching data: ", err);
+      notification.error({
+        message: "Error loading data",
+        description: "There was a problem fetching the information. Please try again.",
+        placement: "topRight",
+      });
     } finally {
       setLoading(false);
     }

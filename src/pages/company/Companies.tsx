@@ -116,6 +116,7 @@ const Companies = () => {
       handleGetCompanies();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.error("Error creating company:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

@@ -206,6 +206,7 @@ const Sites = ({ rol }: SitesProps) => {
       handleGetSites();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.error("Error creating site:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

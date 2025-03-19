@@ -18,6 +18,7 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import { CreateNode } from "../../data/level/level.request";
 import { UserRoles } from "../../utils/Extensions";
 import Constants from "../../utils/Constants";
+import { notification } from "antd";
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -148,6 +149,11 @@ const Levels = ({ role }: Props) => {
       }
     } catch (error) {
       console.error(Strings.errorFetchingLevels);
+      notification.error({
+        message: "Fetching Error",
+        description: "There was an error while fetching levels. Please try again later.",
+        placement: "topRight",
+      });
     } finally {
       setLoading(false);
     }
@@ -247,6 +253,11 @@ const Levels = ({ role }: Props) => {
       await handleGetLevels();
     } catch (error) {
       console.error(Strings.errorCloningTheLevel, error);
+      notification.error({
+        message: "Cloning Error",
+        description: "There was an error while cloning levels. Please try again later.",
+        placement: "topRight",
+      });
     } finally {
       setIsCloning(false);
       setContextMenuVisible(false);

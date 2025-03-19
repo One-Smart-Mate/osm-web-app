@@ -6,6 +6,8 @@ import Strings from "../../../utils/localizations/Strings";
 import { Level } from "../../../data/level/level";
 import CustomCardList from "../../../components/CustomCardList";
 import { UserRoles } from "../../../utils/Extensions";
+import { notification } from "antd";
+
 
 const { Title } = Typography;
 
@@ -32,6 +34,11 @@ const LevelDetails: React.FC<LevelDetailsProps> = ({ levelId, siteId }) => {
         setLevelData(response);
       } catch (error) {
         console.error(Strings.errorFetchingLevelData, error);
+        notification.error({
+          message: "Upload Error",
+          description: "There was an issue fetching the level data. Please check your internet connection or try again later",
+          placement: "topRight",
+        });
       } finally {
         setIsLoading(false);
       }

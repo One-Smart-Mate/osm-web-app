@@ -110,6 +110,7 @@ const Priorities = () => {
       handleGetPriorities();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
+      console.log("Error occurred:", error); 
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

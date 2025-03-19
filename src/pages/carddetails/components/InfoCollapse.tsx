@@ -107,6 +107,7 @@ const InfoCollapse = ({ data, evidences }: CardProps) => {
       dispatch(setCardUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
+      console.log(error)
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

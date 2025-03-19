@@ -3,6 +3,7 @@ import { Form, Input, Modal, Select, Checkbox, Button } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useGetSitesMutation } from "../../services/siteService";
 import { useGetSiteUsersMutation, useSendCustomNotificationMutation } from "../../services/userService";
+import { notification } from "antd";
 
 const { TextArea } = Input;
 
@@ -59,7 +60,12 @@ const Notifications: React.FC = () => {
       await sendCustomNotification(notificationData).unwrap();
       setIsModalOpen(false);
     } catch (error) {
-      console.error("Error al enviar la notificación:", error);
+      console.error("Error sending notification:", error);
+      notification.error({
+        message: "Sending Error",
+        description: "Error sending notification Please try again later.'",
+        placement: "topRight",
+      });
     }
   };
 
