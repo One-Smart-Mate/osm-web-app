@@ -297,5 +297,4 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
     </Form>
   );
 };
-
 export default RegisterCompanyForm;
