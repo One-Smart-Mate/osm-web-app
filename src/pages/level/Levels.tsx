@@ -132,6 +132,7 @@ const Levels = ({ role }: Props) => {
       navigate(UnauthorizedRoute);
       return;
     }
+
     setLoading(true);
     try {
       const response = await getLevels(location.state.siteId).unwrap();

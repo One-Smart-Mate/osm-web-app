@@ -32,7 +32,6 @@ const cloneBridge = "_clone_";
 const nodeStartBridgeCollapsed = "node_";
 const nodeEndBridgeCollapserd = "_collapsed";
 
-
 export default {
   PAGE_SIZE,
   DATE_FORMAT,

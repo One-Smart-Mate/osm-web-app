@@ -19,6 +19,7 @@ import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
 console.log("Detected Language by i18next:", i18n.language);
 
 function App() {
+
   return (
     <ConfigProvider
       theme={{
@@ -45,6 +46,7 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
+          
         },
       }}
     >
@@ -81,6 +83,7 @@ function App() {
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
       </Routes>
+
     </ConfigProvider>
   );
 }
