@@ -284,7 +284,6 @@ const PositionsPage = () => {
               pageSize: Constants.DEFAULT_PAGE_SIZE,
               showSizeChanger: true, 
               pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
-              showTotal: (total, range) => t(Strings.positionsRange, { start: range[0], end: range[1], total }),
               position: ['bottomCenter']
             }}
             locale={{ 
