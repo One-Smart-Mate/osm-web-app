@@ -9,16 +9,23 @@ import {
   useUdpateLevelMutation,
 } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import { Form, Button, Drawer, Spin } from "antd";
-import RegisterLevelForm from "./components/RegisterLevelForm";
-import UpdateLevelForm from "./components/UpdateLevelForm";
+import { Form, Drawer, Spin } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { CreateNode } from "../../data/level/level.request";
 import { UserRoles } from "../../utils/Extensions";
 import Constants from "../../utils/Constants";
-import { notification } from "antd";
+import CustomNodeElement from "./components/CustomNodeElement";
+import LevelContextMenu from "./components/LevelContextMenu";
+import LevelFormDrawer from "./components/LevelFormDrawer";
+
+import { useGetSiteMutation } from "../../services/siteService";
+
+
+interface Props {
+  role: UserRoles;
+}
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -44,17 +51,11 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-const isLeafNode = (node: any) => !node.children || node.children.length === 0;
-
-interface Props {
-  role: UserRoles;
-}
-
 const Levels = ({ role }: Props) => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
-
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [positionForm] = Form.useForm();
 
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
@@ -72,15 +73,12 @@ const Levels = ({ role }: Props) => {
 
   const [isCloning, setIsCloning] = useState(false);
 
+  
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerType, setDrawerType] = useState<"create" | "update" | null>(
-    null
-  );
+  const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
   const [formData, setFormData] = useState<any>({});
 
-  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
-    "right"
-  );
+  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">("right");
 
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -90,6 +88,12 @@ const Levels = ({ role }: Props) => {
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
   const siteId = location.state?.siteId;
+
+  
+  const [positionData, setPositionData] = useState<any>(null);
+
+  const [, setSiteData] = useState<any>(null);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -149,12 +153,7 @@ const Levels = ({ role }: Props) => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error(Strings.errorFetchingLevels);
-      notification.error({
-        message: "Fetching Error",
-        description: "There was an error while fetching levels. Please try again later.",
-        placement: "topRight",
-      });
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -192,6 +191,54 @@ const Levels = ({ role }: Props) => {
     setContextMenuVisible(false);
   };
 
+
+const [getSite] = useGetSiteMutation();
+
+const handleCreatePosition = async () => {
+  closeAllDrawers();
+  
+  
+  if (!selectedNode?.data?.id) {
+    return;
+  }
+
+  const level = selectedNode.data;
+
+  try {
+    
+
+
+    
+    const siteResponse = await getSite(location.state.siteId).unwrap();
+    setSiteData(siteResponse);
+
+    
+    const newPositionData = {
+      siteId: Number(location.state.siteId),
+      siteName: location.state.siteName,
+      siteType: siteResponse.siteType,  
+      areaId: 2,                         
+      areaName: "Development",           
+      levelId: Number(level.id),         
+      levelName: level.name,     
+      route: level.levelLocation,
+    };
+    
+    
+    setPositionData(newPositionData);
+    
+    
+    positionForm.resetFields();
+    setDrawerType("position");
+    setDrawerVisible(true);
+    setContextMenuVisible(false);
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+  
   const cloneSubtree = async (
     node: any,
     newSuperiorId: number | null = null,
@@ -203,12 +250,13 @@ const Levels = ({ role }: Props) => {
       Constants.superiorId,
       Constants.name,
       Constants.description,
-      Constants.levelMachineId,
       Constants.notify,
     ];
     const payload = allowedProperties.reduce((acc: any, key: string) => {
       if (node[key] !== undefined) {
-        if ([Constants.responsibleId, Constants.siteId, Constants.superiorId, Constants.notify].includes(key)) {
+        if (
+          [Constants.responsibleId, Constants.siteId, Constants.superiorId, Constants.notify].includes(key)
+        ) {
           acc[key] = node[key] !== null ? Number(node[key]) : node[key];
         } else {
           acc[key] = node[key];
@@ -225,11 +273,9 @@ const Levels = ({ role }: Props) => {
         : payload.superiorId !== undefined
         ? Number(payload.superiorId)
         : 0;
-    if (payload.levelMachineId && payload.levelMachineId.trim() !== Strings.empty) {
-      payload.levelMachineId = `${payload.levelMachineId}${Constants.cloneBridge}${node.id}`;
-    } else {
-      payload.levelMachineId = null;
-    }
+
+    
+    payload.levelMachineId = null;
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
     const newNodeData = await createLevel(payload).unwrap();
@@ -249,16 +295,10 @@ const Levels = ({ role }: Props) => {
     if (!selectedNode?.data) return;
     try {
       setIsCloning(true);
-
       await cloneSubtree(selectedNode.data, null, true);
       await handleGetLevels();
     } catch (error) {
-      console.error(Strings.errorCloningTheLevel, error);
-      notification.error({
-        message: "Cloning Error",
-        description: "There was an error while cloning levels. Please try again later.",
-        placement: "topRight",
-      });
+      throw error;
     } finally {
       setIsCloning(false);
       setContextMenuVisible(false);
@@ -273,6 +313,7 @@ const Levels = ({ role }: Props) => {
   const handleDrawerClose = () => {
     createForm.resetFields();
     updateForm.resetFields();
+    positionForm.resetFields();
     setDrawerVisible(false);
     setDrawerType(null);
   };
@@ -296,85 +337,41 @@ const Levels = ({ role }: Props) => {
         const updatePayload = {
           ...updateValues,
           id: Number(values.id),
-          responsibleId: values.responsibleId
-            ? Number(values.responsibleId)
-            : null,
+          responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
         };
         await updateLevel(updatePayload).unwrap();
       }
+      
       await handleGetLevels();
       handleDrawerClose();
     } catch (error) {
-      console.error(Strings.errorOnSubmit);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const renderCustomNodeElement = (rd3tProps: any) => {
-    const { nodeDatum, toggleNode } = rd3tProps;
-    const getCollapsedState = (nodeId: string): boolean => {
-      const storedState = localStorage.getItem(`${Constants.nodeStartBridgeCollapsed}${nodeId}${Constants.nodeEndBridgeCollapserd}`);
-      return storedState === "true";
-    };
-    const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
-      localStorage.setItem(`${Constants.nodeStartBridgeCollapsed}${nodeId}${Constants.nodeEndBridgeCollapserd}`, isCollapsed.toString());
-    };
-    const isCollapsed = getCollapsedState(nodeDatum.id);
-    nodeDatum.__rd3t.collapsed = isCollapsed;
-    const getFillColor = (status: string | undefined) => {
-      switch (status) {
-        case Strings.detailsOptionC:
-          return "#383838";
-        case Strings.detailsOptionS:
-          return "#999999";
-        case Strings.activeStatus:
-        default:
-          return isLeafNode(nodeDatum) ? "#FFFF00" : "#145695";
-      }
-    };
-    const fillColor = getFillColor(nodeDatum.status);
-    const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
-      e.preventDefault();
-      if (containerRef.current) {
-        const offsetX = e.currentTarget.getBoundingClientRect().right;
-        const offsetY = e.currentTarget.getBoundingClientRect().top;
-        setContextMenuPos({ x: offsetX - 50, y: offsetY - 60 });
-      }
-      setSelectedNode({ data: nodeDatum });
-      setContextMenuVisible(true);
-    };
-    const handleShowDetails = (nodeId: string) => {
-      if (nodeId !== "0") {
-        closeAllDrawers();
-        setSelectedLevelId(nodeId);
-        setDetailsVisible(true);
-        setContextMenuVisible(false);
-      }
-    };
-    const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
-      e.stopPropagation();
+  
+  const handleShowDetails = (nodeId: string) => {
+    if (nodeId !== "0") {
+      closeAllDrawers();
+      setSelectedLevelId(nodeId);
+      setDetailsVisible(true);
       setContextMenuVisible(false);
-      const newCollapsedState = !nodeDatum.__rd3t.collapsed;
-      setCollapsedState(nodeDatum.id, newCollapsedState);
-      handleShowDetails(nodeDatum.id);
-      toggleNode();
-    };
-    return (
-      <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
-        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
-        <text
-          fill="black"
-          strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
-          x={nodeDatum.id === "0" ? -200 : 20}
-          y={nodeDatum.id === "0" ? 0 : 20}
-          style={{ fontSize: "14px" }}
-        >
-          {nodeDatum.name}
-        </text>
-      </g>
-    );
+    }
   };
+
+  const renderCustomNodeElement = (rd3tProps: any) => (
+    <CustomNodeElement
+      nodeDatum={rd3tProps.nodeDatum}
+      toggleNode={rd3tProps.toggleNode}
+      containerRef={containerRef}
+      setContextMenuVisible={setContextMenuVisible}
+      setContextMenuPos={setContextMenuPos}
+      setSelectedNode={setSelectedNode}
+      handleShowDetails={handleShowDetails}
+    />
+  );
 
   const isRootNode = selectedNode?.data?.id === "0";
 
@@ -412,48 +409,16 @@ const Levels = ({ role }: Props) => {
         )}
       </div>
 
-      {contextMenuVisible &&
-        (role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN) && (
-          <div
-            className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
-            style={{
-              top: contextMenuPos.y,
-              left: contextMenuPos.x,
-            }}
-          >
-            {isRootNode ? (
-              <>
-                <Button
-                  className="w-28 bg-green-700 text-white mx-auto"
-                  onClick={handleCreateLevel}
-                >
-                  {Strings.levelsTreeOptionCreate}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  className="w-28 bg-green-700 text-white mx-auto"
-                  onClick={handleCreateLevel}
-                >
-                  {Strings.levelsTreeOptionCreate}
-                </Button>
-                <Button
-                  className="w-28 bg-blue-700 text-white mx-auto"
-                  onClick={handleUpdateLevel}
-                >
-                  {Strings.levelsTreeOptionEdit}
-                </Button>
-                <Button
-                  className="w-28 bg-yellow-500 text-white mx-auto"
-                  onClick={handleCloneLevel}
-                >
-                  {Strings.levelsTreeOptionClone}
-                </Button>
-              </>
-            )}
-          </div>
-        )}
+      <LevelContextMenu
+        isVisible={contextMenuVisible}
+        role={role}
+        isRootNode={isRootNode}
+        contextMenuPos={contextMenuPos}
+        handleCreateLevel={handleCreateLevel}
+        handleUpdateLevel={handleUpdateLevel}
+        handleCloneLevel={handleCloneLevel}
+        handleCreatePosition={handleCreatePosition}  
+      />
 
       {detailsVisible && selectedLevelId && (
         <Drawer
@@ -479,62 +444,20 @@ const Levels = ({ role }: Props) => {
         </Drawer>
       )}
 
-      <Drawer
-        title={
-          drawerType === "create"
-            ? Strings.levelsTreeOptionCreate.concat(
-                selectedNode?.data?.name
-                  ? ` ${Strings.for} "${selectedNode.data.name}"`
-                  : Strings.empty
-              )
-            : drawerType === "update"
-            ? Strings.levelsTreeOptionEdit.concat(
-                selectedNode?.data?.name
-                  ? ` "${selectedNode.data.name}" ${Strings.level}`
-                  : Strings.empty
-              )
-            : Strings.empty
-        }
-        placement={drawerPlacement}
-        height={drawerPlacement === "bottom" ? "50vh" : undefined}
-        width={drawerPlacement === "right" ? 400 : undefined}
-        onClose={handleDrawerClose}
-        open={drawerVisible}
-        destroyOnClose
-        closable={true}
-        className="drawer-responsive"
-        mask={false}
-        maskClosable={false}
-      >
-        <Form.Provider
-          onFormFinish={async (_name, { values }) => {
-            await handleSubmit(values);
-          }}
-        >
-          <div className="drawer-content">
-            {drawerType === "create" ? (
-              <RegisterLevelForm form={createForm} />
-            ) : drawerType === "update" ? (
-              <UpdateLevelForm form={updateForm} initialValues={formData} />
-            ) : null}
-            <div className="mt-4 flex justify-end">
-              <Button
-                type="primary"
-                loading={isLoading}
-                onClick={() => {
-                  if (drawerType === "create") {
-                    createForm.submit();
-                  } else if (drawerType === "update") {
-                    updateForm.submit();
-                  }
-                }}
-              >
-                {Strings.save}
-              </Button>
-            </div>
-          </div>
-        </Form.Provider>
-      </Drawer>
+      <LevelFormDrawer
+        drawerVisible={drawerVisible}
+        drawerType={drawerType}
+        drawerPlacement={drawerPlacement}
+        createForm={createForm}
+        updateForm={updateForm}
+        positionForm={positionForm}  
+        formData={formData}
+        isLoading={isLoading}
+        handleDrawerClose={handleDrawerClose}
+        handleSubmit={handleSubmit}
+        selectedNodeName={selectedNode?.data?.name || ""}
+        positionData={positionData}
+      />
     </div>
   );
 };
