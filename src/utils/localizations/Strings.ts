@@ -14,6 +14,7 @@ class StringsBase {
   static cardsSB = "cardsSB";
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
+  static positionsSB = "positionsSB";
 
   // Rooutes
   static companyParam = "companyParam";
@@ -131,6 +132,7 @@ class StringsBase {
   static viewCards = "viewCards";
   static viewCharts = "viewCharts";
   static viewUsers = "viewUsers";
+  static viewPositions = "viewPositions";
   static importUsers = "importUsers";
 
   // errors sites form
@@ -331,6 +333,8 @@ class StringsBase {
   static open = "open";
   static closed = "closed";
   static pastDue = "pastDue";
+  static suspended = "suspended";
+  static canceled = "canceled";
 
   static preclassifiersof = "preclassifiersof";
   static preclassifier = "preclassifier";
@@ -490,90 +494,162 @@ class StringsBase {
   static for = "for";
 
   static errorFetchingData = "errorFetchingData";
-static namePlaceholder = "namePlaceholder";
-static descriptionPlaceholder = "descriptionPlaceholder";
-static responsiblePlaceholder = "responsiblePlaceholder";
+  static namePlaceholder = "namePlaceholder";
+  static descriptionPlaceholder = "descriptionPlaceholder";
+  static responsiblePlaceholder = "responsiblePlaceholder";
 
-// General Placeholders
-static cardTypeTreeNamePlaceholder = "cardTypeTreeNamePlaceholder";
-static cardTypeTreeDescriptionPlaceholder = "cardTypeTreeDescriptionPlaceholder";
-static cardTypeTreeResponsiblePlaceholder = "cardTypeTreeResponsiblePlaceholder";
-static cardTypeTreeStatusPlaceholder = "cardTypeTreeStatusPlaceholder";
-static cardTypeTreeColorPlaceholder = "cardTypeTreeColorPlaceholder";
+  // General Placeholders
+  static cardTypeTreeNamePlaceholder = "cardTypeTreeNamePlaceholder";
+  static cardTypeTreeDescriptionPlaceholder = "cardTypeTreeDescriptionPlaceholder";
+  static cardTypeTreeResponsiblePlaceholder = "cardTypeTreeResponsiblePlaceholder";
+  static cardTypeTreeStatusPlaceholder = "cardTypeTreeStatusPlaceholder";
+  static cardTypeTreeColorPlaceholder = "cardTypeTreeColorPlaceholder";
 
-// Placeholders for Quantity Fields
-static cardTypeTreeQuantityPicturesPlaceholder = "cardTypeTreeQuantityPicturesPlaceholder";
-static cardTypeTreeQuantityVideosPlaceholder = "cardTypeTreeQuantityVideosPlaceholder";
-static cardTypeTreeQuantityAudiosPlaceholder = "cardTypeTreeQuantityAudiosPlaceholder";
+  // Placeholders for Quantity Fields
+  static cardTypeTreeQuantityPicturesPlaceholder = "cardTypeTreeQuantityPicturesPlaceholder";
+  static cardTypeTreeQuantityVideosPlaceholder = "cardTypeTreeQuantityVideosPlaceholder";
+  static cardTypeTreeQuantityAudiosPlaceholder = "cardTypeTreeQuantityAudiosPlaceholder";
 
-// Titles or Section Labels
-static cardTypeTreeAtCreation = "cardTypeTreeAtCreation";
-static cardTypeTreeAtProvisionalSolution = "cardTypeTreeAtProvisionalSolution";
-static cardTypeTreeAtDefinitiveSolution = "cardTypeTreeAtDefinitiveSolution";
+  // Titles or Section Labels
+  static cardTypeTreeAtCreation = "cardTypeTreeAtCreation";
+  static cardTypeTreeAtProvisionalSolution = "cardTypeTreeAtProvisionalSolution";
+  static cardTypeTreeAtDefinitiveSolution = "cardTypeTreeAtDefinitiveSolution";
 
-// Error Messages
-static cardTypeTreeRequiredCardTypeName = "cardTypeTreeRequiredCardTypeName";
-static cardTypeTreeRequiredDescription = "cardTypeTreeRequiredDescription";
-static cardTypeTreeRequiredResponsableId = "cardTypeTreeRequiredResponsableId";
-static cardTypeTreeRequiredColor = "cardTypeTreeRequiredColor";
+  // Error Messages
+  static cardTypeTreeRequiredCardTypeName = "cardTypeTreeRequiredCardTypeName";
+  static cardTypeTreeRequiredDescription = "cardTypeTreeRequiredDescription";
+  static cardTypeTreeRequiredResponsableId = "cardTypeTreeRequiredResponsableId";
+  static cardTypeTreeRequiredColor = "cardTypeTreeRequiredColor";
 
-// Notifications
-static cardTypeTreeSuccessCardTypeUpdated = "cardTypeTreeSuccessCardTypeUpdated";
-static cardTypeTreeErrorFetchingData = "cardTypeTreeErrorFetchingData";
+  // Notifications
+  static cardTypeTreeSuccessCardTypeUpdated = "cardTypeTreeSuccessCardTypeUpdated";
+  static cardTypeTreeErrorFetchingData = "cardTypeTreeErrorFetchingData";
 
-/* Card Types and Preclassifier tree */
-static cardTypesDrawerTypeCreateCardType = "cardTypesDrawerTypeCreateCardType";
-static cardTypesDrawerTypeUpdateCardType = "cardTypesDrawerTypeUpdateCardType";
-static cardTypesDrawerTypeCreatePreclassifier = "cardTypesDrawerTypeCreatePreclassifier";
-static cardTypesDrawerTypeUpdatePreclassifier = "cardTypesDrawerTypeUpdatePreclassifier";
-static cardTypesCreate = "cardTypesCreate";
-static cardTypesCancel = "cardTypesCancel";
-static cardTypesEdit = "cardTypesEdit";
-static cardTypesEditPreclassifier = "cardTypesEditPreclassifier";
-static cardTypesCloneCardType = "cardTypesCloneCardType";
-static cardTypesClonePre = "cardTypesClonePre";
-static cardTypesCreatePreclassifier = "cardTypesCreatePreclassifier";
-static cardTypesUpdatePreclassifier = "cardTypesUpdatePreclassifier";
-static cardTypesRoot = "cardTypesRoot";
-static cardTypesCloneSuffix = "cardTypesCloneSuffix";
-static cardTypesMethodologyError = "cardTypesMethodologyError";
-static cardTypesLoadingData = "cardTypesLoadingData";
-static cardTypesUpdateCardType = "cardTypesUpdateCardType";
-static cardTypesCreateCardType = "cardTypesCreateCardType";
-static cardTypesClonePreclassifier = "cardTypesClonePreclassifier";
-static cardTypesErrorFetchingData = "cardTypesErrorFetchingData";
-static cardTypesNoCardTypeIdError = "cardTypesNoCardTypeIdError";
-static cardTypesOptionEdit = "cardTypesOptionEdit";
-static cardTypesOptionClone = "cardTypesOptionClone";
-static cardTypesOptionCreate = "cardTypesOptionCreate";
-static cardTypesOptionCancel = "cardTypesOptionCancel";
+  /* Card Types and Preclassifier tree */
+  static cardTypesDrawerTypeCreateCardType = "cardTypesDrawerTypeCreateCardType";
+  static cardTypesDrawerTypeUpdateCardType = "cardTypesDrawerTypeUpdateCardType";
+  static cardTypesDrawerTypeCreatePreclassifier = "cardTypesDrawerTypeCreatePreclassifier";
+  static cardTypesDrawerTypeUpdatePreclassifier = "cardTypesDrawerTypeUpdatePreclassifier";
+  static cardTypesCreate = "cardTypesCreate";
+  static cardTypesCancel = "cardTypesCancel";
+  static cardTypesEdit = "cardTypesEdit";
+  static cardTypesEditPreclassifier = "cardTypesEditPreclassifier";
+  static cardTypesCloneCardType = "cardTypesCloneCardType";
+  static cardTypesClonePre = "cardTypesClonePre";
+  static cardTypesCreatePreclassifier = "cardTypesCreatePreclassifier";
+  static cardTypesUpdatePreclassifier = "cardTypesUpdatePreclassifier";
+  static cardTypesRoot = "cardTypesRoot";
+  static cardTypesCloneSuffix = "cardTypesCloneSuffix";
+  static cardTypesMethodologyError = "cardTypesMethodologyError";
+  static cardTypesLoadingData = "cardTypesLoadingData";
+  static cardTypesUpdateCardType = "cardTypesUpdateCardType";
+  static cardTypesCreateCardType = "cardTypesCreateCardType";
+  static cardTypesClonePreclassifier = "cardTypesClonePreclassifier";
+  static cardTypesErrorFetchingData = "cardTypesErrorFetchingData";
+  static cardTypesNoCardTypeIdError = "cardTypesNoCardTypeIdError";
+  static cardTypesOptionEdit = "cardTypesOptionEdit";
+  static cardTypesOptionClone = "cardTypesOptionClone";
+  static cardTypesOptionCreate = "cardTypesOptionCreate";
+  static cardTypesOptionCancel = "cardTypesOptionCancel";
 
-static cardTypeDetailsTitle = "cardTypeDetailsTitle";
-static cardTypeDetailsMethodology = "cardTypeDetailsMethodology";
-static cardTypeDetailsName = "cardTypeDetailsName";
-static cardTypeDetailsDescription = "cardTypeDetailsDescription";
-static cardTypeDetailsColor = "cardTypeDetailsColor";
-static cardTypeDetailsResponsible = "cardTypeDetailsResponsible";
-static cardTypeDetailsStatus = "cardTypeDetailsStatus";
+  static cardTypeDetailsTitle = "cardTypeDetailsTitle";
+  static cardTypeDetailsMethodology = "cardTypeDetailsMethodology";
+  static cardTypeDetailsName = "cardTypeDetailsName";
+  static cardTypeDetailsDescription = "cardTypeDetailsDescription";
+  static cardTypeDetailsColor = "cardTypeDetailsColor";
+  static cardTypeDetailsResponsible = "cardTypeDetailsResponsible";
+  static cardTypeDetailsStatus = "cardTypeDetailsStatus";
 
-static preclassifierDetailsTitle = "preclassifierDetailsTitle";
-static preclassifierDetailsCode = "preclassifierDetailsCode";
-static preclassifierDetailsDescription = "preclassifierDetailsDescription";
-static preclassifierDetailsStatus = "preclassifierDetailsStatus";
-static notSpecified = "notSpecified";
-static false = "false"
+  static preclassifierDetailsTitle = "preclassifierDetailsTitle";
+  static preclassifierDetailsCode = "preclassifierDetailsCode";
+  static preclassifierDetailsDescription = "preclassifierDetailsDescription";
+  static preclassifierDetailsStatus = "preclassifierDetailsStatus";
+  static notSpecified = "notSpecified";
+  static false = "false"
 
- //PDF 
- static tagDetails = "tagDetails"
- static problemDetails= "problemDetails"
- static sharePDF= "sharePDF"
- static namePDF = "namePDF"
+  // PDF 
+  static tagDetails = "tagDetails"
+  static problemDetails= "problemDetails"
+  static sharePDF= "sharePDF"
+  static namePDF = "namePDF"
 
+  // Login 
+  static logImgDesc = "logImgDesc"
+  static enSub = "enSub"
 
- //Login 
- static logImgDesc = "logImgDesc"
- static enSub = "enSub"
+  static selectRole = "selectRole"
+  static assignedTo = "assignedTo";
+  static assignUser = "assignUser"
 
+  static notCardInfoFound = "notCardInfoFound"
+
+  static commentsTag = "commentsTag"
+  static noCommentsTag = "noCommentsTag"
+  static associatedTags = "associatedTags"
+
+  static tagsIssued = "tagsIssued"
+  static tagsEradicated = "tagsEradicated"
+
+  static copy = "copy";
+  static errorGettingLevelId = "errorGettingLevelId";
+  static errorCloningTheLevel = "errorCloningTheLevel";
+  static cloningLevelsMessage = "cloningLevelsMessage";
+
+  static requiredLevelId = "requiredAreaName";
+  static requiredLevelName = "requiredLevelName";
+  static requiredRoute = "requiredRoute";
+  static requiredAreaId = "requiredAreaId";
+  static requiredAreaName = "requiredAreaName";
+
+  // Positions Page
+  static positions = "positions";
+  static createPosition = "createPosition";
+  static searchPositions = "searchPositions";
+  static noAssignedUsers = "noAssignedUsers";
+  static assignedUsers = "assignedUsers";
+  static loadingPositions = "loadingPositions";
+  static positionFound = "positionFound";
+  static positionsFound = "positionsFound";
+  static positionsRange = "positionsRange";
+  static noPositionsToShow = "noPositionsToShow";
+  
+  // Table headers and status for positions
+  static positionAreaHeader = "positionAreaHeader";
+  static positionNodeZoneHeader = "positionNodeZoneHeader";
+  static positionNameHeader = "positionNameHeader";
+  static positionDescriptionHeader = "positionDescriptionHeader";
+  static positionStatusHeader = "positionStatusHeader";
+  static positionActionsHeader = "positionActionsHeader";
+
+  // Table locale strings
+  static accept = "accept";
+  static reset = "reset";
+  static search = "search";
+  static filter = "filter";
+  static selectCurrentPage = "selectCurrentPage";
+  static invertSelection = "invertSelection";
+  static selectAll = "selectAll";
+  static sort = "sort";
+  static sortDesc = "sortDesc";
+  static sortAsc = "sortAsc";
+  static cancelSort = "cancelSort";
+  static success = "success";
+  static error = "error";
+
+  static noUsersAvailableForSite = "noUsersAvailableForSite";
+  static positionName = "positionName";
+  static positionDescription = "positionDescription";
+  static selectUsersForPosition = "selectUsersForPosition";
+  static cancelPosition = "cancelPosition";
+  static updatePositionTitle = "updatePositionTitle";
+  static selectStatus = "selectStatus";
+  static positionNameMaxLength = "positionNameMaxLength";
+  static positionDescriptionMaxLength = "positionDescriptionMaxLength";
+  static noPositionData = "noPositionData";
+  static positionUpdatedSuccess = "positionUpdatedSuccess";
+  static positionUpdateError = "positionUpdateError";
+  static pleaseSelectStatus = "pleaseSelectStatus";
+  static createPositionHere = "createPositionHere";
 }
 
 const Strings = new Proxy(StringsBase, {

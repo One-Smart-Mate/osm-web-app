@@ -4,6 +4,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import Strings from "../../../utils/localizations/Strings";
 import ViewPrioritiesButton from "./ViewPrioritiesButton";
 import ViewCardTypesButton from "./ViewCardTypesButton";
+import ViewPositionsButton from "./ViewPositionsButton";
 import UpdateSite from "./UpdateSite";
 import ViewLevelsButton from "./ViewLevelsButton";
 import ViewCardsButton from "./ViewCardsButton";
@@ -56,6 +57,10 @@ const SiteCard = ({ data, rol }: CompanyCardProps) => {
       actions.push({
         key: `view-users-${data.id}`,
         label: <ViewUsersButton siteId={data.id} siteName={data.name} />,
+      });
+      actions.push({
+        key: `view-positions-${data.id}`,
+        label: <ViewPositionsButton siteId={data.id} siteName={data.name} />,
       });
     }
     return actions;

@@ -7,6 +7,7 @@ const Preclassifiers = "/preclassifiers";
 const Users = "/users";
 const Levels = "/levels";
 const Cards = "/cards";
+const Positions = "/positions";
 export const ResetPasswordRoute = "/reset-password";
 const Charts = "/charts";
 export const UnauthorizedRoute = "/unauthorized";
@@ -38,4 +39,6 @@ export default {
   Site,
   Company,
   CardType,
+  Positions,
+  PublicCardDetailsRoute
 };
