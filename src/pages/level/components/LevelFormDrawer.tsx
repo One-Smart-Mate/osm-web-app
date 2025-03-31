@@ -1,9 +1,9 @@
 import React from "react";
 import { Drawer, Form, Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
+import { useTranslation } from "react-i18next";
 import RegisterLevelForm from "./RegisterLevelForm";
 import UpdateLevelForm from "./UpdateLevelForm";
-import RegisterPositionForm from "./RegisterPositionForm";
 
 
 interface LevelFormDrawerProps {
@@ -18,7 +18,9 @@ interface LevelFormDrawerProps {
   handleDrawerClose: () => void;
   handleSubmit: (values: any) => void;
   selectedNodeName?: string;
+  positionData?: any;  
 }
+
 
 const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
   drawerVisible,
@@ -33,17 +35,19 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
   handleSubmit,
   selectedNodeName = "",
 }) => {
+  const { t } = useTranslation();
+  
   let title = "";
   if (drawerType === "create") {
-    title = Strings.levelsTreeOptionCreate.concat(
-      selectedNodeName ? ` ${Strings.for} "${selectedNodeName}"` : ""
+    title = t(Strings.levelsTreeOptionCreate).concat(
+      selectedNodeName ? ` ${t(Strings.for)} "${selectedNodeName}"` : ""
     );
   } else if (drawerType === "update") {
-    title = Strings.levelsTreeOptionEdit.concat(
-      selectedNodeName ? ` "${selectedNodeName}" ${Strings.level}` : ""
+    title = t(Strings.levelsTreeOptionEdit).concat(
+      selectedNodeName ? ` "${selectedNodeName}" ${t(Strings.level)}` : ""
     );
   } else if (drawerType === "position") {
-    title = "Create position";
+    title = t(Strings.createPosition);
   }
 
   return (
@@ -70,8 +74,6 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
             <RegisterLevelForm form={createForm} />
           ) : drawerType === "update" ? (
             <UpdateLevelForm form={updateForm} initialValues={formData} />
-          ) : drawerType === "position" && positionForm ? (
-            <RegisterPositionForm form={positionForm} />
           ) : null}
           <div className="mt-4 flex justify-end">
             <Button
@@ -87,7 +89,7 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
                 }
               }}
             >
-              {Strings.save}
+              {t(Strings.save)}
             </Button>
           </div>
         </div>

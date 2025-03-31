@@ -21,7 +21,7 @@ import { PiMapPinAreaLight } from "react-icons/pi";
 import { TbCards } from "react-icons/tb";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
-
+import PositionsPage from "../positions/PositionsPage";
 import { AiOutlineBell } from "react-icons/ai";
 import Notifications from "../notifications/Notifications";
 
@@ -120,6 +120,14 @@ const adminCharts = new Route(
   <></>
 );
 
+const adminPositions = new Route(
+  Strings.positionsSB,
+  "positions",
+  Routes.AdminPrefix + Routes.Positions,
+  <PositionsPage />,
+  <></>
+);
+
 const adminRoutesSiderOptions = (): ItemType[] => {
   const items: MenuProps["items"] = [
     getItem(adminCompanies.label, adminCompanies.fullPath, adminCompanies.icon),
@@ -145,6 +153,7 @@ const adminRoutes: Route[] = [
   adminCardDetails,
   adminCharts,
   adminSiteUsers,
+  adminPositions,
   adminNotifications,
 ];
 

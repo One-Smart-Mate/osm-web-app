@@ -20,6 +20,9 @@ import CustomNodeElement from "./components/CustomNodeElement";
 import LevelContextMenu from "./components/LevelContextMenu";
 import LevelFormDrawer from "./components/LevelFormDrawer";
 
+import { useGetSiteMutation } from "../../services/siteService";
+
+
 interface Props {
   role: UserRoles;
 }
@@ -70,7 +73,7 @@ const Levels = ({ role }: Props) => {
 
   const [isCloning, setIsCloning] = useState(false);
 
-  // Ahora drawerType admite "create" | "update" | "position"
+  
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
   const [formData, setFormData] = useState<any>({});
@@ -85,6 +88,12 @@ const Levels = ({ role }: Props) => {
   const dispatch = useAppDispatch();
   const siteName = location.state?.siteName || Strings.defaultSiteName;
   const siteId = location.state?.siteId;
+
+  
+  const [positionData, setPositionData] = useState<any>(null);
+
+  const [, setSiteData] = useState<any>(null);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -143,7 +152,7 @@ const Levels = ({ role }: Props) => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error(Strings.errorFetchingLevels);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -181,17 +190,54 @@ const Levels = ({ role }: Props) => {
     setContextMenuVisible(false);
   };
 
-  // Nueva función para crear posición
-  const handleCreatePosition = () => {
-    closeAllDrawers();
-    // Si es necesario, se pueden precargar valores en el formulario de posición
+
+const [getSite] = useGetSiteMutation();
+
+const handleCreatePosition = async () => {
+  closeAllDrawers();
+  
+  
+  if (!selectedNode?.data?.id) {
+    return;
+  }
+
+  const level = selectedNode.data;
+
+  try {
+    
+
+
+    
+    const siteResponse = await getSite(location.state.siteId).unwrap();
+    setSiteData(siteResponse);
+
+    
+    const newPositionData = {
+      siteId: Number(location.state.siteId),
+      siteName: location.state.siteName,
+      siteType: siteResponse.siteType,  
+      areaId: 2,                         
+      areaName: "Development",           
+      levelId: Number(level.id),         
+      levelName: level.name,     
+      route: level.levelLocation,
+    };
+    
+    
+    setPositionData(newPositionData);
+    
+    
     positionForm.resetFields();
     setDrawerType("position");
     setDrawerVisible(true);
     setContextMenuVisible(false);
-  };
+  } catch (error) {
+    throw error;
+  }
+};
 
-  // Función modificada para clonar: se elimina el campo levelMachineId para evitar duplicados.
+
+  
   const cloneSubtree = async (
     node: any,
     newSuperiorId: number | null = null,
@@ -227,7 +273,7 @@ const Levels = ({ role }: Props) => {
         ? Number(payload.superiorId)
         : 0;
 
-    // Se omite el machine id para evitar duplicados
+    
     payload.levelMachineId = null;
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
@@ -251,7 +297,7 @@ const Levels = ({ role }: Props) => {
       await cloneSubtree(selectedNode.data, null, true);
       await handleGetLevels();
     } catch (error) {
-      console.error(Strings.errorCloningTheLevel, error);
+      throw error;
     } finally {
       setIsCloning(false);
       setContextMenuVisible(false);
@@ -294,17 +340,17 @@ const Levels = ({ role }: Props) => {
         };
         await updateLevel(updatePayload).unwrap();
       }
-      // Aquí se podrían agregar las acciones para enviar el formulario de posición.
+      
       await handleGetLevels();
       handleDrawerClose();
     } catch (error) {
-      console.error(Strings.errorOnSubmit);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para abrir el drawer de detalles al hacer clic izquierdo en un nodo (si no es la raíz)
+  
   const handleShowDetails = (nodeId: string) => {
     if (nodeId !== "0") {
       closeAllDrawers();
@@ -409,6 +455,7 @@ const Levels = ({ role }: Props) => {
         handleDrawerClose={handleDrawerClose}
         handleSubmit={handleSubmit}
         selectedNodeName={selectedNode?.data?.name || ""}
+        positionData={positionData}
       />
     </div>
   );

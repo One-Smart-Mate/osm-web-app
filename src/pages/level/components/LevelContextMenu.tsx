@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
+import { useTranslation } from "react-i18next";
 import { UserRoles } from "../../../utils/Extensions";
 
 interface LevelContextMenuProps {
@@ -11,7 +12,7 @@ interface LevelContextMenuProps {
   handleCreateLevel: () => void;
   handleUpdateLevel: () => void;
   handleCloneLevel: () => void;
-  handleCreatePosition: () => void; // Nuevo callback
+  handleCreatePosition: () => void; // Callback for creating a position
 }
 
 const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
@@ -22,8 +23,9 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
   handleCreateLevel,
   handleUpdateLevel,
   handleCloneLevel,
-  handleCreatePosition,
 }) => {
+  const { t } = useTranslation();
+  
   if (!isVisible || !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN))
     return null;
 
@@ -41,13 +43,7 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
             className="w-28 bg-green-700 text-white mx-auto"
             onClick={handleCreateLevel}
           >
-            {Strings.levelsTreeOptionCreate}
-          </Button>
-          <Button
-            className="w-28 bg-purple-700 text-white mx-auto"
-            onClick={handleCreatePosition}
-          >
-            Create position
+            {t(Strings.levelsTreeOptionCreate)}
           </Button>
         </>
       ) : (
@@ -56,25 +52,19 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
             className="w-28 bg-green-700 text-white mx-auto"
             onClick={handleCreateLevel}
           >
-            {Strings.levelsTreeOptionCreate}
+            {t(Strings.levelsTreeOptionCreate)}
           </Button>
           <Button
             className="w-28 bg-blue-700 text-white mx-auto"
             onClick={handleUpdateLevel}
           >
-            {Strings.levelsTreeOptionEdit}
+            {t(Strings.levelsTreeOptionEdit)}
           </Button>
           <Button
             className="w-28 bg-yellow-500 text-white mx-auto"
             onClick={handleCloneLevel}
           >
-            {Strings.levelsTreeOptionClone}
-          </Button>
-          <Button
-            className="w-28 bg-purple-700 text-white mx-auto"
-            onClick={handleCreatePosition}
-          >
-            Create position
+            {t(Strings.levelsTreeOptionClone)}
           </Button>
         </>
       )}
