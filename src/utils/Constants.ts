@@ -42,6 +42,11 @@ const DEFAULT_PAGE_SIZE = 6;
 const POSITION_PAGE_OPTIONS = ['6', '10', '20', '50'];
 const TABLE_SCROLL_CONFIG = { x: 'max-content' };
 
+const optionCreate = "create";
+const optionUpdate = "update";
+const optionPosition = "position";
+
+
 // Position popup style
 const POSITION_POPUP_STYLE = {
   top: "50%",
@@ -87,5 +92,8 @@ export default {
   DEFAULT_PAGE_SIZE,
   POSITION_PAGE_OPTIONS,
   TABLE_SCROLL_CONFIG,
-  POSITION_POPUP_STYLE
+  POSITION_POPUP_STYLE,
+  optionCreate,
+  optionUpdate,
+  optionPosition
 };

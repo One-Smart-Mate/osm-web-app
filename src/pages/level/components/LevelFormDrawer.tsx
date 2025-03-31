@@ -3,7 +3,9 @@ import { Drawer, Form, Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { useTranslation } from "react-i18next";
 import RegisterLevelForm from "./RegisterLevelForm";
-import UpdateLevelForm from "./UpdateLevelForm";
+import UpdateLevelForm from "./UpdateLevelForm";    
+import Constants from "../../../utils/Constants";
+
 
 
 interface LevelFormDrawerProps {
@@ -38,15 +40,15 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
   const { t } = useTranslation();
   
   let title = "";
-  if (drawerType === "create") {
+  if (drawerType === Constants.optionCreate) {
     title = t(Strings.levelsTreeOptionCreate).concat(
       selectedNodeName ? ` ${t(Strings.for)} "${selectedNodeName}"` : ""
     );
-  } else if (drawerType === "update") {
+  } else if (drawerType === Constants.optionUpdate) {
     title = t(Strings.levelsTreeOptionEdit).concat(
       selectedNodeName ? ` "${selectedNodeName}" ${t(Strings.level)}` : ""
     );
-  } else if (drawerType === "position") {
+  } else if (drawerType === Constants.optionPosition) {
     title = t(Strings.createPosition);
   }
 
@@ -70,9 +72,9 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
         }}
       >
         <div className="drawer-content">
-          {drawerType === "create" ? (
+          {drawerType === Constants.optionCreate ? (
             <RegisterLevelForm form={createForm} />
-          ) : drawerType === "update" ? (
+          ) : drawerType === Constants.optionUpdate ? (
             <UpdateLevelForm form={updateForm} initialValues={formData} />
           ) : null}
           <div className="mt-4 flex justify-end">
@@ -80,11 +82,11 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
               type="primary"
               loading={isLoading}
               onClick={() => {
-                if (drawerType === "create") {
+                if (drawerType === Constants.optionCreate) {
                   createForm.submit();
-                } else if (drawerType === "update") {
+                } else if (drawerType === Constants.optionUpdate) {
                   updateForm.submit();
-                } else if (drawerType === "position" && positionForm) {
+                } else if (drawerType === Constants.optionPosition && positionForm) {
                   positionForm.submit();
                 }
               }}

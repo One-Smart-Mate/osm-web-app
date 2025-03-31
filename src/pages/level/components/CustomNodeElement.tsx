@@ -70,7 +70,7 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
     setContextMenuVisible(false);
     const newCollapsedState = !nodeDatum.__rd3t.collapsed;
     setCollapsedState(nodeDatum.id, newCollapsedState);
-    // Llamamos al callback para desplegar el drawer de detalles
+    
     handleShowDetails(nodeDatum.id);
     toggleNode();
   };
