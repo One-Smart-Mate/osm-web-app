@@ -13,6 +13,7 @@ import ViewLevelsButton from "./ViewLevelsButton";
 import ViewCardsButton from "./ViewCardsButton";
 import ViewChartsButton from "./ViewChartsButton";
 import ViewUsersButton from "./ViewUsersButton";
+import ViewPositionsButton from "./ViewPositionsButton";
 
 interface TableProps {
   data: Site[];
@@ -180,6 +181,13 @@ const SiteTable = ({ data, isLoading, rol }: TableProps) => {
       actions.push(
         <ViewCardTypesButton
           key={`view-card-types-${data.id}`}
+          siteId={data.id}
+          siteName={data.name}
+        />
+      );
+      actions.push(
+        <ViewPositionsButton
+          key={`view-positions-${data.id}`}
           siteId={data.id}
           siteName={data.name}
         />
