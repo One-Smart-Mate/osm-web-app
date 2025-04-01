@@ -1,4 +1,4 @@
-import { Form, Input, Button, Modal, Select, notification, Checkbox, Spin, Typography } from "antd";
+import { Form, Input, Button, Modal, Select, notification, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUpdatePositionMutation } from "../../../services/positionService";
@@ -8,6 +8,8 @@ import { Position } from "../../../data/postiions/positions";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
+import UserSelectionModal from "../../../components/UserSelectionModal";
+import { UserOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -32,6 +34,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
   const [users, setUsers] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [userModalVisible, setUserModalVisible] = useState(false);
 
   // Load site users when the form becomes visible
   useEffect(() => {
@@ -60,12 +63,8 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
     }
   }, [positionUsers]);
 
-  const handleUserSelect = (userId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedUsers([...selectedUsers, userId]);
-    } else {
-      setSelectedUsers(selectedUsers.filter(id => id !== userId));
-    }
+  const handleUserSelect = (userIds: number[]) => {
+    setSelectedUsers(userIds.map(id => id.toString()));
   };
 
   const handleSubmit = async (values: any) => {
@@ -200,20 +199,19 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
           <Text strong>{t(Strings.assignedUsers)}</Text>
           {loading ? (
             <Spin tip={t(Strings.loadingPositions)} />
-          ) : users.length === 0 ? (
-            <Text type="secondary" className="block mt-2">{t(Strings.noAssignedUsers)}</Text>
           ) : (
-            <div className="mt-2 border p-4 rounded-md max-h-40 overflow-y-auto">
-              {users.map(user => (
-                <div key={user.id} className="mb-2">
-                  <Checkbox 
-                    onChange={(e) => handleUserSelect(user.id, e.target.checked)}
-                    checked={selectedUsers.includes(user.id)}
-                  >
-                    <span className="font-medium">{user.name}</span>
-                  </Checkbox>
-                </div>
-              ))}
+            <div className="mt-2">
+              <Button 
+                onClick={() => setUserModalVisible(true)}
+                icon={<UserOutlined />}
+                className="mb-2"
+              >
+                {t(Strings.selectUsers)} ({selectedUsers.length})
+              </Button>
+              
+              {selectedUsers.length === 0 && (
+                <Text type="secondary" className="block mt-2">{t(Strings.noUsersSelected)}</Text>
+              )}
             </div>
           )}
         </div>
@@ -225,6 +223,16 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
           </Button>
         </div>
       </Form>
+      
+      <UserSelectionModal
+        isVisible={userModalVisible}
+        onCancel={() => setUserModalVisible(false)}
+        onConfirm={handleUserSelect}
+        users={users}
+        loading={loading}
+        initialSelectedUserIds={selectedUsers.map(id => Number(id))}
+        title={t(Strings.assignedUsers)}
+      />
     </Modal>
   );
 };

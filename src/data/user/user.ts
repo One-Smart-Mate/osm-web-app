@@ -67,3 +67,18 @@ export interface UserUpdateForm {
   uploadCardEvidenceWithDataNet: number;
   status: string;
 }
+
+export interface UserPosition {
+  id: number;
+  name: string;
+  description: string;
+  route: string;
+  levelId: number;
+  levelName: string;
+  areaId: number;
+  areaName: string;
+  siteId: number;
+  siteName: string;
+  siteType: string;
+  status: string;
+}

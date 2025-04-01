@@ -7,6 +7,12 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   en: {
     translation: {
+      selectUsers: "Selected Users",
+      selected: "Selected",
+      usersSelected: "Users Selected",
+      noUsersSelected: "No Users Selected",
+      selectedUsers: "Selected Users",
+
       requiredLevelId: "Level id required",
       requiredLevelName: "Level Name required",
       requiredRoute: "Required Route" ,
@@ -717,11 +723,22 @@ enSub: "One Smart Mate"
       "Select a status": "Select a status",
       "Edit Position: {{name}}": "Edit Position: {{name}}",
       createPositionHere: "Create position here",
+      
+      // User positions
+      loadingUserPositions: "Loading positions",
+      noPositionsAvailable: "No positions available",
+      userPositions: "Positions",
     },
   },
   es: {
     translation: {
-      requiredLevelId: "Level id requerido",
+      selectUsers: "Usuarios seleccionados",
+      selected: "Seleccionados",
+      usersSelected: "Usuarios seleccionados",
+      noUsersSelected: "No hay usuarios seleccionados",
+      selectedUsers: "Usuarios seleccionados",
+      
+      requiredLevelId: "Id de nivel requerido",
       requiredLevelName: "Nombre del nivel requerido",
       requiredRoute: "Ruta de posición requerida" ,
       requiredAreaId: "Id de área requerido",
@@ -1440,6 +1457,11 @@ enSub: "One Smart Mate"
       "Select a status": "Selecciona un estado",
       "Edit Position: {{name}}": "Editar Posición: {{name}}",
       createPositionHere: "Crear posición aquí",
+      
+      // User positions
+      loadingUserPositions: "Cargando posiciones",
+      noPositionsAvailable: "No hay posiciones disponibles",
+      userPositions: "Posiciones",
     },
   },
 };

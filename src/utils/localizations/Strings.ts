@@ -612,11 +612,17 @@ class StringsBase {
   static positionsFound = "positionsFound";
   static positionsRange = "positionsRange";
   static noPositionsToShow = "noPositionsToShow";
-  
+
+  // User positions
+  static userPositions = "userPositions";
+  static noPositionsAvailable = "noPositionsAvailable";
+  static loadingUserPositions = "loadingUserPositions";
+
   // Table headers and status for positions
   static positionAreaHeader = "positionAreaHeader";
-  static positionNodeZoneHeader = "positionNodeZoneHeader";
   static positionNameHeader = "positionNameHeader";
+  static positionNodeZoneHeader = "positionNodeZoneHeader";
+  static positionRouteHeader = "positionRouteHeader";
   static positionDescriptionHeader = "positionDescriptionHeader";
   static positionStatusHeader = "positionStatusHeader";
   static positionActionsHeader = "positionActionsHeader";
@@ -650,6 +656,12 @@ class StringsBase {
   static positionUpdateError = "positionUpdateError";
   static pleaseSelectStatus = "pleaseSelectStatus";
   static createPositionHere = "createPositionHere";
+  
+  static selectUsers = "selectUsers";
+  static selected = "selected";
+  static usersSelected = "usersSelected";
+  static noUsersSelected = "noUsersSelected";
+  static selectedUsers = "selectedUsers";
 }
 
 const Strings = new Proxy(StringsBase, {
