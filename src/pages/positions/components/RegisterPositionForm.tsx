@@ -1,9 +1,11 @@
-import { Form, Input, Button, Modal, Checkbox, Spin, notification } from "antd";
+import { Form, Input, Button, Modal, Spin, notification } from "antd";
 import { useCreatePositionMutation } from "../../../services/positionService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
+import UserSelectionModal from "../../../components/UserSelectionModal";
+import { UserOutlined } from "@ant-design/icons";
 
 interface FormProps {
   form: any;
@@ -19,6 +21,7 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+  const [userModalVisible, setUserModalVisible] = useState(false);
 
   useEffect(() => {
     if (isVisible && levelData?.siteId) {
@@ -43,12 +46,8 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
     }
   };
 
-  const handleUserSelection = (userId: number, checked: boolean) => {
-    if (checked) {
-      setSelectedUserIds(prev => [...prev, userId]);
-    } else {
-      setSelectedUserIds(prev => prev.filter(id => id !== userId));
-    }
+  const handleUserSelection = (userIds: number[]) => {
+    setSelectedUserIds(userIds);
   };
 
   const handleSubmit = async (values: any) => {
@@ -58,9 +57,9 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
 
     // Construct the payload based on the example and available data
     const positionPayload = {
-      siteId: Number(levelData.siteId),
+      siteId: Number(levelData.siteId), 
       siteName: levelData.siteName,
-      siteType: levelData.siteType || "Headquarters", // Default if not available
+      siteType: levelData.siteType || "", // Default if not available
       areaId: null, // Backend will generate this automatically
       areaName: null, // Backend will generate this automatically
       levelId: Number(levelData.id),
@@ -151,20 +150,20 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
           >
             {loading ? (
               <Spin size="small" />
-            ) : responsibles.length > 0 ? (
-              <div className="max-h-60 overflow-y-auto border rounded-md p-2">
-                {responsibles.map(user => (
-                  <div key={user.id} className="py-1 border-b last:border-b-0">
-                    <Checkbox 
-                      onChange={(e) => handleUserSelection(Number(user.id), e.target.checked)}
-                    >
-                      <span className="font-medium">{user.name}</span>
-                    </Checkbox>
-                  </div>
-                ))}
-              </div>
             ) : (
-              <div className="text-gray-500">{Strings.noUsersAvailableForSite}</div>
+              <div>
+                <Button 
+                  onClick={() => setUserModalVisible(true)}
+                  icon={<UserOutlined />}
+                  className="mb-2"
+                >
+                  {Strings.selectUsers} ({selectedUserIds.length})
+                </Button>
+                
+                {selectedUserIds.length === 0 && (
+                  <div className="text-gray-500">{Strings.noUsersSelected}</div>
+                )}
+              </div>
             )}
           </Form.Item>
 
@@ -178,6 +177,15 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
           </div>
         </Form>
       </div>
+      
+      <UserSelectionModal
+        isVisible={userModalVisible}
+        onCancel={() => setUserModalVisible(false)}
+        onConfirm={handleUserSelection}
+        users={responsibles}
+        loading={loading}
+        initialSelectedUserIds={selectedUserIds}
+      />
     </Modal>
   );
 };
