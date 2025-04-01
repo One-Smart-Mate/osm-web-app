@@ -1,4 +1,4 @@
-import { Form, FormInstance, Select, notification } from "antd";
+import { Form, FormInstance, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../core/store";
@@ -45,12 +45,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
       const response = await getSiteUsers(siteId).unwrap();
       setSiteUsers(response);
     } catch (error) {
-      console.log("Error fetching site users:", error);
-      notification.error({
-        message: "Error",
-        description: "Failed to load site users. Please try again later.",
-        placement: "topRight",
-      });
       throw error;
     }
   };
@@ -95,12 +89,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         return;
       }
     } catch (error) {
-      console.log("Error updating card mechanic or sending assignment:", error);
-      notification.error({
-        message: "Error",
-        description: "Failed to update mechanic or send assignment. Please try again later.",
-        placement: "topRight",
-      });
+      throw error;
     }
   };
 
@@ -110,7 +99,18 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         label={Strings.assignUser}
         name={Constants.mechanic + Constants.id}
       >
-        <Select placeholder={`${Strings.selectRole} `} allowClear>
+        <Select 
+          placeholder={`${Strings.selectRole} `} 
+          allowClear
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option) => {
+            if (!option || !option.children) return false;
+            const childrenText = String(option.children);
+            return childrenText.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          }}
+          style={{ width: '100%' }}
+        >
           {siteUsers.map((user) => (
             <Select.Option key={user.id} value={user.id}>
               {user.name}{" "}

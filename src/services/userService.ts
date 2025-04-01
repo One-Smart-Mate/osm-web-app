@@ -102,6 +102,16 @@ export const userService = apiSlice.injectEndpoints({
         return response.data;
       },
     }),
+    getUserPositions: builder.mutation<any[], string>({
+      query: (userId) => `/users/${userId}/positions`,
+      transformResponse: (response: {
+        data: any[];
+        status: number;
+        message: string;
+      }) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
@@ -119,4 +129,5 @@ export const {
   useImportUsersMutation,
   useSendCustomNotificationMutation,
   useGetUsersByRoleMutation,
+  useGetUserPositionsMutation,
 } = userService;
