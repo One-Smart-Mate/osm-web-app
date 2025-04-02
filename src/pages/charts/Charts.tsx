@@ -46,6 +46,8 @@ const Charts = ({ rol }: Props) => {
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
 
+  const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(undefined);
+
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
@@ -149,6 +151,7 @@ const Charts = ({ rol }: Props) => {
                         <MethodologiesChart
                           methodologies={methodologies}
                           methodologiesCatalog={methodologiesCatalog}
+                          siteId={siteId}
                         />
                       </div>
                     </div>
@@ -173,6 +176,7 @@ const Charts = ({ rol }: Props) => {
                       methodologies={methodologies}
                       siteId={siteId}
                       rol={rol}
+                      onAreaSelect={(superiorId) => setSelectedAreaId(superiorId)}
                     />
                   </div>
                 </Card>
@@ -193,6 +197,7 @@ const Charts = ({ rol }: Props) => {
                       siteId={siteId}
                       methodologies={methodologies}
                       rol={rol}
+                      areaId={selectedAreaId}
                     />
                   </div>
                 </Card>

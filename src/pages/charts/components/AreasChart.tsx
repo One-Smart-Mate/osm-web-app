@@ -23,6 +23,7 @@ export interface ChartProps {
   endDate: string;
   methodologies: Methodology[];
   rol: UserRoles;
+  onAreaSelect?: (areaId: number) => void;
 }
 
 const AreasChart = ({
@@ -31,6 +32,7 @@ const AreasChart = ({
   endDate,
   methodologies,
   rol,
+  onAreaSelect,
 }: ChartProps) => {
   const [getAreas] = useGetAreasChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -43,29 +45,42 @@ const AreasChart = ({
     area?: string;
     cardTypeName: string;
   } | null>(null);
+  const [areaId, setAreaId] = useState<number | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
   });
 
   const handleGetData = async () => {
-    const response = await getAreas({
-      siteId,
-      startDate,
-      endDate,
-    }).unwrap();
-    const areaMap: { [key: string]: any } = {};
-    response.forEach((item: any) => {
-      if (!areaMap[item.area]) {
-        areaMap[item.area] = { area: item.area };
-      }
-      areaMap[item.area][item.cardTypeName.toLowerCase()] = parseInt(
-        item.totalCards,
-        10
-      );
-    });
-    const transformedData = Object.values(areaMap);
-    setTransformedData(transformedData);
+    try {
+      const response = await getAreas({ siteId, startDate, endDate }).unwrap();
+  
+      const areaMap: { [key: string]: any } = {};
+      response.forEach((item: any) => {
+        if (!areaMap[item.area]) {
+          areaMap[item.area] = {
+            area: item.area,
+            areaId: item.areaId,
+          };
+        }
+        areaMap[item.area][item.cardTypeName.toLowerCase()] = parseInt(
+          item.totalCards,
+          10
+        );
+      });
+  
+      const transformedData = Object.values(areaMap);
+      setTransformedData(transformedData);
+  
+      if (transformedData.length > 0 && areaId == null) {
+        const defaultAreaId = transformedData[0].areaId;
+        setAreaId(defaultAreaId);
+        
+        onAreaSelect?.(defaultAreaId);
+      }      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -73,17 +88,27 @@ const AreasChart = ({
   }, [startDate, endDate]);
 
   const handleOnClick = (data: any, cardTypeName: string) => {
+
     setSearchParams({
       siteId,
       area: data.area,
       cardTypeName: cardTypeName,
     });
+  
+    setAreaId(data.areaId); 
     const normalizedCardTypeName = cardTypeName.toLowerCase();
     setSelectedTotalCards(data[normalizedCardTypeName]);
     setAreaName(data.area);
     setCardTypeName(cardTypeName);
     setOpen(true);
+  
+    if (data.areaId !== areaId) {
+      setAreaId(data.areaId);
+      onAreaSelect?.(data.areaId);
+    }
+    
   };
+  
 
   return (
     <>
@@ -91,7 +116,7 @@ const AreasChart = ({
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<CustomLegend />} verticalAlign="top" />
           <CartesianGrid strokeDasharray="3 3" />
-          <YAxis />
+          <YAxis tickFormatter={(value: any) => Math.round(Number(value)).toString()}/>
           <XAxis
             dataKey={"area"}
             angle={-20}

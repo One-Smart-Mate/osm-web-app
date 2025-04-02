@@ -23,6 +23,7 @@ export interface ChartProps {
   endDate: string;
   rol: UserRoles;
   methodologies: Methodology[];
+  areaId?: number | null;
 }
 
 const MachinesChart = ({
