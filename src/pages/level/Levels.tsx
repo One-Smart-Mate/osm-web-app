@@ -71,11 +71,11 @@ const Levels = ({ role }: Props) => {
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
-  const [isCloning, setIsCloning] = useState(false);
+  const [, setIsCloning] = useState(false);
 
   
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
+  const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | "clone" | null>(null);
   const [formData, setFormData] = useState<any>({});
 
   const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">("right");

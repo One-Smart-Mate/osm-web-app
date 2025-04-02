@@ -10,6 +10,8 @@ const ihSisAdmin = "IH_sis_admin";
 const mechanic = "mechanic";
 const localAdmin = "local_admin";
 const localSisAdmin = "local_sis_admin";
+const externalProvider = "external_provider";
+const id = "Id";
 
 // Language options
 const enOption = "English";
@@ -89,5 +91,7 @@ export default {
   POSITION_POPUP_STYLE,
   optionCreate,
   optionUpdate,
-  optionPosition
+  optionPosition,
+  id,
+  externalProvider,
 };

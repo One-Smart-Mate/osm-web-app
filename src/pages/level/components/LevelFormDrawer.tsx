@@ -10,7 +10,7 @@ import Constants from "../../../utils/Constants";
 
 interface LevelFormDrawerProps {
   drawerVisible: boolean;
-  drawerType: "create" | "update" | "position" | null;
+  drawerType: "create" | "update" | "position" | "clone" | null;
   drawerPlacement: "right" | "bottom";
   createForm: any;
   updateForm: any;

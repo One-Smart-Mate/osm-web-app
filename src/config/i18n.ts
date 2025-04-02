@@ -664,8 +664,7 @@ namePDF: "Tag details.pdf",
 
 //Login Refactor
 logImgDesc: "Log In Image",
-enSub: "One Smart Mate"
-
+enSub: "One Smart Mate",
       // Positions Page
       positions: "Positions",
       createPosition: "Create Position",
@@ -1395,10 +1394,8 @@ sharePDF: "Compartir PDF",
 namePDF: "Detalles de la tarjeta.pdf",
 
 logImgDesc: "Imagen del Log In",
-enSub: "One Smart Mate"
+enSub: "One Smart Mate",
 
-      logImgDesc: "Imagen del Log In",
-      enSub: "One Smart Mate",
       
       // Positions Page
       positions: "Posiciones",
