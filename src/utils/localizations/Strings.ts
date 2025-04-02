@@ -664,14 +664,20 @@ class StringsBase {
   static selectedUsers = "selectedUsers";
 }
 
+// Create a Proxy object for StringsBase to intercept property access
 const Strings = new Proxy(StringsBase, {
+  // Define the handler for the 'get' trap
   get(target, prop) {
+    // Check if the property is a string and exists in the target object
     if (typeof prop === "string" && prop in target) {
+      // Use the i18n translation function to translate the property value
       return i18n.t((target as any)[prop]);
     }
+    // Log a warning if the property does not exist in the target object
     console.warn(`No translation for: ${String(prop)}`);
+    // Return the property value from the target object
     return (target as any)[prop];
   },
 });
-
+// Export the Strings Proxy object as the default export
 export default Strings;
