@@ -28,7 +28,7 @@ const resources = {
       noCommentsTag: "No comments",
       notCardInfoFound: "No data found for this tag",
       assignUser: "Assign User",
-      assignedTo: "Assigned to:",
+      assignedTo: "Responsible:",
       selectRole: "Select",
       notificationsSB: "Notifications",
       companiesSB: "Companies",
@@ -753,7 +753,7 @@ const resources = {
       noCommentsTag: "Sin comentarios",
       notCardInfoFound: "No se encontró información para esta tarjeta.",
       assignUser: "Asignar Usuario",
-      assignedTo: "Asignada a:",
+      assignedTo: "Responsable:",
       selectRole: "Seleccionar",
       notificationsSB: "Notificaciones",
       companiesSB: "Empresas",
@@ -815,7 +815,7 @@ const resources = {
       videos: "Videos",
       audios: "Audios",
       evidences: "Evidencias",
-      none: "Ninguno",
+      none: "None",
       // Login re-design
       entrepriseName: "OSM",
       email: "Correo electrónico",
@@ -1036,7 +1036,7 @@ const resources = {
       anomalyDetected: "Anomalía detectada: ",
       appProvisionalUser: "Usuario provisional de la app: ",
       appDefinitiveUser: "Usuario definitivo de la app: ",
-      definitiveUser: "Usuario definitivo: ",
+      definitiveUser: "Usuario definitivo ",
       definitiveSolutionApplied: "Solución definitiva aplicada: ",
 
       // Constants for the dividers

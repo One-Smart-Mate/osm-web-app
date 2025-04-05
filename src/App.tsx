@@ -12,11 +12,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import i18n from "./config/i18n";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-
-console.log("Detected Language by i18next:", i18n.language);
 
 function App() {
 
