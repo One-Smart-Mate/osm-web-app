@@ -112,6 +112,13 @@ export const userService = apiSlice.injectEndpoints({
         return response.data;
       },
     }),
+    logout: builder.mutation<void, { userId: number; osName: string }>({
+      query: (logoutData) => ({
+        url: "/users/logout",
+        method: "POST",
+        body: { ...logoutData },
+      }),
+    }),
   }),
 });
 
@@ -130,4 +137,5 @@ export const {
   useSendCustomNotificationMutation,
   useGetUsersByRoleMutation,
   useGetUserPositionsMutation,
+  useLogoutMutation,
 } = userService;
