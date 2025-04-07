@@ -296,7 +296,7 @@ const handleCreatePosition = async () => {
     
     Modal.confirm({
       title: Strings.confirmCloneLevel,
-      content: `${Strings.confirmCloneLevelMessage} ${selectedNode.data.name}` + Strings.levelSubLebelsWarning,
+      content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
       okText: Strings.yes,
       cancelText: Strings.no,
       onOk: async () => {
