@@ -9,7 +9,7 @@ import {
   useUdpateLevelMutation,
 } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin } from "antd";
+import { Form, Drawer, Spin, Modal } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -293,16 +293,28 @@ const handleCreatePosition = async () => {
 
   const handleCloneLevel = async () => {
     if (!selectedNode?.data) return;
-    try {
-      setIsCloning(true);
-      await cloneSubtree(selectedNode.data, null, true);
-      await handleGetLevels();
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsCloning(false);
-      setContextMenuVisible(false);
-    }
+    
+    Modal.confirm({
+      title: Strings.confirmCloneLevel,
+      content: `${Strings.confirmCloneLevelMessage} ${selectedNode.data.name}` + Strings.levelSubLebelsWarning,
+      okText: Strings.yes,
+      cancelText: Strings.no,
+      onOk: async () => {
+        try {
+          setIsCloning(true);
+          await cloneSubtree(selectedNode.data, null, true);
+          await handleGetLevels();
+        } catch (error) {
+          throw error;
+        } finally {
+          setIsCloning(false);
+          setContextMenuVisible(false);
+        }
+      },
+      onCancel: () => {
+        setContextMenuVisible(false);
+      }
+    });
   };
 
   const handleCloseDetails = () => {

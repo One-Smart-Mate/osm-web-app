@@ -727,6 +727,9 @@ const resources = {
       loadingUserPositions: "Loading positions",
       noPositionsAvailable: "No positions available",
       userPositions: "Positions",
+      confirmCloneLevel: "Confirm Clone Level",
+      confirmCloneLevelMessage: "Are you sure you want to clone",
+      levelSubLebelsWarning: "If you clone a level, all its sub-levels will also be cloned.",
     },
   },
   es: {
@@ -1463,6 +1466,9 @@ const resources = {
       loadingUserPositions: "Cargando posiciones",
       noPositionsAvailable: "No hay posiciones disponibles",
       userPositions: "Posiciones",
+      confirmCloneLevel: "Confirmar Clonación de Nivel",
+      confirmCloneLevelMessage: "¿Estás seguro de que deseas clonar \"{{name}}\" y todos sus sub-niveles?",
+      levelSubLebelsWarning: "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
     },
   },
 };

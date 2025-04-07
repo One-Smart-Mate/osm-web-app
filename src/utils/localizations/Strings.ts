@@ -662,6 +662,10 @@ class StringsBase {
   static usersSelected = "usersSelected";
   static noUsersSelected = "noUsersSelected";
   static selectedUsers = "selectedUsers";
+
+  static confirmCloneLevel = "confirmCloneLevel";
+  static confirmCloneLevelMessage = "confirmCloneLevelMessage";
+  static levelSubLebelsWarning = "levelSubLebelsWarning";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
