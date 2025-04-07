@@ -1,3 +1,4 @@
+// BaseLayout.tsx
 import React, { useEffect, useState } from "react";
 import { Layout, Menu, Button, theme, Avatar, MenuProps } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
@@ -21,6 +22,10 @@ import {
 import Logout from "../auth/Logout";
 import Routes, { UnauthorizedRoute } from "../../utils/Routes";
 import LanguageDropdown from "./LanguageDropdown";
+
+// NEW IMPORTS
+import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
+import { useSetAppTokenMutation } from "../../services/userService";
 
 const { Header, Sider, Content } = Layout;
 
@@ -48,7 +53,7 @@ const getLevelKeys = (items1: LevelKeysProps[]) => {
 const BaseLayout: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
 
-  //provisional code
+  // provisional code
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState("");
@@ -58,18 +63,14 @@ const BaseLayout: React.FC = () => {
     const route = location.pathname.split("/");
 
     const isAdminRoute = route[1] === Routes.AdminPrefix.substring(1);
-
     const isReceptionistRoute = route[1] === Routes.SysadminPrefix.substring(1);
 
     const user = getSessionUser() as User;
     const rol = getUserRol(user);
-    if (
-      isAdminRoute &&
-      (rol == UserRoles.LOCALSYSADMIN || rol == UserRoles.LOCALADMIN)
-    ) {
+    if (isAdminRoute && (rol === UserRoles.LOCALSYSADMIN || rol === UserRoles.LOCALADMIN)) {
       navigate(UnauthorizedRoute, { replace: true });
     }
-    if (isReceptionistRoute && rol == UserRoles.LOCALADMIN) {
+    if (isReceptionistRoute && rol === UserRoles.LOCALADMIN) {
       navigate(UnauthorizedRoute, { replace: true });
     }
   };
@@ -100,7 +101,6 @@ const BaseLayout: React.FC = () => {
       });
     }
   };
-  //----------
 
   const [isCollapsed, setCollapsed] = useState(false);
   const {
@@ -136,6 +136,26 @@ const BaseLayout: React.FC = () => {
     }
   };
 
+  // NEW: Mutation hook to send the token to the backend
+  const [setAppToken] = useSetAppTokenMutation();
+
+  useEffect(() => {
+    // If the user is already logged in, request permission and get the token
+    if (user && user.userId) {
+      requestPermissionAndGetToken().then((token) => {
+        if (token) {
+          // Convert user.userId to number and send it
+          setAppToken({
+            userId: Number(user.userId),
+            appToken: token,
+            osName: "WEB",
+            osVersion: "1.0.0", // Or the corresponding version
+          });
+        }
+      });
+    }
+  }, [user, setAppToken]);
+
   return (
     <Layout className="flex w-full h-screen relative">
       <Sider
@@ -170,7 +190,7 @@ const BaseLayout: React.FC = () => {
             type="text"
             icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!isCollapsed)}
-            style={buttonSiderStyle}  
+            style={buttonSiderStyle}
           />
           <LanguageDropdown />
         </Header>
