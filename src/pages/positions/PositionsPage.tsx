@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button, Input, Table, Form, Tag, Spin, List, Typography } from "antd";
 import { SearchOutlined, EditOutlined, FilePdfOutlined, UserOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
 import LevelTreeModal from "./components/LevelTreeModal";
 import RegisterPositionForm from "./components/RegisterPositionForm";
 import UpdatePositionForm from "./components/UpdatePositionForm";
@@ -16,7 +15,6 @@ import Constants from "../../utils/Constants";
 const { Text } = Typography;
 
 const PositionsPage = () => {
-  const { t } = useTranslation();
   const [searchText, setSearchText] = useState("");
   const [filteredPositions, setFilteredPositions] = useState<Position[]>([]);
   const [isTreeModalVisible, setIsTreeModalVisible] = useState(false);
@@ -151,7 +149,7 @@ const PositionsPage = () => {
     }
 
     if (!users.length) {
-      return <Text type="secondary">{t(Strings.noAssignedUsers)}</Text>;
+      return <Text type="secondary">{Strings.noAssignedUsers}</Text>;
     }
 
     return (
@@ -172,11 +170,11 @@ const PositionsPage = () => {
   // Helper function to render status tag
   const renderStatusTag = (status: string) => {
     if (status === Constants.STATUS_ACTIVE) {
-      return <Tag color="green">{t(Strings.active)}</Tag>;
+      return <Tag color="green">{Strings.active}</Tag>;
     } else if (status === Constants.STATUS_SUSPENDED) {
-      return <Tag color="orange">{t(Strings.suspended)}</Tag>;
+      return <Tag color="orange">{Strings.suspended}</Tag>;
     } else if (status === Constants.STATUS_CANCELED) {
-      return <Tag color="red">{t(Strings.canceled)}</Tag>;
+      return <Tag color="red">{Strings.canceled}</Tag>;
     } else {
       return <Tag color="default">{status}</Tag>;
     }
@@ -184,39 +182,39 @@ const PositionsPage = () => {
 
   const columns = [
     {
-      title: t(Strings.positionAreaHeader),
+      title: Strings.positionAreaHeader,
       dataIndex: "areaName",
       key: "areaName",
       width: 150,
     },
     {
-      title: t(Strings.positionNodeZoneHeader),
+      title: Strings.positionNodeZoneHeader,
       dataIndex: "levelName",
       key: "levelName",
       width: 150,
     },
     {
-      title: t(Strings.positionNameHeader),
+      title: Strings.positionNameHeader,
       dataIndex: "name",
       key: "name",
       width: 150,
     },
     {
-      title: t(Strings.positionDescriptionHeader),
+      title: Strings.positionDescriptionHeader,
       dataIndex: "description",
       key: "description",
       width: 200,
       render: (text: string) => text || "-",
     },
     {
-      title: t(Strings.positionStatusHeader),
+      title: Strings.positionStatusHeader,
       dataIndex: "status",
       key: "status",
       width: 100,
       render: (status: string) => renderStatusTag(status),
     },
     {
-      title: t(Strings.positionActionsHeader),
+      title: Strings.positionActionsHeader,
       key: "actions",
       width: 100,
       render: (_: any, record: Position) => (
@@ -243,16 +241,16 @@ const PositionsPage = () => {
     <div className="p-4 h-full overflow-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">
-          {siteName} - {t(Strings.positions)}
+          {siteName} - {Strings.positions}
         </h1>
         <Button type="primary" onClick={showTreeModal}>
-          {t(Strings.createPosition)}
+          {Strings.createPosition}
         </Button>
       </div>
       
       <div className="mb-4 flex justify-between items-center">
         <Input
-          placeholder={t(Strings.searchPositions)}
+          placeholder={Strings.searchPositions}
           prefix={<SearchOutlined />}
           onChange={(e) => handleSearch(e.target.value)}
           value={searchText}
@@ -261,14 +259,14 @@ const PositionsPage = () => {
         />
         <div className="text-sm text-gray-500">
           {filteredPositions.length} {filteredPositions.length === 1 
-            ? t(Strings.positionFound) 
-            : t(Strings.positionsFound)}
+            ? Strings.positionFound 
+            : Strings.positionsFound}
         </div>
       </div>
       
       {isLoadingPositions ? (
         <div className="flex justify-center items-center h-64">
-          <Spin size="large" tip={t(Strings.loadingPositions)} />
+          <Spin size="large" tip={Strings.loadingPositions} />
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -287,18 +285,18 @@ const PositionsPage = () => {
               position: ['bottomCenter']
             }}
             locale={{ 
-              emptyText: t(Strings.noPositionsToShow),
-              filterConfirm: t(Strings.accept),
-              filterReset: t(Strings.reset),
-              filterSearchPlaceholder: t(Strings.search),
-              filterTitle: t(Strings.filter),
-              selectAll: t(Strings.selectCurrentPage),
-              selectInvert: t(Strings.invertSelection),
-              selectionAll: t(Strings.selectAll),
-              sortTitle: t(Strings.sort),
-              triggerDesc: t(Strings.sortDesc),
-              triggerAsc: t(Strings.sortAsc),
-              cancelSort: t(Strings.cancelSort)
+              emptyText: Strings.noPositionsToShow,
+              filterConfirm: Strings.accept,
+              filterReset: Strings.reset,
+              filterSearchPlaceholder: Strings.search,
+              filterTitle: Strings.filter,
+              selectAll: Strings.selectCurrentPage,
+              selectInvert: Strings.invertSelection,
+              selectionAll: Strings.selectAll,
+              sortTitle: Strings.sort,
+              triggerDesc: Strings.sortDesc,
+              triggerAsc: Strings.sortAsc,
+              cancelSort: Strings.cancelSort
             }}
             scroll={Constants.TABLE_SCROLL_CONFIG}
           />
@@ -311,7 +309,7 @@ const PositionsPage = () => {
           style={Constants.POSITION_POPUP_STYLE}
         >
           <div className="flex justify-between items-center mb-2">
-            <div className="font-medium text-blue-600">{t(Strings.assignedUsers)}</div>
+            <div className="font-medium text-blue-600">{Strings.assignedUsers}</div>
             <Button 
               type="text" 
               size="small" 

@@ -58,6 +58,9 @@ const POSITION_POPUP_STYLE = {
 const nodeStartBridgeCollapsed = "node_";
 const nodeEndBridgeCollapserd = "_collapsed";
 
+const osName = 'WEB' as 'WEB';
+const tagVersion = "1.0.0";
+
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -95,5 +98,7 @@ export default {
   POSITION_POPUP_STYLE,
   optionCreate,
   optionUpdate,
-  optionPosition
+  optionPosition,
+  osName,
+  tagVersion
 };

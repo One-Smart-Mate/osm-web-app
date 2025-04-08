@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import { useTranslation } from "react-i18next";
 import { UserRoles } from "../../../utils/Extensions";
 
 interface LevelContextMenuProps {
@@ -24,7 +23,6 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
   handleUpdateLevel,
   handleCloneLevel,
 }) => {
-  const { t } = useTranslation();
   
   if (!isVisible || !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN))
     return null;
@@ -43,7 +41,7 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
             className="w-28 bg-green-700 text-white mx-auto"
             onClick={handleCreateLevel}
           >
-            {t(Strings.levelsTreeOptionCreate)}
+            {Strings.levelsTreeOptionCreate}
           </Button>
         </>
       ) : (
@@ -52,19 +50,19 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
             className="w-28 bg-green-700 text-white mx-auto"
             onClick={handleCreateLevel}
           >
-            {t(Strings.levelsTreeOptionCreate)}
+            {Strings.levelsTreeOptionCreate}
           </Button>
           <Button
             className="w-28 bg-blue-700 text-white mx-auto"
             onClick={handleUpdateLevel}
           >
-            {t(Strings.levelsTreeOptionEdit)}
+            {Strings.levelsTreeOptionEdit}
           </Button>
           <Button
             className="w-28 bg-yellow-500 text-white mx-auto"
             onClick={handleCloneLevel}
           >
-            {t(Strings.levelsTreeOptionClone)}
+            {Strings.levelsTreeOptionClone}
           </Button>
         </>
       )}

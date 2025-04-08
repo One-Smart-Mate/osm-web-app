@@ -8,6 +8,15 @@ export class LoginRequest {
   }
 }
 
+
+export interface SetAppTokenDTO {
+  userId: number;   
+  appToken: string;
+  osName: 'WEB';
+  osVersion: string;
+}
+
+
 export class CreateUser {
   name: string;
   email: string;

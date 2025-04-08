@@ -1,6 +1,5 @@
 import { Form, Input, Button, Modal, Select, notification, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useUpdatePositionMutation } from "../../../services/positionService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useGetPositionUsersQuery } from "../../../services/positionService";
@@ -23,7 +22,6 @@ interface FormProps {
 }
 
 const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: FormProps) => {
-  const { t } = useTranslation();
   const [updatePosition] = useUpdatePositionMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const { data: positionUsers = [] } = useGetPositionUsersQuery(
@@ -70,8 +68,8 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
   const handleSubmit = async (values: any) => {
     if (!position) {
       notification.error({
-        message: t(Strings.error),
-        description: t(Strings.noPositionData),
+        message: Strings.error,
+        description: Strings.noPositionData,
         duration: 4,
       });
       return;
@@ -90,8 +88,8 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       await updatePosition(positionPayload).unwrap();
       
       notification.success({
-        message: t(Strings.success),
-        description: t(Strings.positionUpdatedSuccess),
+        message: Strings.success,
+        description: Strings.positionUpdatedSuccess,
         duration: 4,
       });
       
@@ -100,8 +98,8 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       }
     } catch (error) {
       notification.error({
-        message: t(Strings.error),
-        description: t(Strings.positionUpdateError),
+        message: Strings.error,
+        description: Strings.positionUpdateError,
         duration: 6,
       });
     }
@@ -121,7 +119,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
 
   return (
     <Modal
-      title={t(Strings.updatePositionTitle, { name: position?.name || '' })}
+      title={Strings.updatePositionTitle + (position?.name ? ': ' + position.name : '')}
       open={isVisible}
       onCancel={onCancel}
       footer={null}
@@ -141,20 +139,20 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       >
         <Form.Item
           name="name"
-          label={t(Strings.positionNameHeader)}
+          label={Strings.positionNameHeader}
           rules={[
             {
               required: true,
-              message: t(Strings.requiredInfo),
+              message: Strings.requiredInfo,
             },
             {
               max: 45,
-              message: t(Strings.positionNameMaxLength),
+              message: Strings.positionNameMaxLength,
             },
           ]}
         >
           <Input 
-            placeholder={t(Strings.positionNameHeader)}
+            placeholder={Strings.positionNameHeader}
             maxLength={45}
             showCount
           />
@@ -162,17 +160,17 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
 
         <Form.Item
           name="description"
-          label={t(Strings.positionDescriptionHeader)}
+          label={Strings.positionDescriptionHeader}
           rules={[
             {
               max: 100,
-              message: t(Strings.positionDescriptionMaxLength),
+              message: Strings.positionDescriptionMaxLength,
             },
           ]}
         >
           <Input.TextArea 
             rows={4} 
-            placeholder={t(Strings.positionDescriptionHeader)}
+            placeholder={Strings.positionDescriptionHeader}
             maxLength={100}
             showCount
           />
@@ -180,46 +178,51 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
 
         <Form.Item
           name="status"
-          label={t(Strings.positionStatusHeader)}
+          label={Strings.positionStatusHeader}
           rules={[
             {
               required: true,
-              message: t(Strings.pleaseSelectStatus),
+              message: Strings.pleaseSelectStatus,
             },
           ]}
         >
-          <Select placeholder={t(Strings.selectStatus)}>
-            <Option value={Constants.STATUS_ACTIVE}>{t(Strings.active)}</Option>
-            <Option value={Constants.STATUS_SUSPENDED}>{t(Strings.suspended)}</Option>
-            <Option value={Constants.STATUS_CANCELED}>{t(Strings.canceled)}</Option>
+          <Select placeholder={Strings.selectStatus}>
+            <Option value={Constants.STATUS_ACTIVE}>{Strings.active}</Option>
+            <Option value={Constants.STATUS_SUSPENDED}>{Strings.suspended}</Option>
+            <Option value={Constants.STATUS_CANCELED}>{Strings.canceled}</Option>
           </Select>
         </Form.Item>
 
         <div className="mb-4">
-          <Text strong>{t(Strings.assignedUsers)}</Text>
+          <Text strong>{Strings.assignedUsers}</Text>
           {loading ? (
-            <Spin tip={t(Strings.loadingPositions)} />
+            <Spin tip={Strings.loadingPositions} />
           ) : (
             <div className="mt-2">
               <Button 
+                type="dashed" 
+                icon={<UserOutlined />} 
                 onClick={() => setUserModalVisible(true)}
-                icon={<UserOutlined />}
-                className="mb-2"
+                className="w-full"
               >
-                {t(Strings.selectUsers)} ({selectedUsers.length})
+                {Strings.selectUsersForPosition}
               </Button>
               
-              {selectedUsers.length === 0 && (
-                <Text type="secondary" className="block mt-2">{t(Strings.noUsersSelected)}</Text>
+              {selectedUsers.length > 0 ? (
+                <div className="mt-2">
+                  <Text strong>{Strings.selectedUsers}: {selectedUsers.length}</Text>
+                </div>
+              ) : (
+                <Text type="secondary" className="block mt-2">{Strings.noUsersSelected}</Text>
               )}
             </div>
           )}
         </div>
 
         <div className="flex justify-end space-x-2 mt-4">
-          <Button onClick={onCancel}>{t(Strings.cancel)}</Button>
+          <Button onClick={onCancel}>{Strings.cancel}</Button>
           <Button type="primary" htmlType="submit">
-            {t(Strings.save)}
+            {Strings.save}
           </Button>
         </div>
       </Form>
@@ -231,7 +234,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
         users={users}
         loading={loading}
         initialSelectedUserIds={selectedUsers.map(id => Number(id))}
-        title={t(Strings.assignedUsers)}
+        title={Strings.assignedUsers}
       />
     </Modal>
   );
