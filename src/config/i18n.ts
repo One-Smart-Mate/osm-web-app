@@ -730,6 +730,9 @@ const resources = {
       confirmCloneLevel: "Confirm Clone Level",
       confirmCloneLevelMessage: "Are you sure you want to clone the level?. ",
       levelSubLebelsWarning: "If you clone a level, all its sub-levels will also be cloned.",
+      defaultNotificationTitle: "Notification",
+      defaultNotificationMessage: "You have received a new notification",
+      notificationReceived: "Notification received",
     },
   },
   es: {
@@ -1469,6 +1472,9 @@ const resources = {
       confirmCloneLevel: "Confirmar Clonación de Nivel",
       confirmCloneLevelMessage: "¿Estás seguro de que deseas clonar el nivel?. ",
       levelSubLebelsWarning: "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
+      defaultNotificationTitle: "Notificación",
+      defaultNotificationMessage: "Has recibido una nueva notificación",
+      notificationReceived: "Notificación recibida",
     },
   },
 };

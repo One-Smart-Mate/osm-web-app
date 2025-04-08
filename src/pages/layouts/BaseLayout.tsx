@@ -22,6 +22,7 @@ import {
 import Logout from "../auth/Logout";
 import Routes, { UnauthorizedRoute } from "../../utils/Routes";
 import LanguageDropdown from "./LanguageDropdown";
+import NotificationHandler from "../../components/NotificationHandler";
 
 // NEW IMPORTS
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
@@ -143,17 +144,32 @@ const BaseLayout: React.FC = () => {
   useEffect(() => {
     // If the user is already logged in, request permission and get the token
     if (user && user.userId) {
+      console.log('[BaseLayout] Requesting Firebase token for user:', user.userId);
       requestPermissionAndGetToken().then((token) => {
         if (token) {
+          console.log('[BaseLayout] Token obtained successfully, sending to server:', token.substring(0, 10) + '...');
           // Convert user.userId to number and send it
           setAppToken({
             userId: Number(user.userId),
             appToken: token,
             osName: Constants.osName,
             osVersion: Constants.tagVersion,
+          })
+          .unwrap()
+          .then(() => {
+            console.log('[BaseLayout] Token sent successfully to server');
+          })
+          .catch((error) => {
+            console.error('[BaseLayout] Error sending token to server:', error);
           });
+        } else {
+          console.warn('[BaseLayout] Could not obtain Firebase token');
         }
+      }).catch(error => {
+        console.error('[BaseLayout] Error requesting token:', error);
       });
+    } else {
+      console.log('[BaseLayout] User not authenticated, token not requested');
     }
   }, [user, setAppToken]);
 
@@ -185,7 +201,7 @@ const BaseLayout: React.FC = () => {
           <Logout />
         </div>
       </Sider>
-      <Layout>
+      <Layout className="flex flex-col h-full">
         <Header style={headerStyle(colorBgContainer)} className="d-flex justify-between">
           <Button
             type="text"
@@ -196,14 +212,20 @@ const BaseLayout: React.FC = () => {
           <LanguageDropdown />
         </Header>
         <Content
-          className="p-2 mt-3 ml-3 mr-3"
+          className="p-2 mt-3 ml-3 mr-3 flex-grow overflow-auto"
           style={contentStyle(colorBgContainer, borderRadiusLG)}
         >
           <span className="absolute bottom-0 right-8 text-xs md:text-sm">
             {Strings.tagVersion}
           </span>
-          <Outlet />
+          <div className="layout-content h-full">
+            <Outlet />
+          </div>
         </Content>
+        {/* NotificationHandler placed outside the main content flow */}
+        <div className="hidden">
+          <NotificationHandler />
+        </div>
       </Layout>
     </Layout>
   );
