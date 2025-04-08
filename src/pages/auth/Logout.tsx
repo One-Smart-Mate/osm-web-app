@@ -6,6 +6,7 @@ import { logOut } from "../../core/authReducer";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "antd";
 import { useLogoutMutation } from "../../services/userService";
+import Constants from "../../utils/Constants";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Logout = () => {
           // Call the logout endpoint with userId and osName
           logout({
             userId: parseInt(user.userId),
-            osName: "WEB"
+            osName: Constants.osName
           }).then(() => {
             dispatch(logOut(null));
             navigate("/");

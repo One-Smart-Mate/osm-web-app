@@ -26,6 +26,7 @@ import LanguageDropdown from "./LanguageDropdown";
 // NEW IMPORTS
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import { useSetAppTokenMutation } from "../../services/userService";
+import Constants from "../../utils/Constants";
 
 const { Header, Sider, Content } = Layout;
 
@@ -148,8 +149,8 @@ const BaseLayout: React.FC = () => {
           setAppToken({
             userId: Number(user.userId),
             appToken: token,
-            osName: "WEB",
-            osVersion: "1.0.0", // Or the corresponding version
+            osName: Constants.osName,
+            osVersion: Constants.tagVersion,
           });
         }
       });
