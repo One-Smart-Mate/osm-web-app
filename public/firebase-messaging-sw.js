@@ -29,10 +29,7 @@ try {
     }
 
     console.log('[Firebase SW] Showing notification:', { title, body });
-    self.registration.showNotification(title, {
-      body: body,
-      icon: '/favicon.ico'
-    });
+    self.registration.showNotification(title, body);
   });
 
   // Verify if the service worker is registered correctly
