@@ -316,7 +316,6 @@ const Levels = ({ role }: Props) => {
 
   const handleCloneLevel = async () => {
     if (!selectedNode?.data) return;
-
     Modal.confirm({
       title: Strings.confirmCloneLevel,
       content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
