@@ -27,6 +27,12 @@ import { HiDevicePhoneMobile } from "react-icons/hi2";
 import { SlCompass } from "react-icons/sl";
 import { Company } from "../../../data/company/company";
 import { selectCurrentRowData } from "../../../core/genericReducer";
+import {
+  FIREBASE_COMPANY_DIRECTORY,
+  FIREBASE_IMAGE_FILE_TYPE,
+  handleUploadToFirebaseStorage,
+} from "../../../config/firebaseUpload";
+import { formatCompanyName } from "../../../utils/Extensions";
 
 interface FormProps {
   form: FormInstance;
@@ -84,6 +90,23 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
       <div style={{ marginTop: 8 }}>Upload</div>
     </button>
   );
+
+  const customUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      const companyName = form.getFieldValue("name");
+      let fileName: string =companyName != null && companyName != "" && companyName != undefined? companyName : file.name;
+      const uploadedUrl = await handleUploadToFirebaseStorage(FIREBASE_COMPANY_DIRECTORY,{
+          name: formatCompanyName(fileName),
+          originFileObj: file,
+        }, FIREBASE_IMAGE_FILE_TYPE
+      );
+      form.setFieldValue("logo", uploadedUrl);
+      onSuccess(uploadedUrl, file);
+    } catch (error) {
+      onError(error);
+    }
+  };
 
   return (
     <Form form={form}>
@@ -263,7 +286,6 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
             name="logo"
             label={Strings.logo}
             getValueFromEvent={(event) => event?.fileList}
-            rules={[{ required: true, message: Strings.requiredLogo }]}
           >
             <div className="flex items-center">
               <Upload
@@ -273,6 +295,7 @@ const UpdateCompanyForm = ({ form }: FormProps) => {
                 onPreview={handleOnPreview}
                 onChange={handleChange}
                 fileList={fileList}
+                customRequest={customUpload}
               >
                 {uploadButton}
               </Upload>

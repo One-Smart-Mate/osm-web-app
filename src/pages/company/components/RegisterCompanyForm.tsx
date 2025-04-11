@@ -24,11 +24,12 @@ import { HiDevicePhoneMobile } from "react-icons/hi2";
 import { TiPlusOutline } from "react-icons/ti";
 import Strings from "../../../utils/localizations/Strings";
 import { useState } from "react";
-
-import { uploadImageToFirebaseAndGetURL } from "../../../config/firebaseUpload";
+import { FIREBASE_COMPANY_DIRECTORY, FIREBASE_IMAGE_FILE_TYPE, handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
+import { formatCompanyName } from "../../../utils/Extensions";
 
 interface FormProps {
   form: FormInstance;
+  onSuccessUpload?: (url: string) => void;
 }
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -41,7 +42,7 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const RegisterCompanyForm = ({ form }: FormProps) => {
+const RegisterCompanyForm = ({ form, onSuccessUpload }: FormProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState(Strings.empty);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -61,17 +62,22 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
   const customUpload = async (options: any) => {
     const { file, onSuccess, onError } = options;
     try {
-      const uploadedUrl = await uploadImageToFirebaseAndGetURL("company", {
-        name: file.name,
+      const companyName = form.getFieldValue("name");
+      let fileName: string = (companyName != null && companyName != "" && companyName != undefined) ? companyName : file.name
+      const uploadedUrl = await handleUploadToFirebaseStorage(FIREBASE_COMPANY_DIRECTORY, {
+        name: formatCompanyName(fileName),
         originFileObj: file,
-      });
-
+      }, FIREBASE_IMAGE_FILE_TYPE);
+      if (onSuccessUpload) {
+        onSuccessUpload(uploadedUrl);
+      }
       onSuccess(uploadedUrl, file);
     } catch (error) {
       onError(error);
     }
   };
 
+  
   return (
     <Form form={form} name="registerCompanyForm">
       <div className="flex flex-col">
@@ -257,7 +263,6 @@ const RegisterCompanyForm = ({ form }: FormProps) => {
           name="logo"
           label={<div className="flex items-center">{Strings.logo}</div>}
           getValueFromEvent={(event) => event?.fileList}
-          rules={[{ required: true, message: Strings.requiredLogo }]}
           className="mt-4"
         >
           <Tooltip title={Strings.companyLogoTooltip}>
