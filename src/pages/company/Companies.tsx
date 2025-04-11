@@ -24,9 +24,8 @@ import {
   resetCompanyUpdatedIndicator,
   selectCompanyUpdatedIndicator,
 } from "../../core/genericReducer";
-import { uploadImageToFirebaseAndGetURL } from "../../config/firebaseUpload";
 import PageTitle from "../../components/PageTitle";
-
+import { FormInstance } from "antd/lib";
 
 const Companies = () => {
   const [getCompanies] = useGetCompaniesMutation();
@@ -39,6 +38,7 @@ const Companies = () => {
   const [modalIsLoading, setModalLoading] = useState(false);
   const dispatch = useAppDispatch();
   const isCompanyUpdated = useAppSelector(selectCompanyUpdatedIndicator);
+  const [companyURL, setCompanyURL] = useState<string>();
 
   useEffect(() => {
     if (isCompanyUpdated) {
@@ -94,10 +94,10 @@ const Companies = () => {
   const handleOnFormCreateFinish = async (values: any) => {
     try {
       setModalLoading(true);
-      const imgURL = await uploadImageToFirebaseAndGetURL(
-        Strings.companies,
-        values.logo[0]
-      );
+      if (companyURL == null || companyURL == undefined || companyURL == "") {
+        handleErrorNotification(Strings.requiredLogo);
+        return;
+      }
       await registerCompany(
         new CreateCompany(
           values.name,
@@ -109,7 +109,7 @@ const Companies = () => {
           values.extension?.toString(),
           values.cellular?.toString(),
           values.email,
-          imgURL
+          companyURL
         )
       ).unwrap();
       setModalOpen(false);
@@ -125,9 +125,9 @@ const Companies = () => {
 
   return (
     <>
-     <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col">
         <div className="flex flex-col gap-2 items-center m-3">
-          <PageTitle mainText={Strings.companiesUpperCase}/>
+          <PageTitle mainText={Strings.companiesUpperCase} />
           <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
             <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
               <Space className="w-full md:w-auto mb-1 md:mb-0">
@@ -155,13 +155,13 @@ const Companies = () => {
         </div>
         <div className="flex-1 overflow-auto lg:hidden">
           <PaginatedList
-           dataSource={data}
-           renderItem={(item: Company, index: number) => (
-             <List.Item>
-               <CompanyCard key={index} data={item}/>
-             </List.Item>
-           )}
-           loading={isLoading}
+            dataSource={data}
+            renderItem={(item: Company, index: number) => (
+              <List.Item>
+                <CompanyCard key={index} data={item} />
+              </List.Item>
+            )}
+            loading={isLoading}
           />
         </div>
       </div>
@@ -173,9 +173,14 @@ const Companies = () => {
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={RegisterCompanyForm}
           title={Strings.createCompany}
           isLoading={modalIsLoading}
+          FormComponent={(form: FormInstance) => (
+            <RegisterCompanyForm
+              form={form}
+              onSuccessUpload={(url: string) => setCompanyURL(url)}
+            />
+          )}
         />
       </Form.Provider>
     </>

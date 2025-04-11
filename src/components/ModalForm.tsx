@@ -6,7 +6,7 @@ interface ModalFormProps {
   open: boolean;
   onCancel: () => void;
   title: string;
-  FormComponent: React.ComponentType<{ form: FormInstance }>;
+  FormComponent: React.ComponentType<{ form: FormInstance }> | ((form: FormInstance) => React.ReactNode);
   isLoading: boolean;
 }
 
@@ -57,6 +57,21 @@ const ModalForm = ({
     onCancel();
   };
 
+  const renderFormComponent = () => {
+    if (typeof FormComponent === "function") {
+      try {
+        const result = (FormComponent as unknown as (form: FormInstance) => React.ReactNode)(form);
+        if (React.isValidElement(result)) {
+          return result;
+        }
+      } catch(error) {
+        console.error(`[Component] Error rendering component ${error}`)
+      }
+    }
+      const Component = FormComponent as React.ComponentType<{ form: FormInstance }>;
+    return <Component form={form} />;
+  };
+
   return (
     <div onClick={(event) => event.stopPropagation()}>
       <Modal
@@ -70,7 +85,7 @@ const ModalForm = ({
         confirmLoading={isLoading}
         destroyOnClose
       >
-        <FormComponent form={form} />
+       {renderFormComponent()}
       </Modal>
     </div>
   );

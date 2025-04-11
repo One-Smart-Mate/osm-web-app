@@ -68,7 +68,9 @@ const RegisterSiteForm = ({ form }: FormProps) => {
   };
 
   useEffect(() => {
-    form.setFieldValue("siteCode", generatedSiteCode);
+    if (form && generatedSiteCode) {
+      form.setFieldValue("siteCode", generatedSiteCode);
+    }
     handleGetData();
   }, []);
 

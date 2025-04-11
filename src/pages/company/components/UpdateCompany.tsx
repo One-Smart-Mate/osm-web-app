@@ -44,6 +44,12 @@ const UpdateCompany = ({ data }: ButtonEditProps) => {
   const handleOnUpdateFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
+      let companyURL = values.logo;
+
+      if (companyURL == null || companyURL == undefined || companyURL == "") {
+        handleErrorNotification(Strings.requiredLogo);
+        return;
+      }
       const companyToUpdate = new UpdateCompanyRequest(
         Number(values.id),
         values.name,
@@ -55,19 +61,9 @@ const UpdateCompany = ({ data }: ButtonEditProps) => {
         values.extension?.toString(),
         values.cellular?.toString(),
         values.email,
-        values.logoURL
+        companyURL
       );
       await updateCompany(companyToUpdate).unwrap();
-      let newURLLogo;
-      if (values.logo[0] !== "h") {
-        newURLLogo = await updateImageToFirebaseAndGetURL(
-          Strings.companies,
-          values.logoURL,
-          values.logo[0]
-        );
-        companyToUpdate.logo = newURLLogo;
-        await updateCompany(companyToUpdate).unwrap();
-      }
       setModalOpen(false);
       dispatch(setCompanyUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
