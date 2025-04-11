@@ -18,7 +18,6 @@ import {
   setRowData,
 } from "../../../core/genericReducer";
 import ModalUpdateForm from "../../../components/ModalUpdateForm";
-import { updateImageToFirebaseAndGetURL } from "../../../config/firebaseUpdate";
 
 interface ButtonEditProps {
   data: Company;
