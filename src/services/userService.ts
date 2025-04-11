@@ -1,11 +1,17 @@
-import { Responsible, UserTable, UserUpdateForm } from "../data/user/user";
+
+import { apiSlice } from "./apiSlice";
+import {
+  Responsible,
+  UserTable,
+  UserUpdateForm, 
+} from "../data/user/user";
 import {
   CreateUser,
   ResetPasswordClass,
   SendResetCode,
+  SetAppTokenDTO,
   UpdateUser,
 } from "../data/user/user.request";
-import { apiSlice } from "./apiSlice";
 
 export const userService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,7 +28,7 @@ export const userService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: Responsible[] }) => response.data,
     }),
     getSiteUsers: builder.mutation<UserTable[], string>({
-      query: (siteId) => `/users/site/${siteId}`, 
+      query: (siteId) => `/users/site/${siteId}`,
       transformResponse: (response: { data: UserTable[] }) => response.data,
     }),
     createUser: builder.mutation<void, CreateUser>({
@@ -67,10 +73,9 @@ export const userService = apiSlice.injectEndpoints({
     }),
     importUsers: builder.mutation({
       query: ({ file, siteId }) => {
-        var formData = new FormData();
+        const formData = new FormData();
         formData.append("file", file);
         formData.append("siteId", siteId);
-
         return {
           url: "/file-upload/import-users",
           method: "POST",
@@ -93,14 +98,11 @@ export const userService = apiSlice.injectEndpoints({
       { siteId: string; roleName: string }
     >({
       query: ({ siteId, roleName }) => `/users/site/${siteId}/role/${roleName}`,
-
       transformResponse: (response: {
         data: Responsible[];
         status: number;
         message: string;
-      }) => {
-        return response.data;
-      },
+      }) => response.data,
     }),
     getUserPositions: builder.mutation<any[], string>({
       query: (userId) => `/users/${userId}/positions`,
@@ -108,9 +110,22 @@ export const userService = apiSlice.injectEndpoints({
         data: any[];
         status: number;
         message: string;
-      }) => {
-        return response.data;
-      },
+      }) => response.data,
+    }),
+    logout: builder.mutation<void, { userId: number; osName: string }>({
+      query: (logoutData) => ({
+        url: "/users/logout",
+        method: "POST",
+        body: { ...logoutData },
+      }),
+    }),
+    
+    setAppToken: builder.mutation<void, SetAppTokenDTO>({
+      query: (tokenData) => ({
+        url: "/users/app-token",
+        method: "POST",
+        body: tokenData,
+      }),
     }),
   }),
 });
@@ -130,4 +145,6 @@ export const {
   useSendCustomNotificationMutation,
   useGetUsersByRoleMutation,
   useGetUserPositionsMutation,
+  useLogoutMutation,
+  useSetAppTokenMutation, 
 } = userService;

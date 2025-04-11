@@ -1,7 +1,6 @@
 import React from "react";
 import { Drawer, Form, Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import { useTranslation } from "react-i18next";
 import RegisterLevelForm from "./RegisterLevelForm";
 import UpdateLevelForm from "./UpdateLevelForm";    
 import Constants from "../../../utils/Constants";
@@ -37,19 +36,18 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
   handleSubmit,
   selectedNodeName = "",
 }) => {
-  const { t } = useTranslation();
   
   let title = "";
   if (drawerType === Constants.optionCreate) {
-    title = t(Strings.levelsTreeOptionCreate).concat(
-      selectedNodeName ? ` ${t(Strings.for)} "${selectedNodeName}"` : ""
+    title = Strings.levelsTreeOptionCreate.concat(
+      selectedNodeName ? ` ${Strings.for} "${selectedNodeName}"` : ""
     );
   } else if (drawerType === Constants.optionUpdate) {
-    title = t(Strings.levelsTreeOptionEdit).concat(
-      selectedNodeName ? ` "${selectedNodeName}" ${t(Strings.level)}` : ""
+    title = Strings.levelsTreeOptionEdit.concat(
+      selectedNodeName ? ` "${selectedNodeName}" ${Strings.level}` : ""
     );
   } else if (drawerType === Constants.optionPosition) {
-    title = t(Strings.createPosition);
+    title = Strings.createPosition;
   }
 
   return (
@@ -91,7 +89,7 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
                 }
               }}
             >
-              {t(Strings.save)}
+              {Strings.save}
             </Button>
           </div>
         </div>

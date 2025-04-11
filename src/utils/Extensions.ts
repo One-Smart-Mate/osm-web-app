@@ -302,3 +302,14 @@ export const capitalizeFirstLetter = (input: string): string => {
   if (!input) return "";
   return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 };
+
+
+export const formatCompanyName = (input: string): string => {
+  return input
+  .trim()
+  .normalize("NFD") // separate accents from letters
+  .replace(/[\u0300-\u036f]/g, "") // remove accents
+  .toLowerCase()
+  .replace(/[^a-z0-9\s]/g, "") // remove special characters except spaces
+  .replace(/\s+/g, "_"); // replace spaces with underscores
+};

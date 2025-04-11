@@ -3,7 +3,6 @@ import { Modal, Spin, Button } from "antd";
 import Tree from "react-d3-tree";
 import { useGetlevelsMutation } from "../../../services/levelService";
 import Strings from "../../../utils/localizations/Strings";
-import { useTranslation } from "react-i18next";
 
 interface LevelTreeModalProps {
   isVisible: boolean;
@@ -51,7 +50,6 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
   siteName,
   onSelectLevel,
 }) => {
-  const { t } = useTranslation();
   const [getLevels] = useGetlevelsMutation();
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
@@ -94,7 +92,7 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
       const response = await getLevels(siteId).unwrap();
       setTreeData([
         {
-          name: t(Strings.levelsOf).concat(' ', siteName),
+          name: Strings.levelsOf.concat(' ', siteName),
           id: "0",
           children: buildHierarchy(response),
         },
@@ -165,13 +163,15 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
 
   return (
     <Modal
-      title={`${t(Strings.levelsOf)} ${siteName}`}
+      title={`${Strings.levelsOf} ${siteName}`}
       open={isVisible}
       onCancel={onClose}
       footer={null}
       width="90%"
-      style={{ top: 20 }}
-      bodyStyle={{ height: "80vh", padding: "12px" }}
+      styles={{
+        body: { height: "80vh", padding: "12px" },
+        header: { top: 20 }
+      }}
     >
       <div
         ref={containerRef}
@@ -212,7 +212,7 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
                   type="primary" 
                   onClick={handleCreatePositionHere}
                 >
-                  {t(Strings.createPositionHere)}
+                  {Strings.createPositionHere}
                 </Button>
               </div>
             )}

@@ -1,8 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
-
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_DOMAIN,
@@ -13,6 +11,5 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASURE_ID
 };
 
-
 export const app = initializeApp(firebaseConfig);
-export const storage = getStorage(app) 
+export const storage = getStorage(app);
