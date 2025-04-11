@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, FormInstance } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -84,9 +84,9 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
     if (modalType === Strings.priority) {
       return UpdatePriorityForm;
     } else {
-      return (props: any) => (
+      return (form: FormInstance) => (
         <UpdateMechanicForm
-          {...props}
+          form={form}
           card={data.card} 
           cardId={Number(data.card.id)}
           cardName={cardName}
