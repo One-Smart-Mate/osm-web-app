@@ -39,6 +39,8 @@ import { SiteUpdateForm } from "../../../data/site/site";
 import moment from "moment";
 import { useGetCurrenciesMutation } from "../../../services/currencyService";
 import { Currency } from "../../../data/currency/currency";
+import { FIREBASE_IMAGE_FILE_TYPE, FIREBASE_SITE_DIRECTORY, handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
+import { formatCompanyName } from "../../../utils/Extensions";
 
 interface FormProps {
   form: FormInstance;
@@ -110,6 +112,34 @@ const UpdateSiteForm = ({ form }: FormProps) => {
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
+
+
+   const customUpload = async (options: any) => {
+      const { file, onSuccess, onError } = options;
+      try {
+        const siteName = form.getFieldValue("name");
+        let fileName: string =
+          siteName != null && siteName != "" && siteName != undefined
+            ? siteName
+            : file.name;
+  
+        const uploadedUrl = await handleUploadToFirebaseStorage(
+          FIREBASE_SITE_DIRECTORY,
+          {
+            name: formatCompanyName(fileName),
+            originFileObj: file,
+          },
+          FIREBASE_IMAGE_FILE_TYPE
+        );
+  
+        form.setFieldValue("logo", uploadedUrl);
+        form.setFieldValue("logoURL", uploadedUrl);
+        onSuccess(uploadedUrl, file);
+      } catch (error) {
+        onError(error);
+      }
+    };
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -441,6 +471,7 @@ const UpdateSiteForm = ({ form }: FormProps) => {
             listType="picture-card"
             onPreview={handleOnPreview}
             onChange={handleChange}
+            customRequest={customUpload}
             fileList={fileList}
           >
             {uploadButton}

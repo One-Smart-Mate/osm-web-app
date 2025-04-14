@@ -38,10 +38,16 @@ import { Currency } from "../../../data/currency/currency";
 import { useAppSelector } from "../../../core/store";
 import { selectGeneratedSiteCode } from "../../../core/genericReducer";
 
-import { uploadImageToFirebaseAndGetURL } from "../../../config/firebaseUpload";
+import {
+  FIREBASE_IMAGE_FILE_TYPE,
+  FIREBASE_SITE_DIRECTORY,
+  handleUploadToFirebaseStorage,
+} from "../../../config/firebaseUpload";
+import { formatCompanyName } from "../../../utils/Extensions";
 
 interface FormProps {
   form: FormInstance;
+  onSuccessUpload?: (url: string) => void;
 }
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -54,7 +60,7 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const RegisterSiteForm = ({ form }: FormProps) => {
+const RegisterSiteForm = ({ form, onSuccessUpload }: FormProps) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState(Strings.empty);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -106,11 +112,24 @@ const RegisterSiteForm = ({ form }: FormProps) => {
   const customUpload = async (options: any) => {
     const { file, onSuccess, onError } = options;
     try {
-      const uploadedUrl = await uploadImageToFirebaseAndGetURL("site", {
-        name: file.name,
-        originFileObj: file,
-      });
+      const siteName = form.getFieldValue("name");
+      let fileName: string =
+        siteName != null && siteName != "" && siteName != undefined
+          ? siteName
+          : file.name;
 
+      const uploadedUrl = await handleUploadToFirebaseStorage(
+        FIREBASE_SITE_DIRECTORY,
+        {
+          name: formatCompanyName(fileName),
+          originFileObj: file,
+        },
+        FIREBASE_IMAGE_FILE_TYPE
+      );
+
+      if(onSuccessUpload){
+        onSuccessUpload(uploadedUrl);
+      }
       onSuccess(uploadedUrl, file);
     } catch (error) {
       onError(error);
@@ -438,7 +457,6 @@ const RegisterSiteForm = ({ form }: FormProps) => {
             name="logo"
             label={Strings.logo}
             getValueFromEvent={(event) => event?.fileList}
-            rules={[{ required: true, message: Strings.requiredLogo }]}
           >
             <Upload
               maxCount={1}
