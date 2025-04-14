@@ -733,6 +733,9 @@ const resources = {
       defaultNotificationTitle: "Notification",
       defaultNotificationMessage: "You have received a new notification",
       notificationReceived: "Notification received",
+
+      collapseAll: "Collapse All",
+      expandAll: "Expand All",
     },
   },
   es: {
@@ -1475,6 +1478,9 @@ const resources = {
       defaultNotificationTitle: "Notificación",
       defaultNotificationMessage: "Has recibido una nueva notificación",
       notificationReceived: "Notificación recibida",
+
+      collapseAll: "Contraer todo",
+      expandAll: "Expandir todo",
     },
   },
 };
