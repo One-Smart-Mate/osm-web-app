@@ -20,7 +20,6 @@ import {
   useUpdateSiteMutation,
 } from "../../../services/siteService";
 import { UpdateSiteReq } from "../../../data/site/site.request";
-import { updateImageToFirebaseAndGetURL } from "../../../config/firebaseUpdate";
 import Constants from "../../../utils/Constants";
 
 interface ButtonEditProps {
