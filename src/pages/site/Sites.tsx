@@ -22,7 +22,6 @@ import {
   handleSucccessNotification,
 } from "../../utils/Notifications";
 import Constants from "../../utils/Constants";
-import { uploadImageToFirebaseAndGetURL } from "../../config/firebaseUpload";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
   resetGeneratedSiteCode,
@@ -35,6 +34,7 @@ import { generateShortUUID, UserRoles } from "../../utils/Extensions";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import { FormInstance } from "antd/lib";
 
 interface SitesProps {
   rol: UserRoles;
@@ -55,6 +55,8 @@ const Sites = ({ rol }: SitesProps) => {
   const isSiteUpdated = useAppSelector(selectSiteUpdatedIndicator);
   const [getSessionUser] = useSessionStorage<User>(Strings.empty);
   const navigate = useNavigate();
+  const [siteURL, setSiteURL] = useState<string>();
+  
 
   const handleGetSites = async () => {
     if (!location.state) {
@@ -168,12 +170,14 @@ const Sites = ({ rol }: SitesProps) => {
   };
 
   const handleOnFormCreateFinish = async (values: any) => {
-    try {
+    try { 
       setModalLoading(true);
-      const imgURL = await uploadImageToFirebaseAndGetURL(
-        Strings.sites,
-        values.logo[0]
-      );
+      if (siteURL == null || siteURL == undefined || siteURL == "") {
+        handleErrorNotification(Strings.requiredLogo);
+        setModalLoading(false);
+        return;
+      }
+
       await registerSite(
         new CreateSite(
           Number(location.state.companyId),
@@ -189,7 +193,7 @@ const Sites = ({ rol }: SitesProps) => {
           values.extension?.toString(),
           values.cellular?.toString(),
           values.email,
-          imgURL,
+          siteURL,
           values.latitud.toString(),
           values.longitud.toString(),
           values.dueDate.format(Constants.DATE_FORMAT),
@@ -205,6 +209,7 @@ const Sites = ({ rol }: SitesProps) => {
       setModalOpen(false);
       handleGetSites();
       handleSucccessNotification(NotificationSuccess.REGISTER);
+      setSiteURL("");
     } catch (error) {
       console.error("Error creating site:", error);
       handleErrorNotification(error);
@@ -252,7 +257,7 @@ const Sites = ({ rol }: SitesProps) => {
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={RegisterSiteForm}
+          FormComponent={(form: FormInstance) => <RegisterSiteForm form={form} onSuccessUpload={(url) => setSiteURL(url)} />}
           title={Strings.createSite.concat(` ${companyName}`)}
           isLoading={modalIsLoading}
         />

@@ -53,6 +53,14 @@ const UpdateSite = ({ siteId }: ButtonEditProps) => {
   const handleOnUpdateFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
+
+      let siteURL = values.logoURL;
+
+      if (siteURL == null || siteURL == undefined || siteURL == "") {
+        handleErrorNotification(Strings.requiredLogo);
+        setModalLoading(false);
+        return;
+      }
       const siteToUpdate = new UpdateSiteReq(
         Number(values.id),
         values.siteCode,
@@ -67,7 +75,7 @@ const UpdateSite = ({ siteId }: ButtonEditProps) => {
         values.extension?.toString(),
         values.cellular?.toString(),
         values.email,
-        values.logoURL,
+        siteURL,
         values.latitud,
         values.longitud,
         values.dueDate.format(Constants.DATE_FORMAT),
@@ -77,16 +85,6 @@ const UpdateSite = ({ siteId }: ButtonEditProps) => {
         values.status
       );
       await updateSite(siteToUpdate).unwrap();
-      let newURLLogo;
-      if (values.logo[0] !== "h") {
-        newURLLogo = await updateImageToFirebaseAndGetURL(
-          Strings.sites,
-          values.logoURL,
-          values.logo[0]
-        );
-        siteToUpdate.logo = newURLLogo;
-        await updateSite(siteToUpdate).unwrap();
-      }
       setModalOpen(false);
       dispatch(setSiteUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);

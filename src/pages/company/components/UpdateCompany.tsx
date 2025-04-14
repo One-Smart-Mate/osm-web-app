@@ -47,6 +47,7 @@ const UpdateCompany = ({ data }: ButtonEditProps) => {
 
       if (companyURL == null || companyURL == undefined || companyURL == "") {
         handleErrorNotification(Strings.requiredLogo);
+        setModalLoading(false);
         return;
       }
       const companyToUpdate = new UpdateCompanyRequest(
