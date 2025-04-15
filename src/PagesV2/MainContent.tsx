@@ -12,10 +12,7 @@ interface Props {
 }
 
 const MainContent: React.FC<Props> = ({
-  collapsed,
   currentContent,
-  sidebarWidth,
-  collapsedWidth,
 }) => {
 // Mapping sections for the Breadcrumb
   const sectionMap: { [key: string]: string } = {

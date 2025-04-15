@@ -1,6 +1,5 @@
-import React from 'react';
 import { Route } from './models/Route'; // Asegúrate de importar el modelo Route
-import BaseLayoutV2 from '../../PagesV2/BaseLayoutV2';
+import BaseLayoutV2 from '../../pagesV2/BaseLayoutV2';
 
 const dashboardTestRoute = new Route(
   "Dashboard Test",

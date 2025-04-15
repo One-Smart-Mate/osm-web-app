@@ -11,7 +11,7 @@ interface HeaderProps {
   onLogout: () => void; // Función para manejar el logout
 }
 
-const HeaderV2: React.FC<HeaderProps> = ({ userName, avatarSrc, sidebarWidth, isSidebarCollapsed, onLogout }) => {
+const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed }) => {
   return (
     <div style={{
       display: 'flex',

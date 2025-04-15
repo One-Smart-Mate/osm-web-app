@@ -96,7 +96,7 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSide
         <div style={{ marginTop: 20 }}>
           {menuItems.map(({ key, icon, label, section }, index) => (
             <React.Fragment key={key}>
-              {index === 0 || menuItems[index - 1].section !== section ? (
+              {!collapsed && (index === 0 || menuItems[index - 1].section !== section) ? (
                 <div style={{ padding: "10px 20px", fontWeight: 600, color: "#888" }}>
                   {section}
                 </div>
