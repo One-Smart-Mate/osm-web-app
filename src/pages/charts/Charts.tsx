@@ -47,7 +47,9 @@ const Charts = ({ rol }: Props) => {
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
 
-  const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(undefined);
+  const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(
+    undefined
+  );
 
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {
@@ -115,10 +117,22 @@ const Charts = ({ rol }: Props) => {
               <div className="mb-2 flex flex-wrap flex-row gap-2">
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.anomalies}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.anomalies}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.anomalies}>
+                          <PreclassifiersChart
+                            siteId={siteId}
+                            startDate={startDate}
+                            endDate={endDate}
+                            rol={rol}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -176,7 +190,9 @@ const Charts = ({ rol }: Props) => {
                             methodologies={methodologies}
                             siteId={siteId}
                             rol={rol}
-                            onAreaSelect={(superiorId) => setSelectedAreaId(superiorId)}
+                            onAreaSelect={(superiorId) =>
+                              setSelectedAreaId(superiorId)
+                            }
                           />
                         </ChartExpander>
                       </div>
@@ -191,7 +207,9 @@ const Charts = ({ rol }: Props) => {
                       methodologies={methodologies}
                       siteId={siteId}
                       rol={rol}
-                      onAreaSelect={(superiorId) => setSelectedAreaId(superiorId)}
+                      onAreaSelect={(superiorId) =>
+                        setSelectedAreaId(superiorId)
+                      }
                     />
                   </div>
                 </Card>
