@@ -21,6 +21,7 @@ import {
 } from "../../utils/Extensions";
 import Strings from "../../utils/localizations/Strings";
 import { ResetPasswordRoute } from "../../utils/Routes";
+import LanguageDropdown from "../layouts/LanguageDropdown";
 
 const LoginPage = () => {
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
@@ -82,64 +83,82 @@ const LoginPage = () => {
   };
 
   return (
-    <Layout className="flex justify-center items-center min-h-screen">
-      <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
-        <Meta
-          title={
-            <h1 className="text-center text-3xl block font-semibold text-white">
-              {Strings.welcome}
-            </h1>
-          }
-        />
-        <Form
-          name="normal_login"
-          className="mt-6"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          validateTrigger="onSubmit"
-        >
-          <Form.Item name="email" rules={[{ validator: validateEmail }]}>
-            <Input
-              size="large"
-              addonBefore={<MailOutlined className="text-white" />}
-              placeholder={Strings.email}
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              { min: 8, required: true, message: Strings.requiredPassword },
-            ]}
+    <>
+      <div 
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          zIndex: 9999,
+          backgroundColor: 'white',
+          padding: '8px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+          border: '1px solid #ccc'
+        }}
+      >
+        <LanguageDropdown />
+      </div>
+      
+      <Layout className="flex justify-center items-center min-h-screen relative">
+        <Card className="p-3 relative lg:w-96 shadow-2xl rounded-2xl">
+          <Meta
+            title={
+              <h1 className="text-center text-3xl block font-semibold text-white">
+                {Strings.welcome}
+              </h1>
+            }
+          />
+          <Form
+            name="normal_login"
+            className="mt-6"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            validateTrigger="onSubmit"
           >
-            <Input.Password
-              size="large"
-              addonBefore={<LockOutlined className="text-white" />}
-              type="password"
-              placeholder={Strings.password}
-              visibilityToggle={{
-                visible: isPasswordVisible,
-                onVisibleChange: setPasswordVisible,
-              }}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Link className="text-white" to={ResetPasswordRoute}>
-              {Strings.forgotPassword}
-            </Link>
-            <Button
-              loading={isLoading}
-              block
-              size="large"
-              className="w-full mt-3"
-              type="primary"
-              htmlType="submit"
+            <Form.Item name="email" rules={[{ validator: validateEmail }]}>
+              <Input
+                size="large"
+                addonBefore={<MailOutlined className="text-white" />}
+                placeholder={Strings.email}
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                { min: 8, required: true, message: Strings.requiredPassword },
+              ]}
             >
-              {Strings.login}
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    </Layout>
+              <Input.Password
+                size="large"
+                addonBefore={<LockOutlined className="text-white" />}
+                type="password"
+                placeholder={Strings.password}
+                visibilityToggle={{
+                  visible: isPasswordVisible,
+                  onVisibleChange: setPasswordVisible,
+                }}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Link className="text-white" to={ResetPasswordRoute}>
+                {Strings.forgotPassword}
+              </Link>
+              <Button
+                loading={isLoading}
+                block
+                size="large"
+                className="w-full mt-3"
+                type="primary"
+                htmlType="submit"
+              >
+                {Strings.login}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Layout>
+    </>
   );
 };
 
