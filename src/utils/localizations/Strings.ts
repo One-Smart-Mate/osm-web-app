@@ -62,6 +62,7 @@ class StringsBase {
   static audios = "audios";
   static evidences = "evidences";
   static none = "none";
+  static expand = "expand";
 
   // Login re-design
   static entrepriseName = "entrepriseName";

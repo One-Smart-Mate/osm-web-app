@@ -90,6 +90,7 @@ const resources = {
       audios: "Audios",
       evidences: "Evidences",
       none: "None",
+      expand: "Expand",
 
       email: "Email",
       loginText:
@@ -824,9 +825,9 @@ const resources = {
       videos: "Videos",
       audios: "Audios",
       evidences: "Evidencias",
-      none: "None",
-      // Login re-design
-      entrepriseName: "OSM",
+      none: "Ninguno",
+      expand: "Ampliar",
+
       email: "Correo electrónico",
       loginText:
         "Obtén una visión completa de todas las necesidades de mantenimiento de tu empresa antes de que se conviertan en reparaciones costosas.",
