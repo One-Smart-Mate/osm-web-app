@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.3.0",
-    "antd": "^5.21.4",
+    "antd": "^5.24.7",
     "dotenv": "^16.4.7",
     "env-cmd": "^10.1.0",
     "firebase": "^11.2.0",
