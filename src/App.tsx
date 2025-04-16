@@ -14,8 +14,8 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutV2 from "./pagesv23/Layout/BaseLayoutV2";
-import routesV2 from "./pagesv23/RoutesV2";
+import BaseLayoutV2 from "./pagesv2/Layout/BaseLayoutV2";
+import routesV2 from "./pagesv2/RoutesV2";
 
 function App() {
 
