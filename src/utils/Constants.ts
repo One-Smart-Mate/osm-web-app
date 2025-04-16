@@ -61,6 +61,9 @@ const nodeEndBridgeCollapserd = "_collapsed";
 const osName = 'WEB' as 'WEB';
 const tagVersion = "1.0.0";
 
+const es = "ES";
+const en = "EN";
+
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -100,5 +103,7 @@ export default {
   optionUpdate,
   optionPosition,
   osName,
-  tagVersion
+  tagVersion,
+  es,
+  en
 };

@@ -62,6 +62,7 @@ class StringsBase {
   static audios = "audios";
   static evidences = "evidences";
   static none = "none";
+  static expand = "expand";
 
   // Login re-design
   static entrepriseName = "entrepriseName";
@@ -671,6 +672,8 @@ class StringsBase {
   static defaultNotificationTitle = "defaultNotificationTitle";
   static defaultNotificationMessage = "defaultNotificationMessage";
   static notificationReceived = "notificationReceived";
+  static expandAll = "expandAll";
+  static collapseAll = "collapseAll";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
