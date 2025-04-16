@@ -1,5 +1,5 @@
-import { Route } from './models/Route'; // Asegúrate de importar el modelo Route
-import BaseLayoutV2 from '../../pagesV2/BaseLayoutV2';
+import { Route } from '../pages/routes/models/Route'; // Asegúrate de importar el modelo Route
+import BaseLayoutV2 from './Layout/BaseLayoutV2';
 
 const dashboardTestRoute = new Route(
   "Dashboard Test",

@@ -24,7 +24,6 @@ import Strings from "../../utils/localizations/Strings";
 import PositionsPage from "../positions/PositionsPage";
 import { AiOutlineBell } from "react-icons/ai";
 import Notifications from "../notifications/Notifications";
-import routesV2 from "./RoutesV2";
 
 const adminNotifications = new Route(
   Strings.notificationsSB,
@@ -156,7 +155,6 @@ const adminRoutes: Route[] = [
   adminSiteUsers,
   adminPositions,
   adminNotifications,
-  ...routesV2
 ];
 
 const sysAdminCharts = new Route(

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Layout, message } from "antd";
-import HeaderComponent from "./HeaderV2";
-import Sidebar from "./SideBarV2";
-import MainContent from "./MainContent";
-import { ContentType, menuMap } from "./menuConfig";
+import HeaderComponent from "../ComponentsV2/HeaderV2";
+import Sidebar from "../ComponentsV2/SideBarV2";
+import MainContent from "../MainContent";
+import { ContentType, menuMap } from "../menuConfig";
 
 const BaseLayoutV2: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
