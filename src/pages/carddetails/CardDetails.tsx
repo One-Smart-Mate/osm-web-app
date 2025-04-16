@@ -28,7 +28,7 @@ import PdfContent from "./components/PDFContent";
 import ExportPdfButton from "./components/ButtonPDF";
 import { notification } from "antd";
 
-
+// Components
 const { Text } = Typography;
 
 const defaultCard: CardInterface = {
@@ -186,11 +186,8 @@ const CardDetails = () => {
   return (
     <>
       <div className="h-full flex flex-col">
-        <div className="flex flex-col items-center m-3">
+        <div className="flex justify-between items-center m-3 px-3">
           <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
-        </div>
-
-        <div className="ms-auto my-5 mx-12">
           <ExportPdfButton targetId="pdf-content" filename={Strings.namePDF} />
         </div>
         <br />
