@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   DashboardOutlined,
   LoginOutlined,
@@ -11,7 +11,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { ContentType } from "./type";
+import { ContentType } from "../type";
 
 interface SideBarV2Props {
   collapsed: boolean;
@@ -20,6 +20,8 @@ interface SideBarV2Props {
 }
 
 const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSideBarV2Click }) => {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
   const menuItems = [
     { key: "dashboard", icon: <DashboardOutlined />, label: "Dashboard", section: "Navigation" },
     { key: "login", icon: <LoginOutlined />, label: "Login", section: "Authentication" },
@@ -32,6 +34,7 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSide
   ];
 
   const handleClick = (key: string) => {
+    setSelectedKey(key);
     onSideBarV2Click(key as ContentType);
   };
 
@@ -109,16 +112,34 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSide
                   padding: "10px 20px",
                   cursor: "pointer",
                   transition: "background 0.2s",
+                  background: selectedKey === key ? "#e6f7ff" : "transparent",
+                  position: "relative",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.background = "#f5f5f5";
+                  if (selectedKey !== key) {
+                    (e.currentTarget as HTMLDivElement).style.background = "#e6f7ff";
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.background = "transparent";
+                  if (selectedKey !== key) {
+                    (e.currentTarget as HTMLDivElement).style.background = "transparent";
+                  }
                 }}
               >
                 <span style={{ fontSize: 18 }}>{icon}</span>
                 {!collapsed && <span style={{ marginLeft: 15 }}>{label}</span>}
+                {selectedKey === key && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 4,
+                      backgroundColor: "#1890ff",
+                    }}
+                  />
+                )}
               </div>
             </React.Fragment>
           ))}
