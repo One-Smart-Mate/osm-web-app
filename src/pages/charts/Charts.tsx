@@ -50,6 +50,7 @@ const Charts = ({ rol }: Props) => {
   const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(
     undefined
   );
+  const [selectedAreaName, setSelectedAreaName] = useState<string>("");
 
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {
@@ -190,9 +191,10 @@ const Charts = ({ rol }: Props) => {
                             methodologies={methodologies}
                             siteId={siteId}
                             rol={rol}
-                            onAreaSelect={(superiorId) =>
-                              setSelectedAreaId(superiorId)
-                            }
+                            onAreaSelect={(superiorId, areaName) => {
+                              setSelectedAreaId(superiorId);
+                              setSelectedAreaName(areaName || "");
+                            }}
                           />
                         </ChartExpander>
                       </div>
@@ -207,9 +209,10 @@ const Charts = ({ rol }: Props) => {
                       methodologies={methodologies}
                       siteId={siteId}
                       rol={rol}
-                      onAreaSelect={(superiorId) =>
-                        setSelectedAreaId(superiorId)
-                      }
+                      onAreaSelect={(superiorId, areaName) => {
+                        setSelectedAreaId(superiorId);
+                        setSelectedAreaName(areaName || "");
+                      }}
                     />
                   </div>
                 </Card>
@@ -218,11 +221,19 @@ const Charts = ({ rol }: Props) => {
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
                         <h2 className="text-xl font-semibold text-black">
-                          {Strings.machines}
+                          {selectedAreaName
+                            ? `${Strings.machinesOfArea}: ${selectedAreaName}`
+                            : Strings.machines}
                         </h2>
                       </div>
                       <div className="absolute right-0 top-0">
-                        <ChartExpander title={Strings.machines}>
+                        <ChartExpander
+                          title={
+                            selectedAreaName
+                              ? `${Strings.machinesOfArea}: ${selectedAreaName}`
+                              : Strings.machines
+                          }
+                        >
                           <MachinesChart
                             startDate={startDate}
                             endDate={endDate}
@@ -288,11 +299,19 @@ const Charts = ({ rol }: Props) => {
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
                         <h2 className="text-xl font-semibold text-black">
-                          {Strings.mechanics}
+                          {selectedAreaName
+                            ? `${Strings.machines}: ${selectedAreaName}`
+                            : Strings.mechanics}
                         </h2>
                       </div>
                       <div className="absolute right-0 top-0">
-                        <ChartExpander title={Strings.mechanics}>
+                        <ChartExpander
+                          title={
+                            selectedAreaName
+                              ? `${Strings.machines}: ${selectedAreaName}`
+                              : Strings.mechanics
+                          }
+                        >
                           <MechanicsChart
                             startDate={startDate}
                             endDate={endDate}

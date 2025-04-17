@@ -7,11 +7,13 @@ import Strings from "../../../utils/localizations/Strings";
 interface ExportPdfButtonProps {
   targetId: string;
   filename?: string;
+  cardNumber?: string;
 }
 
 const ExportPdfButton: React.FC<ExportPdfButtonProps> = ({
   targetId,
   filename = "document.pdf",
+  cardNumber = "",
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -57,8 +59,14 @@ const ExportPdfButton: React.FC<ExportPdfButtonProps> = ({
         pdf.addImage(imgData, "JPEG", 0, -position, imgWidth, imgHeight);
         position += pdfHeight;
       }
-
-      pdf.save(filename);
+      
+      let finalFilename = filename;
+      if (cardNumber) {
+        const baseFilename = filename.replace(/\.pdf$/i, "");
+        finalFilename = `${baseFilename} ${cardNumber}.pdf`;
+      }
+      
+      pdf.save(finalFilename);
     } catch (error) {
       console.error("Error generating PDF:", error);
     } finally {

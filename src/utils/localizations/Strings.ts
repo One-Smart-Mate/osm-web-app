@@ -674,6 +674,8 @@ class StringsBase {
   static notificationReceived = "notificationReceived";
   static expandAll = "expandAll";
   static collapseAll = "collapseAll";
+  
+  static machinesOfArea = "machinesOfArea";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

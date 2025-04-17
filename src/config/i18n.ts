@@ -737,6 +737,7 @@ const resources = {
 
       collapseAll: "Collapse All",
       expandAll: "Expand All",
+      machinesOfArea: "Zones of Area",
     },
   },
   es: {
@@ -1482,6 +1483,7 @@ const resources = {
 
       collapseAll: "Contraer todo",
       expandAll: "Expandir todo",
+      machinesOfArea: "Zonas del Area",
     },
   },
 };

@@ -188,7 +188,11 @@ const CardDetails = () => {
       <div className="h-full flex flex-col">
         <div className="flex justify-between items-center m-3 px-3">
           <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
-          <ExportPdfButton targetId="pdf-content" filename={Strings.namePDF} />
+          <ExportPdfButton 
+            targetId="pdf-content" 
+            filename={Strings.namePDF} 
+            cardNumber={data?.card?.siteCardId} 
+          />
         </div>
         <br />
 
