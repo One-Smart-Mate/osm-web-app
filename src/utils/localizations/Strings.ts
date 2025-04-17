@@ -15,6 +15,7 @@ class StringsBase {
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
   static positionsSB = "positionsSB";
+  static assignPositions = "assignPositions";
 
   // Rooutes
   static companyParam = "companyParam";
