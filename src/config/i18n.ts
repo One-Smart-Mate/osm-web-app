@@ -739,6 +739,7 @@ const resources = {
       expandAll: "Expand All",
       machinesOfArea: "Zones of Area",
       assignPositions: "Assign Positions",
+      uploadCardAndEvidenceWithDataNet: "Upload tag and evidence with data net",
     },
   },
   es: {
@@ -1486,6 +1487,7 @@ const resources = {
       expandAll: "Expandir todo",
       machinesOfArea: "Zonas del Area",
       assignPositions: "Asignar Posiciones",
+      uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
     },
   },
 };

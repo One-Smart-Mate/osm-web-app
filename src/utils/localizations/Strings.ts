@@ -677,6 +677,7 @@ class StringsBase {
   static collapseAll = "collapseAll";
   
   static machinesOfArea = "machinesOfArea";
+  static uploadCardAndEvidenceWithDataNet = "uploadCardAndEvidenceWithDataNet";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

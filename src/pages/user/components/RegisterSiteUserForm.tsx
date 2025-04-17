@@ -131,24 +131,13 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
 
         <div className="flex flex-row flex-wrap">
           <Form.Item
-            name="uploadCardDataWithDataNet"
+            name="uploadCardAndEvidenceWithDataNet"
             valuePropName="checked"
-            label={Strings.uploadCardDataWithDataNet}
-            className="mr-1"
-          >
-            <Checkbox value={1}>{Strings.enable}</Checkbox>
-            <Tooltip title={Strings.userUploadCardDataWithDataNetTooltip}>
-              <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
-            </Tooltip>
-          </Form.Item>
-          <Form.Item
-            name="uploadCardEvidenceWithDataNet"
-            valuePropName="checked"
-            label={Strings.uploadCardEvidenceWithDataNet}
+            label={Strings.uploadCardAndEvidenceWithDataNet}
             className="flex-1"
           >
             <Checkbox value={1}>{Strings.enable}</Checkbox>
-            <Tooltip title={Strings.userUploadCardEvidenceWithDataNetTooltip}>
+            <Tooltip title={`${Strings.userUploadCardDataWithDataNetTooltip} ${Strings.userUploadCardEvidenceWithDataNetTooltip}`}>
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </Form.Item>

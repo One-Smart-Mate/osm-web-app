@@ -14,6 +14,14 @@ interface FormProps {
   form: FormInstance;
 }
 
+/**
+ * UpdateSiteUserForm is a form component for updating a site user.
+ * It uses Ant Design's Form component for layout and validation.
+ * It fetches roles data and sets initial form values based on current row data.
+ * Users can update fields such as name, email, password, roles, and status.
+ * There are tooltips for user guidance and validation rules to ensure correct input.
+ * The component manages state for roles, selected roles, and password visibility.
+ */
 const UpdateSiteUserForm = ({ form }: FormProps) => {
   const [getRoles] = useGetRolesMutation();
   const [roles, setRoles] = useState<Role[]>([]);
@@ -34,7 +42,13 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
 
   useEffect(() => {
     if (roles.length > 0) {
-      form.setFieldsValue({ ...rowData });
+      const formValues = { ...rowData } as any;
+
+      (formValues as any).uploadCardAndEvidenceWithDataNet =
+        rowData.uploadCardDataWithDataNet === 1 ||
+        rowData.uploadCardEvidenceWithDataNet === 1;
+
+      form.setFieldsValue(formValues);
     }
   }, [roles]);
 
@@ -160,28 +174,18 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
             </Tooltip>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="flex items-center gap-2">
             <Form.Item
-              name="uploadCardDataWithDataNet"
+              name="uploadCardAndEvidenceWithDataNet"
               valuePropName="checked"
-              label={Strings.uploadCardDataWithDataNet}
+              label={Strings.uploadCardAndEvidenceWithDataNet}
             >
               <Checkbox value={1}>{Strings.enable}</Checkbox>
             </Form.Item>
-            <Tooltip title={Strings.userUploadCardDataWithDataNetTooltip}>
-              <QuestionCircleOutlined className="text-sm text-blue-500" />
-            </Tooltip>
-          </div>
-          <div className="flex items-center gap-2">
-            <Form.Item
-              name="uploadCardEvidenceWithDataNet"
-              valuePropName="checked"
-              label={Strings.uploadCardEvidenceWithDataNet}
+            <Tooltip
+              title={`${Strings.userUploadCardDataWithDataNetTooltip} ${Strings.userUploadCardEvidenceWithDataNetTooltip}`}
             >
-              <Checkbox value={1}>{Strings.enable}</Checkbox>
-            </Form.Item>
-            <Tooltip title={Strings.userUploadCardEvidenceWithDataNetTooltip}>
               <QuestionCircleOutlined className="text-sm text-blue-500" />
             </Tooltip>
           </div>
