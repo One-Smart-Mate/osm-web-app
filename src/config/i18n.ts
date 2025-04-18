@@ -43,6 +43,7 @@ const resources = {
       cardDetailsSB: "Card Details",
       chartsSB: "Charts",
       positionsSB: "Positions",
+      systemHealthSB: "System Health",
 
       login: "Log in",
       companyParam: ":company",
@@ -675,6 +676,26 @@ const resources = {
       loadingPositions: "Loading positions...",
       positionFound: "position found",
       positionsFound: "positions found",
+      
+      // System Health
+      systemHealthTitle: "System Health Status",
+      testingNotifications: "Testing notifications",
+      testingEmails: "Testing email delivery",
+      testingServices: "Testing services",
+      testingDbWrite: "Testing database write",
+      testingServerRam: "Testing server RAM",
+      testingEvidenceWrite: "Testing evidence write",
+      healthStatusOk: "OK",
+      healthStatusFailed: "FAILED",
+      
+      // System Health additional strings
+      sessionPerformance: "Your Session Performance",
+      memoryUsage: "Memory Usage",
+      usedMemory: "Used Memory",
+      totalMemory: "Total Memory",
+      pageLoadTime: "Page Load Time",
+      domComplete: "DOM Complete",
+      networkLatency: "Network Latency",
       positionsRange: "{{start}}-{{end}} of {{total}} positions",
       noPositionsToShow: "No positions to show",
       noUsersAvailableForSite: "No users available for this site",
@@ -737,6 +758,11 @@ const resources = {
 
       collapseAll: "Collapse All",
       expandAll: "Expand All",
+      machinesOfArea: "Zones of Area",
+      assignPositions: "Assign Positions",
+      uploadCardAndEvidenceWithDataNet: "Upload tag and evidence with data net",
+      databaseConnectionTest: "Database connection test",
+      verificationOfServices: "Verification of services",
     },
   },
   es: {
@@ -778,6 +804,7 @@ const resources = {
       cardDetailsSB: "Detalles de Tarjeta",
       chartsSB: "Gráficos",
       positionsSB: "Posiciones",
+      systemHealthSB: "Salud del Sistema",
 
       login: "Iniciar sesión",
       companyParam: ":company",
@@ -1420,6 +1447,26 @@ const resources = {
       loadingPositions: "Cargando posiciones...",
       positionFound: "posición encontrada",
       positionsFound: "posiciones encontradas",
+      
+      // System Health
+      systemHealthTitle: "Estado de Salud del Sistema",
+      testingNotifications: "Probando notificaciones",
+      testingEmails: "Probando envío de correos",
+      testingServices: "Probando servicios",
+      testingDbWrite: "Probando escritura en base de datos",
+      testingServerRam: "Probando RAM en servidor",
+      testingEvidenceWrite: "Probando escritura de evidencias",
+      healthStatusOk: "OK",
+      healthStatusFailed: "FALLO",
+      
+      // System Health additional strings
+      sessionPerformance: "Rendimiento de tu Sesión",
+      memoryUsage: "Uso de Memoria",
+      usedMemory: "Memoria Utilizada",
+      totalMemory: "Memoria Total",
+      pageLoadTime: "Tiempo de Carga",
+      domComplete: "DOM Completo",
+      networkLatency: "Latencia de Red",
       positionsRange: "{{start}}-{{end}} de {{total}} posiciones",
       noPositionsToShow: "No hay posiciones para mostrar",
       noUsersAvailableForSite: "No hay usuarios disponibles para este sitio",
@@ -1482,6 +1529,11 @@ const resources = {
 
       collapseAll: "Contraer todo",
       expandAll: "Expandir todo",
+      machinesOfArea: "Zonas del Area",
+      assignPositions: "Asignar Posiciones",
+      uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
+      databaseConnectionTest: "Prueba de conexión a base de datos",
+      verificationOfServices: "Verificación de Servicios",
     },
   },
 };

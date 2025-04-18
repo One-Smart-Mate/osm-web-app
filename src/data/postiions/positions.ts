@@ -13,4 +13,5 @@ export interface Position {
   status: string;
   createdAt?: string;
   updatedAt?: string;
+  userIds?: number[];
 }

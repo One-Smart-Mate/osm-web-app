@@ -11,6 +11,7 @@ const Positions = "/positions";
 export const ResetPasswordRoute = "/reset-password";
 const Charts = "/charts";
 export const UnauthorizedRoute = "/unauthorized";
+const SystemHealth = "/system-health";
 
 const Company = "/company/:company";
 const Site = "/site/:site";
@@ -25,6 +26,7 @@ const PublicCardDetailsRoute = "/public/card/:cardId/details";
 
 export default {
   AdminDirectionHome,
+  SystemHealth,
   Priorities,
   CardTypes,
   Preclassifiers,

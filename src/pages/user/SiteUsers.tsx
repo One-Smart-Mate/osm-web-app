@@ -144,14 +144,15 @@ const SiteUsers = ({ rol }: Props) => {
     try {
       setModalLoading(true);
       if (modalType === Strings.users) {
+        const useDataNet = values.uploadCardAndEvidenceWithDataNet ? 1 : 0;
         await registerUser(
           new CreateUser(
             values.name.trim(),
             values.email.trim(),
             Number(siteId),
             values.password,
-            values.uploadCardDataWithDataNet ? 1 : 0,
-            values.uploadCardEvidenceWithDataNet ? 1 : 0,
+            useDataNet,
+            useDataNet,
             values.roles
           )
         ).unwrap();
@@ -165,7 +166,7 @@ const SiteUsers = ({ rol }: Props) => {
       handleGetUsers();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
-      console.log('An error occurred:', error);
+      console.log("An error occurred:", error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);

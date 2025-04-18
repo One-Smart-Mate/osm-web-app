@@ -15,6 +15,26 @@ class StringsBase {
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
   static positionsSB = "positionsSB";
+  static assignPositions = "assignPositions";
+  static systemHealthSB = "systemHealthSB";
+  static systemHealthTitle = "systemHealthTitle";
+  static testingNotifications = "testingNotifications";
+  static testingEmails = "testingEmails";
+  static testingServices = "testingServices";
+  static testingDbWrite = "testingDbWrite";
+  static testingServerRam = "testingServerRam";
+  static testingEvidenceWrite = "testingEvidenceWrite";
+  static healthStatusOk = "healthStatusOk";
+  static healthStatusFailed = "healthStatusFailed";
+  
+  // System Health additional strings
+  static sessionPerformance = "sessionPerformance";
+  static memoryUsage = "memoryUsage";
+  static usedMemory = "usedMemory";
+  static totalMemory = "totalMemory";
+  static pageLoadTime = "pageLoadTime";
+  static domComplete = "domComplete";
+  static networkLatency = "networkLatency";
 
   // Rooutes
   static companyParam = "companyParam";
@@ -674,6 +694,12 @@ class StringsBase {
   static notificationReceived = "notificationReceived";
   static expandAll = "expandAll";
   static collapseAll = "collapseAll";
+  
+  static machinesOfArea = "machinesOfArea";
+  static uploadCardAndEvidenceWithDataNet = "uploadCardAndEvidenceWithDataNet";
+  static databaseConnectionTest = "databaseConnectionTest";
+  static verificationOfServices = "verificationOfServices";
+  
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -23,7 +23,7 @@ export interface ChartProps {
   endDate: string;
   methodologies: Methodology[];
   rol: UserRoles;
-  onAreaSelect?: (areaId: number) => void;
+  onAreaSelect?: (areaId: number, areaName?: string) => void;
 }
 
 const AreasChart = ({
@@ -76,7 +76,7 @@ const AreasChart = ({
         const defaultAreaId = transformedData[0].areaId;
         setAreaId(defaultAreaId);
         
-        onAreaSelect?.(defaultAreaId);
+        onAreaSelect?.(defaultAreaId, transformedData[0].area);
       }      
     } catch (error) {
       console.error(error);
@@ -104,7 +104,7 @@ const AreasChart = ({
   
     if (data.areaId !== areaId) {
       setAreaId(data.areaId);
-      onAreaSelect?.(data.areaId);
+      onAreaSelect?.(data.areaId, data.area);
     }
     
   };
