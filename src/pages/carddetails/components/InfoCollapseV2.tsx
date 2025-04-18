@@ -29,7 +29,7 @@ import {
 } from "../../../utils/Notifications";
 import { setCardUpdatedIndicator } from "../../../core/genericReducer";
 import UpdateMechanicForm from "./UpdateMechanicForm";
-import { Divider, Row, Col } from "antd";
+import { Divider } from "antd";
 import ImagesDisplayV2 from "./ImagesDisplayV2";
 import { theme } from "antd";
 import VideoPlayerV2 from "./VideoPlayerV2";
@@ -37,18 +37,19 @@ import AudioPlayer from "./AudioPlayer";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 
-
 const { useToken } = theme;
 
 interface CardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
-  cardName?: any
+  cardName?: any;
 }
 
 const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
   const location = useLocation();
-  const isPublicRoute = location.pathname.includes(Constants.externalProviderRouteVal);
+  const isPublicRoute = location.pathname.includes(
+    Constants.externalProviderRouteVal
+  );
   const [modalIsLoading, setModalLoading] = useState(false);
   const [modalIsOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState(Strings.empty);
@@ -87,7 +88,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
       return (form: FormInstance) => (
         <UpdateMechanicForm
           form={form}
-          card={data.card} 
+          card={data.card}
           cardId={Number(data.card.id)}
           cardName={cardName}
         />
@@ -130,8 +131,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
           new UpdateCardMechanic(
             Number(card.id),
             Number(finalMechanicId),
-            Number(currentUser.userId),
-            
+            Number(currentUser.userId)
           )
         ).unwrap();
       }
@@ -139,7 +139,7 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
       dispatch(setCardUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);
@@ -148,262 +148,121 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
 
   return (
     <>
-      <div className="px-4">
-        <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
-
-          <Row gutter={15} >
-            <Col xs={12} sm={12} md={8}>
-              <div className="flex items-center gap-1" >
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.tagNumber}
-                </span>
-                <p className="text-sm md:text-base">
-                  {card.siteCardId || Strings.NA}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={6}>
-              <div className="flex items-center gap-1">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.cardType}
-                </span>
-                <p
-                  className="font-semibold text-sm md:text-base"
-                  style={{ color: `#${card.cardTypeColor}` }}
-                >
-                  {card.cardTypeName}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={4}>
-              <div className="flex items-center gap-1">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.status}
-                </span>
-
-                <span
-                  className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white hover:bg-gray-600"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  {" "}
-                  {cardStatus.text}{" "}
-                </span>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={5}>
-              <div className="flex items-center gap-1">
-                <p className="font-semibold text-sm md:text-base">
-                  {Strings.tagPriority}
-                </p>
-                {isPublicRoute ? (
-                  <p
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {card.priorityCode
-                      ? `${card.priorityCode} - ${card.priorityDescription}`
-                      : Strings.NA}
-                  </p>
-                ) : (
-                  <p
-                    onClick={() => handleOnOpenModal(Strings.priority)}
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white cursor-pointer hover:bg-gray-600"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {card.priorityCode
-                      ? `${card.priorityCode} - ${card.priorityDescription}`
-                      : Strings.NA}
-                  </p>
-                )}
-              </div>
-            </Col>
-          </Row>
-
-          <Row gutter={15} className="xs:mb-4">
-            <Col xs={12} sm={12} md={8}>
-              <div className="flex flex-col items-start">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.creationDate}
-                </span>
-                <p className="text-left px-1 text-sm md:text-base sm:mb-4">
-                  {formatDate(card.createdAt) || Strings.NA}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={6}>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.dueDate}
-                </span>
-                <p className="text-left px-1 text-sm md:text-base">
-                  {card.cardDueDate || Strings.NA}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={4}>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.dateStatus}
-                </span>
-                <p
-                  className={`text-white text-center font-bold px-2 py-1 rounded-md ${
-                    cardStatus.dateStatus === Strings.expired
-                      ? "bg-red-500"
-                      : "bg-green-500"
-                  }`}
-                >
-                  {cardStatus.dateStatus}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={5}>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.daysSinceCreation}
-                </span>
-                <p className="text-center font-semibold text-sm md:text-base">
-                  {getDaysSince(card.createdAt) || Strings.cero}
-                </p>
-              </div>
-            </Col>
-          </Row>
-
-          <Row gutter={15}>
-            <Col xs={12} sm={12} md={8}>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.problemType}
-                </span>
-                <p className="text-left px-1 text-sm md:text-base">
-                  {card.preclassifierCode
-                    ? `${card.preclassifierCode} - ${card.preclassifierDescription}`
-                    : Strings.NA}
-                </p>
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={16}>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm md:text-base">
-                  {Strings.location}
-                </span>
-                <p className="text-left px-1 text-sm md:text-base">
-                  {card.cardLocation || Strings.NA}
-                </p>
-              </div>
-            </Col>
-          </Row>
-
-          <Row gutter={15}>
-            <Col xs={12} sm={12} md={8}>
-              <div className="flex items-center gap-1">
-                <p className="font-semibold text-sm md:text-base">
-                  {Strings.assignedTo}
-                </p>
-                {isPublicRoute ? (
-                  <p
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {card.mechanicName || Strings.NA}
-                  </p>
-                ) : (
-                  <p
-                    onClick={() => handleOnOpenModal(Strings.mechanic)}
-                    className="font-semibold text-sm md:text-base rounded-lg py-1 px-2 text-white cursor-pointer hover:bg-gray-600"
-                    style={{ backgroundColor: primaryColor }}
-                  >
-                    {card.mechanicName || Strings.NA}
-                  </p>
-                )}
-              </div>
-            </Col>
-
-            <Col xs={12} sm={12} md={16}>
-              {/* Anomaly detected */}
-              <div className="flex items-center gap-1">
-                <p className="font-semibold text-sm md:text-base">
-                  {Strings.anomalyDetected}
-                </p>
-                <p className="text-sm md:text-base">
-                  {card.commentsAtCardCreation || Strings.NA}
-                </p>
-              </div>
-            </Col>
-          </Row>
-
-          
-
-          <Row gutter={15}>
-            <Col xs={12} sm={12} md={16}>
-
-                      {/* Created by */}
-          <div className="flex items-center gap-1">
-            <p className="font-semibold text-sm md:text-base">
-              {Strings.createdBy}
-            </p>
-            <p className="text-sm md:text-base">
-              {card.creatorName || Strings.NA}
-            </p>
+      <div className="px-2 mt-3">
+        <div className="bg-white rounded-lg shadow p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4 border-b pb-4">
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Número de Tarjeta:</span>
+              <span className="font-semibold">{card.siteCardId || Strings.NA}</span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Tipo de Tarjeta:</span>
+              <span className="font-semibold" style={{ color: `#${card.cardTypeColor}` }}>
+                {card.cardTypeName}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+              <span className="text-gray-600 mr-2">Estado:</span>
+              <span
+                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center"
+                style={{ backgroundColor: primaryColor }}
+              >
+                {cardStatus.text}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+              <span className="text-gray-600 mr-2">Prioridad:</span>
+              <span
+                onClick={() => handleOnOpenModal(Strings.priority)}
+                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                style={{ backgroundColor: primaryColor }}
+              >
+                {card.priorityCode
+                  ? `${card.priorityCode} - ${card.priorityDescription}`
+                  : Strings.NA}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Fecha de creación:</span>
+              <span className="font-semibold">{formatDate(card.createdAt) || Strings.NA}</span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Fecha de vencimiento:</span>
+              <span className="font-semibold">{card.cardDueDate || Strings.NA}</span>
+            </div>
           </div>
-
-            </Col>
-          </Row>
-
-          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4">
+            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+              <span className="text-gray-600 mr-2">Estado de la fecha:</span>
+              <span
+                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center"
+                style={{
+                  backgroundColor:
+                    cardStatus.dateStatus === Strings.expired ? "#e53e3e" : "#38a169",
+                }}
+              >
+                {cardStatus.dateStatus}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Días desde la creación:</span>
+              <span className="font-semibold">{getDaysSince(card.createdAt) || Strings.cero}</span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Tipo de problema:</span>
+              <span className="font-semibold">
+                {card.preclassifierCode
+                  ? `${card.preclassifierCode} - ${card.preclassifierDescription}`
+                  : Strings.NA}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Ubicación:</span>
+              <span className="font-semibold">{card.cardLocation || Strings.NA}</span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+              <span className="text-gray-600 mr-2">Responsable:</span>
+              <span
+                onClick={() => handleOnOpenModal(Strings.mechanic)}
+                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                style={{ backgroundColor: primaryColor }}
+              >
+                {card.mechanicName || Strings.NA}
+              </span>
+            </div>
+            <div className="bg-gray-50 p-2 rounded flex items-center">
+              <span className="text-gray-600 mr-2">Creado por:</span>
+              <span className="font-semibold">{card.creatorName || Strings.NA}</span>
+            </div>
+          </div>
+          <div className="border-t pt-4 flex flex-col sm:flex-row gap-3 items-center">
+            <span className="text-gray-600 mr-2">Anomalía detectada:</span>
+            <div className="bg-gray-50 p-2 rounded flex-1 max-w-[350px]">
+              {card.commentsAtCardCreation || Strings.NA}
+            </div>
+          </div>
         </div>
-
-
-        
-
-        <Divider
-          orientation="left"
-          style={{ borderColor: "#808080" }}
-          className="text-sm md:text-base"
-        >
+        <Divider orientation="left" className="text-xs my-2" style={{ borderColor: "#808080" }}>
           {Strings.evidencesAtCreationDivider}
         </Divider>
-
-        <div className="flex gap-3">
-          {evidences.length === 0 && (
-            <p className="text-base text-gray-700">{Strings.NA}</p>
-          )}
-        </div>
-
-        <div className="flex gap-2 flex-wrap mt-2 justify-center items-center">
+        <div className="flex flex-wrap justify-center gap-2 mt-2">
+          {evidences.length === 0 && <p className="text-gray-600 text-sm">{Strings.NA}</p>}
           {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
-        </div>
-
-        <div className="flex gap-2 flex-wrap mt-2 justify-center items-center">
           {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
-        </div>
-
-        <div className="flex gap-2 flex-wrap mt-2 justify-center items-center">
           {hasAudios(evidences) && <AudioPlayer data={evidences} />}
         </div>
+        <Form.Provider onFormFinish={async (_, { values }) => handleOnFormUpdateFinish(values)}>
+          <ModalForm
+            open={modalIsOpen}
+            isLoading={modalIsLoading}
+            onCancel={handleOnCancelButton}
+            title={selecTitleByModalType(modalType)}
+            FormComponent={selectFormByModalType(modalType)}
+          />
+        </Form.Provider>
       </div>
-
-      <Form.Provider
-        onFormFinish={async (_, { values }) => {
-          await handleOnFormUpdateFinish(values);
-        }}
-      >
-        <ModalForm
-          open={modalIsOpen}
-          isLoading={modalIsLoading}
-          onCancel={handleOnCancelButton}
-          title={selecTitleByModalType(modalType)}
-          FormComponent={selectFormByModalType(modalType)}
-        />
-      </Form.Provider>
     </>
-  );
+  );  
 };
 
 export default InfoCollapseV2;

@@ -185,18 +185,21 @@ const CardDetails = () => {
 
   return (
     <>
-      <div className="h-full flex flex-col">
-        <div className="flex justify-between items-center m-3 px-3">
-          <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
-          <ExportPdfButton 
-            targetId="pdf-content" 
-            filename={Strings.namePDF} 
-            cardNumber={data?.card?.siteCardId} 
-          />
+      <div className="h-full flex flex-col max-w-full">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center m-2 sm:m-3 px-2 sm:px-3 gap-2 sm:gap-3">
+          <div className="w-full sm:w-auto overflow-hidden">
+            <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
+          </div>
+          <div className="w-full sm:w-auto flex justify-start sm:justify-end">
+            <ExportPdfButton 
+              targetId="pdf-content" 
+              filename={Strings.namePDF} 
+              cardNumber={data?.card?.siteCardId} 
+            />
+          </div>
         </div>
-        <br />
 
-        <div className="flex flex-col overflow-y-auto overflow-x-clipb gap-2">
+        <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">
           {data ? (
             <InfoCollapseV2
               data={data}
@@ -223,18 +226,18 @@ const CardDetails = () => {
             <LoadingCard />
           )}
 
-          <Divider style={{ borderColor: "#808080" }}>
-            <Text style={{ fontSize: "24px", fontWeight: "bold" }}>
+          <Divider style={{ borderColor: "#808080" }} className="my-2 sm:my-4">
+            <Text style={{ fontWeight: "bold" }} className="text-sm sm:text-base md:text-lg lg:text-xl">
               {Strings.changeLogDivider}
             </Text>
           </Divider>
 
-          <div className="flex flex-col items-center m-3">
+          <div className="w-full mx-auto my-2 sm:my-3">
             {!isLoading ? <NoteCollapseV2 data={notes} /> : <LoadingCard />}
           </div>
 
           <div className="App">
-            <div style={{ opacity: 0 }}>
+            <div style={{ opacity: 0, position: 'absolute', left: '-9999px' }}>
               <div id="pdf-content">
                 <PdfContent />
               </div>
@@ -249,7 +252,7 @@ const CardDetails = () => {
 const LoadingCard = () => {
   return (
     <Card
-      className="h-full bg-gray-100 rounded-xl shadow-md md:w-4/5"
+      className="h-full bg-gray-100 rounded-xl shadow-md w-full mx-auto"
       loading={true}
     />
   );
