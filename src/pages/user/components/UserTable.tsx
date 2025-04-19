@@ -6,6 +6,7 @@ import { Space, Table, Tag, Tooltip } from "antd";
 import Constants from "../../../utils/Constants";
 import { Role, Site, UserPosition, UserTable } from "../../../data/user/user";
 import UpdateUserButton from "./UpdateUserButton";
+import AssignPositionsButton from "./AssignPositionsButton";
 import { useGetUserPositionsMutation } from "../../../services/userService";
 
 interface PrioritiesTableProps {
@@ -132,6 +133,26 @@ const UserTableComponent = ({
                       userId={record.id}
                       siteId={siteId}
                       isSiteUserstable={isSiteUserstable}
+                    />
+                    <AssignPositionsButton
+                      userId={record.id}
+                      siteId={siteId}
+                      onPositionsUpdated={() => {
+                        // Refresh user positions
+                        const fetchPositions = async () => {
+                          try {
+                            setLoadingPositions(prev => ({ ...prev, [record.id]: true }));
+                            const positions = await getUserPositions(record.id).unwrap();
+                            setUserPositions(prev => ({ ...prev, [record.id]: positions }));
+                          } catch (error) {
+                            console.error(`Error fetching positions for user ${record.id}:`, error);
+                            setUserPositions(prev => ({ ...prev, [record.id]: [] }));
+                          } finally {
+                            setLoadingPositions(prev => ({ ...prev, [record.id]: false }));
+                          }
+                        };
+                        fetchPositions();
+                      }}
                     />
                   </Space>
                 );

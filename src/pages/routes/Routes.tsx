@@ -24,6 +24,8 @@ import Strings from "../../utils/localizations/Strings";
 import PositionsPage from "../positions/PositionsPage";
 import { AiOutlineBell } from "react-icons/ai";
 import Notifications from "../notifications/Notifications";
+import { MdHealthAndSafety } from "react-icons/md";
+import SystemHealth from "../systemhealth/SystemHealth";
 
 const adminNotifications = new Route(
   Strings.notificationsSB,
@@ -128,7 +130,15 @@ const adminPositions = new Route(
   <></>
 );
 
-const adminRoutesSiderOptions = (): ItemType[] => {
+const adminSystemHealth = new Route(
+  Strings.systemHealthSB,
+  "system-health",
+  Routes.AdminPrefix + Routes.SystemHealth,
+  <SystemHealth />,
+  <MdHealthAndSafety />
+);
+
+const adminRoutesSiderOptions = (user: User): ItemType[] => {
   const items: MenuProps["items"] = [
     getItem(adminCompanies.label, adminCompanies.fullPath, adminCompanies.icon),
     getItem(adminUsers.label, adminUsers.fullPath, adminUsers.icon),
@@ -138,6 +148,18 @@ const adminRoutesSiderOptions = (): ItemType[] => {
       adminNotifications.icon
     ),
   ];
+  
+  // Add System Health button only for IHSISADMIN role
+  if (getUserRol(user) === UserRoles.IHSISADMIN) {
+    items.push(
+      getItem(
+        adminSystemHealth.label,
+        adminSystemHealth.fullPath,
+        adminSystemHealth.icon
+      )
+    );
+  }
+  
   return items;
 };
 
@@ -155,6 +177,7 @@ const adminRoutes: Route[] = [
   adminSiteUsers,
   adminPositions,
   adminNotifications,
+  adminSystemHealth,
 ];
 
 const sysAdminCharts = new Route(
@@ -354,7 +377,7 @@ const getUserSiderOptions = (user: User): ItemType[] => {
 
   switch (rol) {
     case UserRoles.IHSISADMIN:
-      routes = adminRoutesSiderOptions();
+      routes = adminRoutesSiderOptions(user);
       break;
     case UserRoles.LOCALSYSADMIN:
       routes = sysAdminRoutesSiderOptions(user);

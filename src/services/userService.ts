@@ -1,4 +1,3 @@
-
 import { apiSlice } from "./apiSlice";
 import {
   Responsible,
@@ -12,6 +11,8 @@ import {
   SetAppTokenDTO,
   UpdateUser,
 } from "../data/user/user.request";
+import i18next from "i18next";
+import Constants from "../utils/Constants";
 
 export const userService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -32,11 +33,29 @@ export const userService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: UserTable[] }) => response.data,
     }),
     createUser: builder.mutation<void, CreateUser>({
-      query: (user) => ({
-        url: "/users/create",
-        method: "POST",
-        body: { ...user },
-      }),
+      query: (user) => {
+        // Get current language and convert to uppercase (ES or EN)
+        // Default to 'EN' if language detection fails
+        let currentLang = Constants.en;
+        
+        try {
+          // Get language from i18next
+          if (i18next.language) {
+            currentLang = i18next.language.split("-")[0].toUpperCase();
+            // Ensure it's only ES or EN
+            currentLang = currentLang === Constants.es ? Constants.es : Constants.en;
+          }
+        } catch (error) {
+          // Default to EN if there's an error
+          currentLang = Constants.en;
+        }
+        
+        return {
+          url: "/users/create",
+          method: "POST",
+          body: { ...user, translation: currentLang },
+        };
+      },
     }),
     getUser: builder.mutation<UserUpdateForm, string>({
       query: (id) => `/users/user/${id}`,
@@ -50,11 +69,29 @@ export const userService = apiSlice.injectEndpoints({
       }),
     }),
     sendCodeToEmail: builder.mutation<void, string>({
-      query: (email) => ({
-        url: "/users/send-code",
-        method: "POST",
-        body: { email },
-      }),
+      query: (email) => {
+        // Get current language and convert to uppercase (ES or EN)
+        // Default to 'EN' if language detection fails
+        let currentLang = Constants.en;
+        
+        try {
+          // Get language from i18next
+          if (i18next.language) {
+            currentLang = i18next.language.split("-")[0].toUpperCase();
+            // Ensure it's only ES or EN
+            currentLang = currentLang === Constants.es ? Constants.es : Constants.en;
+          }
+        } catch (error) {
+          // Default to EN if there's an error
+          currentLang = Constants.en;
+        }
+        
+        return {
+          url: "/users/send-code",
+          method: "POST",
+          body: { email, translation: currentLang },
+        };
+      },
     }),
     sendCodeToVerify: builder.mutation<void, SendResetCode>({
       query: (sendResetCode) => ({

@@ -96,6 +96,7 @@ const Companies = () => {
       setModalLoading(true);
       if (companyURL == null || companyURL == undefined || companyURL == "") {
         handleErrorNotification(Strings.requiredLogo);
+        setModalLoading(false);
         return;
       }
       await registerCompany(
@@ -115,6 +116,7 @@ const Companies = () => {
       setModalOpen(false);
       handleGetCompanies();
       handleSucccessNotification(NotificationSuccess.REGISTER);
+      setCompanyURL("");
     } catch (error) {
       console.error("Error creating company:", error);
       handleErrorNotification(error);

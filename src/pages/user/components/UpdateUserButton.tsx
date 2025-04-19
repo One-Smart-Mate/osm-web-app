@@ -58,6 +58,8 @@ const UpdateUserButton = ({
   const handleOnUpdateFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
+      
+      const useDataNet = values.uploadCardAndEvidenceWithDataNet ? 1 : 0;
       await updateUser(
         new UpdateUser(
           Number(values.id),
@@ -65,8 +67,8 @@ const UpdateUserButton = ({
           values.email.trim(),
           Number(siteId),
           values.password,
-          values.uploadCardDataWithDataNet ? 1 : 0,
-          values.uploadCardEvidenceWithDataNet ? 1 : 0,
+          useDataNet, 
+          useDataNet, 
           values.roles,
           values.status
         )

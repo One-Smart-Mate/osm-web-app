@@ -9,7 +9,7 @@ import {
   useUdpateLevelMutation,
 } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin, Modal } from "antd";
+import { Form, Drawer, Spin, Modal, Button } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -21,7 +21,6 @@ import LevelContextMenu from "./components/LevelContextMenu";
 import LevelFormDrawer from "./components/LevelFormDrawer";
 
 import { useGetSiteMutation } from "../../services/siteService";
-
 
 interface Props {
   role: UserRoles;
@@ -63,6 +62,10 @@ const Levels = ({ role }: Props) => {
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
+  const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
+    const storedState = localStorage.getItem('treeExpandedState');
+    return storedState === 'true';
+  });
 
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -73,7 +76,6 @@ const Levels = ({ role }: Props) => {
 
   const [isCloning, setIsCloning] = useState(false);
 
-  
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
   const [formData, setFormData] = useState<any>({});
@@ -89,11 +91,11 @@ const Levels = ({ role }: Props) => {
   const siteName = location.state?.siteName || Strings.defaultSiteName;
   const siteId = location.state?.siteId;
 
-  
   const [positionData, setPositionData] = useState<any>(null);
 
   const [, setSiteData] = useState<any>(null);
 
+  const [getSite] = useGetSiteMutation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -131,6 +133,10 @@ const Levels = ({ role }: Props) => {
     };
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('treeExpandedState', isTreeExpanded.toString());
+  }, [isTreeExpanded]);
+
   const handleGetLevels = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
@@ -140,11 +146,38 @@ const Levels = ({ role }: Props) => {
     setLoading(true);
     try {
       const response = await getLevels(location.state.siteId).unwrap();
+      const hierarchyData = buildHierarchy(response);
+      
+      
+      const isExpanded = localStorage.getItem('treeExpandedState') === 'true';
+      
+      
+      if (isExpanded !== undefined) {
+        
+        const applyExpandState = (nodes: any[]) => {
+          nodes.forEach(node => {
+            if (node.id !== "0") { 
+              localStorage.setItem(
+                `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+                (!isExpanded).toString() 
+              );
+            }
+            
+            if (node.children && node.children.length > 0) {
+              applyExpandState(node.children);
+            }
+          });
+        };
+        
+        
+        applyExpandState(hierarchyData);
+      }
+      
       setTreeData([
         {
           name: Strings.levelsOf.concat(siteName),
           id: "0",
-          children: buildHierarchy(response),
+          children: hierarchyData,
         },
       ]);
       dispatch(setSiteId(location.state.siteId));
@@ -191,54 +224,40 @@ const Levels = ({ role }: Props) => {
     setContextMenuVisible(false);
   };
 
+  const handleCreatePosition = async () => {
+    closeAllDrawers();
+    if (!selectedNode?.data?.id) {
+      return;
+    }
 
-const [getSite] = useGetSiteMutation();
+    const level = selectedNode.data;
 
-const handleCreatePosition = async () => {
-  closeAllDrawers();
-  
-  
-  if (!selectedNode?.data?.id) {
-    return;
-  }
+    try {
+      const siteResponse = await getSite(location.state.siteId).unwrap();
+      setSiteData(siteResponse);
 
-  const level = selectedNode.data;
+      const newPositionData = {
+        siteId: Number(location.state.siteId),
+        siteName: location.state.siteName,
+        siteType: siteResponse.siteType,
+        areaId: 2,
+        areaName: "Development",
+        levelId: Number(level.id),
+        levelName: level.name,
+        route: level.levelLocation,
+      };
 
-  try {
-    
+      setPositionData(newPositionData);
 
+      positionForm.resetFields();
+      setDrawerType("position");
+      setDrawerVisible(true);
+      setContextMenuVisible(false);
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    
-    const siteResponse = await getSite(location.state.siteId).unwrap();
-    setSiteData(siteResponse);
-
-    
-    const newPositionData = {
-      siteId: Number(location.state.siteId),
-      siteName: location.state.siteName,
-      siteType: siteResponse.siteType,  
-      areaId: 2,                         
-      areaName: "Development",           
-      levelId: Number(level.id),         
-      levelName: level.name,     
-      route: level.levelLocation,
-    };
-    
-    
-    setPositionData(newPositionData);
-    
-    
-    positionForm.resetFields();
-    setDrawerType("position");
-    setDrawerVisible(true);
-    setContextMenuVisible(false);
-  } catch (error) {
-    throw error;
-  }
-};
-
-
-  
   const cloneSubtree = async (
     node: any,
     newSuperiorId: number | null = null,
@@ -255,7 +274,12 @@ const handleCreatePosition = async () => {
     const payload = allowedProperties.reduce((acc: any, key: string) => {
       if (node[key] !== undefined) {
         if (
-          [Constants.responsibleId, Constants.siteId, Constants.superiorId, Constants.notify].includes(key)
+          [
+            Constants.responsibleId,
+            Constants.siteId,
+            Constants.superiorId,
+            Constants.notify,
+          ].includes(key)
         ) {
           acc[key] = node[key] !== null ? Number(node[key]) : node[key];
         } else {
@@ -274,7 +298,6 @@ const handleCreatePosition = async () => {
         ? Number(payload.superiorId)
         : 0;
 
-    
     payload.levelMachineId = null;
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
@@ -293,7 +316,7 @@ const handleCreatePosition = async () => {
 
   const handleCloneLevel = async () => {
     if (!selectedNode?.data) return;
-    
+
     Modal.confirm({
       title: Strings.confirmCloneLevel,
       content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
@@ -313,7 +336,7 @@ const handleCreatePosition = async () => {
       },
       onCancel: () => {
         setContextMenuVisible(false);
-      }
+      },
     });
   };
 
@@ -353,7 +376,7 @@ const handleCreatePosition = async () => {
         };
         await updateLevel(updatePayload).unwrap();
       }
-      
+
       await handleGetLevels();
       handleDrawerClose();
     } catch (error) {
@@ -363,13 +386,66 @@ const handleCreatePosition = async () => {
     }
   };
 
-  
   const handleShowDetails = (nodeId: string) => {
     if (nodeId !== "0") {
       closeAllDrawers();
       setSelectedLevelId(nodeId);
       setDetailsVisible(true);
       setContextMenuVisible(false);
+    }
+  };
+
+  const expandAllNodes = () => {
+    const expandNodes = (nodes: any[]) => {
+      nodes.forEach(node => {
+        localStorage.setItem(
+          `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+          "false"
+        );
+        
+        if (node.children && node.children.length > 0) {
+          expandNodes(node.children);
+        }
+      });
+    };
+
+    if (treeData.length > 0) {
+      expandNodes(treeData);
+      localStorage.setItem('treeExpandedState', 'true');
+      handleGetLevels();
+      setIsTreeExpanded(true);
+    }
+  };
+
+  const collapseAllNodes = () => {
+    const collapseNodes = (nodes: any[]) => {
+      nodes.forEach(node => {
+        if (node.id !== "0") {
+          localStorage.setItem(
+            `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+            "true"
+          );
+        }
+        
+        if (node.children && node.children.length > 0) {
+          collapseNodes(node.children);
+        }
+      });
+    };
+
+    if (treeData.length > 0) {
+      collapseNodes(treeData);
+      localStorage.setItem('treeExpandedState', 'false');
+      handleGetLevels();
+      setIsTreeExpanded(false);
+    }
+  };
+
+  const toggleAllNodes = () => {
+    if (isTreeExpanded) {
+      collapseAllNodes();
+    } else {
+      expandAllNodes();
     }
   };
 
@@ -403,6 +479,17 @@ const handleCreatePosition = async () => {
           </div>
         ) : (
           <>
+            {/* Botón para expandir/contraer todos los nodos */}
+            <div className="absolute top-4 right-4 z-10">
+              <Button 
+                type="primary" 
+                onClick={toggleAllNodes}
+                className="bg-blue-500 hover:bg-blue-600"
+              >
+                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+              </Button>
+            </div>
+            
             {treeData.length > 0 && (
               <Tree
                 data={treeData}
@@ -429,7 +516,7 @@ const handleCreatePosition = async () => {
         handleCreateLevel={handleCreateLevel}
         handleUpdateLevel={handleUpdateLevel}
         handleCloneLevel={handleCloneLevel}
-        handleCreatePosition={handleCreatePosition}  
+        handleCreatePosition={handleCreatePosition}
       />
 
       {detailsVisible && selectedLevelId && (
@@ -462,7 +549,7 @@ const handleCreatePosition = async () => {
         drawerPlacement={drawerPlacement}
         createForm={createForm}
         updateForm={updateForm}
-        positionForm={positionForm}  
+        positionForm={positionForm}
         formData={formData}
         isLoading={isLoading}
         handleDrawerClose={handleDrawerClose}
