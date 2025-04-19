@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Constants from "../../../utils/Constants";
 import Strings from "../../../utils/localizations/Strings";
 
@@ -23,6 +23,9 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
   setSelectedNode,
   handleShowDetails,
 }) => {
+  const longPressTimeoutRef = useRef<number | null>(null);
+  const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
+
   const getCollapsedState = (nodeId: string): boolean => {
     const storedState = localStorage.getItem(
       `${Constants.nodeStartBridgeCollapsed}${nodeId}${Constants.nodeEndBridgeCollapserd}`
@@ -70,13 +73,57 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
     setContextMenuVisible(false);
     const newCollapsedState = !nodeDatum.__rd3t.collapsed;
     setCollapsedState(nodeDatum.id, newCollapsedState);
-    
+
     handleShowDetails(nodeDatum.id);
     toggleNode();
   };
 
+  const handleTouchStart = (e: React.TouchEvent<SVGGElement>) => {
+    const touch = e.touches[0];
+    touchStartPositionRef.current = { x: touch.clientX, y: touch.clientY };
+
+    longPressTimeoutRef.current = window.setTimeout(() => {
+      if (containerRef.current) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setContextMenuPos({ x: rect.right - 50, y: rect.top - 60 });
+        setSelectedNode({ data: nodeDatum });
+        setContextMenuVisible(true);
+      }
+    }, 800);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<SVGGElement>) => {
+    if (!touchStartPositionRef.current) return;
+
+    const touch = e.touches[0];
+    const diffX = Math.abs(touch.clientX - touchStartPositionRef.current.x);
+    const diffY = Math.abs(touch.clientY - touchStartPositionRef.current.y);
+
+    if (diffX > 10 || diffY > 10) {
+      if (longPressTimeoutRef.current) {
+        clearTimeout(longPressTimeoutRef.current);
+        longPressTimeoutRef.current = null;
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+    touchStartPositionRef.current = null;
+  };
+
   return (
-    <g onClick={handleLeftClick} onContextMenu={handleContextMenu}>
+    <g
+      onClick={handleLeftClick}
+      onContextMenu={handleContextMenu}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+    >
       <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
       <text
         fill="black"
