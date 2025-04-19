@@ -118,6 +118,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<DrawerType>(null);
   const [formData, setFormData] = useState<any>(null);
+  // State to track if the tree is fully expanded or collapsed
+  const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
+    const storedState = localStorage.getItem('cardTypesTreeExpandedState');
+    return storedState === 'true';
+  });
 
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [detailsNode, setDetailsNode] = useState<any>(null);
@@ -175,6 +180,10 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    localStorage.setItem('cardTypesTreeExpandedState', isTreeExpanded.toString());
+  }, [isTreeExpanded]);
+
   const handleLoadData = async (siteId: string) => {
     setLoading(true);
     try {
@@ -193,13 +202,47 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       });
 
       const hierarchy = buildHierarchy(cardTypesResponse, siteId, preclassMap);
-      setTreeData([
-        {
-          name: `${Strings.cardType} ${location.state.siteName}`,
-          nodeType: "cardType",
-          children: hierarchy,
-        },
-      ]);
+      
+      // Get the tree expanded state from localStorage
+      const isExpanded = localStorage.getItem('cardTypesTreeExpandedState') === 'true';
+      
+      // Apply the state to all nodes if needed
+      if (isExpanded !== undefined) {
+        // Recursive function to set the state of all nodes
+        const applyExpandState = (nodes: any[]) => {
+          nodes.forEach(node => {
+            // Skip the root node
+            if (node.id) {
+              localStorage.setItem(
+                `node_${node.id}_collapsed`,
+                (!isExpanded).toString() // false if expanded, true if collapsed
+              );
+            }
+            
+            // Process children recursively
+            if (node.children && node.children.length > 0) {
+              applyExpandState(node.children);
+            }
+          });
+        };
+        
+        // Apply the state to all nodes
+        applyExpandState(hierarchy);
+      }
+      
+      // Only set tree data if we have valid hierarchy data
+      if (hierarchy && hierarchy.length > 0) {
+        setTreeData([
+          {
+            name: `${Strings.cardType} ${location.state.siteName}`,
+            nodeType: "cardType",
+            children: hierarchy,
+          },
+        ]);
+      } else {
+        // Set empty tree data if no hierarchy was built
+        setTreeData([]);
+      }
 
       dispatch(setSiteId(siteId));
 
@@ -214,6 +257,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         description: "Error fetching data",
         placement: "topRight",
       });
+      // Set empty tree data on error
+      setTreeData([]);
     } finally {
       setLoading(false);
     }
@@ -405,25 +450,33 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
   const renderCustomNodeElement = (rd3tProps: any) => {
     const { nodeDatum, toggleNode } = rd3tProps;
-
     
+    // Safety check to ensure nodeDatum exists and has the expected properties
+    if (!nodeDatum) {
+      return <g></g>; // Return empty group if nodeDatum is undefined
+    }
 
-    const isRoot = nodeDatum.__rd3t.depth === 0;
+    const isRoot = nodeDatum.__rd3t?.depth === 0;
     const isPreclassifier = nodeDatum.nodeType === "preclassifier";
 
 
     const getCollapsedState = (nodeId: string): boolean => {
+      if (!nodeId) return false;
       const storedState:string | null = (localStorage.getItem(`node_${nodeId}_collapsed`)) ;
       const booleanState: boolean = JSON.parse(storedState ?? Strings.false); // Parse the state
       return booleanState;  
     };
     
     const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
+      if (!nodeId) return;
       localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
     };
     
-    const isCollapsed = getCollapsedState(nodeDatum.id);
-  nodeDatum.__rd3t.collapsed = isCollapsed;
+    // Only attempt to get/set collapsed state if nodeDatum has an id
+    if (nodeDatum.id && nodeDatum.__rd3t) {
+      const isCollapsed = getCollapsedState(nodeDatum.id);
+      nodeDatum.__rd3t.collapsed = isCollapsed;
+    }
 
     const getStatusColor = (status: string | undefined) => {
       switch (status) {
@@ -440,7 +493,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
 
     const fillColor = statusColor
       ? statusColor
-      : nodeDatum.__rd3t.depth === 0
+      : nodeDatum.__rd3t?.depth === 0
       ? "#145695"
       : nodeDatum.nodeType === "preclassifier"
       ? "#FFFF00"
@@ -643,25 +696,106 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     );
   };
 
+  const expandAllNodes = () => {
+    // Recursive function to expand all nodes
+    const expandNodes = (nodes: any[]) => {
+      if (!nodes || nodes.length === 0) return;
+      
+      nodes.forEach(node => {
+        // Set expanded state in localStorage (false means expanded in this context)
+        if (node && node.id) {
+          localStorage.setItem(`node_${node.id}_collapsed`, 'false');
+        }
+        
+        // Process children recursively
+        if (node && node.children && node.children.length > 0) {
+          expandNodes(node.children);
+        }
+      });
+    };
+
+    // Start expansion from root nodes
+    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+      expandNodes(treeData[0].children);
+      // Save the general tree state in localStorage
+      localStorage.setItem('cardTypesTreeExpandedState', 'true');
+      // Refresh the tree to apply changes
+      handleLoadData(location.state.siteId);
+      setIsTreeExpanded(true);
+    }
+  };
+
+  const collapseAllNodes = () => {
+    // Recursive function to collapse all nodes
+    const collapseNodes = (nodes: any[]) => {
+      if (!nodes || nodes.length === 0) return;
+      
+      nodes.forEach(node => {
+        // Skip the root node
+        if (node && node.id) {
+          // Set collapsed state in localStorage (true means collapsed in this context)
+          localStorage.setItem(`node_${node.id}_collapsed`, 'true');
+        }
+        
+        // Process children recursively
+        if (node && node.children && node.children.length > 0) {
+          collapseNodes(node.children);
+        }
+      });
+    };
+
+    // Start collapsing from root nodes
+    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+      collapseNodes(treeData[0].children);
+      // Save the general tree state in localStorage
+      localStorage.setItem('cardTypesTreeExpandedState', 'false');
+      // Refresh the tree to apply changes
+      handleLoadData(location.state.siteId);
+      setIsTreeExpanded(false);
+    }
+  };
+
+  const toggleAllNodes = () => {
+    if (isTreeExpanded) {
+      collapseAllNodes();
+    } else {
+      expandAllNodes();
+    }
+  };
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <div ref={containerRef} className="relative flex-1 overflow-hidden">
-        {loading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75 z-10">
-            <Spin spinning={loading} tip={Strings.cardTypesLoadingData} />
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <Spin size="large" />
           </div>
-        )}
-        {!loading && treeData.length > 0 && (
-          <Tree
-            data={treeData}
-            orientation="horizontal"
-            translate={translate}
-            renderCustomNodeElement={renderCustomNodeElement}
-            zoomable
-            collapsible={true}
-          />
+        ) : (
+          <>
+            {/* Toggle expand/collapse button */}
+            <div className="absolute top-4 right-4 z-10">
+              <button
+                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${isTreeExpanded ? 'bg-red-500 hover:bg-red-700' : ''}`}
+                onClick={toggleAllNodes}
+              >
+                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+              </button>
+            </div>
+            
+            {treeData && treeData.length > 0 && (
+              <Tree
+                data={treeData}
+                translate={translate}
+                orientation="horizontal"
+                renderCustomNodeElement={renderCustomNodeElement}
+                collapsible={true}
+                zoomable
+              />
+            )}
+          </>
         )}
       </div>
+
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnFormFinish(values);

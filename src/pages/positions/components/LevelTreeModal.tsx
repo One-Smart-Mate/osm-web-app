@@ -58,6 +58,16 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
   const [selectedNode, setSelectedNode] = useState<any | null>(null);
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+  // State to track if the tree is fully expanded or collapsed
+  const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
+    const storedState = localStorage.getItem('levelTreeModalExpandedState');
+    return storedState === 'true';
+  });
+
+  useEffect(() => {
+    // Update localStorage when tree expanded state changes
+    localStorage.setItem('levelTreeModalExpandedState', isTreeExpanded.toString());
+  }, [isTreeExpanded]);
 
   useEffect(() => {
     if (isVisible && siteId) {
@@ -90,11 +100,42 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
     setLoading(true);
     try {
       const response = await getLevels(siteId).unwrap();
+      const hierarchy = buildHierarchy(response);
+      
+      // Get the tree expanded state from localStorage
+      const isExpanded = localStorage.getItem('levelTreeModalExpandedState') === 'true';
+      
+      // Apply the state to all nodes if needed
+      if (isExpanded !== undefined) {
+        // Recursive function to set the state of all nodes
+        const applyExpandState = (nodes: any[]) => {
+          if (!nodes || nodes.length === 0) return;
+          
+          nodes.forEach(node => {
+            // Skip the root node
+            if (node && node.id && node.id !== "0") {
+              localStorage.setItem(
+                `levelTreeModal_${node.id}_collapsed`,
+                (!isExpanded).toString() // false if expanded, true if collapsed
+              );
+            }
+            
+            // Process children recursively
+            if (node && node.children && node.children.length > 0) {
+              applyExpandState(node.children);
+            }
+          });
+        };
+        
+        // Apply the state to all nodes
+        applyExpandState(hierarchy);
+      }
+      
       setTreeData([
         {
           name: Strings.levelsOf.concat(' ', siteName),
           id: "0",
-          children: buildHierarchy(response),
+          children: hierarchy,
         },
       ]);
       
@@ -119,9 +160,104 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
     onClose();
   };
 
+  // Function to expand all nodes in the tree
+  const expandAllNodes = () => {
+    // Recursive function to expand all nodes
+    const expandNodes = (nodes: any[]) => {
+      if (!nodes || nodes.length === 0) return;
+      
+      nodes.forEach(node => {
+        // Set expanded state in localStorage (false means expanded in this context)
+        if (node && node.id) {
+          localStorage.setItem(
+            `levelTreeModal_${node.id}_collapsed`,
+            'false'
+          );
+        }
+        
+        // Process children recursively
+        if (node && node.children && node.children.length > 0) {
+          expandNodes(node.children);
+        }
+      });
+    };
+
+    // Start expansion from root nodes
+    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+      expandNodes(treeData[0].children);
+      // Save the general tree state in localStorage
+      localStorage.setItem('levelTreeModalExpandedState', 'true');
+      // Refresh the tree to apply changes
+      handleGetLevels();
+      setIsTreeExpanded(true);
+    }
+  };
+
+  // Function to collapse all nodes in the tree
+  const collapseAllNodes = () => {
+    // Recursive function to collapse all nodes
+    const collapseNodes = (nodes: any[]) => {
+      if (!nodes || nodes.length === 0) return;
+      
+      nodes.forEach(node => {
+        // Skip the root node
+        if (node && node.id && node.id !== "0") {
+          // Set collapsed state in localStorage (true means collapsed in this context)
+          localStorage.setItem(
+            `levelTreeModal_${node.id}_collapsed`,
+            'true'
+          );
+        }
+        
+        // Process children recursively
+        if (node && node.children && node.children.length > 0) {
+          collapseNodes(node.children);
+        }
+      });
+    };
+
+    // Start collapsing from root nodes
+    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+      collapseNodes(treeData[0].children);
+      // Save the general tree state in localStorage
+      localStorage.setItem('levelTreeModalExpandedState', 'false');
+      // Refresh the tree to apply changes
+      handleGetLevels();
+      setIsTreeExpanded(false);
+    }
+  };
+
+  // Function to toggle between expanding and collapsing all nodes
+  const toggleAllNodes = () => {
+    if (isTreeExpanded) {
+      collapseAllNodes();
+    } else {
+      expandAllNodes();
+    }
+  };
+
   const CustomNodeElement = ({ nodeDatum, toggleNode }: any) => {
     const isLeafNode = !nodeDatum.children || nodeDatum.children.length === 0;
     const fillColor = isLeafNode ? "#FFFF00" : "#145695";
+
+    // Get collapsed state from localStorage
+    const getCollapsedState = (nodeId: string): boolean => {
+      if (!nodeId) return false;
+      const storedState = localStorage.getItem(`levelTreeModal_${nodeId}_collapsed`);
+      return storedState === 'true';
+    };
+    
+    // Set collapsed state in localStorage
+    const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
+      if (!nodeId) return;
+      localStorage.setItem(`levelTreeModal_${nodeId}_collapsed`, isCollapsed.toString());
+    };
+    
+    // Apply collapsed state to the node
+    if (nodeDatum.id && nodeDatum.__rd3t) {
+      const isCollapsed = getCollapsedState(nodeDatum.id);
+      nodeDatum.__rd3t.collapsed = isCollapsed;
+    }
 
     const handleRightClick = (e: React.MouseEvent<SVGGElement>) => {
       e.preventDefault();
@@ -142,6 +278,13 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
 
     const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
       e.stopPropagation();
+      
+      // Toggle collapsed state in localStorage
+      if (nodeDatum.id) {
+        const newCollapsedState = !nodeDatum.__rd3t.collapsed;
+        setCollapsedState(nodeDatum.id, newCollapsedState);
+      }
+      
       toggleNode();
     };
 
@@ -216,6 +359,15 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
                 </Button>
               </div>
             )}
+            
+            <div className="absolute top-4 right-4">
+              <Button 
+                type="primary" 
+                onClick={toggleAllNodes}
+              >
+                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+              </Button>
+            </div>
           </>
         )}
       </div>

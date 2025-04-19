@@ -20,6 +20,7 @@ import { UserRoles } from "../../utils/Extensions";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import DownloadCarDataExceButton from "./components/DownloadCardDataExcelButton";
+import ChartExpander from "./components/ChartExpander";
 
 const { RangePicker } = DatePicker;
 
@@ -46,7 +47,10 @@ const Charts = ({ rol }: Props) => {
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
 
-  const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(undefined);
+  const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(
+    undefined
+  );
+  const [selectedAreaName, setSelectedAreaName] = useState<string>("");
 
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {
@@ -114,10 +118,22 @@ const Charts = ({ rol }: Props) => {
               <div className="mb-2 flex flex-wrap flex-row gap-2">
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.anomalies}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.anomalies}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.anomalies}>
+                          <PreclassifiersChart
+                            siteId={siteId}
+                            startDate={startDate}
+                            endDate={endDate}
+                            rol={rol}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -161,10 +177,27 @@ const Charts = ({ rol }: Props) => {
               <div className="mb-2 flex flex-wrap flex-row gap-2">
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.areas}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.areas}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.areas}>
+                          <AreasChart
+                            startDate={startDate}
+                            endDate={endDate}
+                            methodologies={methodologies}
+                            siteId={siteId}
+                            rol={rol}
+                            onAreaSelect={(superiorId, areaName) => {
+                              setSelectedAreaId(superiorId);
+                              setSelectedAreaName(areaName || "");
+                            }}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -176,16 +209,41 @@ const Charts = ({ rol }: Props) => {
                       methodologies={methodologies}
                       siteId={siteId}
                       rol={rol}
-                      onAreaSelect={(superiorId) => setSelectedAreaId(superiorId)}
+                      onAreaSelect={(superiorId, areaName) => {
+                        setSelectedAreaId(superiorId);
+                        setSelectedAreaName(areaName || "");
+                      }}
                     />
                   </div>
                 </Card>
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.machines}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {selectedAreaName
+                            ? `${Strings.machinesOfArea}: ${selectedAreaName}`
+                            : Strings.machines}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander
+                          title={
+                            selectedAreaName
+                              ? `${Strings.machinesOfArea}: ${selectedAreaName}`
+                              : Strings.machines
+                          }
+                        >
+                          <MachinesChart
+                            startDate={startDate}
+                            endDate={endDate}
+                            siteId={siteId}
+                            methodologies={methodologies}
+                            rol={rol}
+                            areaId={selectedAreaId}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -205,10 +263,23 @@ const Charts = ({ rol }: Props) => {
               <div className="mb-2 flex flex-wrap flex-row gap-2">
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.creators}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.creators}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.creators}>
+                          <CreatorsChart
+                            startDate={startDate}
+                            endDate={endDate}
+                            siteId={siteId}
+                            methodologies={methodologies}
+                            rol={rol}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -225,10 +296,31 @@ const Charts = ({ rol }: Props) => {
                 </Card>
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.mechanics}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {selectedAreaName
+                            ? `${Strings.machines}: ${selectedAreaName}`
+                            : Strings.mechanics}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander
+                          title={
+                            selectedAreaName
+                              ? `${Strings.machines}: ${selectedAreaName}`
+                              : Strings.mechanics
+                          }
+                        >
+                          <MechanicsChart
+                            startDate={startDate}
+                            endDate={endDate}
+                            rol={rol}
+                            siteId={siteId}
+                            methodologies={methodologies}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -247,10 +339,23 @@ const Charts = ({ rol }: Props) => {
               <div className="mb-2 flex flex-wrap flex-row gap-2">
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.definitiveUsers}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.definitiveUsers}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.definitiveUsers}>
+                          <DefinitiveUsersChart
+                            startDate={startDate}
+                            endDate={endDate}
+                            rol={rol}
+                            siteId={siteId}
+                            methodologies={methodologies}
+                          />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
@@ -267,10 +372,17 @@ const Charts = ({ rol }: Props) => {
                 </Card>
                 <Card
                   title={
-                    <div className="mt-2 flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-black">
-                        {Strings.tagMonitoring}
-                      </h2>
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                        <h2 className="text-xl font-semibold text-black">
+                          {Strings.tagMonitoring}
+                        </h2>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.tagMonitoring}>
+                          <WeeksChart siteId={siteId} />
+                        </ChartExpander>
+                      </div>
                     </div>
                   }
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
