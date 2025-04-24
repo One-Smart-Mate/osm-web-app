@@ -55,7 +55,7 @@ const adminUsers = new Route(
   "users",
   Routes.AdminPrefix + Routes.Users,
   <Users />,
-  <MdOutlineManageAccounts />
+  <MdOutlineManageAccounts />,
 );
 
 export const adminSiteUsers = new Route(
@@ -87,7 +87,7 @@ export const adminPreclassifiers = new Route(
   "preclassifiers",
   Routes.AdminPrefix + Routes.Site + Routes.CardType + Routes.Preclassifiers,
   <Preclassifiers />,
-  <></>
+  <></>,
 );
 
 const adminLevels = new Route(
@@ -95,7 +95,7 @@ const adminLevels = new Route(
   "levels",
   Routes.AdminPrefix + Routes.Levels,
   <Levels role={UserRoles.IHSISADMIN} />,
-  <></>
+  <></>,
 );
 
 const adminCards = new Route(
@@ -103,7 +103,7 @@ const adminCards = new Route(
   "cards",
   Routes.AdminPrefix + Routes.Cards,
   <Cards rol={UserRoles.IHSISADMIN} />,
-  <></>
+  <></>,
 );
 
 export const adminCardDetails = new Route(
@@ -111,7 +111,7 @@ export const adminCardDetails = new Route(
   "carddetails",
   Routes.AdminPrefix + Routes.Site + Routes.CardDetails,
   <CardDetails />,
-  <></>
+  <></>,
 );
 
 const adminCharts = new Route(
@@ -119,7 +119,7 @@ const adminCharts = new Route(
   "charts",
   Routes.AdminPrefix + Routes.Charts,
   <Charts rol={UserRoles.IHSISADMIN} />,
-  <></>
+  <></>,
 );
 
 const adminPositions = new Route(
@@ -127,7 +127,7 @@ const adminPositions = new Route(
   "positions",
   Routes.AdminPrefix + Routes.Positions,
   <PositionsPage />,
-  <></>
+  <></>,
 );
 
 const adminSystemHealth = new Route(
@@ -185,7 +185,7 @@ const sysAdminCharts = new Route(
   "charts",
   Routes.SysadminPrefix + Routes.Site + Routes.Charts,
   <Charts rol={UserRoles.LOCALSYSADMIN} />,
-  <BsBarChartLine />
+  <BsBarChartLine />,
 );
 
 const sysAdminSites = new Route(
@@ -193,7 +193,7 @@ const sysAdminSites = new Route(
   "sites",
   Routes.SysadminPrefix + Routes.Sites,
   <Sites rol={UserRoles.LOCALSYSADMIN} />,
-  <BsBuildings />
+  <BsBuildings />,
 );
 
 const sysAdminSiteUsers = new Route(
@@ -201,7 +201,7 @@ const sysAdminSiteUsers = new Route(
   "users",
   Routes.SysadminPrefix + Routes.Site + Routes.Users,
   <SiteUsers rol={UserRoles.LOCALSYSADMIN} />,
-  <MdOutlineManageAccounts />
+  <MdOutlineManageAccounts />,
 );
 
 const sysAdminPriorities = new Route(
@@ -209,7 +209,7 @@ const sysAdminPriorities = new Route(
   "priorities",
   Routes.SysadminPrefix + Routes.Site + Routes.Priorities,
   <Priorities />,
-  <MdLowPriority />
+  <MdLowPriority />,
 );
 
 const sysAdminLevels = new Route(
@@ -217,7 +217,7 @@ const sysAdminLevels = new Route(
   "levels",
   Routes.SysadminPrefix + Routes.Site + Routes.Levels,
   <Levels role={UserRoles.LOCALSYSADMIN} />,
-  <PiMapPinAreaLight />
+  <PiMapPinAreaLight />,
 );
 
 const sysAdminCardTypes = new Route(
@@ -225,7 +225,7 @@ const sysAdminCardTypes = new Route(
   "cardtypes",
   Routes.SysadminPrefix + Routes.Site + Routes.CardTypes,
   <CardTypess rol={UserRoles.LOCALSYSADMIN} />,
-  <BiCategory />
+  <BiCategory />,
 );
 
 const sysAdminCards = new Route(
@@ -233,7 +233,7 @@ const sysAdminCards = new Route(
   "cards",
   Routes.SysadminPrefix + Routes.Site + Routes.Cards,
   <Cards rol={UserRoles.LOCALSYSADMIN} />,
-  <TbCards />
+  <TbCards />,
 );
 
 export const sysAdminCardDetails = new Route(
@@ -316,13 +316,6 @@ const localAdminSites = new Route(
   <MdOutlineManageAccounts />
 );
 
-const localAdminCards = new Route(
-  Strings.cardsSB,
-  "cards",
-  Routes.LocalAdminPrefix + Routes.Site + Routes.Cards,
-  <Cards rol={UserRoles.LOCALADMIN} />,
-  <TbCards />
-);
 
 export const localAdminCardDetails = new Route(
   Strings.cardDetailsSB,
@@ -330,6 +323,14 @@ export const localAdminCardDetails = new Route(
   Routes.LocalAdminPrefix + Routes.Site + Routes.CardDetails,
   <CardDetails />,
   <></>
+);
+
+const localAdminCards = new Route(
+  Strings.cardsSB,
+  "cards",
+  Routes.LocalAdminPrefix + Routes.Site + Routes.Cards,
+  <Cards rol={UserRoles.LOCALADMIN} />,
+  <TbCards />
 );
 
 const localAdminCharts = new Route(
@@ -363,7 +364,7 @@ const localAdminRoutesSiderOptions = (user: User): ItemType[] => {
             localAdminCards.fullPath.replace(Strings.siteParam, site.id),
             localAdminCards.icon
           ),
-        ])
+        ]),
       ),
     ]),
   ];

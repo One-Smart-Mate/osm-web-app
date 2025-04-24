@@ -1,4 +1,4 @@
-import {ConfigProvider } from "antd";
+import { ConfigProvider } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
 //import BaseLayoutV2 from "./PagesV2/BaseLayoutV2";
 import { Route, Routes } from "react-router-dom";
@@ -14,8 +14,9 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutV2 from "./pagesv2/Layout/BaseLayoutV2";
-import routesV2 from "./pagesv2/RoutesV2";
+import BaseLayoutV2 from "./pagesv2/layout/BaseLayoutV2";
+import { localAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
+import Constants from "./utils/Constants";
 
 function App() {
 
@@ -45,15 +46,16 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
-          
+
         },
       }}
     >
       <Routes>
-      <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
+        <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
 
         <Route index path="/" element={<LoginPage />} />
         <Route path={ResetPasswordRoute} element={<ResetPassword />} />
+
         <Route element={<PrivateRoutes />}>
           <Route element={<BaseLayout />}>
             {adminRoutes.map((value, index) => (
@@ -79,21 +81,23 @@ function App() {
             ))}
           </Route>
         </Route>
+
+        <Route element={<PrivateRoutes />}>
+          <Route path={`/${Constants.ROUTES_PATH.dashboard}`} element={<BaseLayoutV2 />}>
+            {localAdminRoutesV2.map((value, index) => (
+              <Route
+                key={index}
+                path={value.path}
+                element={value.element}
+              />
+            ))}
+          </Route>
+        </Route>
+
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
-
-        <Route element={<BaseLayoutV2 />} > 
-            {routesV2.map((value, index) => (
-              <Route
-              key={index}
-              path={value.fullPath}
-              element={value.element}
-            />
-            ))}
-        </Route>
-        
+        <Route />
       </Routes>
-
     </ConfigProvider>
   );
 }
