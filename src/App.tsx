@@ -1,4 +1,4 @@
-import {ConfigProvider } from "antd";
+import { ConfigProvider } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
 //import BaseLayoutV2 from "./PagesV2/BaseLayoutV2";
 import { Route, Routes } from "react-router-dom";
@@ -45,15 +45,16 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
-          
+
         },
       }}
     >
       <Routes>
-      <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
+        <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
 
         <Route index path="/" element={<LoginPage />} />
         <Route path={ResetPasswordRoute} element={<ResetPassword />} />
+
         <Route element={<PrivateRoutes />}>
           <Route element={<BaseLayout />}>
             {adminRoutes.map((value, index) => (
@@ -82,16 +83,20 @@ function App() {
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
 
-        <Route element={<BaseLayoutV2 />} > 
+        <Route element={<PrivateRoutes />}>
+          <Route path="/localadmin" element={<BaseLayoutV2 />}>
             {routesV2.map((value, index) => (
               <Route
-              key={index}
-              path={value.fullPath}
-              element={value.element}
-            />
+                key={index}
+                path={value.path.replace("/localadmin/", "")}
+                element={value.element}
+              />
             ))}
+          </Route>
         </Route>
-        
+
+
+
       </Routes>
 
     </ConfigProvider>

@@ -1,41 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DashboardOutlined,
-  LoginOutlined,
-  FormOutlined,
-  FontSizeOutlined,
-  BgColorsOutlined,
-  BarcodeOutlined,
-  FileSearchOutlined,
-  QuestionCircleOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
-import { ContentType } from "../type";
+import { getUserSiderOptionsV2 } from "../../pagesv2/RoutesV2"; // Importa las rutas dinámicas
+import { useSessionStorage } from "../../core/useSessionStorage";
+import User from "../../data/user/user";
+import Strings from "../../utils/localizations/Strings";
 
 interface SideBarV2Props {
   collapsed: boolean;
   toggleCollapse: () => void;
-  onSideBarV2Click: (contentType: ContentType) => void;
 }
 
-const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSideBarV2Click }) => {
+const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const navigate = useNavigate();
 
-  const menuItems = [
-    { key: "dashboard", icon: <DashboardOutlined />, label: "Dashboard", section: "Navigation" },
-    { key: "login", icon: <LoginOutlined />, label: "Login", section: "Authentication" },
-    { key: "register", icon: <FormOutlined />, label: "Register", section: "Authentication" },
-    { key: "typography", icon: <FontSizeOutlined />, label: "Typography", section: "Utilities" },
-    { key: "color", icon: <BgColorsOutlined />, label: "Color", section: "Utilities" },
-    { key: "shadow", icon: <BarcodeOutlined />, label: "Shadow", section: "Utilities" },
-    { key: "sample", icon: <FileSearchOutlined />, label: "Sample Page", section: "Support" },
-    { key: "docs", icon: <QuestionCircleOutlined />, label: "Documentation", section: "Support" },
-  ];
+  useEffect(() => {
+    const user = getSessionUser() as User;
+    const routes = getUserSiderOptionsV2(user);
+    setMenuItems(routes);
+  }, [getSessionUser]); 
 
-  const handleClick = (key: string) => {
-    setSelectedKey(key);
-    onSideBarV2Click(key as ContentType);
+  const handleClick = (item: any) => {
+    setSelectedKey(item.key);
+    navigate(item.fullPath); // Navega a la ruta correspondiente
+  };
+
+  // Función para obtener las secciones únicas
+  const getSections = () => {
+    const sections = new Set(menuItems.map(item => item.section));
+    return Array.from(sections);
   };
 
   return (
@@ -97,51 +97,56 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse, onSide
         </div>
 
         <div style={{ marginTop: 20 }}>
-          {menuItems.map(({ key, icon, label, section }, index) => (
-            <React.Fragment key={key}>
-              {!collapsed && (index === 0 || menuItems[index - 1].section !== section) ? (
+          {getSections().map((section, sectionIndex) => (
+            <div key={sectionIndex}>
+              {!collapsed && (
                 <div style={{ padding: "10px 20px", fontWeight: 600, color: "#888" }}>
                   {section}
                 </div>
-              ) : null}
-              <div
-                onClick={() => handleClick(key)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 20px",
-                  cursor: "pointer",
-                  transition: "background 0.2s",
-                  background: selectedKey === key ? "#e6f7ff" : "transparent",
-                  position: "relative",
-                }}
-                onMouseEnter={(e) => {
-                  if (selectedKey !== key) {
-                    (e.currentTarget as HTMLDivElement).style.background = "#e6f7ff";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedKey !== key) {
-                    (e.currentTarget as HTMLDivElement).style.background = "transparent";
-                  }
-                }}
-              >
-                <span style={{ fontSize: 18 }}>{icon}</span>
-                {!collapsed && <span style={{ marginLeft: 15 }}>{label}</span>}
-                {selectedKey === key && (
+              )}
+              {menuItems
+                .filter(item => item.section === section)
+                .map((item) => (
                   <div
+                    key={item.key}
+                    onClick={() => handleClick(item)}
                     style={{
-                      position: "absolute",
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: 4,
-                      backgroundColor: "#1890ff",
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "10px 20px",
+                      cursor: "pointer",
+                      transition: "background 0.2s",
+                      background: selectedKey === item.key ? "#e6f7ff" : "transparent",
+                      position: "relative",
                     }}
-                  />
-                )}
-              </div>
-            </React.Fragment>
+                    onMouseEnter={(e) => {
+                      if (selectedKey !== item.key) {
+                        (e.currentTarget as HTMLDivElement).style.background = "#e6f7ff";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (selectedKey !== item.key) {
+                        (e.currentTarget as HTMLDivElement).style.background = "transparent";
+                      }
+                    }}
+                  >
+                    <span style={{ fontSize: 18 }}>{item.icon}</span>
+                    {!collapsed && <span style={{ marginLeft: 15 }}>{item.label}</span>}
+                    {selectedKey === item.key && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: 4,
+                          backgroundColor: "#1890ff",
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+            </div>
           ))}
         </div>
       </div>
