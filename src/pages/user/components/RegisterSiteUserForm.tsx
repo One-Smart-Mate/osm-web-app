@@ -15,19 +15,19 @@ interface FormProps {
 const RegisterSiteUserForm = ({ form }: FormProps) => {
   const [getRoles] = useGetRolesMutation();
   const [roles, setRoles] = useState<Role[]>([]);
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   const handleGetData = async () => {
     const rolesResponse = await getRoles().unwrap();
-    setRoles(rolesResponse);
+    // Filter out the "IH_sis_admin" role from available options
+    const filteredRoles = rolesResponse.filter(role => role.name !== "IH_sis_admin");
+    setRoles(filteredRoles);
   };
 
   useEffect(() => {
     handleGetData();
   }, []);
-
-  const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
 
   return (
     <Form form={form} layout="vertical">
@@ -155,7 +155,7 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
               placeholder={Strings.roles}
               value={selectedRoles}
               onChange={setSelectedRoles}
-              options={filteredOptions.map((item) => ({
+              options={roles.map((item) => ({
                 value: item.id,
                 label: item.name,
               }))}
