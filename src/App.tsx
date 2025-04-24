@@ -14,8 +14,9 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutV2 from "./pagesv2/Layout/BaseLayoutV2";
-import routesV2 from "./pagesv2/RoutesV2";
+import BaseLayoutV2 from "./pagesv2/layout/BaseLayoutV2";
+import { localAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
+import Constants from "./utils/Constants";
 
 function App() {
 
@@ -80,25 +81,23 @@ function App() {
             ))}
           </Route>
         </Route>
-        <Route path={UnauthorizedRoute} element={<Unauthorized />} />
-        <Route path={"*"} element={<NotFound />} />
 
         <Route element={<PrivateRoutes />}>
-          <Route path="/localadmin" element={<BaseLayoutV2 />}>
-            {routesV2.map((value, index) => (
+          <Route path={`/${Constants.ROUTES_PATH.dashboard}`} element={<BaseLayoutV2 />}>
+            {localAdminRoutesV2.map((value, index) => (
               <Route
                 key={index}
-                path={value.path.replace("/localadmin/", "")}
+                path={value.path}
                 element={value.element}
               />
             ))}
           </Route>
         </Route>
 
-
-
+        <Route path={UnauthorizedRoute} element={<Unauthorized />} />
+        <Route path={"*"} element={<NotFound />} />
+        <Route />
       </Routes>
-
     </ConfigProvider>
   );
 }

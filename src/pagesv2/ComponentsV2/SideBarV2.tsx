@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  DashboardOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons";
-import { getUserSiderOptionsV2 } from "../../pagesv2/RoutesV2"; // Importa las rutas dinámicas
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
+import {
+  getUserSiderOptionsV2,
+  navigateWithState,
+} from "../routes/RoutesExtensions";
+import { Avatar } from "antd";
 
 interface SideBarV2Props {
   collapsed: boolean;
@@ -16,25 +15,34 @@ interface SideBarV2Props {
 }
 
 const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
+  const navigate = navigateWithState();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [getSessionUser] = useSessionStorage<User>(Strings.empty);
-  const navigate = useNavigate();
+  const user = getSessionUser();
 
   useEffect(() => {
-    const user = getSessionUser() as User;
-    const routes = getUserSiderOptionsV2(user);
-    setMenuItems(routes);
-  }, [getSessionUser]);
+    if (user) {
+      const routes = getUserSiderOptionsV2(user);
+      setMenuItems(routes);
+      setDefaultRoute();
+    }
+  }, []);
 
   const handleClick = (item: any) => {
     setSelectedKey(item.key);
-    navigate(item.fullPath); // Navega a la ruta correspondiente
+    navigate(item.key);
   };
 
-  // Función para obtener las secciones únicas
+  const setDefaultRoute = () => {
+    const defaultKey = location.pathname.split("/").filter(Boolean).pop() || "";
+    setSelectedKey(defaultKey);
+  };
+
+  // Get just the sections
   const getSections = () => {
-    const sections = new Set(menuItems.map(item => item.section));
+    const sections = new Set(menuItems.map((item) => item.section));
+    menuItems.forEach((value) => console.log(value));
     return Array.from(sections);
   };
 
@@ -88,10 +96,10 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
             padding: "0 24px",
           }}
         >
-          <DashboardOutlined style={{ fontSize: 28, color: "#1890ff" }} />
+          <Avatar src={<img src={user?.logo} alt="avatar" />} size={"large"} />
           {!collapsed && (
-            <span style={{ fontSize: 20, fontWeight: 600, marginLeft: 10 }}>
-              Mantis
+            <span style={{ fontSize: 12, fontWeight: 500, marginLeft: 8 }}>
+              {user?.companyName}
             </span>
           )}
         </div>
@@ -100,12 +108,18 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
           {getSections().map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {!collapsed && (
-                <div style={{ padding: "10px 20px", fontWeight: 600, color: "#888" }}>
+                <div
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: 12,
+                    color: "#8C8C8C",
+                  }}
+                >
                   {section}
                 </div>
               )}
               {menuItems
-                .filter(item => item.section === section)
+                .filter((item) => item.section === section)
                 .map((item) => (
                   <div
                     key={item.key}
@@ -116,22 +130,27 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
                       padding: "10px 20px",
                       cursor: "pointer",
                       transition: "background 0.2s",
-                      background: selectedKey === item.key ? "#e6f7ff" : "transparent",
+                      background:
+                        selectedKey === item.key ? "#e6f7ff" : "transparent",
                       position: "relative",
                     }}
                     onMouseEnter={(e) => {
                       if (selectedKey !== item.key) {
-                        (e.currentTarget as HTMLDivElement).style.background = "#e6f7ff";
+                        (e.currentTarget as HTMLDivElement).style.background =
+                          "#e6f7ff";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (selectedKey !== item.key) {
-                        (e.currentTarget as HTMLDivElement).style.background = "transparent";
+                        (e.currentTarget as HTMLDivElement).style.background =
+                          "transparent";
                       }
                     }}
                   >
                     <span style={{ fontSize: 18 }}>{item.icon}</span>
-                    {!collapsed && <span style={{ marginLeft: 15 }}>{item.label}</span>}
+                    {!collapsed && (
+                      <span style={{ marginLeft: 15 }}>{item.label}</span>
+                    )}
                     {selectedKey === item.key && (
                       <div
                         style={{
@@ -149,6 +168,19 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
             </div>
           ))}
         </div>
+        {!collapsed && (
+          <div
+            style={{
+              padding: "10px 20px",
+              fontSize: 12,
+              color: "#8C8C8C",
+              position: "absolute",
+              bottom: 10,
+            }}
+          >
+            {Strings.tagVersion}
+          </div>
+        )}
       </div>
     </>
   );

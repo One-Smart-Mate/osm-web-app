@@ -13,10 +13,15 @@ import {
     ClockCircleOutlined,
     SettingOutlined
 } from '@ant-design/icons';
+import User, { getSiteName } from '../../data/user/user';
 
 const { TabPane } = Tabs;
+interface UserProfileDropdownProps {
+    user?: User;
+  }
 
-const UserProfileDropdown = () => {
+
+const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
     const [activeTab, setActiveTab] = useState('profile');
 
     const menu = (
@@ -25,8 +30,8 @@ const UserProfileDropdown = () => {
                 <div style={styles.headerContent}>
                     <Avatar size={40} icon={<UserOutlined />} style={styles.avatar} />
                     <div>
-                        <div style={styles.username}>John Doe</div>
-                        <div style={styles.role}>UI/UX Designer</div>
+                        <div style={styles.username}>{user?.name}</div>
+                        <div style={styles.role}>{user?.roles.join(',')}</div>
                     </div>
                     <Button
                         icon={<LogoutOutlined style={styles.logoutIcon} />}
@@ -87,7 +92,8 @@ const UserProfileDropdown = () => {
     return (
         <Dropdown overlay={menu} trigger={['click']}>
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                <UserOutlined /> John Doe
+                <UserOutlined /> {user?.name}
+                <div style={{ fontSize: 12,  color: "#8C8C8C" }}>{getSiteName(user)}</div>
             </a>
         </Dropdown>
     );
