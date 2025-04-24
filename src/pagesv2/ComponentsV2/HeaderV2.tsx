@@ -1,17 +1,19 @@
 import React from 'react';
 import { Input } from 'antd';
-import NotificationDropdown from './NotificationDropdown'; 
-import UserProfileDropdown from './UserProfileDropdown'; 
+import NotificationDropdown from './NotificationDropdown';
+import UserProfileDropdown from './UserProfileDropdown';
+import User from '../../data/user/user';
+
 
 interface HeaderProps {
-  userName: string;
+  user: User;
   avatarSrc: string;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
   onLogout: () => void; // Función para manejar el logout
 }
 
-const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed }) => {
+const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
   return (
     <div style={{
       display: 'flex',
@@ -35,7 +37,7 @@ const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed }) =
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <NotificationDropdown />
         <div style={{ marginLeft: '20px' }}>
-          <UserProfileDropdown />
+          <UserProfileDropdown user={user} />
         </div>
       </div>
     </div>

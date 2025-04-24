@@ -82,3 +82,8 @@ export interface UserPosition {
   siteType: string;
   status: string;
 }
+
+export const getSiteName = (user?: User): string | undefined => {
+  if(user == null || user == undefined) return ''
+  return user.sites.length > 0 ? user.sites[0].name : ''
+}

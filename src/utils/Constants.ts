@@ -64,6 +64,10 @@ const tagVersion = "1.0.0";
 const es = "ES";
 const en = "EN";
 
+const ROUTES_PATH = {
+  dashboard: "Dashboard"
+}
+
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -105,5 +109,6 @@ export default {
   osName,
   tagVersion,
   es,
-  en
+  en,
+  ROUTES_PATH
 };
