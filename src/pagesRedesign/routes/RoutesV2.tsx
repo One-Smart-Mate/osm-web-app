@@ -1,4 +1,4 @@
-import {  BsBarChartLine, BsCardChecklist, BsFillPersonPlusFill, BsLifePreserver, BsNodePlus, BsPersonPlus } from "react-icons/bs";
+import {  BsBarChartLine, BsCardChecklist, BsLifePreserver, BsNodePlus, BsPersonPlus } from "react-icons/bs";
 import { RouteV2 } from "./models/RouteV2";
 import Cards from "../../pages/card/Cards";
 import { UserRoles } from "../../utils/Extensions";
@@ -10,7 +10,6 @@ import Charts from "../../pages/charts/Charts";
 import Strings from "../../utils/localizations/Strings";
 import CardDetails from "../../pages/carddetails/CardDetails";
 import Constants from "../../utils/Constants";
-import SiteUsers from "../../pages/user/SiteUsers";
 import CardTypesTree from "../../pages/cardtypes/CardTypes";
 import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 
