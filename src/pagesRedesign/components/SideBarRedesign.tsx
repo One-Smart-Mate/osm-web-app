@@ -8,7 +8,7 @@ import {
   getUserSiderOptionsV2,
   navigateWithState,
 } from "../routes/RoutesExtensions";
-import { Avatar } from "antd";
+import { Avatar, theme } from "antd";
 
 interface SideBarV2Props {
   collapsed: boolean;
@@ -16,6 +16,7 @@ interface SideBarV2Props {
 }
 
 const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
+  const { token } = theme.useToken();
   const navigate = navigateWithState();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
@@ -62,7 +63,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }
       >
         {collapsed ? (
           <MenuUnfoldOutlined
-            style={{ fontSize: 20, cursor: "pointer", color: "#1890ff" }}
+            style={{ fontSize: 20, cursor: "pointer", color: token.colorPrimaryHover }}
             onClick={toggleCollapse}
           />
         ) : (
@@ -131,7 +132,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }
                       cursor: "pointer",
                       transition: "background 0.2s",
                       background:
-                        selectedKey === item.key ? "#e6f7ff" : "transparent",
+                        selectedKey === item.key ? token.colorPrimaryBgHover : "transparent",
                       position: "relative",
                     }}
                     onMouseEnter={(e) => {
@@ -159,7 +160,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }
                           top: 0,
                           bottom: 0,
                           width: 4,
-                          backgroundColor: "#1890ff",
+                          backgroundColor: token.colorPrimaryHover,
                         }}
                       />
                     )}

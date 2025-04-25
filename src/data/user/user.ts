@@ -1,3 +1,5 @@
+import { Position } from "../postiions/positions";
+
 export default class User {
   userId: string;
   name: string;
@@ -86,4 +88,30 @@ export interface UserPosition {
 export const getSiteName = (user?: User): string | undefined => {
   if(user == null || user == undefined) return ''
   return user.sites.length > 0 ? user.sites[0].name : ''
+}
+
+
+
+export class UserCardInfo {
+  id: string;
+  name: string;
+  email: string;
+  roles: Role[];
+  sites: Site[];
+  positions: Position[];
+  constructor(
+    id: string,
+    name: string,
+    email: string,
+    roles: Role[] = [],
+    sites: Site[] = [],
+    positions: Position[] = []
+  ) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+    this.roles = roles;
+    this.sites = sites;
+    this.positions = positions;
+  }
 }

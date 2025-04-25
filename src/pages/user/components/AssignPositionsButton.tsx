@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Spin } from "antd";
+import { Button, Spin } from "antd";
 import {
   handleErrorNotification,
   handleSucccessNotification,
@@ -13,6 +13,7 @@ import PositionSelectionModal from "./PositionSelectionModal";
 import { useUpdatePositionMutation } from "../../../services/positionService";
 import { useGetUserPositionsMutation } from "../../../services/userService";
 import { UserPosition } from "../../../data/user/user";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface AssignPositionsButtonProps {
   userId: string;
@@ -126,9 +127,11 @@ const AssignPositionsButton = ({
 
   return (
     <>
-      <CustomButton onClick={handleOnClickButton} type="edit">
+      {isRedesign() ? <Button onClick={handleOnClickButton}>
         {Strings.assignPositions}
-      </CustomButton>
+      </Button> : <CustomButton onClick={handleOnClickButton} type="edit">
+        {Strings.assignPositions}
+      </CustomButton>}
       
       <PositionSelectionModal
         isVisible={modalIsOpen}

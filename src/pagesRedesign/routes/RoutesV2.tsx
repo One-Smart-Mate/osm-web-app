@@ -1,4 +1,4 @@
-import {  BsBarChartLine, BsCardChecklist, BsFillPersonPlusFill, BsLifePreserver, BsNodePlus } from "react-icons/bs";
+import {  BsBarChartLine, BsCardChecklist, BsFillPersonPlusFill, BsLifePreserver, BsNodePlus, BsPersonPlus } from "react-icons/bs";
 import { RouteV2 } from "./models/RouteV2";
 import Cards from "../../pages/card/Cards";
 import { UserRoles } from "../../utils/Extensions";
@@ -10,8 +10,9 @@ import Charts from "../../pages/charts/Charts";
 import Strings from "../../utils/localizations/Strings";
 import CardDetails from "../../pages/carddetails/CardDetails";
 import Constants from "../../utils/Constants";
-import CardTypess from "../../pages/cardtypes/CardTypes";
 import SiteUsers from "../../pages/user/SiteUsers";
+import CardTypesTree from "../../pages/cardtypes/CardTypes";
+import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
@@ -50,15 +51,15 @@ const localSisAdminChartsV2 = new RouteV2(
 const localSisAdminUsersV2 = new RouteV2(
   Strings.usersSB,
   "users",
-  <SiteUsers rol={UserRoles.LOCALSYSADMIN} />,
-  <BsFillPersonPlusFill />,
+  <SiteUsersV2 rol={UserRoles.LOCALSYSADMIN} />,
+  <BsPersonPlus />,
   "Catalogs"
 );
 
 const localSisAdminCardTypesV2 = new RouteV2(
   Strings.cardTypesSB,
   "cardtypes",
-  <CardTypess rol={UserRoles.LOCALSYSADMIN} />,
+  <CardTypesTree rol={UserRoles.LOCALSYSADMIN} />,
   <BsNodePlus />,
   "Catalogs"
 );
