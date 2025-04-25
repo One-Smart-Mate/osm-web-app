@@ -1,5 +1,5 @@
 
-const TechnicalSupport = () => {
+const TechnicalSupport = (): React.ReactElement => {
   return (
     <div className="technical-support-container">
       <h1 className="technical-support-text">Technical support</h1>
