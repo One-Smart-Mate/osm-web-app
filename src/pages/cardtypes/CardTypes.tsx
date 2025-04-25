@@ -1,4 +1,4 @@
-import { Drawer, Dropdown, Form, notification, Spin } from "antd";
+import { Button, Drawer, Dropdown, Form, notification, Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ import {
   UpdateCardTypeReq,
 } from "../../data/cardtypes/cardTypes.request";
 import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
-import { UserRoles } from "../../utils/Extensions";
+import { isRedesign, UserRoles } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 
@@ -764,7 +764,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden" style={{height: window.screen.availHeight * 0.8}}>
       <div ref={containerRef} className="relative flex-1 overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center h-full">
@@ -774,13 +774,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           <>
             {/* Toggle expand/collapse button */}
             <div className="absolute top-4 right-4 z-10">
+            {isRedesign() ? <Button onClick={toggleAllNodes} type={isTreeExpanded ? 'primary' : 'default'}>
+              {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+            </Button> : 
               <button
                 className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${isTreeExpanded ? 'bg-red-500 hover:bg-red-700' : ''}`}
                 onClick={toggleAllNodes}
               >
                 {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
               </button>
-            </div>
+           }
+           </div>
             
             {treeData && treeData.length > 0 && (
               <Tree
