@@ -2,6 +2,7 @@ import {
   BsBarChartLine,
   BsCalendarCheck,
   BsCardChecklist,
+  BsDiagram3,
   BsLifePreserver,
   BsNodePlus,
   BsPersonPlus,
@@ -20,6 +21,7 @@ import Constants from "../../utils/Constants";
 import CardTypesTree from "../../pages/cardtypes/CardTypes";
 import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 import Priorities from "../../pages/priority/Priorities";
+import LevelsV2 from "../../pages/level/LevelsV2";
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
@@ -78,6 +80,13 @@ const localSisAdminCardTypesV2 = new RouteV2(
   <BsNodePlus />,
   "Catalogs"
 );
+const localSisAdminLevelsV2 = new RouteV2(
+  Strings.levelsSB,
+  "levels",
+  <LevelsV2 role={UserRoles.LOCALSYSADMIN} />,
+  <BsDiagram3 />,
+  "Catalogs"
+);
 
 // Common routes
 const technicalSupportRoute = new RouteV2(
@@ -104,6 +113,7 @@ const localSisAdminRoutesV2: RouteV2[] = [
   localSisAdminUsersV2,
   localSisAdminCardTypesV2,
   localSisAdminPrioritiesV2,
+  localSisAdminLevelsV2
 ];
 
 const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute];
@@ -145,6 +155,12 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: localSisAdminCardsV2.path,
       icon: localSisAdminCardsV2.icon,
       section: localSisAdminCardsV2.section,
+    }),
+    getItemV2({
+      label: localSisAdminLevelsV2.label,
+      key: localSisAdminLevelsV2.path,
+      icon: localSisAdminLevelsV2.icon,
+      section: localSisAdminLevelsV2.section,
     }),
     getItemV2({
       label: localSisAdminCardTypesV2.label,

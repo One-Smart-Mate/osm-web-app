@@ -99,7 +99,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
         )
       );
     }
-    setData(data);
+    setData(data.sort((a, b) => a.name.localeCompare(b.name)));
     setDataBackup(data);
     setLoading(false);
   };
