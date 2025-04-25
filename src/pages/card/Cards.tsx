@@ -8,8 +8,9 @@ import { useGetCardsMutation } from "../../services/cardService";
 import PaginatedList from "../../components/PaginatedList";
 import InformationPanel from "./components/Card";
 import { CardInterface } from "../../data/card/card";
-import { UserRoles } from "../../utils/Extensions";
+import { isRedesign, UserRoles } from "../../utils/Extensions";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import PageTitleTag from "../../components/PageTitleTag";
 
 interface CardsProps {
   rol: UserRoles;
@@ -69,7 +70,12 @@ const Cards = ({ rol }: CardsProps) => {
     <>
       <div className="h-full flex flex-col">
         <div className="flex flex-col items-center m-3">
-          <PageTitle mainText={Strings.tagsOf} subText={siteName} />
+          {isRedesign() ? (
+            <PageTitleTag mainText={Strings.tagsOf} subText={siteName} />
+          ) : (
+            <PageTitle mainText={Strings.tagsOf} subText={siteName} />
+          )}
+
           <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
             <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
               <Space className="w-full md:w-auto mb-1 md:mb-0">

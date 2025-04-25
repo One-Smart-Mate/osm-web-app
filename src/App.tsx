@@ -16,11 +16,43 @@ import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
 import BaseLayoutRedesign from "./pagesRedesign/layout/BaseLayoutRedesign";
 import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesRedesign/routes/RoutesV2";
 import Constants from "./utils/Constants";
+import { isRedesign } from "./utils/Extensions";
 
 function App() {
-  return (
-    <ConfigProvider
-      theme={{
+
+  const getTheme = () => {
+    let theme: any;
+    if(isRedesign()){
+       theme = {
+        token: {
+          colorPrimary: "#1890ff",
+          colorLinkHover: "#1890ff",
+          colorLinkActive: "#e6f7ff",
+          linkHoverDecoration: "underline",
+          colorBgLayout: "#e2e8f0",
+          colorPrimaryBgHover:'#e6f7ff',
+          colorPrimaryHover: '#1890ff'
+        },
+        components: {
+          Card: {
+            colorBgContainer: "white",
+            colorPrimary: "white",
+            colorTextHeading: "#e6f7ff",
+          },
+          Table: {
+            headerBg: "#001529",
+            headerColor: "white",
+            headerSortHoverBg: "#011e39",
+            headerSortActiveBg: "#011e39",
+          },
+          Modal: {
+            colorIcon: "black",
+            colorIconHover: "#e73773",
+          },
+        },
+      }
+    } else {
+      theme = {
         token: {
           colorPrimary: "#061178",
           colorLinkHover: "#061178",
@@ -45,7 +77,14 @@ function App() {
             colorIconHover: "#e73773",
           },
         },
-      }}
+      }
+    }
+    return theme;
+  }
+
+  return (
+    <ConfigProvider
+      theme={getTheme()}
     >
       <Routes>
         <Route

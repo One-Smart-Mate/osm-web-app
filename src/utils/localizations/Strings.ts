@@ -701,6 +701,10 @@ class StringsBase {
   static databaseConnectionTest = "databaseConnectionTest";
   static verificationOfServices = "verificationOfServices";
   
+  static catalogs: "catalogs";
+  static accounts: "accounts";
+  static dashboard: "dashboard";
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access

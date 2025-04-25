@@ -11,6 +11,7 @@ import { isRedesign } from "../../utils/Extensions";
 import {
   LogoutOutlined,
 } from '@ant-design/icons';
+import { color } from "html2canvas/dist/types/css/types/color";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -70,7 +71,8 @@ const Logout = () => {
 
 const dropdownStyles = {
     logoutIcon: {
-        fontSize: '24px'
+        fontSize: '24px',
+        color: '#1890ff'
     },
     logoutButton: {
         border: 'none',
