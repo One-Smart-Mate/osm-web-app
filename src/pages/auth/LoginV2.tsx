@@ -44,6 +44,7 @@ const LoginPage = () => {
 
   const handleNavigation = (user: User) => {
     const rol = getUserRol(user);
+    console.log(isRedesign());
     if(isRedesign()) {
       navigatewithState(buildInitRoute(), null, user);
     } else {

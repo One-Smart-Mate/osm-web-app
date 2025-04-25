@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Form, Spin } from "antd";
+import { Button, Form, Spin } from "antd";
 import {
   NotificationSuccess,
   handleErrorNotification,
@@ -21,17 +21,21 @@ import {
 } from "../../../services/userService";
 import { UpdateUser } from "../../../data/user/user.request";
 import UpdateSiteUserForm from "./UpdateSiteUserForm";
+import User from "../../../data/user/user";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface ButtonEditProps {
   userId: string;
   siteId: string;
   isSiteUserstable: boolean;
+  onComplete?: () => void;
 }
 
 const UpdateUserButton = ({
   userId,
   siteId,
   isSiteUserstable,
+  onComplete,
 }: ButtonEditProps) => {
   const [modalIsOpen, setModalOpen] = useState(false);
   const [modalIsLoading, setModalLoading] = useState(false);
@@ -58,7 +62,7 @@ const UpdateUserButton = ({
   const handleOnUpdateFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
-      
+
       const useDataNet = values.uploadCardAndEvidenceWithDataNet ? 1 : 0;
       await updateUser(
         new UpdateUser(
@@ -67,12 +71,15 @@ const UpdateUserButton = ({
           values.email.trim(),
           Number(siteId),
           values.password,
-          useDataNet, 
-          useDataNet, 
+          useDataNet,
+          useDataNet,
           values.roles,
           values.status
         )
       ).unwrap();
+      if (onComplete) {
+        onComplete();
+      }
       setModalOpen(false);
       dispatch(setUserUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess.UPDATE);
@@ -86,9 +93,11 @@ const UpdateUserButton = ({
 
   return (
     <>
-      <CustomButton onClick={handleOnClickEditButton} type="edit">
+        {isRedesign() ? <Button onClick={handleOnClickEditButton} type="primary">
         {Strings.edit}
-      </CustomButton>
+      </Button> : <CustomButton onClick={handleOnClickEditButton} type="edit">
+        {Strings.edit}
+      </CustomButton>}
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnUpdateFormFinish(values);
