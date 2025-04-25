@@ -21,7 +21,6 @@ import {
 } from "../../../services/userService";
 import { UpdateUser } from "../../../data/user/user.request";
 import UpdateSiteUserForm from "./UpdateSiteUserForm";
-import User from "../../../data/user/user";
 import { isRedesign } from "../../../utils/Extensions";
 
 interface ButtonEditProps {
