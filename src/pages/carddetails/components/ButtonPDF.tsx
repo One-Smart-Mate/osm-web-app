@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import AnatomyButton from "../../../components/AnatomyButton";
 import Strings from "../../../utils/localizations/Strings";
 import { Button } from "antd";
 
