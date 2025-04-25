@@ -8,7 +8,6 @@ import { Button, Modal } from "antd";
 import { useLogoutMutation } from "../../services/userService";
 import Constants from "../../utils/Constants";
 import { isRedesign } from "../../utils/Extensions";
-import { dropdownStyles } from "../../pagesv2/componentsV2/UserProfileDropdown";
 import {
   LogoutOutlined,
 } from '@ant-design/icons';
@@ -67,6 +66,18 @@ const Logout = () => {
       {contextHolder}
     </>
   );
+};
+
+const dropdownStyles = {
+    logoutIcon: {
+        fontSize: '24px'
+    },
+    logoutButton: {
+        border: 'none',
+        background: 'none',
+        color: '#000',
+        marginLeft: 'auto'
+    },
 };
 
 export default Logout;

@@ -12,7 +12,7 @@ import Strings from "../../utils/localizations/Strings";
 import { useAppSelector } from "../../core/store";
 import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
-import HeaderComponent from "../componentsV2/HeaderV2";
+import HeaderV2 from "../componentsV2/HeaderV2";
 import SideBarV2 from "../componentsV2/SideBarV2";
 
 const { Header, Content } = Layout;
@@ -43,7 +43,7 @@ const BaseLayoutV2: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
-      <HeaderComponent
+      <HeaderV2
         user={user}
         avatarSrc="..."
         sidebarWidth={sidebarWidth}

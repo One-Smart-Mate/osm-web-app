@@ -84,7 +84,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
     );
 };
 
-export const dropdownStyles = {
+const dropdownStyles = {
     header: {
         padding: '16px',
         background: '#f0f2f5',
