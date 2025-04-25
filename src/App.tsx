@@ -13,8 +13,8 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutRedesign from "./pagesv2/layout/BaseLayoutRedesign";
-import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
+import BaseLayoutRedesign from "./pagesRedesign/layout/BaseLayoutRedesign";
+import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesRedesign/routes/RoutesV2";
 import Constants from "./utils/Constants";
 
 function App() {
