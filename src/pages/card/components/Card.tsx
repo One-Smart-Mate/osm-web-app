@@ -21,7 +21,7 @@ import {
   localAdminCardDetails,
   sysAdminCardDetails,
 } from "../../routes/Routes";
-import { buildCardDetailRoute, navigateWithState } from "../../../pagesv2/routes/RoutesExtensions";
+import { buildCardDetailRoute, navigateWithState } from "../../../pagesRedesign/routes/RoutesExtensions";
 
 interface CardProps {
   data: CardInterface;

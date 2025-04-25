@@ -2,7 +2,7 @@ import {  BsBarChartLine, BsCardChecklist, BsFillPersonPlusFill, BsLifePreserver
 import { RouteV2 } from "./models/RouteV2";
 import Cards from "../../pages/card/Cards";
 import { UserRoles } from "../../utils/Extensions";
-import TechnicalSupport from "../componentsV2/TechnicalSupport";
+import TechnicalSupport from "../components/TechnicalSupport";
 import { ItemType } from "antd/es/menu/interface";
 import { MenuProps } from "antd";
 import { getItemV2 } from "./RoutesExtensions";

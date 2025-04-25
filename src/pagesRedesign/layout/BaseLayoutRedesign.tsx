@@ -12,8 +12,8 @@ import Strings from "../../utils/localizations/Strings";
 import { useAppSelector } from "../../core/store";
 import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
-import HeaderRedesign from "../componentsV2/HeaderReDesign";
-import SideBarRedesign from "../componentsV2/SideBarRedesign";
+import SideBarRedesign from "../components/SideBarRedesign";
+import HeaderRedesign from "../components/HeaderRedesign";
 
 const { Header, Content } = Layout;
 

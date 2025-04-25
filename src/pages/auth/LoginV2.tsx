@@ -22,7 +22,7 @@ import {
 import Strings from "../../utils/localizations/Strings";
 import { ResetPasswordRoute } from "../../utils/Routes";
 import AnatomyButton from "../../components/AnatomyButton";
-import { buildInitRoute, navigateWithState } from "../../pagesv2/routes/RoutesExtensions";
+import { buildInitRoute, navigateWithState } from "../../pagesRedesign/routes/RoutesExtensions";
 
 const LoginPage = () => {
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
