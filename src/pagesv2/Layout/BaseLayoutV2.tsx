@@ -1,45 +1,38 @@
 import React, { useEffect, useState } from "react";
 import {
   Layout,
-  Menu,
   Button,
   theme,
-  Avatar,
-  MenuProps,
   message,
   Card,
 } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useSessionStorage } from "../../core/useSessionStorage";
-import User from "../../data/user/user";
+import { Outlet, useLocation } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
 import { useAppSelector } from "../../core/store";
 import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
-import { useSetAppTokenMutation } from "../../services/userService";
 import HeaderComponent from "../componentsV2/HeaderV2";
 import SideBarV2 from "../componentsV2/SideBarV2";
 
-const { Header, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 const BaseLayoutV2: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState("");
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
   const [isCollapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, },
   } = theme.useToken();
-  const [setAppToken] = useSetAppTokenMutation();
-  const [stateOpenKeys, setStateOpenKeys] = useState<string[]>([]);
+;
 
   const sidebarWidth = 250;
   const collapsedWidth = 80;
 
   useEffect(() => {
     setSelectedPath(location.pathname + location.search);
+    console.log(selectedPath)
   }, [location]);
 
   const toggleCollapse = () => setCollapsed(!isCollapsed);
