@@ -335,6 +335,7 @@ class StringsBase {
   static confirm = "confirm";
 
   static tagVersion = "tagVersion";
+  static redesign = "redesign";
 
   // Tipo de evidencia
   static AUCR = "AUCR";

@@ -3,6 +3,7 @@ import { Input } from 'antd';
 import NotificationDropdown from './NotificationDropdown';
 import UserProfileDropdown from './UserProfileDropdown';
 import User from '../../data/user/user';
+import LanguageDropdown from '../../pages/layouts/LanguageDropdown';
 
 
 interface HeaderProps {
@@ -30,15 +31,17 @@ const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, use
       zIndex: 1000,
       transition: 'width 0.2s ease'
     }}>
-      <Input.Search
-        placeholder="Buscar..."
-        style={{ width: 200, marginRight: '20px', marginLeft: '20px' }}
-      />
+    
+      <div style={{ width: 200, marginRight: '20px', marginLeft: '20px' }}>
+        <LanguageDropdown />
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <NotificationDropdown />
         <div style={{ marginLeft: '20px' }}>
           <UserProfileDropdown user={user} />
         </div>
+
       </div>
     </div>
   );

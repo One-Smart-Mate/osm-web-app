@@ -15,12 +15,14 @@ import Meta from "antd/es/card/Meta";
 import {
   getInitRoute,
   getUserRol,
+  isRedesign,
   UserRoles,
   validateEmail,
 } from "../../utils/Extensions";
 import Strings from "../../utils/localizations/Strings";
 import { ResetPasswordRoute } from "../../utils/Routes";
 import AnatomyButton from "../../components/AnatomyButton";
+import { buildInitRoute, navigateWithState } from "../../pagesv2/routes/RoutesExtensions";
 
 const LoginPage = () => {
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
@@ -28,6 +30,7 @@ const LoginPage = () => {
   const dispatch = useAppDispatch();
   const [getSessionUser, setSessionUser] = useSessionStorage<User>(Strings.empty);
   const navigate = useNavigate();
+  const navigatewithState = navigateWithState();
 
   const handleUserSession = () => {
     const user = getSessionUser();
@@ -41,17 +44,21 @@ const LoginPage = () => {
 
   const handleNavigation = (user: User) => {
     const rol = getUserRol(user);
-    if (rol === UserRoles.IHSISADMIN) {
-      navigate(getInitRoute(user));
-    } else if (rol === UserRoles.LOCALSYSADMIN || rol === UserRoles.LOCALADMIN) {
-      navigate(getInitRoute(user), {
-        state: {
-          companyId: user.companyId,
-          companyName: user.companyName,
-        },
-      });
+    if(isRedesign()) {
+      navigatewithState(buildInitRoute(), null, user);
     } else {
-      handleWarningNotification(Strings.restrictedAccessMessage);
+      if (rol === UserRoles.IHSISADMIN) {
+        navigate(getInitRoute(user));
+      } else if (rol === UserRoles.LOCALSYSADMIN || rol === UserRoles.LOCALADMIN) {
+        navigate(getInitRoute(user), {
+          state: {
+            companyId: user.companyId,
+            companyName: user.companyName,
+          },
+        });
+      } else {
+        handleWarningNotification(Strings.restrictedAccessMessage);
+      }
     }
   };
 

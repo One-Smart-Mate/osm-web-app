@@ -15,11 +15,10 @@ import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
 import BaseLayoutV2 from "./pagesv2/layout/BaseLayoutV2";
-import { localAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
+import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
 import Constants from "./utils/Constants";
 
 function App() {
-
   return (
     <ConfigProvider
       theme={{
@@ -46,12 +45,14 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
-
         },
       }}
     >
       <Routes>
-        <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
+        <Route
+          path="/external/card/:cardId/details"
+          element={<PublicCardDetails />}
+        />
 
         <Route index path="/" element={<LoginPage />} />
         <Route path={ResetPasswordRoute} element={<ResetPassword />} />
@@ -83,13 +84,18 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoutes />}>
-          <Route path={`/${Constants.ROUTES_PATH.dashboard}`} element={<BaseLayoutV2 />}>
+          <Route
+            path={Constants.ROUTES_PATH.dashboard}
+            element={<BaseLayoutV2 />}
+          >
+            {commonRoutes.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
             {localAdminRoutesV2.map((value, index) => (
-              <Route
-                key={index}
-                path={value.path}
-                element={value.element}
-              />
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+            {localSisAdminRoutesV2.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
             ))}
           </Route>
         </Route>
