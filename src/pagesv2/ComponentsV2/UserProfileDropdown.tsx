@@ -2,18 +2,9 @@ import { useState } from 'react';
 import { Dropdown, Menu, Tabs, Avatar, Button } from 'antd';
 import {
     UserOutlined,
-    LogoutOutlined,
-    EditOutlined,
-    ProfileOutlined,
-    ShareAltOutlined,
-    DollarOutlined,
-    QuestionCircleOutlined,
-    SafetyOutlined,
-    SmileOutlined,
-    ClockCircleOutlined,
-    SettingOutlined
 } from '@ant-design/icons';
 import User, { getSiteName } from '../../data/user/user';
+import Logout from '../../pages/auth/Logout';
 
 const { TabPane } = Tabs;
 interface UserProfileDropdownProps {
@@ -26,21 +17,18 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
 
     const menu = (
         <Menu style={{ width: 300 }}>
-            <Menu.Item key="header" style={styles.header}>
-                <div style={styles.headerContent}>
-                    <Avatar size={40} icon={<UserOutlined />} style={styles.avatar} />
+            <Menu.Item key="header" style={dropdownStyles.header}>
+                <div style={dropdownStyles.headerContent}>
+                    <Avatar size={40} icon={<UserOutlined />} style={dropdownStyles.avatar} />
                     <div>
-                        <div style={styles.username}>{user?.name}</div>
-                        <div style={styles.role}>{user?.roles.join(',')}</div>
+                        <div style={dropdownStyles.username}>{user?.name}</div>
+                        <div style={dropdownStyles.role}>{user?.roles.join(',')}</div>
                     </div>
-                    <Button
-                        icon={<LogoutOutlined style={styles.logoutIcon} />}
-                        style={styles.logoutButton}
-                        aria-label="Logout"
-                    />
+                   
+                    <Logout />
                 </div>
             </Menu.Item>
-            <Menu.Item key="tabs">
+            {/* <Menu.Item key="tabs">
                 <Tabs
                     activeKey={activeTab}
                     onChange={setActiveTab}
@@ -85,7 +73,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
                         </Menu>
                     </TabPane>
                 </Tabs>
-            </Menu.Item>
+            </Menu.Item> */}
         </Menu>
     );
 
@@ -99,7 +87,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
     );
 };
 
-const styles = {
+export const dropdownStyles = {
     header: {
         padding: '16px',
         background: '#f0f2f5',

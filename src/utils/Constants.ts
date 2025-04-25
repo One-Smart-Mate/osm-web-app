@@ -65,7 +65,12 @@ const es = "ES";
 const en = "EN";
 
 const ROUTES_PATH = {
-  dashboard: "Dashboard"
+  dashboard: "dashboard"
+}
+
+const ROUTES_PARAMS = {
+  siteId: ':siteId',
+  cardId: ':cardId'
 }
 
 export default {
@@ -110,5 +115,6 @@ export default {
   tagVersion,
   es,
   en,
-  ROUTES_PATH
+  ROUTES_PATH,
+  ROUTES_PARAMS
 };

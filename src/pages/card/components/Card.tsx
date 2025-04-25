@@ -21,7 +21,7 @@ import {
   localAdminCardDetails,
   sysAdminCardDetails,
 } from "../../routes/Routes";
-import { buildCardDetailRoute } from "../../../pagesv2/routes/RoutesExtensions";
+import { buildCardDetailRoute, navigateWithState } from "../../../pagesv2/routes/RoutesExtensions";
 
 interface CardProps {
   data: CardInterface;
@@ -36,6 +36,7 @@ const InformationPanel = ({ data, rol }: CardProps) => {
     data.cardCreationDate
   );
   const navigate = useNavigate();
+  const navigatewithState = navigateWithState();
 
   const evidenceIndicator = (evidences: Evidences[] = []) => {
     const elements = useMemo(() => {
@@ -73,12 +74,9 @@ const InformationPanel = ({ data, rol }: CardProps) => {
 
   const handleNavigation = () => {
     if(isRedesign()) {
-      // buildCardDetailRoute(data.siteId, data.id);
-       navigate(`detail/${data.siteId}/${data.id}`, {
-        state: {
-          cardId: data.id,
-          cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
-        },
+      navigatewithState(buildCardDetailRoute(data.siteId, data.id),{
+        cardId: data.id,
+        cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
       })
     } else {
       navigate(handleCardDetailsRoute(), {

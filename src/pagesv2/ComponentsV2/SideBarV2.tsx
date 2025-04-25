@@ -4,6 +4,7 @@ import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import {
+  buildRoute,
   getUserSiderOptionsV2,
   navigateWithState,
 } from "../routes/RoutesExtensions";
@@ -31,7 +32,7 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
 
   const handleClick = (item: any) => {
     setSelectedKey(item.key);
-    navigate(item.key);
+    navigate(buildRoute(item.key));
   };
 
   const setDefaultRoute = () => {
