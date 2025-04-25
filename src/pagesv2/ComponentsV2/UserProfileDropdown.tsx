@@ -1,19 +1,16 @@
-import { useState } from 'react';
-import { Dropdown, Menu, Tabs, Avatar, Button } from 'antd';
+import { Dropdown, Menu, Avatar } from 'antd';
 import {
     UserOutlined,
 } from '@ant-design/icons';
 import User, { getSiteName } from '../../data/user/user';
 import Logout from '../../pages/auth/Logout';
 
-const { TabPane } = Tabs;
 interface UserProfileDropdownProps {
     user?: User;
   }
 
 
 const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
-    const [activeTab, setActiveTab] = useState('profile');
 
     const menu = (
         <Menu style={{ width: 300 }}>
