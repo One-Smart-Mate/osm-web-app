@@ -17,7 +17,7 @@ import SideBarV2 from "../componentsV2/SideBarV2";
 
 const { Header, Content } = Layout;
 
-const BaseLayoutV2: React.FC = () => {
+const BaseLayoutRedesign: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState("");
@@ -89,4 +89,4 @@ const BaseLayoutV2: React.FC = () => {
   );
 };
 
-export default BaseLayoutV2;
+export default BaseLayoutRedesign;

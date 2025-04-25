@@ -13,7 +13,7 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutV2 from "./pagesv2/layout/BaseLayoutV2";
+import BaseLayoutRedesign from "./pagesv2/layout/BaseLayoutRedesign";
 import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
 import Constants from "./utils/Constants";
 
@@ -85,7 +85,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route
             path={Constants.ROUTES_PATH.dashboard}
-            element={<BaseLayoutV2 />}
+            element={<BaseLayoutRedesign />}
           >
             {commonRoutes.map((value, index) => (
               <Route key={index} path={value.path} element={value.element} />
