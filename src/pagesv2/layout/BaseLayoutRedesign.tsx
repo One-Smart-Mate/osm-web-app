@@ -12,8 +12,8 @@ import Strings from "../../utils/localizations/Strings";
 import { useAppSelector } from "../../core/store";
 import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
-import HeaderV2 from "../componentsV2/HeaderV2";
-import SideBarV2 from "../componentsV2/SideBarV2";
+import HeaderRedesign from "../componentsV2/HeaderReDesign";
+import SideBarRedesign from "../componentsV2/SideBarRedesign";
 
 const { Header, Content } = Layout;
 
@@ -43,7 +43,7 @@ const BaseLayoutRedesign: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
-      <HeaderV2
+      <HeaderRedesign
         user={user}
         avatarSrc="..."
         sidebarWidth={sidebarWidth}
@@ -51,7 +51,7 @@ const BaseLayoutRedesign: React.FC = () => {
         onLogout={handleLogout}
       />
 
-      <SideBarV2 collapsed={isCollapsed} toggleCollapse={toggleCollapse} />
+      <SideBarRedesign collapsed={isCollapsed} toggleCollapse={toggleCollapse} />
 
       <Layout
         style={{

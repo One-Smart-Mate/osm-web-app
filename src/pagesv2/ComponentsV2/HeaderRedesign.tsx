@@ -13,7 +13,7 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
+const HeaderRedesign: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
   return (
     <div style={{
       display: 'flex',
@@ -46,4 +46,4 @@ const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, use
   );
 };
 
-export default HeaderV2;
+export default HeaderRedesign;

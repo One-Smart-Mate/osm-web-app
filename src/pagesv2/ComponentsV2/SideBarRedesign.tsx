@@ -15,7 +15,7 @@ interface SideBarV2Props {
   toggleCollapse: () => void;
 }
 
-const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
+const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
   const navigate = navigateWithState();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
@@ -186,4 +186,4 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
   );
 };
 
-export default SideBarV2;
+export default SideBarRedesign;
