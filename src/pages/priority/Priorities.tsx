@@ -4,7 +4,7 @@ import {
   useGetPrioritiesMutation,
 } from "../../services/priorityService";
 import { Priority } from "../../data/priority/priority";
-import { Form, Input, List, Space } from "antd";
+import { Badge, Button, Card, Col, Descriptions, Form, Input, List, Row, Space } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
 import CustomButton from "../../components/CustomButtons";
@@ -27,6 +27,10 @@ import PageTitle from "../../components/PageTitle";
 import PaginatedList from "../../components/PaginatedList";
 import PriorityCard from "./components/PriorityCard";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import Loading from "../../pagesRedesign/components/Loading";
+import { DescriptionsProps, FormInstance } from "antd/lib";
+import { getStatusAndText, isRedesign } from "../../utils/Extensions";
+import UpdatePriority from "./components/UpdatePriority";
 
 const Priorities = () => {
   const [getPriorities] = useGetPrioritiesMutation();
@@ -119,6 +123,30 @@ const Priorities = () => {
 
   const siteName = location?.state?.siteName || Strings.empty;
 
+
+  const buildItems = (data: Priority): DescriptionsProps["items"] => [
+      {
+        key: "1",
+        label: Strings.priority,
+        children: <p style={{ fontSize: 12 }}>{data.priorityCode}</p>,
+      },
+      {
+        key: "2",
+        label: Strings.description,
+        children: <p style={{ fontSize: 12 }}>{data.priorityDescription}</p>,
+      },
+      {
+        key: "3",
+        label: Strings.daysNumber,
+        children: <p style={{ fontSize: 12 }}>{data.priorityDays}</p>,
+      },
+      {
+        key: "4",
+        label: Strings.status,
+        children: <Badge status={getStatusAndText(data.status).status} text={getStatusAndText(data.status).text} />
+      }
+    ];
+
   return (
     <>
       <div className="h-full flex flex-col">
@@ -131,21 +159,58 @@ const Priorities = () => {
                   className="w-full"
                   onChange={handleOnSearch}
                   value={querySearch}
+                  placeholder={Strings.search}
                   addonAfter={<IoIosSearch />}
                 />
               </Space>
             </div>
             <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-              <CustomButton
+              {isRedesign() ? <Button
+              onClick={handleOnClickCreateButton}
+              className="w-full md:w-auto"
+              type="primary"
+              >
+                {Strings.create}
+              </Button> : <CustomButton
                 type="success"
                 onClick={handleOnClickCreateButton}
                 className="w-full md:w-auto"
               >
                 {Strings.create}
-              </CustomButton>
+              </CustomButton>}
             </div>
           </div>
         </div>
+       
+
+    {isRedesign() ? <Row gutter={[8, 8]}>
+          <Loading isLoading={isLoading} />
+          {!isLoading && data.map((value, index) => (
+            <Col
+              key={`Col-${index}`}
+              xs={{ flex: "100%" }}
+              sm={{ flex: "60%" }}
+              md={{ flex: "50%" }}
+              lg={{ flex: "40%" }}
+              xl={{ flex: "30%" }}
+            >
+              <Card
+                className="bg-gray-100 rounded-xl shadow-md"
+                actions={[
+                  <UpdatePriority priorityId={value.id} />
+                ]}
+              >
+                <Descriptions
+                  title={value.priorityDescription}
+                  column={1}
+                  size="small"
+                  bordered
+                  items={buildItems(value)}
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row> : <div>
         <div className="flex-1 overflow-auto hidden lg:block">
           <PriorityTable data={data} isLoading={isLoading} />
         </div>
@@ -160,6 +225,8 @@ const Priorities = () => {
             loading={isLoading}
           />
         </div>
+          </div>}
+
       </div>
       <Form.Provider
         onFormFinish={async (_, { values }) => {
@@ -169,7 +236,7 @@ const Priorities = () => {
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={RegisterPriorityForm}
+          FormComponent={(form: FormInstance) => <RegisterPriorityForm form={form} />}
           title={Strings.createPriority.concat(` ${siteName}`)}
           isLoading={modalIsLoading}
         />

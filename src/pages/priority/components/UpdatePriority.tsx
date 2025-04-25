@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Form, Spin } from "antd";
+import { Button, Form, Spin } from "antd";
 import {
   NotificationSuccess,
   handleErrorNotification,
@@ -20,6 +20,7 @@ import {
 } from "../../../services/priorityService";
 import { UpdatePriorityReq } from "../../../data/priority/priority.request";
 import UpdatePriorityForm from "./UpdatePriorityForm";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface ButtonEditProps {
   priorityId: string;
@@ -72,9 +73,11 @@ const UpdatePriority = ({ priorityId }: ButtonEditProps) => {
 
   return (
     <>
-      <CustomButton onClick={handleOnClickEditButton} type="edit">
+      {isRedesign() ?  <Button onClick={handleOnClickEditButton} type="primary">
         {Strings.edit}
-      </CustomButton>
+      </Button> : <CustomButton onClick={handleOnClickEditButton} type="edit">
+        {Strings.edit}
+      </CustomButton>}
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnUpdateFormFinish(values);
