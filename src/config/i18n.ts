@@ -351,6 +351,7 @@ const resources = {
       confirm: "Confirm",
 
       tagVersion: import.meta.env.VITE_AP_VERSION,
+      redesign: import.meta.env.VITE_IS_REDESIGN,
 
       // Evidence type
       AUCR: "AUCR",
@@ -1117,8 +1118,6 @@ const resources = {
       actions: "Acciones",
       delete: "Eliminar",
       confirm: "Confirmar",
-
-      tagVersion: import.meta.env.VITE_AP_VERSION,
 
       // Tipo de evidencia
       AUCR: "AUCR",

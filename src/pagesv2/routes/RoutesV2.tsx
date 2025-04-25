@@ -1,63 +1,73 @@
 import {  BsBarChartLine, BsCardChecklist, BsLifePreserver } from "react-icons/bs";
 import { RouteV2 } from "./models/RouteV2";
 import Cards from "../../pages/card/Cards";
-import { getUserRol, UserRoles } from "../../utils/Extensions";
+import { UserRoles } from "../../utils/Extensions";
 import TechnicalSupport from "../componentsV2/TechnicalSupport";
 import { ItemType } from "antd/es/menu/interface";
 import { MenuProps } from "antd";
-import User from "../../data/user/user";
 import { getItemV2 } from "./RoutesExtensions";
 import Charts from "../../pages/charts/Charts";
+import Strings from "../../utils/localizations/Strings";
+import CardDetails from "../../pages/carddetails/CardDetails";
 
 // Routes for local admin
-const localAdminCards = new RouteV2(
-  "Cards",
-  "cards",
+const localAdminCardsV2 = new RouteV2(
+  Strings.cardsSB,
+  "dashboard/cards",
   <Cards rol={UserRoles.LOCALADMIN} />,
   <BsCardChecklist />,
   "Navigation"
 );
 
-const localAdminCharts = new RouteV2(
-  "Charts",
-  "charts",
+const localAdminChartsV2 = new RouteV2(
+  Strings.chartsSB,
+  "dashboard/charts",
   <Charts rol={UserRoles.LOCALADMIN} />,
   <BsBarChartLine />,
   "Navigation"
 );
 
-const localAdminTechnicalSupport = new RouteV2(
+const localAdminTechnicalSupportV2 = new RouteV2(
   "Technical Support",
-  "technicalSupport",
+  "dashboard/technicalSupport",
   <TechnicalSupport />,
   <BsLifePreserver />,
   "Support"
 );
 
+export const localAdminCardDetailV2 = new RouteV2(
+  Strings.cardDetailsSB,
+  "dashboard/cards/detail/:siteId/:cardId",
+  <CardDetails />,
+  <></>,
+  ""
+);
+
 const localAdminRoutesV2: RouteV2[] = [
-  localAdminCards,
-  localAdminCharts,
-  localAdminTechnicalSupport,
+  localAdminCardsV2,
+  localAdminChartsV2,
+  localAdminTechnicalSupportV2,
+  localAdminCardDetailV2
 ];
 
 const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   const items: MenuProps["items"] = [
     getItemV2({
-      label: localAdminCharts.label,
-      key: localAdminCharts.path,
-      icon: localAdminCharts.icon,
-      section: localAdminCharts.section}),
+      label: localAdminChartsV2.label,
+      key: localAdminChartsV2.path,
+      icon: localAdminChartsV2.icon,
+      section: localAdminChartsV2.section}),
       getItemV2({
-        label: localAdminCards.label,
-        key: localAdminCards.path,
-        icon: localAdminCards.icon,
-        section: localAdminCards.section,
+        label: localAdminCardsV2.label,
+        key: localAdminCardsV2.path,
+        icon: localAdminCardsV2.icon,
+        section: localAdminCardsV2.section,
       }),
     getItemV2({
-      label: localAdminTechnicalSupport.label,
-      key: localAdminTechnicalSupport.path,
-      icon: localAdminTechnicalSupport.icon,
-      section: localAdminTechnicalSupport.section}),
+      label: localAdminTechnicalSupportV2.label,
+      key: localAdminTechnicalSupportV2.path,
+      icon: localAdminTechnicalSupportV2.icon,
+      section: localAdminTechnicalSupportV2.section}),
   ];
   return items;
 };

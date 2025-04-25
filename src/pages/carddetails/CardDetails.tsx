@@ -97,10 +97,10 @@ const CardDetails = () => {
   const [getNotes] = useGetCardNotesMutation();
 
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
-
   const handleGetCards = async () => {
     setLoading(true);
     try {
+      console.log(`Dataa ${paramCardId} -- ${paramSiteId}`)
       const [responseData, responseNotes] = await Promise.all([
         getCardDetails(cardId).unwrap(),
         getNotes(cardId).unwrap(),
@@ -118,7 +118,7 @@ const CardDetails = () => {
 
       setData(modifiedResponse);
       setNotes(responseNotes);
-
+      console.log(`CARD ${Object.values(cardData)}`);
       if (cardData && cardData.siteId && cardData.siteId !== "") {
         dispatch(setSiteId(cardData.siteId));
       }

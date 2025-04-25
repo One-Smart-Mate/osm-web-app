@@ -5,7 +5,7 @@ import User from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import { ItemType } from "antd/es/menu/interface";
 import { getUserRol, UserRoles } from "../../utils/Extensions";
-import { localAdminRoutesSiderOptionsV2 } from "./RoutesV2";
+import { localAdminCardDetailV2, localAdminRoutesSiderOptionsV2 } from "./RoutesV2";
 
 
 export function navigateWithState() {
@@ -21,7 +21,7 @@ export function navigateWithState() {
         state: {
           siteId: defaultSite?.id,
           siteName: defaultSite?.name,
-          siteLogo: defaultSite?.logo
+          siteLogo: defaultSite?.logo,
         }
       });
     };
@@ -70,3 +70,8 @@ export const getUserSiderOptionsV2 = (user: User): ItemType[] => {
 
   return routes;
 };
+
+
+export const buildCardDetailRoute = (siteId: string, cardId: string): string => {
+  return `detail/${siteId}/${cardId}`;
+}

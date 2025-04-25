@@ -42,7 +42,6 @@ const SideBarV2: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
   // Get just the sections
   const getSections = () => {
     const sections = new Set(menuItems.map((item) => item.section));
-    menuItems.forEach((value) => console.log(value));
     return Array.from(sections);
   };
 

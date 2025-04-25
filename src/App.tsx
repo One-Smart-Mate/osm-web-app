@@ -18,6 +18,7 @@ import BaseLayoutV2 from "./pagesv2/layout/BaseLayoutV2";
 import { localAdminRoutesV2 } from "./pagesv2/routes/RoutesV2";
 import Constants from "./utils/Constants";
 
+
 function App() {
 
   return (
@@ -83,7 +84,7 @@ function App() {
         </Route>
 
         <Route element={<PrivateRoutes />}>
-          <Route path={`/${Constants.ROUTES_PATH.dashboard}`} element={<BaseLayoutV2 />}>
+          <Route element={<BaseLayoutV2 />}>
             {localAdminRoutesV2.map((value, index) => (
               <Route
                 key={index}
