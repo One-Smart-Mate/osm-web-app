@@ -11,7 +11,6 @@ import { isRedesign } from "../../utils/Extensions";
 import {
   LogoutOutlined,
 } from '@ant-design/icons';
-import { color } from "html2canvas/dist/types/css/types/color";
 
 const Logout = () => {
   const navigate = useNavigate();
