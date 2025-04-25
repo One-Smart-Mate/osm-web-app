@@ -82,7 +82,7 @@ const BaseLayoutV2: React.FC = () => {
           <span className="absolute bottom-0 right-8 text-xs md:text-sm">
             {Strings.tagVersion}
           </span>
-          <div className="layout-content h-full">
+          <div className="layout-content h-full w-full">
             <Card>
               <Outlet />
             </Card>

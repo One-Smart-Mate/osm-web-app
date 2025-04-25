@@ -69,8 +69,8 @@ const NotificationDropdown: React.FC = () => {
     <Dropdown
       overlay={menu}
       trigger={['click']}
-      visible={visible}
-      onVisibleChange={handleVisibleChange}
+      open={visible}
+      onOpenChange={handleVisibleChange}
       placement="bottomRight"
     >
       <Badge count={5} style={{ marginLeft: '16px', cursor: 'pointer' }}>
