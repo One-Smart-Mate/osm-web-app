@@ -1,5 +1,4 @@
 import React from 'react';
-import { Input } from 'antd';
 import NotificationDropdown from './NotificationDropdown';
 import UserProfileDropdown from './UserProfileDropdown';
 import User from '../../data/user/user';
@@ -11,7 +10,7 @@ interface HeaderProps {
   avatarSrc: string;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
-  onLogout: () => void; // Función para manejar el logout
+  onLogout: () => void;
 }
 
 const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
