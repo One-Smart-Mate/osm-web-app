@@ -16,11 +16,12 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import MachinesChart from "./components/MachinesChart";
 import MechanicsChart from "./components/MechanicsChart";
 import DefinitiveUsersChart from "./components/DefinitiveUsersChart";
-import { UserRoles } from "../../utils/Extensions";
+import { isRedesign, UserRoles } from "../../utils/Extensions";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import DownloadCarDataExceButton from "./components/DownloadCardDataExcelButton";
 import ChartExpander from "./components/ChartExpander";
+import PageTitleTag from "../../components/PageTitleTag";
 
 const { RangePicker } = DatePicker;
 
@@ -99,7 +100,12 @@ const Charts = ({ rol }: Props) => {
       <div className="h-full flex flex-col">
         <div className="flex flex-col gap-2 items-center m-3">
           <div className="flex flex-wrap gap-2">
-            <PageTitle mainText={Strings.usersOf} subText={siteName} />
+
+          {isRedesign() ? (
+            <PageTitleTag mainText={Strings.chartsOf} subText={siteName} />
+          ) : (
+            <PageTitle mainText={Strings.chartsOf} subText={siteName} />
+          )}
             <div className=" flex items-center">
               <DownloadCarDataExceButton siteId={siteId} />
             </div>

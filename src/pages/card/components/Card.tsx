@@ -1,4 +1,4 @@
-import { Card } from "antd";
+import { Card, Tag, Typography } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -21,7 +21,12 @@ import {
   localAdminCardDetails,
   sysAdminCardDetails,
 } from "../../routes/Routes";
-import { buildCardDetailRoute, navigateWithState } from "../../../pagesRedesign/routes/RoutesExtensions";
+import {
+  buildCardDetailRoute,
+  navigateWithState,
+} from "../../../pagesRedesign/routes/RoutesExtensions";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import CustomTagV2 from "../../../components/CustomTagV2";
 
 interface CardProps {
   data: CardInterface;
@@ -29,7 +34,7 @@ interface CardProps {
 }
 
 const InformationPanel = ({ data, rol }: CardProps) => {
-  const { status, text } = getCardStatusAndText(
+  const { status, text, dateStatus } = getCardStatusAndText(
     data.status,
     data.cardDueDate,
     data.cardDefinitiveSolutionDate,
@@ -57,27 +62,26 @@ const InformationPanel = ({ data, rol }: CardProps) => {
   };
 
   const handleCardDetailsRoute = (): string => {
-      if (rol === UserRoles.IHSISADMIN) {
-        return adminCardDetails.fullPath
-          .replace(Strings.siteParam, data.siteId)
-          .replace(Strings.cardParam, data.siteCardId);
-      } else if (rol === UserRoles.LOCALSYSADMIN) {
-        return sysAdminCardDetails.fullPath
-          .replace(Strings.siteParam, data.siteId)
-          .replace(Strings.cardParam, data.siteCardId);
-      }
-      return localAdminCardDetails.fullPath
+    if (rol === UserRoles.IHSISADMIN) {
+      return adminCardDetails.fullPath
         .replace(Strings.siteParam, data.siteId)
         .replace(Strings.cardParam, data.siteCardId);
+    } else if (rol === UserRoles.LOCALSYSADMIN) {
+      return sysAdminCardDetails.fullPath
+        .replace(Strings.siteParam, data.siteId)
+        .replace(Strings.cardParam, data.siteCardId);
+    }
+    return localAdminCardDetails.fullPath
+      .replace(Strings.siteParam, data.siteId)
+      .replace(Strings.cardParam, data.siteCardId);
   };
 
-
   const handleNavigation = () => {
-    if(isRedesign()) {
-      navigatewithState(buildCardDetailRoute(data.siteId, data.id),{
+    if (isRedesign()) {
+      navigatewithState(buildCardDetailRoute(data.siteId, data.id), {
         cardId: data.id,
         cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
-      })
+      });
     } else {
       navigate(handleCardDetailsRoute(), {
         state: {
@@ -86,10 +90,72 @@ const InformationPanel = ({ data, rol }: CardProps) => {
         },
       });
     }
-  }
+  };
 
+  return isRedesign() ? (
+    <Card
+      hoverable
+      title={
+        <div className="mt-2 flex flex-col items-center">
+          <div className="flex gap-2">
+            <Typography.Title level={5}>
+              {data.cardTypeMethodologyName} {data.siteCardId}
+            </Typography.Title>
+            <div
+              className="w-10 md:flex-1 rounded-full"
+              style={{
+                backgroundColor: `#${data.cardTypeColor}`,
+                width: "1.5rem",
+                height: "1.5rem",
+              }}
+            />
+          </div>
+          {evidenceIndicator(data.evidences)}
+        </div>
+      }
+      onClick={() => {
+        handleNavigation();
+      }}
+    >
+          {dateStatus === Strings.expired ? (
+            <div className="w-full flex items-center justify-end bg-gray-50 p-2 ">
+              <Tag color="error">
+              {Strings.expired}
+            </Tag>
+            </div>
+          ) : (
+            <>
+              {Strings.dueDate}
+              <span className="text-black font-medium">
+                {data.cardDueDate || Strings.noDueDate}
+              </span>
+            </>
+          )}
 
-  return (
+      <AnatomySection
+        title={Strings.date}
+        label={formatDate(data.cardCreationDate)}
+      />
+      <AnatomySection
+        title={Strings.status}
+        label={
+          <CustomTagV2 className="w-min text-sm" color={status}>
+            <span className="font-medium">{text}</span>
+          </CustomTagV2>
+        }
+      />
+  
+      <AnatomySection title={Strings.cardType} label={data.cardTypeName} />
+      <AnatomySection
+        title={Strings.problemType}
+        label={`${data.preclassifierCode} ${data.preclassifierDescription}`}
+      />
+      <AnatomySection title={Strings.anomalyDetected} label={data.commentsAtCardCreation || Strings.NA} />
+      <AnatomySection title={Strings.location} label={data.cardLocation} />
+      <AnatomySection title={Strings.createdBy} label={data.creatorName} />
+  
+    </Card>
+  ) : (
     <Card
       style={{ height: "auto" }}
       title={

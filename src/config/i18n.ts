@@ -764,6 +764,9 @@ const resources = {
       uploadCardAndEvidenceWithDataNet: "Upload tag and evidence with data net",
       databaseConnectionTest: "Database connection test",
       verificationOfServices: "Verification of services",
+      catalogs: "Catalogs",
+      accounts: "Accounts",
+      dashboard: "Dashboard",
     },
   },
   es: {
@@ -1533,6 +1536,9 @@ const resources = {
       uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
       databaseConnectionTest: "Prueba de conexión a base de datos",
       verificationOfServices: "Verificación de Servicios",
+      catalogs: "Catálogos",
+      accounts: "Cuentas",
+      dashboard: "Panel",
     },
   },
 };

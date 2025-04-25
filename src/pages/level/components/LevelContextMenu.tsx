@@ -23,10 +23,8 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
   handleUpdateLevel,
   handleCloneLevel,
 }) => {
-  if (
-    !isVisible ||
-    !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN)
-  )
+  
+  if (!isVisible || !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN))
     return null;
 
   return (
@@ -34,28 +32,37 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
       className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
       style={{
         top: contextMenuPos.y,
-        left: contextMenuPos.x,
+        left: contextMenuPos.x * 0.7,
       }}
     >
       {isRootNode ? (
         <>
-          <Button type="primary" onClick={handleCreateLevel}>
+          <Button
+            type="primary"
+            onClick={handleCreateLevel}
+          >
             {Strings.levelsTreeOptionCreate}
           </Button>
         </>
       ) : (
         <>
-          <Button type="primary" onClick={handleCreateLevel}>
+          <Button
+                        type="primary"
+
+            onClick={handleCreateLevel}
+          >
             {Strings.levelsTreeOptionCreate}
           </Button>
           <Button
-            color="default"
-            variant="outlined"
+            color="default" variant="outlined"
             onClick={handleUpdateLevel}
           >
             {Strings.levelsTreeOptionEdit}
           </Button>
-          <Button type="link" variant="dashed" onClick={handleCloneLevel}>
+          <Button
+            type="link" variant="dashed"
+            onClick={handleCloneLevel}
+          >
             {Strings.levelsTreeOptionClone}
           </Button>
         </>

@@ -29,7 +29,7 @@ const localAdminCardsV2 = new RouteV2(
   "cards",
   <Cards rol={UserRoles.LOCALADMIN} />,
   <BsCardChecklist />,
-  "Navigation"
+  'Dashboard'
 );
 
 const localAdminChartsV2 = new RouteV2(
@@ -37,7 +37,7 @@ const localAdminChartsV2 = new RouteV2(
   "charts",
   <Charts rol={UserRoles.LOCALADMIN} />,
   <BsBarChartLine />,
-  "Navigation"
+  'Dashboard'
 );
 
 // Routes for sis admin
@@ -46,7 +46,7 @@ const localSisAdminCardsV2 = new RouteV2(
   "cards",
   <Cards rol={UserRoles.LOCALSYSADMIN} />,
   <BsCardChecklist />,
-  "Navigation"
+ 'Dashboard'
 );
 
 const localSisAdminChartsV2 = new RouteV2(
@@ -54,7 +54,7 @@ const localSisAdminChartsV2 = new RouteV2(
   "charts",
   <Charts rol={UserRoles.LOCALSYSADMIN} />,
   <BsBarChartLine />,
-  "Navigation"
+  'Dashboard'
 );
 
 const localSisAdminUsersV2 = new RouteV2(
@@ -62,7 +62,7 @@ const localSisAdminUsersV2 = new RouteV2(
   "users",
   <SiteUsersV2 rol={UserRoles.LOCALSYSADMIN} />,
   <BsPersonPlus />,
-  "Accounts"
+  'Accounts'
 );
 
 const localSisAdminPrioritiesV2 = new RouteV2(
@@ -70,7 +70,7 @@ const localSisAdminPrioritiesV2 = new RouteV2(
   "priorities",
   <Priorities />,
   <BsCalendarCheck />,
-  "Catalogs"
+ 'Catalogs'
 );
 
 const localSisAdminCardTypesV2 = new RouteV2(
@@ -78,14 +78,14 @@ const localSisAdminCardTypesV2 = new RouteV2(
   "cardtypes",
   <CardTypesTree rol={UserRoles.LOCALSYSADMIN} />,
   <BsNodePlus />,
-  "Catalogs"
+  'Catalogs'
 );
 const localSisAdminLevelsV2 = new RouteV2(
   Strings.levelsSB,
   "levels",
   <LevelsV2 role={UserRoles.LOCALSYSADMIN} />,
   <BsDiagram3 />,
-  "Catalogs"
+ 'Catalogs'
 );
 
 // Common routes

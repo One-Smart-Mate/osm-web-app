@@ -3,13 +3,13 @@ import {
   Button,
   Card,
   Col,
-  Descriptions,
   Form,
   Input,
   Row,
   Space,
   Tag,
   Tooltip,
+  Typography,
 } from "antd";
 import CustomButton from "../../components/CustomButtons";
 import Strings from "../../utils/localizations/Strings";
@@ -39,10 +39,11 @@ import { UserRoles } from "../../utils/Extensions";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
 import { BsSearch } from "react-icons/bs";
-import { DescriptionsProps } from "antd/lib";
 import UpdateUserButton from "./components/UpdateUserButton";
 import Loading from "../../pagesRedesign/components/Loading";
 import AssignPositionsButton from "./components/AssignPositionsButton";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
+import PageTitleTag from "../../components/PageTitleTag";
 
 interface Props {
   rol: UserRoles;
@@ -202,59 +203,11 @@ const SiteUsersV2 = ({ rol }: Props) => {
     }
   };
 
-  const buildItems = (data: UserCardInfo): DescriptionsProps["items"] => [
-    {
-      key: "1",
-      label: Strings.email,
-      children: <p style={{ fontSize: 12 }}>{data.email}</p>,
-    },
-    {
-      key: "2",
-      label: Strings.roles,
-      children: (
-        <Space wrap>
-          {data.roles.map((role: Role) => (
-            <Tooltip key={role.id} title={role.name}>
-              <Tag color="blue" style={{ fontSize: 10 }}>
-                {role.name}
-              </Tag>
-            </Tooltip>
-          ))}
-        </Space>
-      ),
-    },
-    {
-      key: "3",
-      label: Strings.position,
-      children: (
-        <Space wrap>
-          {data.positions.length > 0 ? (
-            data.positions.map((position) => (
-              <Tooltip key={position.id} title={position.description}>
-                <Tag
-                  color="default"
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    color: "#595959",
-                    fontSize: 10,
-                  }}
-                >
-                  {position.name}
-                </Tag>
-              </Tooltip>
-            ))
-          ) : (
-            <p style={{ fontSize: 12 }}>{Strings.noPositionsAvailable}</p>
-          )}
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <>
       <div className="h-full flex flex-col">
         <div className="flex flex-col items-center m-3">
+          <PageTitleTag mainText={Strings.usersOf} subText={siteName} />
           <div className="flex flex-wrap gap-2">
             <div className="flex items-center">{buildActions()}</div>
           </div>
@@ -283,41 +236,85 @@ const SiteUsersV2 = ({ rol }: Props) => {
         </div>
         <Row gutter={[8, 8]}>
           <Loading isLoading={isLoading} />
-          {!isLoading && data.map((value, index) => (
-            <Col
-              key={`Col-${index}`}
-              xs={{ flex: "100%" }}
-              sm={{ flex: "60%" }}
-              md={{ flex: "50%" }}
-              lg={{ flex: "40%" }}
-              xl={{ flex: "30%" }}
-            >
-              <Card
-                className="bg-gray-100 rounded-xl shadow-md"
-                actions={[
-                  <UpdateUserButton
-                    userId={value.id}
-                    siteId={siteId}
-                    isSiteUserstable={true}
-                    onComplete={() => handleGetUsers()}
-                  />,
-                  <AssignPositionsButton
+          {!isLoading &&
+            data.map((value, index) => (
+              <Col
+                key={`Col-${index}`}
+                xs={{ flex: "100%" }}
+                sm={{ flex: "60%" }}
+                md={{ flex: "50%" }}
+                lg={{ flex: "40%" }}
+                xl={{ flex: "30%" }}
+              >
+                <Card
+                  hoverable
+                  className="rounded-xl shadow-md"
+                  title={
+                    <Typography.Title level={5}>{value.name}</Typography.Title>
+                  }
+                  actions={[
+                    <UpdateUserButton
+                      userId={value.id}
+                      siteId={siteId}
+                      isSiteUserstable={true}
+                      onComplete={() => handleGetUsers()}
+                    />,
+                    <AssignPositionsButton
                       userId={value.id}
                       siteId={siteId}
                       onPositionsUpdated={() => handleGetUsers()}
                     />,
-                ]}
-              >
-                <Descriptions
-                  title={value.name}
-                  column={1}
-                  size="small"
-                  bordered
-                  items={buildItems(value)}
-                />
-              </Card>
-            </Col>
-          ))}
+                  ]}
+                >
+                  <AnatomySection title={Strings.email} label={value.email} />
+
+                  <AnatomySection
+                    title={Strings.roles}
+                    label={
+                      <Space wrap>
+                        {value.roles.map((role: Role) => (
+                          <Tooltip key={role.id} title={role.name}>
+                            <Tag color="blue" style={{ fontSize: 10 }}>
+                              {role.name}
+                            </Tag>
+                          </Tooltip>
+                        ))}
+                      </Space>
+                    }
+                  />
+                  <AnatomySection
+                    title={Strings.position}
+                    label={
+                      <Space wrap>
+                        {value.positions.length > 0 ? (
+                          value.positions.map((position) => (
+                            <Tooltip
+                              key={position.id}
+                              title={position.description}
+                            >
+                              <Tag
+                                color="default"
+                                style={{
+                                  backgroundColor: "#f0f0f0",
+                                  color: "#595959",
+                                  fontSize: 10,
+                                }}
+                              >
+                                {position.name}
+                              </Tag>
+                            </Tooltip>
+                          ))
+                        ) : (
+                          <p style={{ fontSize: 12 }}>
+                            {Strings.noPositionsAvailable}
+                          </p>
+                        )}
+                      </Space>
+                    }
+                  />
+                </Card>
+              </Col>
+            ))}
         </Row>
       </div>
       <Form.Provider

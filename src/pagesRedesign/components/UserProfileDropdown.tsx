@@ -76,7 +76,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
 
     return (
         <Dropdown overlay={menu} trigger={['click']}>
-            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+            <a className="ant-dropdown-link" onClick={e => e.preventDefault()} >
                 <UserOutlined /> {user?.name}
                 <div style={{ fontSize: 12,  color: "#8C8C8C" }}>{getSiteName(user)}</div>
             </a>
@@ -96,7 +96,8 @@ const dropdownStyles = {
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+
     },
     avatar: {
         marginRight: 12

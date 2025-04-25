@@ -27,6 +27,8 @@ import PageTitleTag from "../../components/PageTitleTag";
 import PdfContent from "./components/PDFContent";
 import ExportPdfButton from "./components/ButtonPDF";
 import { notification } from "antd";
+import BackButton from "../../pagesRedesign/components/BackButton";
+import { isRedesign } from "../../utils/Extensions";
 
 // Components
 const { Text } = Typography;
@@ -100,7 +102,7 @@ const CardDetails = () => {
   const handleGetCards = async () => {
     setLoading(true);
     try {
-      console.log(`Dataa ${paramCardId} -- ${paramSiteId}`)
+      console.log(`Dataa ${paramCardId} -- ${paramSiteId}`);
       const [responseData, responseNotes] = await Promise.all([
         getCardDetails(cardId).unwrap(),
         getNotes(cardId).unwrap(),
@@ -126,7 +128,8 @@ const CardDetails = () => {
       console.error("Error getting card details:", error);
       notification.error({
         message: "Loading Error",
-        description: "There was an error loading card details. Please try again.",
+        description:
+          "There was an error loading card details. Please try again.",
         placement: "topRight",
       });
       throw error;
@@ -185,16 +188,17 @@ const CardDetails = () => {
 
   return (
     <>
+      {isRedesign() && !isExternal ? <BackButton /> : null}
       <div className="h-full flex flex-col max-w-full">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center m-2 sm:m-3 px-2 sm:px-3 gap-2 sm:gap-3">
           <div className="w-full sm:w-auto overflow-hidden">
             <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
           </div>
           <div className="w-full sm:w-auto flex justify-start sm:justify-end">
-            <ExportPdfButton 
-              targetId="pdf-content" 
-              filename={Strings.namePDF} 
-              cardNumber={data?.card?.siteCardId} 
+            <ExportPdfButton
+              targetId="pdf-content"
+              filename={Strings.namePDF}
+              cardNumber={data?.card?.siteCardId}
             />
           </div>
         </div>
@@ -227,7 +231,10 @@ const CardDetails = () => {
           )}
 
           <Divider style={{ borderColor: "#808080" }} className="my-2 sm:my-4">
-            <Text style={{ fontWeight: "bold" }} className="text-sm sm:text-base md:text-lg lg:text-xl">
+            <Text
+              style={{ fontWeight: "bold" }}
+              className="text-sm sm:text-base md:text-lg lg:text-xl"
+            >
               {Strings.changeLogDivider}
             </Text>
           </Divider>
@@ -237,7 +244,7 @@ const CardDetails = () => {
           </div>
 
           <div className="App">
-            <div style={{ opacity: 0, position: 'absolute', left: '-9999px' }}>
+            <div style={{ opacity: 0, position: "absolute", left: "-9999px" }}>
               <div id="pdf-content">
                 <PdfContent />
               </div>
