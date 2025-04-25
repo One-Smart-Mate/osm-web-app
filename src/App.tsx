@@ -1,6 +1,5 @@
 import { ConfigProvider } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
-//import BaseLayoutV2 from "./PagesV2/BaseLayoutV2";
 import { Route, Routes } from "react-router-dom";
 import {
   adminRoutes,
