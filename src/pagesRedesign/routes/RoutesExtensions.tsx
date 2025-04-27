@@ -5,7 +5,7 @@ import User from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import { ItemType } from "antd/es/menu/interface";
 import { getUserRol, UserRoles } from "../../utils/Extensions";
-import { cardDetailRoute, localAdminRoutesSiderOptionsV2, localSisAdminRoutesSiderOptionsV2 } from "./RoutesV2";
+import { cardDetailRoute, localAdminRoutesSiderOptionsV2, localIHSisAdminRoutesSiderOptionsV2, localSisAdminRoutesSiderOptionsV2 } from "./RoutesV2";
 import Constants from "../../utils/Constants";
 
 export function navigateWithState() {
@@ -70,6 +70,9 @@ export const getUserSiderOptionsV2 = (user: User): ItemType[] => {
       case UserRoles.LOCALSYSADMIN:
         routes = localSisAdminRoutesSiderOptionsV2();
       break;
+      case UserRoles.IHSISADMIN:
+        routes = localIHSisAdminRoutesSiderOptionsV2();
+      break;
     default:
       break;
   }
@@ -91,6 +94,11 @@ export const buildRoute = (path: string): string => {
   return `/${Constants.ROUTES_PATH.dashboard}/${path}`;
 };
 
-export const buildInitRoute = (): string => {
-  return buildRoute("charts");
+export const buildInitRoute = (user: User): string => {
+  const rol = getUserRol(user);
+  if(rol === UserRoles.IHSISADMIN) {
+    return buildRoute("companies");
+  } else {
+    return buildRoute("charts");
+  }
 };
