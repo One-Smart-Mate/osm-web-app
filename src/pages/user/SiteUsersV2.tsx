@@ -38,7 +38,7 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import { UserRoles } from "../../utils/Extensions";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
-import { BsSearch } from "react-icons/bs";
+import { BsDiagram2, BsMailbox, BsPersonLinesFill, BsSearch } from "react-icons/bs";
 import UpdateUserButton from "./components/UpdateUserButton";
 import Loading from "../../pagesRedesign/components/Loading";
 import AssignPositionsButton from "./components/AssignPositionsButton";
@@ -266,7 +266,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
                     />,
                   ]}
                 >
-                  <AnatomySection title={Strings.email} label={value.email} />
+                  <AnatomySection title={Strings.email} label={value.email} icon={<BsMailbox />} />
 
                   <AnatomySection
                     title={Strings.roles}
@@ -281,6 +281,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
                         ))}
                       </Space>
                     }
+                    icon={<BsPersonLinesFill/>}
                   />
                   <AnatomySection
                     title={Strings.position}
@@ -311,6 +312,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
                         )}
                       </Space>
                     }
+                    icon={<BsDiagram2 />}
                   />
                 </Card>
               </Col>

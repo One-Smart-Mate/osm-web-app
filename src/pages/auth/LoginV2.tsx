@@ -52,7 +52,7 @@ const LoginPage = () => {
     const rol = getUserRol(user);
     console.log(isRedesign());
     if (isRedesign()) {
-      navigatewithState(buildInitRoute(), null, user);
+      navigatewithState(buildInitRoute(user), null, user);
     } else {
       if (rol === UserRoles.IHSISADMIN) {
         navigate(getInitRoute(user));

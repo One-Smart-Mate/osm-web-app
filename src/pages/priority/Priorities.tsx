@@ -44,6 +44,7 @@ import { getStatusAndText, isRedesign } from "../../utils/Extensions";
 import UpdatePriority from "./components/UpdatePriority";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import PageTitleTag from "../../components/PageTitleTag";
+import { BsCalendarCheck, BsClock, BsListNested } from "react-icons/bs";
 
 const Priorities = () => {
 
@@ -204,14 +205,17 @@ const Priorities = () => {
                     <AnatomySection
                       title={Strings.priority}
                       label={value.priorityCode}
+                      icon={<BsCalendarCheck />}
                     />
                     <AnatomySection
                       title={Strings.description}
                       label={value.priorityDescription}
+                      icon={<BsListNested/>}
                     />
                     <AnatomySection
                       title={Strings.daysNumber}
                       label={value.priorityDays}
+                      icon={<BsClock/>}
                     />
                      <AnatomySection
                       title={Strings.status}

@@ -1,5 +1,6 @@
 import {
   BsBarChartLine,
+  BsBuildingAdd,
   BsCalendarCheck,
   BsCardChecklist,
   BsDiagram3,
@@ -22,6 +23,7 @@ import CardTypesTree from "../../pages/cardtypes/CardTypes";
 import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 import Priorities from "../../pages/priority/Priorities";
 import LevelsV2 from "../../pages/level/LevelsV2";
+import Companies from "../../pages/company/Companies";
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
@@ -41,7 +43,7 @@ const localAdminChartsV2 = new RouteV2(
 );
 
 // Routes for sis admin
-const localSisAdminCardsV2 = new RouteV2(
+const sisAdminCardsV2 = new RouteV2(
   Strings.cardsSB,
   "cards",
   <Cards rol={UserRoles.LOCALSYSADMIN} />,
@@ -49,7 +51,7 @@ const localSisAdminCardsV2 = new RouteV2(
  'Dashboard'
 );
 
-const localSisAdminChartsV2 = new RouteV2(
+const sisAdminChartsV2 = new RouteV2(
   Strings.chartsSB,
   "charts",
   <Charts rol={UserRoles.LOCALSYSADMIN} />,
@@ -57,7 +59,7 @@ const localSisAdminChartsV2 = new RouteV2(
   'Dashboard'
 );
 
-const localSisAdminUsersV2 = new RouteV2(
+const sisAdminUsersV2 = new RouteV2(
   Strings.usersSB,
   "users",
   <SiteUsersV2 rol={UserRoles.LOCALSYSADMIN} />,
@@ -65,7 +67,7 @@ const localSisAdminUsersV2 = new RouteV2(
   'Accounts'
 );
 
-const localSisAdminPrioritiesV2 = new RouteV2(
+const sisAdminPrioritiesV2 = new RouteV2(
   Strings.prioritiesSB,
   "priorities",
   <Priorities />,
@@ -73,19 +75,28 @@ const localSisAdminPrioritiesV2 = new RouteV2(
  'Catalogs'
 );
 
-const localSisAdminCardTypesV2 = new RouteV2(
+const sisAdminCardTypesV2 = new RouteV2(
   Strings.cardTypesSB,
   "cardtypes",
   <CardTypesTree rol={UserRoles.LOCALSYSADMIN} />,
   <BsNodePlus />,
   'Catalogs'
 );
-const localSisAdminLevelsV2 = new RouteV2(
+const sisAdminLevelsV2 = new RouteV2(
   Strings.levelsSB,
   "levels",
   <LevelsV2 role={UserRoles.LOCALSYSADMIN} />,
   <BsDiagram3 />,
  'Catalogs'
+);
+
+//Routes for IHSISADMIN
+const ihSisAdminCompaniesV2 = new RouteV2(
+  "Companies",
+  "companies",
+  <Companies />,
+  <BsBuildingAdd />,
+  "Catalogs"
 );
 
 // Common routes
@@ -107,14 +118,18 @@ export const cardDetailRoute = new RouteV2(
 
 const localAdminRoutesV2: RouteV2[] = [localAdminCardsV2, localAdminChartsV2];
 
-const localSisAdminRoutesV2: RouteV2[] = [
-  localSisAdminCardsV2,
-  localSisAdminChartsV2,
-  localSisAdminUsersV2,
-  localSisAdminCardTypesV2,
-  localSisAdminPrioritiesV2,
-  localSisAdminLevelsV2
+const sisAdminRoutesV2: RouteV2[] = [
+  sisAdminCardsV2,
+  sisAdminChartsV2,
+  sisAdminUsersV2,
+  sisAdminCardTypesV2,
+  sisAdminPrioritiesV2,
+  sisAdminLevelsV2
 ];
+
+
+const ihSisAdminRoutesV2: RouteV2[] = [ihSisAdminCompaniesV2];
+
 
 const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute];
 
@@ -145,40 +160,40 @@ const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
 const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   const items: MenuProps["items"] = [
     getItemV2({
-      label: localSisAdminChartsV2.label,
-      key: localSisAdminChartsV2.path,
-      icon: localSisAdminChartsV2.icon,
-      section: localSisAdminChartsV2.section,
+      label: sisAdminChartsV2.label,
+      key: sisAdminChartsV2.path,
+      icon: sisAdminChartsV2.icon,
+      section: sisAdminChartsV2.section,
     }),
     getItemV2({
-      label: localSisAdminCardsV2.label,
-      key: localSisAdminCardsV2.path,
-      icon: localSisAdminCardsV2.icon,
-      section: localSisAdminCardsV2.section,
+      label: sisAdminCardsV2.label,
+      key: sisAdminCardsV2.path,
+      icon: sisAdminCardsV2.icon,
+      section: sisAdminCardsV2.section,
     }),
     getItemV2({
-      label: localSisAdminLevelsV2.label,
-      key: localSisAdminLevelsV2.path,
-      icon: localSisAdminLevelsV2.icon,
-      section: localSisAdminLevelsV2.section,
+      label: sisAdminLevelsV2.label,
+      key: sisAdminLevelsV2.path,
+      icon: sisAdminLevelsV2.icon,
+      section: sisAdminLevelsV2.section,
     }),
     getItemV2({
-      label: localSisAdminCardTypesV2.label,
-      key: localSisAdminCardTypesV2.path,
-      icon: localSisAdminCardTypesV2.icon,
-      section: localSisAdminCardTypesV2.section,
+      label: sisAdminCardTypesV2.label,
+      key: sisAdminCardTypesV2.path,
+      icon: sisAdminCardTypesV2.icon,
+      section: sisAdminCardTypesV2.section,
     }),
     getItemV2({
-      label: localSisAdminPrioritiesV2.label,
-      key: localSisAdminPrioritiesV2.path,
-      icon: localSisAdminPrioritiesV2.icon,
-      section: localSisAdminPrioritiesV2.section,
+      label: sisAdminPrioritiesV2.label,
+      key: sisAdminPrioritiesV2.path,
+      icon: sisAdminPrioritiesV2.icon,
+      section: sisAdminPrioritiesV2.section,
     }),
     getItemV2({
-      label: localSisAdminUsersV2.label,
-      key: localSisAdminUsersV2.path,
-      icon: localSisAdminUsersV2.icon,
-      section: localSisAdminUsersV2.section,
+      label: sisAdminUsersV2.label,
+      key: sisAdminUsersV2.path,
+      icon: sisAdminUsersV2.icon,
+      section: sisAdminUsersV2.section,
     }),
     getItemV2({
       label: technicalSupportRoute.label,
@@ -190,10 +205,26 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   return items;
 };
 
+
+const localIHSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
+  const items: MenuProps["items"] = [
+    getItemV2({
+      label: ihSisAdminCompaniesV2.label,
+      key: ihSisAdminCompaniesV2.path,
+      icon: ihSisAdminCompaniesV2.icon,
+      section: ihSisAdminCompaniesV2.section,
+    }),
+    
+  ];
+  return items;
+};
+
 export {
   localAdminRoutesSiderOptionsV2,
   localAdminRoutesV2,
   localSisAdminRoutesSiderOptionsV2,
-  localSisAdminRoutesV2,
+  sisAdminRoutesV2,
   commonRoutes,
+  localIHSisAdminRoutesSiderOptionsV2,
+  ihSisAdminRoutesV2
 };

@@ -14,24 +14,28 @@ import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
 import BaseLayoutRedesign from "./pagesRedesign/layout/BaseLayoutRedesign";
-import { commonRoutes, localAdminRoutesV2, localSisAdminRoutesV2 } from "./pagesRedesign/routes/RoutesV2";
+import {
+  commonRoutes,
+  ihSisAdminRoutesV2,
+  localAdminRoutesV2,
+  sisAdminRoutesV2,
+} from "./pagesRedesign/routes/RoutesV2";
 import Constants from "./utils/Constants";
 import { isRedesign } from "./utils/Extensions";
 
 function App() {
-
   const getTheme = () => {
     let theme: any;
-    if(isRedesign()){
-       theme = {
+    if (isRedesign()) {
+      theme = {
         token: {
           colorPrimary: "#1890ff",
           colorLinkHover: "#1890ff",
           colorLinkActive: "#e6f7ff",
           linkHoverDecoration: "underline",
           colorBgLayout: "#e2e8f0",
-          colorPrimaryBgHover:'#e6f7ff',
-          colorPrimaryHover: '#1890ff'
+          colorPrimaryBgHover: "#e6f7ff",
+          colorPrimaryHover: "#1890ff",
         },
         components: {
           Card: {
@@ -50,7 +54,7 @@ function App() {
             colorIconHover: "#e73773",
           },
         },
-      }
+      };
     } else {
       theme = {
         token: {
@@ -77,15 +81,13 @@ function App() {
             colorIconHover: "#e73773",
           },
         },
-      }
+      };
     }
     return theme;
-  }
+  };
 
   return (
-    <ConfigProvider
-      theme={getTheme()}
-    >
+    <ConfigProvider theme={getTheme()}>
       <Routes>
         <Route
           path="/external/card/:cardId/details"
@@ -132,7 +134,11 @@ function App() {
             {localAdminRoutesV2.map((value, index) => (
               <Route key={index} path={value.path} element={value.element} />
             ))}
-            {localSisAdminRoutesV2.map((value, index) => (
+            {sisAdminRoutesV2.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+
+            {ihSisAdminRoutesV2.map((value, index) => (
               <Route key={index} path={value.path} element={value.element} />
             ))}
           </Route>

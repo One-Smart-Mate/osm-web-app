@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
 import { adminSites } from "../../routes/Routes";
+import { isRedesign } from "../../../utils/Extensions";
+import { Button } from "antd";
 
 interface props {
   companyId: string;
@@ -22,12 +24,17 @@ const ViewSitesButton = ({ companyId, companyName, companyAddress,companyPhone,c
   };
 
   return (
-    <CustomButton
-      type="action"
-      onClick={() => handleOnViewPriorities(companyId, companyName, companyAddress,companyPhone, companyLogo)}
-    >
-      {Strings.viewSites}
-    </CustomButton>
+    isRedesign() ? <Button
+    type="primary"
+    onClick={() => handleOnViewPriorities(companyId, companyName, companyAddress,companyPhone, companyLogo)}
+  >
+    {Strings.viewSites}
+  </Button> : <CustomButton
+    type="action"
+    onClick={() => handleOnViewPriorities(companyId, companyName, companyAddress,companyPhone, companyLogo)}
+  >
+    {Strings.viewSites}
+  </CustomButton>
   );
 };
 
