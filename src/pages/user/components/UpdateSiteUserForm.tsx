@@ -25,15 +25,33 @@ interface FormProps {
 const UpdateSiteUserForm = ({ form }: FormProps) => {
   const [getRoles] = useGetRolesMutation();
   const [roles, setRoles] = useState<Role[]>([]);
-  const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [adminRoleId, setAdminRoleId] = useState<string | null>(null);
+  const [userHasAdminRole, setUserHasAdminRole] = useState(false);
   const rowData = useAppSelector(
     selectCurrentRowData
   ) as unknown as UserUpdateForm;
 
   const handleGetData = async () => {
     const [rolesResponse] = await Promise.all([getRoles().unwrap()]);
-    setRoles(rolesResponse);
+    
+    // Find the admin role ID
+    const adminRole = rolesResponse.find(role => role.name === "IH_sis_admin");
+    if (adminRole) {
+      setAdminRoleId(adminRole.id);
+    }
+    
+    // Check if user has the admin role
+    const hasAdminRole = adminRole && rowData?.roles?.includes(adminRole.id);
+    setUserHasAdminRole(!!hasAdminRole);
+    
+    // If user has admin role, include it in the roles list, otherwise filter it out
+    const filteredRoles = hasAdminRole 
+      ? rolesResponse 
+      : rolesResponse.filter(role => role.name !== "IH_sis_admin");
+    
+    setRoles(filteredRoles);
   };
 
   useEffect(() => {
@@ -52,7 +70,25 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
     }
   }, [roles]);
 
-  const filteredOptions = roles.filter((o) => !selectedRoles.includes(o));
+  // Handle role selection changes to prevent removing admin role if user has it
+  const handleRoleChange = (newRoles: string[]) => {
+    // If user has admin role and it's being removed, add it back
+    if (userHasAdminRole && adminRoleId && !newRoles.includes(adminRoleId)) {
+      newRoles.push(adminRoleId);
+    }
+    
+    setSelectedRoles(newRoles);
+    form.setFieldsValue({ roles: newRoles });
+  };
+
+  // Create a function to disable admin role selection/deselection
+  const isRoleDisabled = (roleId: string) => {
+    // If this is the admin role ID and user has it, make it read-only
+    if (adminRoleId === roleId && userHasAdminRole) {
+      return true;
+    }
+    return false;
+  };
 
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active },
@@ -202,10 +238,11 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
               size="large"
               placeholder={Strings.roles}
               value={selectedRoles}
-              onChange={setSelectedRoles}
-              options={filteredOptions.map((item) => ({
-                value: item.id,
-                label: item.name,
+              onChange={handleRoleChange}
+              options={roles.map(role => ({
+                value: role.id,
+                label: role.name,
+                disabled: isRoleDisabled(role.id),
               }))}
             />
           </Form.Item>

@@ -8,6 +8,7 @@ import {
   useGetlevelsMutation,
   useUdpateLevelMutation,
 } from "../../services/levelService";
+import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
 import { Form, Drawer, Spin, Modal, Button } from "antd";
 import { useAppDispatch } from "../../core/store";
@@ -25,6 +26,7 @@ import { useGetSiteMutation } from "../../services/siteService";
 interface Props {
   role: UserRoles;
 }
+
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
   const tree: any[] = [];
@@ -58,13 +60,16 @@ const LevelsV2 = ({ role }: Props) => {
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
+  const [getCardsByLevel] = useGetCardsByLevelMutation();
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
+  const [levelCardCounts, setLevelCardCounts] = useState<{[key: string]: number}>({});
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
-    const storedState = localStorage.getItem("treeExpandedState");
-    return storedState === "true";
+    const storedState = localStorage.getItem('treeExpandedState');
+    return storedState === 'true';
   });
+
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
 
@@ -75,14 +80,10 @@ const LevelsV2 = ({ role }: Props) => {
   const [isCloning, setIsCloning] = useState(false);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [drawerType, setDrawerType] = useState<
-    "create" | "update" | "position" | null
-  >(null);
+  const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
   const [formData, setFormData] = useState<any>({});
 
-  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
-    "right"
-  );
+  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">("right");
 
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -116,6 +117,10 @@ const LevelsV2 = ({ role }: Props) => {
   }, [contextMenuVisible]);
 
   useEffect(() => {
+    handleGetLevels();
+  }, [location.state]);
+
+  useEffect(() => {
     const updateDrawerPlacement = () => {
       if (window.innerWidth < 768) {
         setDrawerPlacement("bottom");
@@ -132,12 +137,8 @@ const LevelsV2 = ({ role }: Props) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("treeExpandedState", isTreeExpanded.toString());
+    localStorage.setItem('treeExpandedState', isTreeExpanded.toString());
   }, [isTreeExpanded]);
-
-  useEffect(() => {
-    handleGetLevels();
-  }, [location.state]);
 
   const handleGetLevels = async () => {
     if (!location.state) {
@@ -149,28 +150,56 @@ const LevelsV2 = ({ role }: Props) => {
     try {
       const response = await getLevels(location.state.siteId).unwrap();
       const hierarchyData = buildHierarchy(response);
-
-      const isExpanded = localStorage.getItem("treeExpandedState") === "true";
-
+      
+      
+      const isExpanded = localStorage.getItem('treeExpandedState') === 'true';
+      
+      
       if (isExpanded !== undefined) {
+        
         const applyExpandState = (nodes: any[]) => {
-          nodes.forEach((node) => {
-            if (node.id !== "0") {
+          nodes.forEach(node => {
+            if (node.id !== "0") { 
               localStorage.setItem(
                 `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
-                (!isExpanded).toString()
+                (!isExpanded).toString() 
               );
             }
-
+            
             if (node.children && node.children.length > 0) {
               applyExpandState(node.children);
             }
           });
         };
-
+        
+        
         applyExpandState(hierarchyData);
       }
-
+      
+      // Fetch card counts for each level
+      const cardCountsObj: {[key: string]: number} = {};
+      
+      // Create an array of promises for fetching card counts
+      const countPromises = response.map(async (level) => {
+        try {
+          const cards = await getCardsByLevel({ 
+            levelId: level.id, 
+            siteId: location.state.siteId 
+          }).unwrap();
+          
+          cardCountsObj[level.id] = cards.length;
+        } catch (error) {
+          console.error(`Error fetching cards for level ${level.id}:`, error);
+          cardCountsObj[level.id] = 0;
+        }
+      });
+      
+      // Wait for all card count requests to complete
+      await Promise.all(countPromises);
+      
+      // Update state with card counts
+      setLevelCardCounts(cardCountsObj);
+      
       setTreeData([
         {
           name: Strings.levelsOf.concat(siteName),
@@ -317,8 +346,7 @@ const LevelsV2 = ({ role }: Props) => {
 
     Modal.confirm({
       title: Strings.confirmCloneLevel,
-      content:
-        `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
+      content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
       okText: Strings.yes,
       cancelText: Strings.no,
       onOk: async () => {
@@ -371,9 +399,7 @@ const LevelsV2 = ({ role }: Props) => {
         const updatePayload = {
           ...updateValues,
           id: Number(values.id),
-          responsibleId: values.responsibleId
-            ? Number(values.responsibleId)
-            : null,
+          responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
         };
         await updateLevel(updatePayload).unwrap();
       }
@@ -398,12 +424,12 @@ const LevelsV2 = ({ role }: Props) => {
 
   const expandAllNodes = () => {
     const expandNodes = (nodes: any[]) => {
-      nodes.forEach((node) => {
+      nodes.forEach(node => {
         localStorage.setItem(
           `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
           "false"
         );
-
+        
         if (node.children && node.children.length > 0) {
           expandNodes(node.children);
         }
@@ -412,21 +438,22 @@ const LevelsV2 = ({ role }: Props) => {
 
     if (treeData.length > 0) {
       expandNodes(treeData);
-      localStorage.setItem("treeExpandedState", "true");
+      localStorage.setItem('treeExpandedState', 'true');
       handleGetLevels();
       setIsTreeExpanded(true);
     }
   };
+
   const collapseAllNodes = () => {
     const collapseNodes = (nodes: any[]) => {
-      nodes.forEach((node) => {
+      nodes.forEach(node => {
         if (node.id !== "0") {
           localStorage.setItem(
             `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
             "true"
           );
         }
-
+        
         if (node.children && node.children.length > 0) {
           collapseNodes(node.children);
         }
@@ -435,7 +462,7 @@ const LevelsV2 = ({ role }: Props) => {
 
     if (treeData.length > 0) {
       collapseNodes(treeData);
-      localStorage.setItem("treeExpandedState", "false");
+      localStorage.setItem('treeExpandedState', 'false');
       handleGetLevels();
       setIsTreeExpanded(false);
     }
@@ -449,17 +476,6 @@ const LevelsV2 = ({ role }: Props) => {
     }
   };
 
-  const renderCustomNodeElement = (rd3tProps: any) => (
-    <CustomNodeElement
-      nodeDatum={rd3tProps.nodeDatum}
-      toggleNode={rd3tProps.toggleNode}
-      containerRef={containerRef}
-      setContextMenuVisible={setContextMenuVisible}
-      setContextMenuPos={setContextMenuPos}
-      setSelectedNode={setSelectedNode}
-      handleShowDetails={handleShowDetails}
-    />
-  );
   const isRootNode = selectedNode?.data?.id === "0";
 
   return (
@@ -478,19 +494,34 @@ const LevelsV2 = ({ role }: Props) => {
           </div>
         ) : (
           <>
-            {/* Expand or collapse the nodes */}
+            {/* Botón para expandir/contraer todos los nodos */}
             <div className="absolute top-4 right-4 z-10">
-            <Button onClick={toggleAllNodes} type={isTreeExpanded ? 'primary' : 'default'}>
-              {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-            </Button>
+              <Button 
+                type="primary" 
+                onClick={toggleAllNodes}
+                className="bg-blue-500 hover:bg-blue-600"
+              >
+                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+              </Button>
             </div>
-
+            
             {treeData.length > 0 && (
               <Tree
                 data={treeData}
                 orientation="horizontal"
                 translate={translate}
-                renderCustomNodeElement={renderCustomNodeElement}
+                renderCustomNodeElement={(rd3tProps) => (
+                  <CustomNodeElement
+                    nodeDatum={rd3tProps.nodeDatum}
+                    toggleNode={rd3tProps.toggleNode}
+                    containerRef={containerRef}
+                    setContextMenuVisible={setContextMenuVisible}
+                    setContextMenuPos={setContextMenuPos}
+                    setSelectedNode={setSelectedNode}
+                    handleShowDetails={handleShowDetails}
+                    cardCounts={levelCardCounts}
+                  />
+                )}
                 collapsible={true}
               />
             )}
@@ -537,6 +568,7 @@ const LevelsV2 = ({ role }: Props) => {
           />
         </Drawer>
       )}
+
       <LevelFormDrawer
         drawerVisible={drawerVisible}
         drawerType={drawerType}
