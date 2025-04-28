@@ -1,4 +1,4 @@
-import { Drawer, Dropdown, Form, notification, Spin } from "antd";
+import { Button, Drawer, Dropdown, Form, notification, Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,9 +30,10 @@ import {
   UpdateCardTypeReq,
 } from "../../data/cardtypes/cardTypes.request";
 import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
-import { UserRoles } from "../../utils/Extensions";
+import { isRedesign, UserRoles } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -536,7 +537,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const preMenu = [
       {
         key: "editPre",
-        label: (
+        label: isRedesign() ? (
+          <Button
+            type="primary"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditPre();
+            }}
+          >
+            {Strings.cardTypesEditPreclassifier}
+          </Button>
+        ) : (
           <button
             className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -550,7 +561,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: "clonePre",
-        label: (
+        label: isRedesign() ? (
+          <Button
+            type="default"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClonePre();
+            }}
+          >
+            {Strings.cardTypesClonePreclassifier}
+          </Button>
+        ) : (
           <button
             className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -599,7 +620,9 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const ctMenu = [
       {
         key: Strings.cardTypesOptionEdit,
-        label: (
+        label: isRedesign() ? (
+          <Button type="primary">{Strings.cardTypesEdit}</Button>
+        ) : (
           <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesEdit}
           </button>
@@ -608,7 +631,9 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionClone,
-        label: (
+        label: isRedesign() ? (
+          <Button type="default">{Strings.cardTypesCloneCardType}</Button>
+        ) : (
           <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCloneCardType}
           </button>
@@ -617,7 +642,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionCreate,
-        label: (
+        label: isRedesign() ? (
+          <Button type="link" variant="dashed">
+            {Strings.cardTypesCreatePreclassifier}
+          </Button>
+        ) : (
           <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCreatePreclassifier}
           </button>
@@ -777,115 +806,133 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div ref={containerRef} className="relative flex-1 overflow-hidden">
-        {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <Spin size="large" />
-          </div>
-        ) : (
-          <>
-            {/* Toggle expand/collapse button */}
-            <div className="absolute top-4 right-4 z-10">
-              <button
-                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
-                  isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
-                }`}
-                onClick={toggleAllNodes}
-              >
-                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-              </button>
-            </div>
-
-            {treeData && treeData.length > 0 && (
-              <Tree
-                data={treeData}
-                translate={translate}
-                orientation="horizontal"
-                renderCustomNodeElement={renderCustomNodeElement}
-                collapsible={true}
-                zoomable
-              />
-            )}
-          </>
-        )}
-      </div>
-
-      <Form.Provider
-        onFormFinish={async (_, { values }) => {
-          await handleOnFormFinish(values);
-        }}
-      >
-        <Drawer
-          title={
-            drawerType === Strings.cardTypesDrawerTypeCreateCardType
-              ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
-                ? Strings.cardTypesCloneCardType
-                : Strings.cardTypesCreateCardType
-              : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
-              ? Strings.cardTypesUpdateCardType
-              : drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
-              ? formData?.description?.includes(Strings.cardTypesCloneSuffix)
-                ? Strings.cardTypesClonePreclassifier
-                : Strings.cardTypesCreatePreclassifier
-              : drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
-              ? Strings.cardTypesUpdatePreclassifier
-              : Strings.empty
-          }
-          placement={isMobile ? "bottom" : "right"}
-          width={isMobile ? "100%" : 400}
-          onClose={handleDrawerClose}
-          open={drawerVisible}
-          destroyOnClose
-          mask={false}
-          className="pr-5"
+    <MainContainer
+      title=""
+      isLoading={loading}
+      content={
+        <div
+          className="flex flex-col h-full overflow-hidden"
+          style={{ height: window.screen.availHeight * 0.8 }}
         >
-          {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
-            <RegisterCardTypeForm
-              form={createForm}
-              onFinish={handleOnFormFinish}
-              rol={rol}
-              initialValues={formData}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
-            <UpdateCardTypeForm
-              form={updateForm}
-              initialValues={formData}
-              onFinish={handleOnFormFinish}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier && (
-            <RegisterPreclassifierForm2
-              form={createPreForm}
-              initialValues={formData}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier && (
-            <UpdatePreclassifierForm2
-              form={updatePreForm}
-              initialValues={formData}
-            />
-          )}
-        </Drawer>
-      </Form.Provider>
-      <Drawer
-        title={Strings.details}
-        placement={isMobile ? "bottom" : "right"}
-        width={isMobile ? "100%" : 400}
-        onClose={() => setDetailsVisible(false)}
-        open={detailsVisible}
-        destroyOnClose
-        mask={false}
-      >
-        {detailsNode && detailsNode.nodeType === "cardType" && (
-          <CardTypeDetails nodeData={detailsNode} />
-        )}
-        {detailsNode && detailsNode.nodeType === "preclassifier" && (
-          <PreclassifierDetails nodeData={detailsNode} />
-        )}
-      </Drawer>
-    </div>
+          <div ref={containerRef} className="relative flex-1 overflow-hidden">
+            <>
+              {/* Toggle expand/collapse button */}
+              <div className="absolute top-4 right-4 z-10">
+                {isRedesign() ? (
+                  <Button
+                    onClick={toggleAllNodes}
+                    type={isTreeExpanded ? "primary" : "default"}
+                  >
+                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+                  </Button>
+                ) : (
+                  <button
+                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
+                      isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
+                    }`}
+                    onClick={toggleAllNodes}
+                  >
+                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+                  </button>
+                )}
+              </div>
+
+              {treeData && treeData.length > 0 && (
+                <Tree
+                  data={treeData}
+                  translate={translate}
+                  orientation="horizontal"
+                  renderCustomNodeElement={renderCustomNodeElement}
+                  collapsible={true}
+                  zoomable
+                />
+              )}
+            </>
+          </div>
+
+          <Form.Provider
+            onFormFinish={async (_, { values }) => {
+              await handleOnFormFinish(values);
+            }}
+          >
+            <Drawer
+              title={
+                drawerType === Strings.cardTypesDrawerTypeCreateCardType
+                  ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
+                    ? Strings.cardTypesCloneCardType
+                    : Strings.cardTypesCreateCardType
+                  : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
+                  ? Strings.cardTypesUpdateCardType
+                  : drawerType ===
+                    Strings.cardTypesDrawerTypeCreatePreclassifier
+                  ? formData?.description?.includes(
+                      Strings.cardTypesCloneSuffix
+                    )
+                    ? Strings.cardTypesClonePreclassifier
+                    : Strings.cardTypesCreatePreclassifier
+                  : drawerType ===
+                    Strings.cardTypesDrawerTypeUpdatePreclassifier
+                  ? Strings.cardTypesUpdatePreclassifier
+                  : Strings.empty
+              }
+              placement={isMobile ? "bottom" : "right"}
+              width={isMobile ? "100%" : 400}
+              onClose={handleDrawerClose}
+              open={drawerVisible}
+              destroyOnClose
+              mask={false}
+              className="pr-5"
+            >
+              {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
+                <RegisterCardTypeForm
+                  form={createForm}
+                  onFinish={handleOnFormFinish}
+                  rol={rol}
+                  initialValues={formData}
+                />
+              )}
+              {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
+                <UpdateCardTypeForm
+                  form={updateForm}
+                  initialValues={formData}
+                  onFinish={handleOnFormFinish}
+                />
+              )}
+              {drawerType ===
+                Strings.cardTypesDrawerTypeCreatePreclassifier && (
+                <RegisterPreclassifierForm2
+                  form={createPreForm}
+                  initialValues={formData}
+                />
+              )}
+              {drawerType ===
+                Strings.cardTypesDrawerTypeUpdatePreclassifier && (
+                <UpdatePreclassifierForm2
+                  form={updatePreForm}
+                  initialValues={formData}
+                />
+              )}
+            </Drawer>
+          </Form.Provider>
+          <Drawer
+            title={Strings.details}
+            placement={isMobile ? "bottom" : "right"}
+            width={isMobile ? "100%" : 400}
+            onClose={() => setDetailsVisible(false)}
+            open={detailsVisible}
+            destroyOnClose
+            mask={false}
+          >
+            {detailsNode && detailsNode.nodeType === "cardType" && (
+              <CardTypeDetails nodeData={detailsNode} />
+            )}
+            {detailsNode && detailsNode.nodeType === "preclassifier" && (
+              <PreclassifierDetails nodeData={detailsNode} />
+            )}
+          </Drawer>
+        </div>
+      }
+    />
   );
 };
 
