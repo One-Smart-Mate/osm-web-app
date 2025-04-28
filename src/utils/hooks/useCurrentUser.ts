@@ -13,7 +13,10 @@ const isIhAdmin = () => {
     return getUserRol(user) === UserRoles.IHSISADMIN;
   };
 
-  return { user, setUser, isIhAdmin };
+  const rol =  getUserRol(user) ?? UserRoles.UNDEFINED;
+
+
+  return { user, setUser, isIhAdmin, rol };
 };
 
 export default useCurrentUser;

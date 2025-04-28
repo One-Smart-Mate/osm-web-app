@@ -48,7 +48,6 @@ import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 
-
 const SiteUsersV2 = () => {
   const [getUsers] = useGetSiteUsersMutation();
   const [data, setData] = useState<UserCardInfo[]>([]);
