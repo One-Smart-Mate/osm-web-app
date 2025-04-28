@@ -21,6 +21,7 @@ import type { Dayjs } from "dayjs";
 import DownloadCarDataExceButton from "./components/DownloadCardDataExcelButton";
 import ChartExpander from "./components/ChartExpander";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const { RangePicker } = DatePicker;
 
@@ -51,12 +52,15 @@ const Charts = ({ rol }: Props) => {
     undefined
   );
   const [selectedAreaName, setSelectedAreaName] = useState<string>("");
+  const { isIhAdmin} = useCurrentUser(); // Use the custom hook
+
 
   const handleGetMethodologiesCatalog = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
     }
+    console.log(`PROPS ${JSON.stringify(location.state)}`);
     setIsLoading(true);
     const [response, response2] = await Promise.all([
       getMethodologiesCatalog().unwrap(),
@@ -101,7 +105,7 @@ const Charts = ({ rol }: Props) => {
       title={Strings.chartsOf}
       description={siteName}
       isLoading={isLoading}
-      enableCreateButton={false}
+      enableBackButton={isIhAdmin()}
       enableSearch={false}
       content={
         <div>

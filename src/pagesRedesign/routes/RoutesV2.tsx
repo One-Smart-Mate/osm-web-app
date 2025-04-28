@@ -14,7 +14,7 @@ import { UserRoles } from "../../utils/Extensions";
 import TechnicalSupport from "../components/TechnicalSupport";
 import { ItemType } from "antd/es/menu/interface";
 import { MenuProps } from "antd";
-import {  getItemV2 } from "./RoutesExtensions";
+import { getItemV2 } from "./RoutesExtensions";
 import Charts from "../../pages/charts/Charts";
 import Strings from "../../utils/localizations/Strings";
 import CardDetails from "../../pages/carddetails/CardDetails";
@@ -26,27 +26,28 @@ import LevelsV2 from "../../pages/level/LevelsV2";
 import Sites from "../../pages/site/Sites";
 import CompaniesV2 from "../../pages/company/CompaniesV2";
 import i18next from "i18next";
-
+import SystemHealth from "../../pages/systemhealth/SystemHealth";
+import { MdHealthAndSafety } from "react-icons/md";
 
 const buildDashboardSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();
-  return currentLang === Constants.es ? 'Panel' : 'Dashboard';
-}
+  return currentLang === Constants.es ? "Panel" : "Dashboard";
+};
 
 const buildAccountSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();
-  return currentLang === Constants.es ? 'Cuentas' : 'Accounts';
-}
+  return currentLang === Constants.es ? "Cuentas" : "Accounts";
+};
 
 const buildCatalogsSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();
-  return currentLang === Constants.es ? 'Catálogos' : 'Catalogs';
-}
+  return currentLang === Constants.es ? "Catálogos" : "Catalogs";
+};
 
 const buildSupportSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();
-  return currentLang === Constants.es ? 'Soporte Técnico' : 'Technical Support';
-}
+  return currentLang === Constants.es ? "Soporte Técnico" : "Technical Support";
+};
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
@@ -63,7 +64,6 @@ const localAdminChartsV2 = new RouteV2(
   <Charts rol={UserRoles.LOCALADMIN} />,
   <BsBarChartLine />,
   buildDashboardSectionName()
-
 );
 
 // Routes for sis admin
@@ -80,6 +80,14 @@ const sisAdminChartsV2 = new RouteV2(
   Constants.ROUTES_PATH.charts,
   <Charts rol={UserRoles.LOCALSYSADMIN} />,
   <BsBarChartLine />,
+  buildDashboardSectionName()
+);
+
+const sisAdminSitesV2 = new RouteV2(
+  Strings.sitesSB,
+  Constants.ROUTES_PATH.sites,
+  <Sites rol={UserRoles.LOCALSYSADMIN} />,
+  <BsBuildingAdd />,
   buildDashboardSectionName()
 );
 
@@ -116,7 +124,7 @@ const sisAdminLevelsV2 = new RouteV2(
 
 //Routes for IHSISADMIN
 const ihSisAdminCompaniesV2 = new RouteV2(
-  "Companies",
+  Strings.companiesSB,
   Constants.ROUTES_PATH.companies,
   <CompaniesV2 />,
   <BsBuildingAdd />,
@@ -124,11 +132,27 @@ const ihSisAdminCompaniesV2 = new RouteV2(
 );
 
 const ihSisAdminSitesV2 = new RouteV2(
-  "Sites",
+  Strings.sitesSB,
   Constants.ROUTES_PATH.sites,
   <Sites rol={UserRoles.IHSISADMIN} />,
   <BsBuildingAdd />,
   buildCatalogsSectionName()
+);
+
+const ihSisAdminChartsV2 = new RouteV2(
+  Strings.chartsSB,
+  Constants.ROUTES_PATH.charts,
+  <Charts rol={UserRoles.IHSISADMIN} />,
+  <BsBarChartLine />,
+  buildDashboardSectionName()
+);
+
+const ihSisAdminSystemHealthV2 = new RouteV2(
+  Strings.systemHealthSB,
+  "system-health",
+  <SystemHealth />,
+  <MdHealthAndSafety />,
+  buildSupportSectionName()
 );
 
 // Common routes
@@ -156,12 +180,16 @@ const sisAdminRoutesV2: RouteV2[] = [
   sisAdminUsersV2,
   sisAdminCardTypesV2,
   sisAdminPrioritiesV2,
-  sisAdminLevelsV2
+  sisAdminLevelsV2,
+  sisAdminSitesV2,
 ];
 
-
-const ihSisAdminRoutesV2: RouteV2[] = [ihSisAdminCompaniesV2, ihSisAdminSitesV2];
-
+const ihSisAdminRoutesV2: RouteV2[] = [
+  ihSisAdminCompaniesV2,
+  ihSisAdminSitesV2,
+  ihSisAdminSystemHealthV2,
+  ihSisAdminChartsV2,
+];
 
 const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute];
 
@@ -204,6 +232,12 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       section: sisAdminCardsV2.section,
     }),
     getItemV2({
+      label: sisAdminSitesV2.label,
+      key: sisAdminSitesV2.path,
+      icon: sisAdminSitesV2.icon,
+      section: sisAdminSitesV2.section,
+    }),
+    getItemV2({
       label: sisAdminLevelsV2.label,
       key: sisAdminLevelsV2.path,
       icon: sisAdminLevelsV2.icon,
@@ -237,7 +271,6 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   return items;
 };
 
-
 const localIHSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   const items: MenuProps["items"] = [
     getItemV2({
@@ -246,7 +279,13 @@ const localIHSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       icon: ihSisAdminCompaniesV2.icon,
       section: ihSisAdminCompaniesV2.section,
     }),
-    
+
+    getItemV2({
+      label: ihSisAdminSystemHealthV2.label,
+      key: ihSisAdminSystemHealthV2.path,
+      icon: ihSisAdminSystemHealthV2.icon,
+      section: ihSisAdminSystemHealthV2.section,
+    }),
   ];
   return items;
 };
@@ -258,5 +297,5 @@ export {
   sisAdminRoutesV2,
   commonRoutes,
   localIHSisAdminRoutesSiderOptionsV2,
-  ihSisAdminRoutesV2
+  ihSisAdminRoutesV2,
 };

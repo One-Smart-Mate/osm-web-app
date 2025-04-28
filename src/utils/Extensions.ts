@@ -319,3 +319,8 @@ export const isRedesign = (): boolean => {
   const redesign = import.meta.env.VITE_IS_REDESIGN;
   return redesign != null && redesign != undefined && redesign != "" && redesign == "yes";
 }
+
+
+export const isIhAdmin = (user: User) => {
+  return getUserRol(user) === UserRoles.IHSISADMIN;
+};

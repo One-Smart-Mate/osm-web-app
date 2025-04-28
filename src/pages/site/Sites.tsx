@@ -14,6 +14,7 @@ import {
   Form,
   Input,
   List,
+  Modal,
   Row,
   Space,
   Typography,
@@ -51,7 +52,6 @@ import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { FormInstance } from "antd/lib";
-import PageTitleTag from "../../components/PageTitleTag";
 import {
   BsBuildingAdd,
   BsDiagram3,
@@ -64,7 +64,10 @@ import {
 } from "react-icons/bs";
 import Loading from "../../pagesRedesign/components/Loading";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
-import BackButton from "../../pagesRedesign/components/BackButton";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import UpdateSite from "./components/UpdateSite";
+import { navigateWithProps } from "../../pagesRedesign/routes/RoutesExtensions";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 interface SitesProps {
   rol: UserRoles;
@@ -86,6 +89,11 @@ const Sites = ({ rol }: SitesProps) => {
   const [getSessionUser] = useSessionStorage<User>(Strings.empty);
   const navigate = useNavigate();
   const [siteURL, setSiteURL] = useState<string>();
+  const [modalActions, setModalActions] = useState(false);
+  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
+  const { isIhAdmin} = useCurrentUser();
+  const companyName = location?.state?.companyName || Strings.empty;
+  const navigateProps = navigateWithProps();
 
   const handleGetSites = async () => {
     if (!location.state) {
@@ -100,13 +108,13 @@ const Sites = ({ rol }: SitesProps) => {
       companyPhone: location.state.companyPhone,
       companyLogo: location.state.companyLogo,
     };
-
+    console.log(`[COMPANY] ${JSON.stringify(companyInfo)}`);
     sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
 
     const user = getSessionUser() as User;
     setLoading(true);
     var response;
-    if (rol === UserRoles.IHSISADMIN) {
+    if (isIhAdmin()) {
       response = await getSites(location.state.companyId).unwrap();
     } else {
       response = await getUserSites(user.userId).unwrap();
@@ -127,8 +135,8 @@ const Sites = ({ rol }: SitesProps) => {
     }
   }, [isSiteUpdated, dispatch]);
 
-  const handleOnSearch = (event: any) => {
-    const getSearch = event.target.value;
+  const handleOnSearch = (query: string) => {
+    const getSearch = query;
 
     if (getSearch.length > 0) {
       const filterData = dataBackup.filter((item) => search(item, getSearch));
@@ -175,30 +183,20 @@ const Sites = ({ rol }: SitesProps) => {
             <Space className="w-full md:w-auto mb-1 md:mb-0">
               <Input
                 className="w-full"
-                onChange={handleOnSearch}
+                onChange={(e) => handleOnSearch(e.target.value)}
                 value={querySearch}
                 addonAfter={<IoIosSearch />}
               />
             </Space>
           </div>
           <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-            {isRedesign() ? (
-              <Button
-                type="primary"
-                onClick={handleOnClickCreateButton}
-                className="w-full md:w-auto"
-              >
-                {Strings.create}
-              </Button>
-            ) : (
-              <CustomButton
-                type="success"
-                onClick={handleOnClickCreateButton}
-                className="w-full md:w-auto"
-              >
-                {Strings.create}
-              </CustomButton>
-            )}
+            <CustomButton
+              type="success"
+              onClick={handleOnClickCreateButton}
+              className="w-full md:w-auto"
+            >
+              {Strings.create}
+            </CustomButton>
           </div>
         </div>
       );
@@ -255,114 +253,134 @@ const Sites = ({ rol }: SitesProps) => {
     }
   };
 
-  const companyName = location?.state?.companyName || Strings.empty;
 
   return (
     <>
       {isRedesign() ? (
-        <div>
-          {rol === UserRoles.IHSISADMIN && <BackButton /> }
-          <div className="h-full flex flex-col">
-            <div className="flex flex-col items-center m-3">
-              <PageTitleTag
-                mainText={`${
-                  rol === UserRoles.IHSISADMIN
-                    ? Strings.sitesOf
-                    : Strings.yourSitesOfCompany
-                }`}
-                subText={companyName}
-              />
-              {buildSitePageActions()}
-            </div>
-            <Row gutter={[8, 8]}>
-              <Loading isLoading={isLoading} />
-              {!isLoading &&
-                data.map((value, index) => (
-                  <Col
-                    key={`Col-${index}`}
-                    xs={{ flex: "100%" }}
-                    sm={{ flex: "60%" }}
-                    md={{ flex: "50%" }}
-                    lg={{ flex: "40%" }}
-                    xl={{ flex: "30%" }}
-                  >
-                    <Card
-                      hoverable
-                      className="rounded-xl shadow-md"
-                      title={
-                        <Typography.Title level={5}>
-                          {value.name}
-                        </Typography.Title>
-                      }
-                      cover={
-                        <img
-                          alt={value.name}
-                          style={{ width: "auto", height: 200 }}
-                          src={value.logo}
-                        />
-                      }
-                      actions={[]}
+        <MainContainer
+          title={`${
+            isIhAdmin() ? Strings.sitesOf : Strings.yourSitesOfCompany
+          }`}
+          description={companyName}
+          isLoading={isLoading}
+          enableSearch={isIhAdmin()}
+          onSearchChange={handleOnSearch}
+          enableBackButton={isIhAdmin()}
+          enableCreateButton={isIhAdmin()}
+          onCreateButtonClick={handleOnClickCreateButton}
+          content={
+            <div>
+              <Row gutter={[8, 8]}>
+                <Loading isLoading={isLoading} />
+                {!isLoading &&
+                  data.map((value, index) => (
+                    <Col
+                      key={`Col-${index}`}
+                      xs={{ flex: "100%" }}
+                      sm={{ flex: "60%" }}
+                      md={{ flex: "50%" }}
+                      lg={{ flex: "40%" }}
+                      xl={{ flex: "30%" }}
                     >
-                      <AnatomySection
-                        title={Strings.name}
-                        label={value.name}
-                        icon={<BsBuildingAdd />}
-                      />
-                      <AnatomySection
-                        title={Strings.rfc}
-                        label={value.rfc}
-                        icon={<BsFiles />}
-                      />
-                      <AnatomySection
-                        title={Strings.companyAddress}
-                        label={value.address}
-                        icon={<BsPinMap />}
-                      />
-                      <AnatomySection
-                        title={Strings.contact}
-                        label={value.contact}
-                        icon={<BsPerson />}
-                      />
-                      <AnatomySection
-                        title={Strings.position}
-                        label={value.position}
-                        icon={<BsDiagram3 />}
-                      />
-                      <AnatomySection
-                        title={Strings.phone}
-                        label={value.phone}
-                        icon={<BsTelephone />}
-                      />
-                      <AnatomySection
-                        title={Strings.extension}
-                        label={value.extension}
-                        icon={<BsTelephoneOutbound />}
-                      />
-                      <AnatomySection
-                        title={Strings.email}
-                        label={value.email}
-                        icon={<BsMailbox />}
-                      />
-                      <AnatomySection
-                        title={Strings.cellular}
-                        label={value.cellular}
-                        icon={<BsTelephone />}
-                      />
-                      <AnatomySection
-                        title={Strings.status}
-                        label={
-                          <Badge
-                            status={getStatusAndText(value.status).status}
-                            text={getStatusAndText(value.status).text}
+                      <Card
+                        hoverable
+                        className="rounded-xl shadow-md"
+                        title={
+                          <Typography.Title level={5}>
+                            {value.name}
+                          </Typography.Title>
+                        }
+                        cover={
+                          <img
+                            alt={value.name}
+                            style={{ width: "auto", height: 200 }}
+                            src={value.logo}
                           />
                         }
-                      />
-                    </Card>
-                  </Col>
-                ))}
-            </Row>
-          </div>
-        </div>
+                        actions={[
+                          <UpdateSite siteId={value.id} />,
+                          <Button onClick={() => {
+                            setSelectedSite(value);
+                            setModalActions(true)
+                          }}>{Strings.actions}</Button>,
+                        ]}
+                      >
+                        <AnatomySection
+                          title={Strings.name}
+                          label={value.name}
+                          icon={<BsBuildingAdd />}
+                        />
+                        <AnatomySection
+                          title={Strings.rfc}
+                          label={value.rfc}
+                          icon={<BsFiles />}
+                        />
+                        <AnatomySection
+                          title={Strings.companyAddress}
+                          label={value.address}
+                          icon={<BsPinMap />}
+                        />
+                        <AnatomySection
+                          title={Strings.contact}
+                          label={value.contact}
+                          icon={<BsPerson />}
+                        />
+                        <AnatomySection
+                          title={Strings.position}
+                          label={value.position}
+                          icon={<BsDiagram3 />}
+                        />
+                        <AnatomySection
+                          title={Strings.phone}
+                          label={value.phone}
+                          icon={<BsTelephone />}
+                        />
+                        <AnatomySection
+                          title={Strings.extension}
+                          label={value.extension}
+                          icon={<BsTelephoneOutbound />}
+                        />
+                        <AnatomySection
+                          title={Strings.email}
+                          label={value.email}
+                          icon={<BsMailbox />}
+                        />
+                        <AnatomySection
+                          title={Strings.cellular}
+                          label={value.cellular}
+                          icon={<BsTelephone />}
+                        />
+                        <AnatomySection
+                          title={Strings.status}
+                          label={
+                            <Badge
+                              status={getStatusAndText(value.status).status}
+                              text={getStatusAndText(value.status).text}
+                            />
+                          }
+                        />
+                      </Card>
+                    </Col>
+                  ))}
+              </Row>
+
+              <Modal
+                title={Strings.actions}
+                open={modalActions}
+                onOk={() => setModalActions(false)}
+                onCancel={() => setModalActions(false)}
+              >
+                <Button onClick={() => {
+                  navigateProps(Constants.ROUTES_PATH.charts,{siteId: selectedSite?.id, siteName: selectedSite?.name,})
+                }}>{Strings.viewCharts}</Button>
+
+              <Button onClick={() => {
+                  navigateProps(Constants.ROUTES_PATH.users,{siteId: selectedSite?.id, siteName: selectedSite?.name,})
+                }}>{Strings.viewUsers}</Button>
+              </Modal>
+            </div>
+          }
+        />
       ) : (
         <div className="h-full flex flex-col">
           <div className="flex flex-col gap-2 items-center m-3">

@@ -62,7 +62,6 @@ export const getUserSiderOptionsV2 = (user: User): ItemType[] => {
   const rol = getUserRol(user);
 
   let routes: ItemType[] = [];
-  console.log(`ROLES ${rol}`)
   switch (rol) {
     case UserRoles.LOCALADMIN:
       routes = localAdminRoutesSiderOptionsV2();
@@ -105,3 +104,18 @@ export const buildInitRoute = (user: User): string => {
     return buildRoute(Constants.ROUTES_PATH.charts);
   }
 };
+
+
+
+export function navigateWithProps() {
+
+  const navigate = useNavigate();
+  return (path: string, props?: any) => {
+    
+    navigate(buildRoute(path), {
+      state: {
+        ...props,
+      },
+    });
+  };
+}
