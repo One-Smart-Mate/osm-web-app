@@ -6,12 +6,7 @@ import {
 } from "../../services/siteService";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Form,
-  Input,
-  List,
-  Space,
-} from "antd";
+import { Form, Input, List, Space } from "antd";
 import CustomButton from "../../components/CustomButtons";
 import SiteTable from "./components/SiteTable";
 import { IoIosSearch } from "react-icons/io";
@@ -35,15 +30,11 @@ import {
   setGeneratedSiteCode,
 } from "../../core/genericReducer";
 import PageTitle from "../../components/PageTitle";
-import {
-  generateShortUUID,
-  UserRoles,
-} from "../../utils/Extensions";
+import { generateShortUUID, UserRoles } from "../../utils/Extensions";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { FormInstance } from "antd/lib";
-import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 interface SitesProps {
   rol: UserRoles;
@@ -65,14 +56,14 @@ const Sites = ({ rol }: SitesProps) => {
   const [getSessionUser] = useSessionStorage<User>(Strings.empty);
   const navigate = useNavigate();
   const [siteURL, setSiteURL] = useState<string>();
-  const { isIhAdmin} = useCurrentUser();
-  const companyName = location?.state?.companyName || Strings.empty;
+  
 
   const handleGetSites = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
     }
+
 
     const companyInfo = {
       companyId: location.state.companyId,
@@ -81,13 +72,14 @@ const Sites = ({ rol }: SitesProps) => {
       companyPhone: location.state.companyPhone,
       companyLogo: location.state.companyLogo,
     };
-    console.log(`[COMPANY] ${JSON.stringify(companyInfo)}`);
+
     sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
+
 
     const user = getSessionUser() as User;
     setLoading(true);
     var response;
-    if (isIhAdmin()) {
+    if (rol === UserRoles.IHSISADMIN) {
       response = await getSites(location.state.companyId).unwrap();
     } else {
       response = await getUserSites(user.userId).unwrap();
@@ -108,8 +100,8 @@ const Sites = ({ rol }: SitesProps) => {
     }
   }, [isSiteUpdated, dispatch]);
 
-  const handleOnSearch = (query: string) => {
-    const getSearch = query;
+  const handleOnSearch = (event: any) => {
+    const getSearch = event.target.value;
 
     if (getSearch.length > 0) {
       const filterData = dataBackup.filter((item) => search(item, getSearch));
@@ -156,7 +148,7 @@ const Sites = ({ rol }: SitesProps) => {
             <Space className="w-full md:w-auto mb-1 md:mb-0">
               <Input
                 className="w-full"
-                onChange={(e) => handleOnSearch(e.target.value)}
+                onChange={handleOnSearch}
                 value={querySearch}
                 addonAfter={<IoIosSearch />}
               />
@@ -178,7 +170,7 @@ const Sites = ({ rol }: SitesProps) => {
   };
 
   const handleOnFormCreateFinish = async (values: any) => {
-    try {
+    try { 
       setModalLoading(true);
       if (siteURL == null || siteURL == undefined || siteURL == "") {
         handleErrorNotification(Strings.requiredLogo);
@@ -226,36 +218,37 @@ const Sites = ({ rol }: SitesProps) => {
     }
   };
 
+  const companyName = location?.state?.companyName || Strings.empty;
 
   return (
     <>
-        <div className="h-full flex flex-col">
-          <div className="flex flex-col gap-2 items-center m-3">
-            <PageTitle
-              mainText={`${
-                rol === UserRoles.IHSISADMIN
-                  ? Strings.sitesOf
-                  : Strings.yourSitesOfCompany
-              }`}
-              subText={companyName}
-            />
-            {buildSitePageActions()}
-          </div>
-          <div className="flex-1 overflow-auto hidden lg:block">
-            <SiteTable data={data} isLoading={isLoading} rol={rol} />
-          </div>
-          <div className="flex-1 overflow-auto lg:hidden">
-            <PaginatedList
-              dataSource={data}
-              renderItem={(item: Site, index: number) => (
-                <List.Item>
-                  <SiteCard key={index} data={item} rol={rol} />
-                </List.Item>
-              )}
-              loading={isLoading}
-            />
-          </div>
+      <div className="h-full flex flex-col">
+        <div className="flex flex-col gap-2 items-center m-3">
+          <PageTitle
+            mainText={`${
+              rol === UserRoles.IHSISADMIN
+                ? Strings.sitesOf
+                : Strings.yourSitesOfCompany
+            }`}
+            subText={companyName}
+          />
+          {buildSitePageActions()}
         </div>
+        <div className="flex-1 overflow-auto hidden lg:block">
+          <SiteTable data={data} isLoading={isLoading} rol={rol} />
+        </div>
+        <div className="flex-1 overflow-auto lg:hidden">
+          <PaginatedList
+            dataSource={data}
+            renderItem={(item: Site, index: number) => (
+              <List.Item>
+                <SiteCard key={index} data={item} rol={rol} />
+              </List.Item>
+            )}
+            loading={isLoading}
+          />
+        </div>
+      </div>
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnFormCreateFinish(values);
@@ -264,12 +257,7 @@ const Sites = ({ rol }: SitesProps) => {
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={(form: FormInstance) => (
-            <RegisterSiteForm
-              form={form}
-              onSuccessUpload={(url) => setSiteURL(url)}
-            />
-          )}
+          FormComponent={(form: FormInstance) => <RegisterSiteForm form={form} onSuccessUpload={(url) => setSiteURL(url)} />}
           title={Strings.createSite.concat(` ${companyName}`)}
           isLoading={modalIsLoading}
         />
