@@ -33,7 +33,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import RegisterSiteUserForm from "./components/RegisterSiteUserForm";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import { UserRoles } from "../../utils/Extensions";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
 import {
@@ -46,12 +45,11 @@ import Loading from "../../pagesRedesign/components/Loading";
 import AssignPositionsButton from "./components/AssignPositionsButton";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
-interface Props {
-  rol: UserRoles;
-}
 
-const SiteUsersV2 = ({ rol }: Props) => {
+
+const SiteUsersV2 = () => {
   const [getUsers] = useGetSiteUsersMutation();
   const [data, setData] = useState<UserCardInfo[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -66,6 +64,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
   const [importUsers] = useImportUsersMutation();
   const navigate = useNavigate();
   const [getUserPositions] = useGetUserPositionsMutation();
+  const {isIhAdmin} = useCurrentUser();
 
   const handleOnCancelButton = () => {
     if (!modalIsLoading) {
@@ -144,7 +143,7 @@ const SiteUsersV2 = ({ rol }: Props) => {
   };
 
   const buildActions = () => {
-    if (rol === UserRoles.IHSISADMIN) {
+    if (isIhAdmin()) {
       return (
         <CustomButton
           onClick={() => handleOnOpenModal(Strings.empty)}
@@ -211,10 +210,13 @@ const SiteUsersV2 = ({ rol }: Props) => {
       enableCreateButton={true}
       enableSearch={true}
       onSearchChange={handleOnSearch}
+      enableBackButton={isIhAdmin()}
       onCreateButtonClick={() => handleOnOpenModal(Strings.users)}
       content={
         <div>
+          <div className="flex justify-end pb-2">
           {buildActions()}
+          </div>
           <Row gutter={[8, 8]}>
             <Loading isLoading={isLoading} />
             {!isLoading &&

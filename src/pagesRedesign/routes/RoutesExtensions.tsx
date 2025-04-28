@@ -93,9 +93,6 @@ export const buildRoute = (path: string): string => {
   return `/${Constants.ROUTES_PATH.dashboard}/${path}`;
 };
 
-export const buildSitesRoute = (): string => {
-  return `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`;
-};
 export const buildInitRoute = (user: User): string => {
   const rol = getUserRol(user);
   if(rol === UserRoles.IHSISADMIN) {
@@ -108,13 +105,36 @@ export const buildInitRoute = (user: User): string => {
 
 
 export function navigateWithProps() {
-
   const navigate = useNavigate();
-  return (path: string, props?: any) => {
-    
+
+  return ({
+    path,
+    companyId,
+    companyName,
+    companyAddress,
+    companyPhone,
+    companyLogo,
+    siteId,
+    siteName,
+  }: {
+    path: string;
+    companyId?: string;
+    companyName?: string;
+    companyAddress?: string;
+    companyPhone?: string;
+    companyLogo?: string;
+    siteId?: string;
+    siteName?: string;
+  }) => {
     navigate(buildRoute(path), {
       state: {
-        ...props,
+        companyId,
+        companyName,
+        companyAddress,
+        companyPhone,
+        companyLogo,
+        siteId,
+        siteName,
       },
     });
   };

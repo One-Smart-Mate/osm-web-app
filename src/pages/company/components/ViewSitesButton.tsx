@@ -4,7 +4,8 @@ import Strings from "../../../utils/localizations/Strings";
 import { adminSites } from "../../routes/Routes";
 import { isRedesign } from "../../../utils/Extensions";
 import { Button } from "antd";
-import { buildSitesRoute } from "../../../pagesRedesign/routes/RoutesExtensions";
+import Constants from "../../../utils/Constants";
+import { navigateWithProps } from "../../../pagesRedesign/routes/RoutesExtensions";
 
 interface props {
   companyId: string;
@@ -17,25 +18,24 @@ interface props {
 const ViewSitesButton = ({ companyId, companyName, companyAddress,companyPhone,companyLogo }: props) => {
 
   const navigate = useNavigate();
+  const navigateprops = navigateWithProps();
 
-  const handleOnViewPriorities = (companyId: string, companyName: string, companyAddress:string, companyPhone: string, companyLogo:string ) => {
-    if(isRedesign()) {
-      navigate(buildSitesRoute(),{
-        state: { 
-          companyId: companyId, 
-          companyName: companyName, 
-          companyAddress: companyAddress,
-          companyPhone: companyPhone, 
-          companyLogo: companyLogo
-        },
-      })
-    } else { 
-      navigate(adminSites.fullPath.replace(Strings.companyParam, companyId)), {
-        state: { companyId, companyName, companyAddress,companyPhone, companyLogo},
-        };
-    }   
+  const handleOnViewPriorities = (companyId: string, companyName: string, companyAddress: string, companyPhone: string, companyLogo: string) => {
+    if (isRedesign()) {
+      navigateprops({
+        path: Constants.ROUTES_PATH.sites,
+        companyId,
+        companyName,
+        companyAddress,
+        companyPhone,
+        companyLogo,
+      });
+    } else {
+      navigate(adminSites.fullPath.replace(Strings.companyParam, companyId), {
+        state: { companyId, companyName, companyAddress, companyPhone, companyLogo },
+      });
+    }
   };
-
 
   return (
     isRedesign() ? <Button
