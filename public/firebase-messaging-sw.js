@@ -18,13 +18,25 @@ firebase.initializeApp(defaultConfig);
 // Retrieve firebase messaging
 const messaging = firebase.messaging();
 
+// Handle background messages
 messaging.onBackgroundMessage((payload) => {
-  console.log('[Firebase Messaging] Message received in background:', payload);
-  const notificationTitle = payload.notification.title;
+  console.log('[Firebase Messaging] Background message received:', payload);
+
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: 'BACKGROUND_MESSAGE',
+        payload,
+      });
+    });
+  });
+
+  // Customize notification
+  const notificationTitle = payload.notification?.title || 'Background Notification';
   const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.image,
+    body: payload.notification?.body || 'You have a new message.',
+    icon: payload.notification?.icon || '/default-icon.png',
   };
 
-  showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });

@@ -20,7 +20,7 @@ export const requestPermissionAndGetToken = async (): Promise<string | null> => 
     try {
       console.log('[Firebase Messaging] Registering service worker...');
       // Manually register the service worker
-      const swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      const swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js',{scope:'/'});
       console.log('[Firebase Messaging] Service worker registered:', swRegistration);
 
       console.log('[Firebase Messaging] Getting token with VAPID key:', VAPID_KEY ? 'VAPID key present' : 'VAPID key missing');
@@ -45,9 +45,20 @@ export const requestPermissionAndGetToken = async (): Promise<string | null> => 
 
 export const onMessageListener = () =>
   new Promise((resolve) => {
-    console.log('[Firebase Messaging] Setting up message listener');
     onMessage(messaging, (payload) => {
-      console.log('[Firebase Messaging] Message received in foreground:', payload);
+      sessionStorage.setItem('appNotifications', JSON.stringify(payload));
       resolve(payload);
     });
   });
+
+  export const listenForBackgroundMessages = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'BACKGROUND_MESSAGE') {
+          const payload = event.data.payload;
+          console.log('[Main App] Background message received:', payload);
+          sessionStorage.setItem('appNotifications', JSON.stringify(payload));
+        }
+      });
+    }
+  };

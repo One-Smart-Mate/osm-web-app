@@ -22,8 +22,15 @@ import {
 } from "./pagesRedesign/routes/RoutesV2";
 import Constants from "./utils/Constants";
 import { isRedesign } from "./utils/Extensions";
+import { listenForBackgroundMessages } from "./config/firebaseMessaging";
+import { useEffect } from "react";
 
 function App() {
+
+  useEffect(() => {
+    listenForBackgroundMessages();
+  });
+  
   const getTheme = () => {
     let theme: any;
     if (isRedesign()) {
@@ -85,6 +92,8 @@ function App() {
     }
     return theme;
   };
+
+ 
 
   return (
     <ConfigProvider theme={getTheme()}>
