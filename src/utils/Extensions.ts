@@ -92,6 +92,10 @@ export const getUserRol = (user: User): UserRoles | null => {
     : UserRoles.UNDEFINED;
 };
 
+export const isValidUser = (user: User): boolean => {
+  return getUserRol(user) !== UserRoles.UNDEFINED;
+}
+
 export const enum UserRoles {
   IHSISADMIN,
   LOCALSYSADMIN,

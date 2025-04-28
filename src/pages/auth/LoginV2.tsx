@@ -1,4 +1,4 @@
-import { Form, Input, Layout, Card, Button } from "antd";
+import { Form, Input, Layout, Card, Button, App as AntdApp } from "antd";
 import React, { useEffect } from "react";
 import { useLoginMutation } from "../../services/authService";
 import { LoginRequest } from "../../data/user/user.request";
@@ -16,6 +16,7 @@ import {
   getInitRoute,
   getUserRol,
   isRedesign,
+  isValidUser,
   UserRoles,
   validateEmail,
 } from "../../utils/Extensions";
@@ -38,6 +39,8 @@ const LoginPage = () => {
   );
   const navigate = useNavigate();
   const navigatewithState = navigateWithState();
+  const { notification } = AntdApp.useApp();
+
 
   const handleUserSession = () => {
     const user = getSessionUser();
@@ -85,9 +88,18 @@ const LoginPage = () => {
       const data = await login(
         new LoginRequest(values.email, values.password)
       ).unwrap();
-      setSessionUser(data);
-      dispatch(setCredentials({ ...data }));
-      handleNavigation(data);
+
+      if (isValidUser(data)) {
+        setSessionUser(data);
+        dispatch(setCredentials({ ...data }));
+        handleNavigation(data);
+      } else {
+        notification.error({
+          message: Strings.error,
+          description: Strings.permissionsError,
+          placement: "topRight",
+        });
+      }
     } catch (error) {
       console.error("Error en el login:", error);
       handleErrorNotification(error);

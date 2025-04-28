@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App as AntdApp } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
 import { Route, Routes } from "react-router-dom";
 import {
@@ -26,11 +26,10 @@ import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import { useEffect } from "react";
 
 function App() {
-
   useEffect(() => {
     listenForBackgroundMessages();
   });
-  
+
   const getTheme = () => {
     let theme: any;
     if (isRedesign()) {
@@ -93,70 +92,70 @@ function App() {
     return theme;
   };
 
- 
-
   return (
     <ConfigProvider theme={getTheme()}>
-      <Routes>
-        <Route
-          path="/external/card/:cardId/details"
-          element={<PublicCardDetails />}
-        />
-
-        <Route index path="/" element={<LoginPage />} />
-        <Route path={ResetPasswordRoute} element={<ResetPassword />} />
-
-        <Route element={<PrivateRoutes />}>
-          <Route element={<BaseLayout />}>
-            {adminRoutes.map((value, index) => (
-              <Route
-                key={index}
-                path={value.fullPath}
-                element={value.element}
-              />
-            ))}
-            {sysAdminRoutes.map((value, index) => (
-              <Route
-                key={index}
-                path={value.fullPath}
-                element={value.element}
-              />
-            ))}
-            {localAdminRoutes.map((value, index) => (
-              <Route
-                key={index}
-                path={value.fullPath}
-                element={value.element}
-              />
-            ))}
-          </Route>
-        </Route>
-
-        <Route element={<PrivateRoutes />}>
+      <AntdApp>
+        <Routes>
           <Route
-            path={Constants.ROUTES_PATH.dashboard}
-            element={<BaseLayoutRedesign />}
-          >
-            {commonRoutes.map((value, index) => (
-              <Route key={index} path={value.path} element={value.element} />
-            ))}
-            {localAdminRoutesV2.map((value, index) => (
-              <Route key={index} path={value.path} element={value.element} />
-            ))}
-            {sisAdminRoutesV2.map((value, index) => (
-              <Route key={index} path={value.path} element={value.element} />
-            ))}
+            path="/external/card/:cardId/details"
+            element={<PublicCardDetails />}
+          />
 
-            {ihSisAdminRoutesV2.map((value, index) => (
-              <Route key={index} path={value.path} element={value.element} />
-            ))}
+          <Route index path="/" element={<LoginPage />} />
+          <Route path={ResetPasswordRoute} element={<ResetPassword />} />
+
+          <Route element={<PrivateRoutes />}>
+            <Route element={<BaseLayout />}>
+              {adminRoutes.map((value, index) => (
+                <Route
+                  key={index}
+                  path={value.fullPath}
+                  element={value.element}
+                />
+              ))}
+              {sysAdminRoutes.map((value, index) => (
+                <Route
+                  key={index}
+                  path={value.fullPath}
+                  element={value.element}
+                />
+              ))}
+              {localAdminRoutes.map((value, index) => (
+                <Route
+                  key={index}
+                  path={value.fullPath}
+                  element={value.element}
+                />
+              ))}
+            </Route>
           </Route>
-        </Route>
 
-        <Route path={UnauthorizedRoute} element={<Unauthorized />} />
-        <Route path={"*"} element={<NotFound />} />
-        <Route />
-      </Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route
+              path={Constants.ROUTES_PATH.dashboard}
+              element={<BaseLayoutRedesign />}
+            >
+              {commonRoutes.map((value, index) => (
+                <Route key={index} path={value.path} element={value.element} />
+              ))}
+              {localAdminRoutesV2.map((value, index) => (
+                <Route key={index} path={value.path} element={value.element} />
+              ))}
+              {sisAdminRoutesV2.map((value, index) => (
+                <Route key={index} path={value.path} element={value.element} />
+              ))}
+
+              {ihSisAdminRoutesV2.map((value, index) => (
+                <Route key={index} path={value.path} element={value.element} />
+              ))}
+            </Route>
+          </Route>
+
+          <Route path={UnauthorizedRoute} element={<Unauthorized />} />
+          <Route path={"*"} element={<NotFound />} />
+          <Route />
+        </Routes>
+      </AntdApp>
     </ConfigProvider>
   );
 }

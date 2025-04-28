@@ -770,6 +770,7 @@ const resources = {
       technicalSupport: "Technical Support",
       enterEmail: "Enter your email",
       enterPassword: "Enter your password",
+      permissionsError: "You do not have permission to access this application.",
     },
   },
   es: {
@@ -1547,6 +1548,7 @@ const resources = {
       redesign: import.meta.env.VITE_IS_REDESIGN,
       enterEmail: "Introduce tu correo electrónico",
       enterPassword: "Introduce tu contraseña",
+      permissionsError: 'No tienes permisos para acceder a esta aplicación.',
     },
   },
 };

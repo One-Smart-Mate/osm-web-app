@@ -707,6 +707,7 @@ class StringsBase {
   static technicalSupport: "technicalSupport";
   static enterEmail: "enterEmail";
   static enterPassword: "enterPassword";
+  static permissionsError: "permissionsError";
 
 }
 
