@@ -23,7 +23,6 @@ import CardTypesTree from "../../pages/cardtypes/CardTypes";
 import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 import Priorities from "../../pages/priority/Priorities";
 import LevelsV2 from "../../pages/level/LevelsV2";
-import Companies from "../../pages/company/Companies";
 import Sites from "../../pages/site/Sites";
 import CompaniesV2 from "../../pages/company/CompaniesV2";
 
