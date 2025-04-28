@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { Input, List, Space } from "antd";
-import { IoIosSearch } from "react-icons/io";
+import {  List } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
 import { useGetCardsMutation } from "../../services/cardService";
 import PaginatedList from "../../components/PaginatedList";
 import InformationPanel from "./components/Card";
 import { CardInterface } from "../../data/card/card";
-import { isRedesign, UserRoles } from "../../utils/Extensions";
+import {  UserRoles } from "../../utils/Extensions";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import PageTitleTag from "../../components/PageTitleTag";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
 
 interface CardsProps {
   rol: UserRoles;
@@ -21,12 +19,11 @@ const Cards = ({ rol }: CardsProps) => {
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
   const [data, setData] = useState<CardInterface[]>([]);
-  const [querySearch, setQuerySearch] = useState(Strings.empty);
   const [dataBackup, setDataBackup] = useState<CardInterface[]>([]);
   const navigate = useNavigate();
 
-  const handleOnSearch = (event: any) => {
-    const getSearch = event.target.value;
+  const handleOnSearch = (query: string) => {
+    const getSearch = query;
 
     if (getSearch.length > 0) {
       const filterData = dataBackup.filter((item) => search(item, getSearch));
@@ -34,7 +31,6 @@ const Cards = ({ rol }: CardsProps) => {
     } else {
       setData(dataBackup);
     }
-    setQuerySearch(getSearch);
   };
 
   const search = (item: CardInterface, search: string) => {
@@ -67,42 +63,24 @@ const Cards = ({ rol }: CardsProps) => {
   const siteName = location?.state?.siteName || Strings.empty;
 
   return (
-    <>
-      <div className="h-full flex flex-col">
-        <div className="flex flex-col items-center m-3">
-          {isRedesign() ? (
-            <PageTitleTag mainText={Strings.tagsOf} subText={siteName} />
-          ) : (
-            <PageTitle mainText={Strings.tagsOf} subText={siteName} />
+    <MainContainer
+      title={Strings.tagsOf}
+      description={siteName}
+      enableSearch={true}
+      isLoading={isLoading}
+      onSearchChange={handleOnSearch}
+      content={
+        <PaginatedList
+          dataSource={data}
+          renderItem={(item: CardInterface, index: number) => (
+            <List.Item>
+              <InformationPanel key={index} data={item} rol={rol} />
+            </List.Item>
           )}
-
-          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
-              <Space className="w-full md:w-auto mb-1 md:mb-0">
-                <Input
-                  className="w-full"
-                  onChange={handleOnSearch}
-                  value={querySearch}
-                  addonAfter={<IoIosSearch />}
-                />
-              </Space>
-            </div>
-            <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto"></div>
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto overflow-x-clip">
-          <PaginatedList
-            dataSource={data}
-            renderItem={(item: CardInterface, index: number) => (
-              <List.Item>
-                <InformationPanel key={index} data={item} rol={rol} />
-              </List.Item>
-            )}
-            loading={isLoading}
-          />
-        </div>
-      </div>
-    </>
+          loading={isLoading}
+        />
+      }
+    />
   );
 };
 

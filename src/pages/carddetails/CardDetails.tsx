@@ -23,12 +23,10 @@ import InfoCollapseV2 from "./components/InfoCollapseV2";
 import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
 import NoteCollapseV2 from "./components/NoteCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
-import PageTitleTag from "../../components/PageTitleTag";
 import PdfContent from "./components/PDFContent";
 import ExportPdfButton from "./components/ButtonPDF";
 import { notification } from "antd";
-import BackButton from "../../pagesRedesign/components/BackButton";
-import { isRedesign } from "../../utils/Extensions";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
 
 // Components
 const { Text } = Typography;
@@ -187,21 +185,19 @@ const CardDetails = () => {
   };
 
   return (
-    <>
-      {isRedesign() && !isExternal ? <BackButton /> : null}
-      <div className="h-full flex flex-col max-w-full">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center m-2 sm:m-3 px-2 sm:px-3 gap-2 sm:gap-3">
-          <div className="w-full sm:w-auto overflow-hidden">
-            <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
-          </div>
-          <div className="w-full sm:w-auto flex justify-start sm:justify-end">
+    <MainContainer
+    title={Strings.tagDetailsOf} 
+    description={cardName}
+    enableBackButton={!isExternal}
+    content={
+      <div>
+         <div className="w-full sm:w-auto flex justify-start sm:justify-end">
             <ExportPdfButton
               targetId="pdf-content"
               filename={Strings.namePDF}
               cardNumber={data?.card?.siteCardId}
             />
           </div>
-        </div>
 
         <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">
           {data ? (
@@ -252,7 +248,8 @@ const CardDetails = () => {
           </div>
         </div>
       </div>
-    </>
+    }
+     />
   );
 };
 
