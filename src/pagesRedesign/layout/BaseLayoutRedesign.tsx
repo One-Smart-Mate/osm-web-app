@@ -13,6 +13,9 @@ import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
 import SideBarRedesign from "../components/SideBarRedesign";
 import HeaderRedesign from "../components/HeaderRedesign";
+import { useSetAppTokenMutation } from "../../services/userService";
+import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
+import Constants from "../../utils/Constants";
 
 const { Header, Content } = Layout;
 
@@ -21,10 +24,9 @@ const BaseLayoutRedesign: React.FC = () => {
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState("");
   const [isCollapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, },
-  } = theme.useToken();
-;
+  const { token: { colorBgContainer }} = theme.useToken();
+  const [setAppToken] = useSetAppTokenMutation();
+
 
   const sidebarWidth = 250;
   const collapsedWidth = 80;
@@ -34,9 +36,39 @@ const BaseLayoutRedesign: React.FC = () => {
     console.log(selectedPath)
   }, [location]);
 
+  useEffect(() => {
+    if (user && user.userId) {
+          console.log('[BaseLayoutRedesign] Requesting Firebase token for user:', user.userId);
+          requestPermissionAndGetToken().then((token) => {
+            if (token) {
+              // Convert user.userId to number and send it
+              setAppToken({
+                userId: Number(user.userId),
+                appToken: token,
+                osName: Constants.osName,
+                osVersion: Constants.tagVersion,
+              })
+              .unwrap()
+              .then(() => {
+                console.log('[BaseLayoutRedesign] Token sent successfully to server');
+              })
+              .catch((error) => {
+                console.error('[BaseLayoutRedesign] Error sending token to server:', error);
+              });
+            } else {
+              console.warn('[BaseLayoutRedesign] Could not obtain Firebase token');
+            }
+          }).catch(error => {
+            console.error('[BaseLayoutRedesign] Error requesting token:', error);
+          });
+        } else {
+          console.log('[BaseLayoutRedesign] User not authenticated, token not requested');
+        }
+  }, [user, setAppToken]);
+
   const toggleCollapse = () => setCollapsed(!isCollapsed);
 
-
+  
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
       <HeaderRedesign

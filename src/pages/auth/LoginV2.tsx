@@ -112,7 +112,7 @@ const LoginPage = () => {
       hoverable
     >
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-semibold">{Strings.entrepriseName}</h3>
+        <h3 className="text-2xl font-semibold">OSM</h3>
         <p className="text-gray-500 text-sm">{Strings.loginText}</p>
       </div>
       <Form
