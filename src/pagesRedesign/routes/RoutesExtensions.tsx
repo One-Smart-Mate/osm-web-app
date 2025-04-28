@@ -100,8 +100,8 @@ export const buildSitesRoute = (): string => {
 export const buildInitRoute = (user: User): string => {
   const rol = getUserRol(user);
   if(rol === UserRoles.IHSISADMIN) {
-    return buildRoute("companies");
+    return buildRoute(Constants.ROUTES_PATH.companies);
   } else {
-    return buildRoute("charts");
+    return buildRoute(Constants.ROUTES_PATH.charts);
   }
 };

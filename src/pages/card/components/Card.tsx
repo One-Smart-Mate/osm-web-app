@@ -27,6 +27,7 @@ import {
 } from "../../../pagesRedesign/routes/RoutesExtensions";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import CustomTagV2 from "../../../components/CustomTagV2";
+import { BsActivity, BsCalendar4, BsExclamationDiamond, BsNodePlus, BsPersonGear, BsPinMap } from "react-icons/bs";
 
 interface CardProps {
   data: CardInterface;
@@ -135,6 +136,7 @@ const InformationPanel = ({ data, rol }: CardProps) => {
       <AnatomySection
         title={Strings.date}
         label={formatDate(data.cardCreationDate)}
+        icon={<BsCalendar4 />}
       />
       <AnatomySection
         title={Strings.status}
@@ -145,14 +147,15 @@ const InformationPanel = ({ data, rol }: CardProps) => {
         }
       />
   
-      <AnatomySection title={Strings.cardType} label={data.cardTypeName} />
+      <AnatomySection title={Strings.cardType} label={data.cardTypeName} icon={<BsNodePlus />} />
       <AnatomySection
         title={Strings.problemType}
         label={`${data.preclassifierCode} ${data.preclassifierDescription}`}
+        icon={<BsActivity />}
       />
-      <AnatomySection title={Strings.anomalyDetected} label={data.commentsAtCardCreation || Strings.NA} />
-      <AnatomySection title={Strings.location} label={data.cardLocation} />
-      <AnatomySection title={Strings.createdBy} label={data.creatorName} />
+      <AnatomySection title={Strings.anomalyDetected} label={data.commentsAtCardCreation || Strings.NA} icon={<BsExclamationDiamond />} />
+      <AnatomySection title={Strings.location} label={data.cardLocation} icon={<BsPinMap />} />
+      <AnatomySection title={Strings.createdBy} label={data.creatorName} icon={<BsPersonGear />} />
   
     </Card>
   ) : (

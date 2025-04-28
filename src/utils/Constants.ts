@@ -67,6 +67,14 @@ const en = "EN";
 const ROUTES_PATH = {
   dashboard: "dashboard",
   sites:'sites',
+  cards: 'cards',
+  charts: 'charts',
+  users: 'users',
+  priorities: 'priorities',
+  cardTypes: 'cardtypes',
+  levels:'levels',
+  companies: 'companies',
+  cardDetail: 'card-detail'
 }
 
 const ROUTES_PARAMS = {

@@ -14,7 +14,7 @@ import { UserRoles } from "../../utils/Extensions";
 import TechnicalSupport from "../components/TechnicalSupport";
 import { ItemType } from "antd/es/menu/interface";
 import { MenuProps } from "antd";
-import { getItemV2 } from "./RoutesExtensions";
+import {  getItemV2 } from "./RoutesExtensions";
 import Charts from "../../pages/charts/Charts";
 import Strings from "../../utils/localizations/Strings";
 import CardDetails from "../../pages/carddetails/CardDetails";
@@ -25,87 +25,110 @@ import Priorities from "../../pages/priority/Priorities";
 import LevelsV2 from "../../pages/level/LevelsV2";
 import Sites from "../../pages/site/Sites";
 import CompaniesV2 from "../../pages/company/CompaniesV2";
+import i18next from "i18next";
+
+
+const buildDashboardSectionName = (): string => {
+  const currentLang = i18next.language.split("-")[0].toUpperCase();
+  return currentLang === Constants.es ? 'Panel' : 'Dashboard';
+}
+
+const buildAccountSectionName = (): string => {
+  const currentLang = i18next.language.split("-")[0].toUpperCase();
+  return currentLang === Constants.es ? 'Cuentas' : 'Accounts';
+}
+
+const buildCatalogsSectionName = (): string => {
+  const currentLang = i18next.language.split("-")[0].toUpperCase();
+  return currentLang === Constants.es ? 'Catálogos' : 'Catalogs';
+}
+
+const buildSupportSectionName = (): string => {
+  const currentLang = i18next.language.split("-")[0].toUpperCase();
+  return currentLang === Constants.es ? 'Soporte Técnico' : 'Technical Support';
+}
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
   Strings.cardsSB,
-  "cards",
+  Constants.ROUTES_PATH.cards,
   <Cards rol={UserRoles.LOCALADMIN} />,
   <BsCardChecklist />,
-  'Dashboard'
+  buildDashboardSectionName()
 );
 
 const localAdminChartsV2 = new RouteV2(
   Strings.chartsSB,
-  "charts",
+  Constants.ROUTES_PATH.charts,
   <Charts rol={UserRoles.LOCALADMIN} />,
   <BsBarChartLine />,
-  'Dashboard'
+  buildDashboardSectionName()
+
 );
 
 // Routes for sis admin
 const sisAdminCardsV2 = new RouteV2(
   Strings.cardsSB,
-  "cards",
+  Constants.ROUTES_PATH.cards,
   <Cards rol={UserRoles.LOCALSYSADMIN} />,
   <BsCardChecklist />,
- 'Dashboard'
+  buildDashboardSectionName()
 );
 
 const sisAdminChartsV2 = new RouteV2(
   Strings.chartsSB,
-  "charts",
+  Constants.ROUTES_PATH.charts,
   <Charts rol={UserRoles.LOCALSYSADMIN} />,
   <BsBarChartLine />,
-  'Dashboard'
+  buildDashboardSectionName()
 );
 
 const sisAdminUsersV2 = new RouteV2(
   Strings.usersSB,
-  "users",
+  Constants.ROUTES_PATH.users,
   <SiteUsersV2 rol={UserRoles.LOCALSYSADMIN} />,
   <BsPersonPlus />,
-  'Accounts'
+  buildAccountSectionName()
 );
 
 const sisAdminPrioritiesV2 = new RouteV2(
   Strings.prioritiesSB,
-  "priorities",
+  Constants.ROUTES_PATH.priorities,
   <Priorities />,
   <BsCalendarCheck />,
- 'Catalogs'
+  buildCatalogsSectionName()
 );
 
 const sisAdminCardTypesV2 = new RouteV2(
   Strings.cardTypesSB,
-  "cardtypes",
+  Constants.ROUTES_PATH.cardTypes,
   <CardTypesTree rol={UserRoles.LOCALSYSADMIN} />,
   <BsNodePlus />,
-  'Catalogs'
+  buildCatalogsSectionName()
 );
 const sisAdminLevelsV2 = new RouteV2(
   Strings.levelsSB,
-  "levels",
+  Constants.ROUTES_PATH.levels,
   <LevelsV2 role={UserRoles.LOCALSYSADMIN} />,
   <BsDiagram3 />,
- 'Catalogs'
+  buildCatalogsSectionName()
 );
 
 //Routes for IHSISADMIN
 const ihSisAdminCompaniesV2 = new RouteV2(
   "Companies",
-  "companies",
+  Constants.ROUTES_PATH.companies,
   <CompaniesV2 />,
   <BsBuildingAdd />,
-  "Catalogs"
+  buildCatalogsSectionName()
 );
 
 const ihSisAdminSitesV2 = new RouteV2(
   "Sites",
-  "sites",
+  Constants.ROUTES_PATH.sites,
   <Sites rol={UserRoles.IHSISADMIN} />,
   <BsBuildingAdd />,
-  "Catalogs"
+  buildCatalogsSectionName()
 );
 
 // Common routes
@@ -114,12 +137,12 @@ const technicalSupportRoute = new RouteV2(
   "technicalSupport",
   <TechnicalSupport />,
   <BsLifePreserver />,
-  "Support"
+  buildSupportSectionName()
 );
 
 export const cardDetailRoute = new RouteV2(
   Strings.cardDetailsSB,
-  `card-detail/${Constants.ROUTES_PARAMS.siteId}/${Constants.ROUTES_PARAMS.cardId}`,
+  `${Constants.ROUTES_PATH.cardDetail}/${Constants.ROUTES_PARAMS.siteId}/${Constants.ROUTES_PARAMS.cardId}`,
   <CardDetails />,
   <></>,
   ""
