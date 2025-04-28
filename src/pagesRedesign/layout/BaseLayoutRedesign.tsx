@@ -73,7 +73,6 @@ const BaseLayoutRedesign: React.FC = () => {
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
       <HeaderRedesign
         user={user}
-        avatarSrc="..."
         sidebarWidth={sidebarWidth}
         isSidebarCollapsed={isCollapsed}
       />

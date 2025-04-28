@@ -1541,6 +1541,8 @@ const resources = {
       accounts: "Cuentas",
       dashboard: "Panel",
       technicalSupport: "Soporte Técnico",
+      tagVersion: import.meta.env.VITE_AP_VERSION,
+      redesign: import.meta.env.VITE_IS_REDESIGN,
     },
   },
 };

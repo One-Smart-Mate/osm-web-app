@@ -42,8 +42,8 @@ const ChartExpander: React.FC<ChartExpanderProps> = ({ children, title }) => {
         onCancel={handleCancel}
         footer={null}
         width="90%"
-        style={{ top: 20 }}
-        bodyStyle={{ height: 'calc(90vh - 108px)' }} // Adjust height to fit most of the screen
+        style={{ top: 20, }}
+        styles={{body: { height: 'calc(90vh - 108px)' }}}
       >
         <div className="w-full h-full">
           {children}

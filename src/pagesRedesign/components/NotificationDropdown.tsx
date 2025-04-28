@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Badge, Dropdown, Menu, List } from 'antd';
+import { Badge, Dropdown, List, MenuProps, Typography } from 'antd';
 import { BellOutlined, GiftOutlined, MessageOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons';
+import Strings from '../../utils/localizations/Strings';
 
 const NotificationDropdown: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -32,34 +33,31 @@ const NotificationDropdown: React.FC = () => {
     },
   ];
 
-  const menu = (
-    <Menu style={{ width: 380, padding: '10px' }}>
-      <Menu.Item key="header" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
-        Notification
-      </Menu.Item>
-      <List
-        dataSource={notifications}
-        renderItem={(item) => (
-          <List.Item key={item.title} style={{ padding: '12px 16px' }}>
-            <List.Item.Meta
-              avatar={item.icon}
-              title={item.title}
-              description={
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span>{item.time}</span>
-                  <span style={{ color: '#999' }}>{item.timestamp}</span>
-                </div>
-              }
-            />
-          </List.Item>
-        )}
-      />
-      <Menu.Divider />
-      <Menu.Item key="view-all" style={{ textAlign: 'center', padding: '10px 16px' }}>
-        View All
-      </Menu.Item>
-    </Menu>
-  );
+  // Define menu items as an array of ItemType[]
+  const menuItems: MenuProps["items"] = [
+    {
+      key: 'header',
+      label: <Typography.Text className="p-4" strong>{Strings.notificationsSB}</Typography.Text>,
+      disabled: true, // Disable the header item to make it non-clickable
+    },
+    ...notifications.map((item) => ({
+      key: item.title,
+      label: (
+        <List.Item key={item.title} style={{ padding: '12px 16px' }}>
+          <List.Item.Meta
+            avatar={item.icon}
+            title={item.title}
+            description={
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                <span>{item.time}</span>
+                <span style={{ color: '#999' }}>{item.timestamp}</span>
+              </div>
+            }
+          />
+        </List.Item>
+      ),
+    }))
+  ];
 
   const handleVisibleChange = (flag: boolean) => {
     setVisible(flag);
@@ -67,15 +65,15 @@ const NotificationDropdown: React.FC = () => {
 
   return (
     <Dropdown
-      overlay={menu}
+      menu={{ items: menuItems }} // Use the menu prop instead of overlay
       trigger={['click']}
       open={visible}
       onOpenChange={handleVisibleChange}
       placement="bottomRight"
     >
-      <Badge count={5} style={{ marginLeft: '16px', cursor: 'pointer' }}>
+      <a><Badge count={5} style={{ marginLeft: '16px', cursor: 'pointer' }}>
         <BellOutlined style={{ fontSize: 20 }} />
-      </Badge>
+      </Badge></a>
     </Dropdown>
   );
 };

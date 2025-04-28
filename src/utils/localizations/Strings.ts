@@ -718,7 +718,7 @@ const Strings = new Proxy(StringsBase, {
       return i18n.t((target as any)[prop]);
     }
     // Log a warning if the property does not exist in the target object
-    console.warn(`No translation for: ${String(prop)}`);
+    console.error(`No translation for: ${String(prop)}`);
     // Return the property value from the target object
     return (target as any)[prop];
   },

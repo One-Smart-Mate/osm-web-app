@@ -7,7 +7,6 @@ import LanguageDropdown from '../../pages/layouts/LanguageDropdown';
 
 interface HeaderProps {
   user: User;
-  avatarSrc: string;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
 }
