@@ -1,4 +1,4 @@
-import { Drawer, Dropdown, Form, notification, Spin } from "antd";
+import { Button, Drawer, Dropdown, Form, notification } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,9 +30,10 @@ import {
   UpdateCardTypeReq,
 } from "../../data/cardtypes/cardTypes.request";
 import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
-import { UserRoles } from "../../utils/Extensions";
+import { isRedesign, UserRoles } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -120,8 +121,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const [formData, setFormData] = useState<any>(null);
   // State to track if the tree is fully expanded or collapsed
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
-    const storedState = localStorage.getItem('cardTypesTreeExpandedState');
-    return storedState === 'true';
+    const storedState = localStorage.getItem("cardTypesTreeExpandedState");
+    return storedState === "true";
   });
 
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -181,7 +182,10 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   }, [location.state]);
 
   useEffect(() => {
-    localStorage.setItem('cardTypesTreeExpandedState', isTreeExpanded.toString());
+    localStorage.setItem(
+      "cardTypesTreeExpandedState",
+      isTreeExpanded.toString()
+    );
   }, [isTreeExpanded]);
 
   const handleLoadData = async (siteId: string) => {
@@ -202,15 +206,16 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       });
 
       const hierarchy = buildHierarchy(cardTypesResponse, siteId, preclassMap);
-      
+
       // Get the tree expanded state from localStorage
-      const isExpanded = localStorage.getItem('cardTypesTreeExpandedState') === 'true';
-      
+      const isExpanded =
+        localStorage.getItem("cardTypesTreeExpandedState") === "true";
+
       // Apply the state to all nodes if needed
       if (isExpanded !== undefined) {
         // Recursive function to set the state of all nodes
         const applyExpandState = (nodes: any[]) => {
-          nodes.forEach(node => {
+          nodes.forEach((node) => {
             // Skip the root node
             if (node.id) {
               localStorage.setItem(
@@ -218,31 +223,26 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
                 (!isExpanded).toString() // false if expanded, true if collapsed
               );
             }
-            
+
             // Process children recursively
             if (node.children && node.children.length > 0) {
               applyExpandState(node.children);
             }
           });
         };
-        
+
         // Apply the state to all nodes
         applyExpandState(hierarchy);
       }
-      
-      // Only set tree data if we have valid hierarchy data
-      if (hierarchy && hierarchy.length > 0) {
-        setTreeData([
-          {
-            name: `${Strings.cardType} ${location.state.siteName}`,
-            nodeType: "cardType",
-            children: hierarchy,
-          },
-        ]);
-      } else {
-        // Set empty tree data if no hierarchy was built
-        setTreeData([]);
-      }
+
+      setTreeData([
+        {
+          name: `${Strings.cardType} ${location.state.siteName}`,
+          nodeType: "cardType",
+          id: "0",
+          children: hierarchy,
+        },
+      ]);
 
       dispatch(setSiteId(siteId));
 
@@ -423,16 +423,19 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         handleSucccessNotification(NotificationSuccess.UPDATE);
       }
 
-    if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
-      createForm.resetFields();
-    } else if (drawerType === Strings.cardTypesDrawerTypeUpdateCardType) {
-      updateForm.resetFields();
-    } else if (drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier) {
-      createPreForm.resetFields();
-    } else if (drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier) {
-      updatePreForm.resetFields();
-    }
-
+      if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
+        createForm.resetFields();
+      } else if (drawerType === Strings.cardTypesDrawerTypeUpdateCardType) {
+        updateForm.resetFields();
+      } else if (
+        drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
+      ) {
+        createPreForm.resetFields();
+      } else if (
+        drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
+      ) {
+        updatePreForm.resetFields();
+      }
 
       setDrawerVisible(false);
       await handleLoadData(location.state.siteId);
@@ -450,7 +453,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
   const renderCustomNodeElement = (rd3tProps: any) => {
     const { nodeDatum, toggleNode } = rd3tProps;
-    
+
     // Safety check to ensure nodeDatum exists and has the expected properties
     if (!nodeDatum) {
       return <g></g>; // Return empty group if nodeDatum is undefined
@@ -459,19 +462,20 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const isRoot = nodeDatum.__rd3t?.depth === 0;
     const isPreclassifier = nodeDatum.nodeType === "preclassifier";
 
-
     const getCollapsedState = (nodeId: string): boolean => {
       if (!nodeId) return false;
-      const storedState:string | null = (localStorage.getItem(`node_${nodeId}_collapsed`)) ;
+      const storedState: string | null = localStorage.getItem(
+        `node_${nodeId}_collapsed`
+      );
       const booleanState: boolean = JSON.parse(storedState ?? Strings.false); // Parse the state
-      return booleanState;  
+      return booleanState;
     };
-    
+
     const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
       if (!nodeId) return;
       localStorage.setItem(`node_${nodeId}_collapsed`, isCollapsed.toString());
     };
-    
+
     // Only attempt to get/set collapsed state if nodeDatum has an id
     if (nodeDatum.id && nodeDatum.__rd3t) {
       const isCollapsed = getCollapsedState(nodeDatum.id);
@@ -518,7 +522,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       handleShowDetails(nodeDatum);
 
       const newCollapsedState = !nodeDatum.__rd3t.collapsed;
-    setCollapsedState(nodeDatum.id, newCollapsedState);
+      setCollapsedState(nodeDatum.id, newCollapsedState);
 
       toggleNode();
     };
@@ -533,7 +537,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const preMenu = [
       {
         key: "editPre",
-        label: (
+        label: isRedesign() ? (
+          <Button
+            type="primary"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditPre();
+            }}
+          >
+            {Strings.cardTypesEditPreclassifier}
+          </Button>
+        ) : (
           <button
             className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -547,7 +561,17 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: "clonePre",
-        label: (
+        label: isRedesign() ? (
+          <Button
+            type="default"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClonePre();
+            }}
+          >
+            {Strings.cardTypesClonePreclassifier}
+          </Button>
+        ) : (
           <button
             className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -596,7 +620,9 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const ctMenu = [
       {
         key: Strings.cardTypesOptionEdit,
-        label: (
+        label: isRedesign() ? (
+          <Button type="primary">{Strings.cardTypesEdit}</Button>
+        ) : (
           <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesEdit}
           </button>
@@ -605,7 +631,9 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionClone,
-        label: (
+        label: isRedesign() ? (
+          <Button type="default">{Strings.cardTypesCloneCardType}</Button>
+        ) : (
           <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCloneCardType}
           </button>
@@ -614,7 +642,11 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionCreate,
-        label: (
+        label: isRedesign() ? (
+          <Button type="link" variant="dashed">
+            {Strings.cardTypesCreatePreclassifier}
+          </Button>
+        ) : (
           <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCreatePreclassifier}
           </button>
@@ -653,8 +685,8 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           <Dropdown
             menu={{ items: rootMenu }}
             trigger={["contextMenu"]}
-            open={rootMenuVisible} 
-            onOpenChange={(open) => setRootMenuVisible(open)} 
+            open={rootMenuVisible}
+            onOpenChange={(open) => setRootMenuVisible(open)}
           >
             <circle
               r={22}
@@ -700,13 +732,13 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     // Recursive function to expand all nodes
     const expandNodes = (nodes: any[]) => {
       if (!nodes || nodes.length === 0) return;
-      
-      nodes.forEach(node => {
+
+      nodes.forEach((node) => {
         // Set expanded state in localStorage (false means expanded in this context)
         if (node && node.id) {
-          localStorage.setItem(`node_${node.id}_collapsed`, 'false');
+          localStorage.setItem(`node_${node.id}_collapsed`, "false");
         }
-        
+
         // Process children recursively
         if (node && node.children && node.children.length > 0) {
           expandNodes(node.children);
@@ -715,10 +747,15 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     };
 
     // Start expansion from root nodes
-    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+    if (
+      treeData &&
+      treeData.length > 0 &&
+      treeData[0] &&
+      treeData[0].children
+    ) {
       expandNodes(treeData[0].children);
       // Save the general tree state in localStorage
-      localStorage.setItem('cardTypesTreeExpandedState', 'true');
+      localStorage.setItem("cardTypesTreeExpandedState", "true");
       // Refresh the tree to apply changes
       handleLoadData(location.state.siteId);
       setIsTreeExpanded(true);
@@ -729,14 +766,14 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     // Recursive function to collapse all nodes
     const collapseNodes = (nodes: any[]) => {
       if (!nodes || nodes.length === 0) return;
-      
-      nodes.forEach(node => {
+
+      nodes.forEach((node) => {
         // Skip the root node
         if (node && node.id) {
           // Set collapsed state in localStorage (true means collapsed in this context)
-          localStorage.setItem(`node_${node.id}_collapsed`, 'true');
+          localStorage.setItem(`node_${node.id}_collapsed`, "true");
         }
-        
+
         // Process children recursively
         if (node && node.children && node.children.length > 0) {
           collapseNodes(node.children);
@@ -745,10 +782,15 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     };
 
     // Start collapsing from root nodes
-    if (treeData && treeData.length > 0 && treeData[0] && treeData[0].children) {
+    if (
+      treeData &&
+      treeData.length > 0 &&
+      treeData[0] &&
+      treeData[0].children
+    ) {
       collapseNodes(treeData[0].children);
       // Save the general tree state in localStorage
-      localStorage.setItem('cardTypesTreeExpandedState', 'false');
+      localStorage.setItem("cardTypesTreeExpandedState", "false");
       // Refresh the tree to apply changes
       handleLoadData(location.state.siteId);
       setIsTreeExpanded(false);
@@ -764,113 +806,133 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <div ref={containerRef} className="relative flex-1 overflow-hidden">
-        {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <Spin size="large" />
-          </div>
-        ) : (
-          <>
-            {/* Toggle expand/collapse button */}
-            <div className="absolute top-4 right-4 z-10">
-              <button
-                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${isTreeExpanded ? 'bg-red-500 hover:bg-red-700' : ''}`}
-                onClick={toggleAllNodes}
-              >
-                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-              </button>
-            </div>
-            
-            {treeData && treeData.length > 0 && (
-              <Tree
-                data={treeData}
-                translate={translate}
-                orientation="horizontal"
-                renderCustomNodeElement={renderCustomNodeElement}
-                collapsible={true}
-                zoomable
-              />
-            )}
-          </>
-        )}
-      </div>
-
-      <Form.Provider
-        onFormFinish={async (_, { values }) => {
-          await handleOnFormFinish(values);
-        }}
-      >
-        <Drawer
-          title={
-            drawerType === Strings.cardTypesDrawerTypeCreateCardType
-              ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
-                ? Strings.cardTypesCloneCardType
-                : Strings.cardTypesCreateCardType
-              : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
-              ? Strings.cardTypesUpdateCardType
-              : drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
-              ? formData?.description?.includes(Strings.cardTypesCloneSuffix)
-                ? Strings.cardTypesClonePreclassifier
-                : Strings.cardTypesCreatePreclassifier
-              : drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
-              ? Strings.cardTypesUpdatePreclassifier
-              : Strings.empty
-          }
-          placement={isMobile ? "bottom" : "right"}
-          width={isMobile ? "100%" : 400}
-          onClose={handleDrawerClose}
-          open={drawerVisible}
-          destroyOnClose
-          mask={false}
-          className="pr-5"
+    <MainContainer
+      title=""
+      isLoading={loading}
+      content={
+        <div
+          className="flex flex-col h-full overflow-hidden"
+          style={{ height: window.screen.availHeight * 0.8 }}
         >
-          {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
-            <RegisterCardTypeForm
-              form={createForm}
-              onFinish={handleOnFormFinish}
-              rol={rol}
-              initialValues={formData}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
-            <UpdateCardTypeForm
-              form={updateForm}
-              initialValues={formData}
-              onFinish={handleOnFormFinish}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier && (
-            <RegisterPreclassifierForm2
-              form={createPreForm}
-              initialValues={formData}
-            />
-          )}
-          {drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier && (
-            <UpdatePreclassifierForm2
-              form={updatePreForm}
-              initialValues={formData}
-            />
-          )}
-        </Drawer>
-      </Form.Provider>
-      <Drawer
-        title={Strings.details}
-        placement={isMobile ? "bottom" : "right"}
-        width={isMobile ? "100%" : 400}
-        onClose={() => setDetailsVisible(false)}
-        open={detailsVisible}
-        destroyOnClose
-        mask={false}
-      >
-        {detailsNode && detailsNode.nodeType === "cardType" && (
-          <CardTypeDetails nodeData={detailsNode} />
-        )}
-        {detailsNode && detailsNode.nodeType === "preclassifier" && (
-          <PreclassifierDetails nodeData={detailsNode} />
-        )}
-      </Drawer>
-    </div>
+          <div ref={containerRef} className="relative flex-1 overflow-hidden">
+            <>
+              {/* Toggle expand/collapse button */}
+              <div className="absolute top-4 right-4 z-10">
+                {isRedesign() ? (
+                  <Button
+                    onClick={toggleAllNodes}
+                    type={isTreeExpanded ? "primary" : "default"}
+                  >
+                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+                  </Button>
+                ) : (
+                  <button
+                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
+                      isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
+                    }`}
+                    onClick={toggleAllNodes}
+                  >
+                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+                  </button>
+                )}
+              </div>
+
+              {treeData && treeData.length > 0 && (
+                <Tree
+                  data={treeData}
+                  translate={translate}
+                  orientation="horizontal"
+                  renderCustomNodeElement={renderCustomNodeElement}
+                  collapsible={true}
+                  zoomable
+                />
+              )}
+            </>
+          </div>
+
+          <Form.Provider
+            onFormFinish={async (_, { values }) => {
+              await handleOnFormFinish(values);
+            }}
+          >
+            <Drawer
+              title={
+                drawerType === Strings.cardTypesDrawerTypeCreateCardType
+                  ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
+                    ? Strings.cardTypesCloneCardType
+                    : Strings.cardTypesCreateCardType
+                  : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
+                  ? Strings.cardTypesUpdateCardType
+                  : drawerType ===
+                    Strings.cardTypesDrawerTypeCreatePreclassifier
+                  ? formData?.description?.includes(
+                      Strings.cardTypesCloneSuffix
+                    )
+                    ? Strings.cardTypesClonePreclassifier
+                    : Strings.cardTypesCreatePreclassifier
+                  : drawerType ===
+                    Strings.cardTypesDrawerTypeUpdatePreclassifier
+                  ? Strings.cardTypesUpdatePreclassifier
+                  : Strings.empty
+              }
+              placement={isMobile ? "bottom" : "right"}
+              width={isMobile ? "100%" : 400}
+              onClose={handleDrawerClose}
+              open={drawerVisible}
+              destroyOnClose
+              mask={false}
+              className="pr-5"
+            >
+              {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
+                <RegisterCardTypeForm
+                  form={createForm}
+                  onFinish={handleOnFormFinish}
+                  rol={rol}
+                  initialValues={formData}
+                />
+              )}
+              {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
+                <UpdateCardTypeForm
+                  form={updateForm}
+                  initialValues={formData}
+                  onFinish={handleOnFormFinish}
+                />
+              )}
+              {drawerType ===
+                Strings.cardTypesDrawerTypeCreatePreclassifier && (
+                <RegisterPreclassifierForm2
+                  form={createPreForm}
+                  initialValues={formData}
+                />
+              )}
+              {drawerType ===
+                Strings.cardTypesDrawerTypeUpdatePreclassifier && (
+                <UpdatePreclassifierForm2
+                  form={updatePreForm}
+                  initialValues={formData}
+                />
+              )}
+            </Drawer>
+          </Form.Provider>
+          <Drawer
+            title={Strings.details}
+            placement={isMobile ? "bottom" : "right"}
+            width={isMobile ? "100%" : 400}
+            onClose={() => setDetailsVisible(false)}
+            open={detailsVisible}
+            destroyOnClose
+            mask={false}
+          >
+            {detailsNode && detailsNode.nodeType === "cardType" && (
+              <CardTypeDetails nodeData={detailsNode} />
+            )}
+            {detailsNode && detailsNode.nodeType === "preclassifier" && (
+              <PreclassifierDetails nodeData={detailsNode} />
+            )}
+          </Drawer>
+        </div>
+      }
+    />
   );
 };
 

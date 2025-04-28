@@ -4,9 +4,13 @@ import Strings from "../../utils/localizations/Strings";
 import { useAppDispatch } from "../../core/store";
 import { logOut } from "../../core/authReducer";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { useLogoutMutation } from "../../services/userService";
 import Constants from "../../utils/Constants";
+import { isRedesign } from "../../utils/Extensions";
+import {
+  LogoutOutlined,
+} from '@ant-design/icons';
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -52,10 +56,29 @@ const Logout = () => {
 
   return (
     <>
-      <span className="text-white cursor-pointer text-base" onClick={showLogoutConfirm}>{Strings.logout}</span>
+      {isRedesign() ?  <Button
+                        icon={<LogoutOutlined style={dropdownStyles.logoutIcon} />}
+                        style={dropdownStyles.logoutButton}
+                        aria-label={Strings.logout}
+                        onClick={showLogoutConfirm}
+                    /> : <span className="text-white cursor-pointer text-base" onClick={showLogoutConfirm}>{Strings.logout}</span>}
+      
       {contextHolder}
     </>
   );
+};
+
+const dropdownStyles = {
+    logoutIcon: {
+        fontSize: '24px',
+        color: '#1890ff'
+    },
+    logoutButton: {
+        border: 'none',
+        background: 'none',
+        color: '#000',
+        marginLeft: 'auto'
+    },
 };
 
 export default Logout;

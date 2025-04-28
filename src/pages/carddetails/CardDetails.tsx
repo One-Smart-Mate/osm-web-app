@@ -23,10 +23,10 @@ import InfoCollapseV2 from "./components/InfoCollapseV2";
 import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
 import NoteCollapseV2 from "./components/NoteCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
-import PageTitleTag from "../../components/PageTitleTag";
 import PdfContent from "./components/PDFContent";
 import ExportPdfButton from "./components/ButtonPDF";
 import { notification } from "antd";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
 
 // Components
 const { Text } = Typography;
@@ -97,10 +97,10 @@ const CardDetails = () => {
   const [getNotes] = useGetCardNotesMutation();
 
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
-
   const handleGetCards = async () => {
     setLoading(true);
     try {
+      console.log(`Dataa ${paramCardId} -- ${paramSiteId}`);
       const [responseData, responseNotes] = await Promise.all([
         getCardDetails(cardId).unwrap(),
         getNotes(cardId).unwrap(),
@@ -118,7 +118,7 @@ const CardDetails = () => {
 
       setData(modifiedResponse);
       setNotes(responseNotes);
-
+      console.log(`CARD ${Object.values(cardData)}`);
       if (cardData && cardData.siteId && cardData.siteId !== "") {
         dispatch(setSiteId(cardData.siteId));
       }
@@ -126,7 +126,8 @@ const CardDetails = () => {
       console.error("Error getting card details:", error);
       notification.error({
         message: "Loading Error",
-        description: "There was an error loading card details. Please try again.",
+        description:
+          "There was an error loading card details. Please try again.",
         placement: "topRight",
       });
       throw error;
@@ -184,20 +185,19 @@ const CardDetails = () => {
   };
 
   return (
-    <>
-      <div className="h-full flex flex-col max-w-full">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center m-2 sm:m-3 px-2 sm:px-3 gap-2 sm:gap-3">
-          <div className="w-full sm:w-auto overflow-hidden">
-            <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
-          </div>
-          <div className="w-full sm:w-auto flex justify-start sm:justify-end">
-            <ExportPdfButton 
-              targetId="pdf-content" 
-              filename={Strings.namePDF} 
-              cardNumber={data?.card?.siteCardId} 
+    <MainContainer
+    title={Strings.tagDetailsOf} 
+    description={cardName}
+    enableBackButton={!isExternal}
+    content={
+      <div>
+         <div className="w-full sm:w-auto flex justify-start sm:justify-end">
+            <ExportPdfButton
+              targetId="pdf-content"
+              filename={Strings.namePDF}
+              cardNumber={data?.card?.siteCardId}
             />
           </div>
-        </div>
 
         <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">
           {data ? (
@@ -227,7 +227,10 @@ const CardDetails = () => {
           )}
 
           <Divider style={{ borderColor: "#808080" }} className="my-2 sm:my-4">
-            <Text style={{ fontWeight: "bold" }} className="text-sm sm:text-base md:text-lg lg:text-xl">
+            <Text
+              style={{ fontWeight: "bold" }}
+              className="text-sm sm:text-base md:text-lg lg:text-xl"
+            >
               {Strings.changeLogDivider}
             </Text>
           </Divider>
@@ -237,7 +240,7 @@ const CardDetails = () => {
           </div>
 
           <div className="App">
-            <div style={{ opacity: 0, position: 'absolute', left: '-9999px' }}>
+            <div style={{ opacity: 0, position: "absolute", left: "-9999px" }}>
               <div id="pdf-content">
                 <PdfContent />
               </div>
@@ -245,7 +248,8 @@ const CardDetails = () => {
           </div>
         </div>
       </div>
-    </>
+    }
+     />
   );
 };
 

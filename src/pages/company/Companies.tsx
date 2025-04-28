@@ -3,7 +3,12 @@ import {
   useCreateCompanyMutation,
   useGetCompaniesMutation,
 } from "../../services/companyService";
-import { Form, Input, List, Space } from "antd";
+import {
+  Form,
+  Input,
+  List,
+  Space,
+} from "antd";
 import { Company } from "../../data/company/company";
 import { IoIosSearch } from "react-icons/io";
 import CustomButton from "../../components/CustomButtons";
@@ -126,7 +131,7 @@ const Companies = () => {
   };
 
   return (
-    <>
+    <div>
       <div className="h-full flex flex-col">
         <div className="flex flex-col gap-2 items-center m-3">
           <PageTitle mainText={Strings.companiesUpperCase} />
@@ -185,7 +190,7 @@ const Companies = () => {
           )}
         />
       </Form.Provider>
-    </>
+    </div>
   );
 };
 

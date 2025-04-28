@@ -10,7 +10,7 @@ export class Route {
     path: string,
     fullPath: string,
     element: JSX.Element,
-    icon: JSX.Element
+    icon: JSX.Element,
   ) {
     this.label = label;
     this.path = path;

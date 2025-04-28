@@ -76,6 +76,7 @@ const Tag = ({ data, rol }: CardProps) => {
         });
       }}
       hoverable
+      title="holaa"
     >
       <div className="text-center">
         <h3 className="text-xl font-semibold text-black truncate">

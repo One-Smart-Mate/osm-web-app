@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Form, Spin } from "antd";
+import { Button, Form, Spin } from "antd";
 import {
   NotificationSuccess,
   handleErrorNotification,
@@ -21,6 +21,7 @@ import {
 } from "../../../services/siteService";
 import { UpdateSiteReq } from "../../../data/site/site.request";
 import Constants from "../../../utils/Constants";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface ButtonEditProps {
   siteId: string;
@@ -97,9 +98,11 @@ const UpdateSite = ({ siteId }: ButtonEditProps) => {
 
   return (
     <>
-      <CustomButton onClick={handleOnClickEditButton} type="edit">
+      {isRedesign() ? <Button onClick={handleOnClickEditButton} type="primary">
         {Strings.edit}
-      </CustomButton>
+      </Button> : <CustomButton onClick={handleOnClickEditButton} type="edit">
+        {Strings.edit}
+      </CustomButton>}
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnUpdateFormFinish(values);

@@ -4,7 +4,8 @@ import { handleErrorNotification } from "../../../utils/Notifications";
 import CustomButton from "../../../components/CustomButtons";
 import { MdOutlineFileDownload } from "react-icons/md";
 import Strings from "../../../utils/localizations/Strings";
-import { notification } from "antd";
+import { Button, notification } from "antd";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface Props {
   siteId: string;
@@ -40,14 +41,20 @@ const DownloadCarDataExceButton = ({ siteId }: Props) => {
   };
 
   return (
-    <CustomButton
-      type="action"
-      onClick={handleDownload}
-      loading={loading || isFetching}
+    isRedesign() ? <Button
+  
+    onClick={handleDownload}
+    loading={loading || isFetching}
     >
-      <MdOutlineFileDownload />
-      {Strings.downloadData}
-    </CustomButton>
+    {Strings.downloadData}
+    </Button> : <CustomButton
+    type="action"
+    onClick={handleDownload}
+    loading={loading || isFetching}
+  >
+    <MdOutlineFileDownload />
+    {Strings.downloadData}
+  </CustomButton>
   );
 };
 

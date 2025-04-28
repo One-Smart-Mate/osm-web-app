@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import AnatomyButton from "../../../components/AnatomyButton";
 import Strings from "../../../utils/localizations/Strings";
+import { Button } from "antd";
 
 interface ExportPdfButtonProps {
   targetId: string;
@@ -75,13 +75,13 @@ const ExportPdfButton: React.FC<ExportPdfButtonProps> = ({
   };
 
   return (
-    <AnatomyButton
-      title={Strings.sharePDF}
+    <Button
       onClick={exportPDF}
-      type="default"
+      type="primary"
       size="large"
       loading={isGenerating}
-    />
+    >      {Strings.sharePDF}
+</Button>
   );
 };
 

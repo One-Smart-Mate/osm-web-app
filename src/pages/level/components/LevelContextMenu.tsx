@@ -32,13 +32,13 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
       className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
       style={{
         top: contextMenuPos.y,
-        left: contextMenuPos.x,
+        left: contextMenuPos.x * 0.7,
       }}
     >
       {isRootNode ? (
         <>
           <Button
-            className="w-28 bg-green-700 text-white mx-auto"
+            type="primary"
             onClick={handleCreateLevel}
           >
             {Strings.levelsTreeOptionCreate}
@@ -47,19 +47,20 @@ const LevelContextMenu: React.FC<LevelContextMenuProps> = ({
       ) : (
         <>
           <Button
-            className="w-28 bg-green-700 text-white mx-auto"
+                        type="primary"
+
             onClick={handleCreateLevel}
           >
             {Strings.levelsTreeOptionCreate}
           </Button>
           <Button
-            className="w-28 bg-blue-700 text-white mx-auto"
+            color="default" variant="outlined"
             onClick={handleUpdateLevel}
           >
             {Strings.levelsTreeOptionEdit}
           </Button>
           <Button
-            className="w-28 bg-yellow-500 text-white mx-auto"
+            type="link" variant="dashed"
             onClick={handleCloneLevel}
           >
             {Strings.levelsTreeOptionClone}

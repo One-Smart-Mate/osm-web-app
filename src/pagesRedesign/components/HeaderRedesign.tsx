@@ -1,17 +1,19 @@
 import React from 'react';
-import { Input } from 'antd';
-import NotificationDropdown from './NotificationDropdown'; 
-import UserProfileDropdown from './UserProfileDropdown'; 
+import NotificationDropdown from './NotificationDropdown';
+import UserProfileDropdown from './UserProfileDropdown';
+import User from '../../data/user/user';
+import LanguageDropdown from '../../pages/layouts/LanguageDropdown';
+
 
 interface HeaderProps {
-  userName: string;
+  user: User;
   avatarSrc: string;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
-  onLogout: () => void; // Función para manejar el logout
+  onLogout: () => void;
 }
 
-const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed }) => {
+const HeaderRedesign: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
   return (
     <div style={{
       display: 'flex',
@@ -28,18 +30,20 @@ const HeaderV2: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed }) =
       zIndex: 1000,
       transition: 'width 0.2s ease'
     }}>
-      <Input.Search
-        placeholder="Buscar..."
-        style={{ width: 200, marginRight: '20px', marginLeft: '20px' }}
-      />
+    
+      <div style={{ width: 200, marginRight: '20px', marginLeft: '20px' }}>
+        <LanguageDropdown />
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <NotificationDropdown />
         <div style={{ marginLeft: '20px' }}>
-          <UserProfileDropdown />
+          <UserProfileDropdown user={user} />
         </div>
+
       </div>
     </div>
   );
 };
 
-export default HeaderV2;
+export default HeaderRedesign;

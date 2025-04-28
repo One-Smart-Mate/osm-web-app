@@ -64,6 +64,24 @@ const tagVersion = "1.0.0";
 const es = "ES";
 const en = "EN";
 
+const ROUTES_PATH = {
+  dashboard: "dashboard",
+  sites:'sites',
+  cards: 'cards',
+  charts: 'charts',
+  users: 'users',
+  priorities: 'priorities',
+  cardTypes: 'cardtypes',
+  levels:'levels',
+  companies: 'companies',
+  cardDetail: 'card-detail'
+}
+
+const ROUTES_PARAMS = {
+  siteId: ':siteId',
+  cardId: ':cardId'
+}
+
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -105,5 +123,7 @@ export default {
   osName,
   tagVersion,
   es,
-  en
+  en,
+  ROUTES_PATH,
+  ROUTES_PARAMS
 };

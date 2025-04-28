@@ -51,7 +51,7 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-const Levels = ({ role }: Props) => {
+const LevelsV2 = ({ role }: Props) => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
@@ -343,6 +343,7 @@ const Levels = ({ role }: Props) => {
 
   const handleCloneLevel = async () => {
     if (!selectedNode?.data) return;
+
     Modal.confirm({
       title: Strings.confirmCloneLevel,
       content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
@@ -586,4 +587,4 @@ const Levels = ({ role }: Props) => {
   );
 };
 
-export default Levels;
+export default LevelsV2;

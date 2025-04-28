@@ -3,7 +3,7 @@ import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
 import { Company } from "../../../data/company/company";
 import UpdateCompanyForm from "./UpdateCompanyForm";
-import { Form } from "antd";
+import { Button, Form } from "antd";
 import {
   NotificationSuccess,
   handleErrorNotification,
@@ -18,6 +18,7 @@ import {
   setRowData,
 } from "../../../core/genericReducer";
 import ModalUpdateForm from "../../../components/ModalUpdateForm";
+import { isRedesign } from "../../../utils/Extensions";
 
 interface ButtonEditProps {
   data: Company;
@@ -76,9 +77,11 @@ const UpdateCompany = ({ data }: ButtonEditProps) => {
   };
   return (
     <>
-      <CustomButton onClick={handleOnClickEditButton} type="edit">
+      {isRedesign() ? <Button onClick={handleOnClickEditButton} type="default">
         {Strings.edit}
-      </CustomButton>
+      </Button> : <CustomButton onClick={handleOnClickEditButton} type="edit">
+        {Strings.edit}
+      </CustomButton>}
       <Form.Provider onFormFinish={async (_, { values }) => {await handleOnUpdateFormFinish(values)}}>
         <ModalUpdateForm
           open={modalIsOpen}

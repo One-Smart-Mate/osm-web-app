@@ -199,8 +199,8 @@ const compareDates = (date1: string, date2: string): boolean => {
   const date1Formatted = d1.toISOString().split("T")[0];
   const date2Formatted = d2.toISOString().split("T")[0];
 
-  console.log("Formatted Date 1:", date1Formatted);
-  console.log("Formatted Date 2:", date2Formatted);
+ // console.log("Formatted Date 1:", date1Formatted);
+ // console.log("Formatted Date 2:", date2Formatted);
 
   return date1Formatted <= date2Formatted;
 };
@@ -254,8 +254,8 @@ export const getCardStatusAndText = (
           const isOnTime = compareDates(DefiniSolutionDate, duDate);
           if (CreatDate) {
             const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
-            console.log("compareDates result: ", isOnTime);
-            console.log("Days between: ", daysBetween);
+          //  console.log("compareDates result: ", isOnTime);
+           // console.log("Days between: ", daysBetween);
 
             return {
               status: "error",
@@ -312,4 +312,15 @@ export const formatCompanyName = (input: string): string => {
   .toLowerCase()
   .replace(/[^a-z0-9\s]/g, "") // remove special characters except spaces
   .replace(/\s+/g, "_"); // replace spaces with underscores
+};
+
+
+export const isRedesign = (): boolean => {
+  const redesign = import.meta.env.VITE_IS_REDESIGN;
+  return redesign != null && redesign != undefined && redesign != "" && redesign == "yes";
+}
+
+
+export const isIhAdmin = (user: User) => {
+  return getUserRol(user) === UserRoles.IHSISADMIN;
 };

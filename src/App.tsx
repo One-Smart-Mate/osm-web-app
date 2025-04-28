@@ -1,6 +1,5 @@
-import {ConfigProvider } from "antd";
+import { ConfigProvider } from "antd";
 import BaseLayout from "./pages/layouts/BaseLayout";
-//import BaseLayoutV2 from "./PagesV2/BaseLayoutV2";
 import { Route, Routes } from "react-router-dom";
 import {
   adminRoutes,
@@ -14,14 +13,50 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutV2 from "./pagesv2/Layout/BaseLayoutV2";
-import routesV2 from "./pagesv2/RoutesV2";
+import BaseLayoutRedesign from "./pagesRedesign/layout/BaseLayoutRedesign";
+import {
+  commonRoutes,
+  ihSisAdminRoutesV2,
+  localAdminRoutesV2,
+  sisAdminRoutesV2,
+} from "./pagesRedesign/routes/RoutesV2";
+import Constants from "./utils/Constants";
+import { isRedesign } from "./utils/Extensions";
 
 function App() {
-
-  return (
-    <ConfigProvider
-      theme={{
+  const getTheme = () => {
+    let theme: any;
+    if (isRedesign()) {
+      theme = {
+        token: {
+          colorPrimary: "#1890ff",
+          colorLinkHover: "#1890ff",
+          colorLinkActive: "#e6f7ff",
+          linkHoverDecoration: "underline",
+          colorBgLayout: "#e2e8f0",
+          colorPrimaryBgHover: "#e6f7ff",
+          colorPrimaryHover: "#1890ff",
+        },
+        components: {
+          Card: {
+            colorBgContainer: "white",
+            colorPrimary: "white",
+            colorTextHeading: "#e6f7ff",
+          },
+          Table: {
+            headerBg: "#001529",
+            headerColor: "white",
+            headerSortHoverBg: "#011e39",
+            headerSortActiveBg: "#011e39",
+          },
+          Modal: {
+            colorIcon: "black",
+            colorIconHover: "#e73773",
+          },
+        },
+      };
+    } else {
+      theme = {
         token: {
           colorPrimary: "#061178",
           colorLinkHover: "#061178",
@@ -45,15 +80,23 @@ function App() {
             colorIcon: "black",
             colorIconHover: "#e73773",
           },
-          
         },
-      }}
-    >
+      };
+    }
+    return theme;
+  };
+
+  return (
+    <ConfigProvider theme={getTheme()}>
       <Routes>
-      <Route path="/external/card/:cardId/details" element={<PublicCardDetails />} />
+        <Route
+          path="/external/card/:cardId/details"
+          element={<PublicCardDetails />}
+        />
 
         <Route index path="/" element={<LoginPage />} />
         <Route path={ResetPasswordRoute} element={<ResetPassword />} />
+
         <Route element={<PrivateRoutes />}>
           <Route element={<BaseLayout />}>
             {adminRoutes.map((value, index) => (
@@ -79,21 +122,32 @@ function App() {
             ))}
           </Route>
         </Route>
+
+        <Route element={<PrivateRoutes />}>
+          <Route
+            path={Constants.ROUTES_PATH.dashboard}
+            element={<BaseLayoutRedesign />}
+          >
+            {commonRoutes.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+            {localAdminRoutesV2.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+            {sisAdminRoutesV2.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+
+            {ihSisAdminRoutesV2.map((value, index) => (
+              <Route key={index} path={value.path} element={value.element} />
+            ))}
+          </Route>
+        </Route>
+
         <Route path={UnauthorizedRoute} element={<Unauthorized />} />
         <Route path={"*"} element={<NotFound />} />
-
-        <Route element={<BaseLayoutV2 />} > 
-            {routesV2.map((value, index) => (
-              <Route
-              key={index}
-              path={value.fullPath}
-              element={value.element}
-            />
-            ))}
-        </Route>
-        
+        <Route />
       </Routes>
-
     </ConfigProvider>
   );
 }

@@ -335,6 +335,7 @@ class StringsBase {
   static confirm = "confirm";
 
   static tagVersion = "tagVersion";
+  static redesign = "redesign";
 
   // Tipo de evidencia
   static AUCR = "AUCR";
@@ -700,6 +701,10 @@ class StringsBase {
   static databaseConnectionTest = "databaseConnectionTest";
   static verificationOfServices = "verificationOfServices";
   
+  static catalogs: "catalogs";
+  static accounts: "accounts";
+  static dashboard: "dashboard";
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access

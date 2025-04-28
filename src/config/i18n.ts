@@ -280,13 +280,13 @@ const resources = {
       // Tags re-design
       tagsOf: "Tags of",
       filters: "Filters",
-      status: "Status: ",
-      dueDate: "Due date: ",
-      cardType: "Tag type: ",
-      problemType: "Problem type: ",
-      location: "Location: ",
-      createdBy: "Created by: ",
-      problemDescription: "Problem description: ",
+      status: "Status ",
+      dueDate: "Due date ",
+      cardType: "Tag type ",
+      problemType: "Problem type ",
+      location: "Location ",
+      createdBy: "Created by ",
+      problemDescription: "Problem description ",
 
       // Tags details re-design
       tagStatusCanceled: "Canceled",
@@ -302,7 +302,7 @@ const resources = {
       creationDate: "Creation date: ",
       daysSinceCreation: "Days since creation: ",
       cero: "0",
-      anomalyDetected: "Anomaly detected: ",
+      anomalyDetected: "Anomaly detected ",
       appProvisionalUser: "App provisional user: ",
       appDefinitiveUser: "App definitive user: ",
       definitiveUser: "Definitive user: ",
@@ -351,6 +351,7 @@ const resources = {
       confirm: "Confirm",
 
       tagVersion: import.meta.env.VITE_AP_VERSION,
+      redesign: import.meta.env.VITE_IS_REDESIGN,
 
       // Evidence type
       AUCR: "AUCR",
@@ -763,6 +764,9 @@ const resources = {
       uploadCardAndEvidenceWithDataNet: "Upload tag and evidence with data net",
       databaseConnectionTest: "Database connection test",
       verificationOfServices: "Verification of services",
+      catalogs: "Catalogs",
+      accounts: "Accounts",
+      dashboard: "Dashboard",
     },
   },
   es: {
@@ -1048,13 +1052,13 @@ const resources = {
       // Tags re-design
       tagsOf: "Tarjetas de",
       filters: "Filtros",
-      status: "Estado: ",
-      dueDate: "Fecha de vencimiento: ",
-      cardType: "Tipo de Tarjeta: ",
-      problemType: "Tipo de problema: ",
-      location: "Ubicación: ",
-      createdBy: "Creado por: ",
-      problemDescription: "Descripción del problema: ",
+      status: "Estado ",
+      dueDate: "Fecha de vencimiento ",
+      cardType: "Tipo de Tarjeta ",
+      problemType: "Tipo de problema ",
+      location: "Ubicación ",
+      createdBy: "Creado por ",
+      problemDescription: "Descripción del problema ",
 
       // Tags details re-design
       tagStatusCanceled: "Cancelado",
@@ -1070,7 +1074,7 @@ const resources = {
       creationDate: "Fecha de creación: ",
       daysSinceCreation: "Días desde la creación: ",
       cero: "0",
-      anomalyDetected: "Anomalía detectada: ",
+      anomalyDetected: "Anomalía detectada ",
       appProvisionalUser: "Usuario provisional de la app: ",
       appDefinitiveUser: "Usuario definitivo de la app: ",
       definitiveUser: "Usuario definitivo ",
@@ -1117,8 +1121,6 @@ const resources = {
       actions: "Acciones",
       delete: "Eliminar",
       confirm: "Confirmar",
-
-      tagVersion: import.meta.env.VITE_AP_VERSION,
 
       // Tipo de evidencia
       AUCR: "AUCR",
@@ -1534,6 +1536,9 @@ const resources = {
       uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
       databaseConnectionTest: "Prueba de conexión a base de datos",
       verificationOfServices: "Verificación de Servicios",
+      catalogs: "Catálogos",
+      accounts: "Cuentas",
+      dashboard: "Panel",
     },
   },
 };
