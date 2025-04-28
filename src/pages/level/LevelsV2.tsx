@@ -15,17 +15,15 @@ import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { CreateNode } from "../../data/level/level.request";
-import { UserRoles } from "../../utils/Extensions";
 import Constants from "../../utils/Constants";
 import CustomNodeElement from "./components/CustomNodeElement";
 import LevelContextMenu from "./components/LevelContextMenu";
 import LevelFormDrawer from "./components/LevelFormDrawer";
 
 import { useGetSiteMutation } from "../../services/siteService";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
-interface Props {
-  role: UserRoles;
-}
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -51,12 +49,12 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-const LevelsV2 = ({ role }: Props) => {
+const LevelsV2 = () => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [positionForm] = Form.useForm();
-
+  const {isIhAdmin, rol} = useCurrentUser();
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
@@ -479,8 +477,12 @@ const LevelsV2 = ({ role }: Props) => {
   const isRootNode = selectedNode?.data?.id === "0";
 
   return (
-    <div className="h-full flex flex-col">
-      <div
+    <MainContainer
+    title=""
+    enableBackButton={isIhAdmin()}
+    content={
+      <div>
+        <div
         ref={containerRef}
         className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
@@ -494,7 +496,7 @@ const LevelsV2 = ({ role }: Props) => {
           </div>
         ) : (
           <>
-            {/* Botón para expandir/contraer todos los nodos */}
+            {/* Expand all nodes */}
             <div className="absolute top-4 right-4 z-10">
               <Button 
                 type="primary" 
@@ -536,7 +538,7 @@ const LevelsV2 = ({ role }: Props) => {
 
       <LevelContextMenu
         isVisible={contextMenuVisible}
-        role={role}
+        role={rol}
         isRootNode={isRootNode}
         contextMenuPos={contextMenuPos}
         handleCreateLevel={handleCreateLevel}
@@ -583,7 +585,8 @@ const LevelsV2 = ({ role }: Props) => {
         selectedNodeName={selectedNode?.data?.name || ""}
         positionData={positionData}
       />
-    </div>
+      </div>
+    }/>
   );
 };
 

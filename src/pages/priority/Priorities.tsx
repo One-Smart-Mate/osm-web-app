@@ -40,6 +40,7 @@ import UpdatePriority from "./components/UpdatePriority";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import { BsCalendarCheck, BsClock, BsListNested } from "react-icons/bs";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const Priorities = () => {
   const [getPriorities] = useGetPrioritiesMutation();
@@ -54,6 +55,7 @@ const Priorities = () => {
   const isPriorityUpdated = useAppSelector(selectPriorityUpdatedIndicator);
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
+  const {isIhAdmin} = useCurrentUser();
 
   useEffect(() => {
     if (isPriorityUpdated) {
@@ -138,6 +140,7 @@ const Priorities = () => {
       onCreateButtonClick={handleOnClickCreateButton}
       onSearchChange={handleOnSearch}
       enableSearch={true}
+      enableBackButton={isIhAdmin()}
       content={
         <div>
           {isRedesign() ? (

@@ -34,6 +34,7 @@ import { isRedesign, UserRoles } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -132,6 +133,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   const [updateForm] = Form.useForm();
   const [createPreForm] = Form.useForm();
   const [updatePreForm] = Form.useForm();
+  const {isIhAdmin} = useCurrentUser();
 
   const [rootMenuVisible, setRootMenuVisible] = useState(false);
 
@@ -809,6 +811,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     <MainContainer
       title=""
       isLoading={loading}
+      enableBackButton={isIhAdmin()}
       content={
         <div
           className="flex flex-col h-full overflow-hidden"

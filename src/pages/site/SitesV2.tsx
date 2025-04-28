@@ -345,6 +345,18 @@ const SitesV2 = () => {
                   <Button
                     onClick={() => {
                         navigateProps({
+                            path: Constants.ROUTES_PATH.cards,
+                            siteId: selectedSite?.id,
+                            siteName: selectedSite?.name,
+                        })
+                    }}
+                  >
+                    {Strings.viewCards}
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                        navigateProps({
                             path: Constants.ROUTES_PATH.users,
                             siteId: selectedSite?.id,
                             siteName: selectedSite?.name,
@@ -352,6 +364,42 @@ const SitesV2 = () => {
                     }}
                   >
                     {Strings.viewUsers}
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                        navigateProps({
+                            path: Constants.ROUTES_PATH.priorities,
+                            siteId: selectedSite?.id,
+                            siteName: selectedSite?.name,
+                        })
+                    }}
+                  >
+                    {Strings.viewPriorities}
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                        navigateProps({
+                            path: Constants.ROUTES_PATH.cardTypes,
+                            siteId: selectedSite?.id,
+                            siteName: selectedSite?.name,
+                        })
+                    }}
+                  >
+                    {Strings.viewCardTypes}
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                        navigateProps({
+                            path: Constants.ROUTES_PATH.levels,
+                            siteId: selectedSite?.id,
+                            siteName: selectedSite?.name,
+                        })
+                    }}
+                  >
+                    {Strings.viewLevels}
                   </Button>
                 </Space>
               </Modal>
