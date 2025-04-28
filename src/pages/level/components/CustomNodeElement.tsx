@@ -10,9 +10,42 @@ interface CustomNodeElementProps {
   setContextMenuPos: (pos: { x: number; y: number }) => void;
   setSelectedNode: (node: any) => void;
   handleShowDetails: (nodeId: string) => void;
+  cardCounts?: { [key: string]: number };
 }
 
 const isLeafNode = (node: any) => !node.children || node.children.length === 0;
+
+const hasCards = (node: any, cardCounts: { [key: string]: number }) => {
+  if (node.id !== "0" && cardCounts[node.id] && cardCounts[node.id] > 0) {
+    return true;
+  }
+
+  if (node.children && node.children.length > 0) {
+    return node.children.some((child: any) => hasCards(child, cardCounts));
+  }
+
+  return false;
+};
+
+const calculateTotalCards = (
+  node: any,
+  cardCounts: { [key: string]: number }
+): number => {
+  const ownCards =
+    node.id !== "0" && cardCounts[node.id] ? cardCounts[node.id] : 0;
+
+  if (!node.children || node.children.length === 0) {
+    return ownCards;
+  }
+
+  const childrenCards = node.children.reduce(
+    (total: number, child: any) =>
+      total + calculateTotalCards(child, cardCounts),
+    0
+  );
+
+  return ownCards + childrenCards;
+};
 
 const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
   nodeDatum,
@@ -22,6 +55,7 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
   setContextMenuPos,
   setSelectedNode,
   handleShowDetails,
+  cardCounts = {},
 }) => {
   const longPressTimeoutRef = useRef<number | null>(null);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
@@ -56,6 +90,25 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
   };
 
   const fillColor = getFillColor(nodeDatum.status);
+
+  const cardCount = nodeDatum.id !== "0" ? cardCounts[nodeDatum.id] : null;
+
+  const totalCardCount =
+    nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
+
+  const nodeHasOwnCards = cardCount && cardCount > 0;
+
+  const nodeChildrenHaveCards =
+    nodeDatum.children &&
+    nodeDatum.children.length > 0 &&
+    nodeDatum.children.some((child: any) => hasCards(child, cardCounts));
+
+  const showSplitColors =
+    nodeDatum.id !== "0" && (nodeHasOwnCards || nodeChildrenHaveCards);
+
+  const displayText =
+    nodeDatum.name +
+    (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
 
   const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
     e.preventDefault();
@@ -124,7 +177,18 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
-      <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      {showSplitColors ? (
+        <>
+          <circle r={15} fill="#FFFF00" stroke="none" />
+          <path
+            d="M -15,0 A 15,15 0 0,1 15,0 L -15,0 Z"
+            fill="#145695"
+            stroke="none"
+          />
+        </>
+      ) : (
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      )}
       <text
         fill="black"
         strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
@@ -132,7 +196,7 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
         y={nodeDatum.id === "0" ? 0 : 20}
         style={{ fontSize: "14px" }}
       >
-        {nodeDatum.name}
+        {displayText}
       </text>
     </g>
   );

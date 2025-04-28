@@ -298,7 +298,7 @@ const Charts = ({ rol }: Props) => {
                       <div className="flex flex-col items-center">
                         <h2 className="text-xl font-semibold text-black">
                           {selectedAreaName
-                            ? `${Strings.machines}: ${selectedAreaName}`
+                            ? `${Strings.mechanics}: ${selectedAreaName}`
                             : Strings.mechanics}
                         </h2>
                       </div>
