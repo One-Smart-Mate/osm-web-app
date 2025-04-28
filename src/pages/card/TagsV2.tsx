@@ -71,8 +71,8 @@ const TagsV2 = () => {
         <PaginatedList
           dataSource={data}
           renderItem={(item: CardInterface, index: number) => (
-            <List.Item>
-              <TagCardV2 key={index} data={item} />
+            <List.Item key={index}>
+              <TagCardV2 data={item} />
             </List.Item>
           )}
           loading={isLoading}

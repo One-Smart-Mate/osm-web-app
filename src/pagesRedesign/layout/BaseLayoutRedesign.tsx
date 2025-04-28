@@ -3,7 +3,6 @@ import {
   Layout,
   Button,
   theme,
-  message,
   Card,
 } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
@@ -37,9 +36,6 @@ const BaseLayoutRedesign: React.FC = () => {
 
   const toggleCollapse = () => setCollapsed(!isCollapsed);
 
-  const handleLogout = () => {
-    message.success("Has cerrado sesión exitosamente.");
-  };
 
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
@@ -48,7 +44,6 @@ const BaseLayoutRedesign: React.FC = () => {
         avatarSrc="..."
         sidebarWidth={sidebarWidth}
         isSidebarCollapsed={isCollapsed}
-        onLogout={handleLogout}
       />
 
       <SideBarRedesign collapsed={isCollapsed} toggleCollapse={toggleCollapse} />

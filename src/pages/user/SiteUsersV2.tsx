@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import {
+  Button,
   Card,
-  Col,
   Form,
-  Row,
+  List,
   Space,
   Tag,
   Tooltip,
   Typography,
 } from "antd";
-import CustomButton from "../../components/CustomButtons";
 import Strings from "../../utils/localizations/Strings";
 import {
   useCreateUserMutation,
@@ -35,18 +34,13 @@ import RegisterSiteUserForm from "./components/RegisterSiteUserForm";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
-import {
-  BsDiagram2,
-  BsMailbox,
-  BsPersonLinesFill,
-} from "react-icons/bs";
+import { BsDiagram2, BsMailbox, BsPersonLinesFill } from "react-icons/bs";
 import UpdateUserButton from "./components/UpdateUserButton";
-import Loading from "../../pagesRedesign/components/Loading";
 import AssignPositionsButton from "./components/AssignPositionsButton";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-
+import PaginatedList from "../../components/PaginatedList";
 
 const SiteUsersV2 = () => {
   const [getUsers] = useGetSiteUsersMutation();
@@ -63,7 +57,7 @@ const SiteUsersV2 = () => {
   const [importUsers] = useImportUsersMutation();
   const navigate = useNavigate();
   const [getUserPositions] = useGetUserPositionsMutation();
-  const {isIhAdmin} = useCurrentUser();
+  const { isIhAdmin } = useCurrentUser();
 
   const handleOnCancelButton = () => {
     if (!modalIsLoading) {
@@ -144,14 +138,14 @@ const SiteUsersV2 = () => {
   const buildActions = () => {
     if (isIhAdmin()) {
       return (
-        <CustomButton
+        <Button
           onClick={() => handleOnOpenModal(Strings.empty)}
-          type="action"
+          type="default"
           className="w-full md:w-auto"
         >
           <UploadOutlined />
           {Strings.importUsers}
-        </CustomButton>
+        </Button>
       );
     }
   };
@@ -213,99 +207,89 @@ const SiteUsersV2 = () => {
       onCreateButtonClick={() => handleOnOpenModal(Strings.users)}
       content={
         <div>
-          <div className="flex justify-end pb-2">
-          {buildActions()}
-          </div>
-          <Row gutter={[8, 8]}>
-            <Loading isLoading={isLoading} />
-            {!isLoading &&
-              data.map((value, index) => (
-                <Col
-                  key={`Col-${index}`}
-                  xs={{ flex: "100%" }}
-                  sm={{ flex: "60%" }}
-                  md={{ flex: "50%" }}
-                  lg={{ flex: "40%" }}
-                  xl={{ flex: "30%" }}
+          <div className="flex justify-end pb-2">{buildActions()}</div>
+          <PaginatedList
+            dataSource={data}
+            renderItem={(value: UserCardInfo, index: number) => (
+              <List.Item key={index}>
+                <Card
+                  hoverable
+                  className="rounded-xl shadow-md"
+                  title={
+                    <Typography.Title level={5}>{value.name}</Typography.Title>
+                  }
+                  actions={[
+                    <UpdateUserButton
+                      userId={value.id}
+                      siteId={siteId}
+                      isSiteUserstable={true}
+                      onComplete={() => handleGetUsers()}
+                    />,
+                    <AssignPositionsButton
+                      userId={value.id}
+                      siteId={siteId}
+                      onPositionsUpdated={() => handleGetUsers()}
+                    />,
+                  ]}
                 >
-                  <Card
-                    hoverable
-                    className="rounded-xl shadow-md"
-                    title={
-                      <Typography.Title level={5}>
-                        {value.name}
-                      </Typography.Title>
-                    }
-                    actions={[
-                      <UpdateUserButton
-                        userId={value.id}
-                        siteId={siteId}
-                        isSiteUserstable={true}
-                        onComplete={() => handleGetUsers()}
-                      />,
-                      <AssignPositionsButton
-                        userId={value.id}
-                        siteId={siteId}
-                        onPositionsUpdated={() => handleGetUsers()}
-                      />,
-                    ]}
-                  >
-                    <AnatomySection
-                      title={Strings.email}
-                      label={value.email}
-                      icon={<BsMailbox />}
-                    />
+                  <AnatomySection
+                    title={Strings.email}
+                    label={value.email}
+                    icon={<BsMailbox />}
+                  />
 
-                    <AnatomySection
-                      title={Strings.roles}
-                      label={
-                        <Space wrap>
-                          {value.roles.map((role: Role) => (
-                            <Tooltip key={role.id} title={role.name}>
-                              <Tag color="blue" style={{ fontSize: 10 }}>
-                                {role.name}
+                  <AnatomySection
+                    title={Strings.roles}
+                    label={
+                      <Space wrap>
+                        {value.roles.map((role: Role) => (
+                          <Tooltip key={role.id} title={role.name}>
+                            <Tag color="blue" style={{ fontSize: 10 }}>
+                              {role.name}
+                            </Tag>
+                          </Tooltip>
+                        ))}
+                      </Space>
+                    }
+                    icon={<BsPersonLinesFill />}
+                  />
+                  <AnatomySection
+                    title={Strings.position}
+                    label={
+                      <Space wrap>
+                        {value.positions.length > 0 ? (
+                          value.positions.map((position) => (
+                            <Tooltip
+                              key={position.id}
+                              title={position.description}
+                            >
+                              <Tag
+                                color="default"
+                                style={{
+                                  backgroundColor: "#f0f0f0",
+                                  color: "#595959",
+                                  fontSize: 10,
+                                }}
+                              >
+                                {position.name}
                               </Tag>
                             </Tooltip>
-                          ))}
-                        </Space>
-                      }
-                      icon={<BsPersonLinesFill />}
-                    />
-                    <AnatomySection
-                      title={Strings.position}
-                      label={
-                        <Space wrap>
-                          {value.positions.length > 0 ? (
-                            value.positions.map((position) => (
-                              <Tooltip
-                                key={position.id}
-                                title={position.description}
-                              >
-                                <Tag
-                                  color="default"
-                                  style={{
-                                    backgroundColor: "#f0f0f0",
-                                    color: "#595959",
-                                    fontSize: 10,
-                                  }}
-                                >
-                                  {position.name}
-                                </Tag>
-                              </Tooltip>
-                            ))
-                          ) : (
-                            <p style={{ fontSize: 12 }}>
-                              {Strings.noPositionsAvailable}
-                            </p>
-                          )}
-                        </Space>
-                      }
-                      icon={<BsDiagram2 />}
-                    />
-                  </Card>
-                </Col>
-              ))}
-          </Row>
+                          ))
+                        ) : (
+                          <p style={{ fontSize: 12 }}>
+                            {Strings.noPositionsAvailable}
+                          </p>
+                        )}
+                      </Space>
+                    }
+                    icon={<BsDiagram2 />}
+                  />
+                </Card>
+              </List.Item>
+            )}
+            loading={isLoading}
+          />
+
           <Form.Provider
             onFormFinish={async (_, { values }) => {
               await handleOnFormFinish(values);

@@ -8,14 +8,17 @@ import {
   getUserSiderOptionsV2,
   navigateWithState,
 } from "../routes/RoutesExtensions";
-import { Avatar, theme } from "antd";
+import { Avatar, theme, Tooltip } from "antd";
 
 interface SideBarV2Props {
   collapsed: boolean;
   toggleCollapse: () => void;
 }
 
-const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }) => {
+const SideBarRedesign: React.FC<SideBarV2Props> = ({
+  collapsed,
+  toggleCollapse,
+}) => {
   const { token } = theme.useToken();
   const navigate = navigateWithState();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -63,7 +66,11 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }
       >
         {collapsed ? (
           <MenuUnfoldOutlined
-            style={{ fontSize: 20, cursor: "pointer", color: token.colorPrimaryHover }}
+            style={{
+              fontSize: 20,
+              cursor: "pointer",
+              color: token.colorPrimaryHover,
+            }}
             onClick={toggleCollapse}
           />
         ) : (
@@ -122,49 +129,57 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({ collapsed, toggleCollapse }
               {menuItems
                 .filter((item) => item.section === section)
                 .map((item) => (
-                  <div
+                  <Tooltip
                     key={item.key}
-                    onClick={() => handleClick(item)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px 20px",
-                      cursor: "pointer",
-                      transition: "background 0.2s",
-                      background:
-                        selectedKey === item.key ? token.colorPrimaryBgHover : "transparent",
-                      position: "relative",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (selectedKey !== item.key) {
-                        (e.currentTarget as HTMLDivElement).style.background =
-                          "#e6f7ff";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedKey !== item.key) {
-                        (e.currentTarget as HTMLDivElement).style.background =
-                          "transparent";
-                      }
-                    }}
+                    title={collapsed ? item.label : undefined}
+                    placement="right"
                   >
-                    <span style={{ fontSize: 18 }}>{item.icon}</span>
-                    {!collapsed && (
-                      <span style={{ marginLeft: 15 }}>{item.label}</span>
-                    )}
-                    {selectedKey === item.key && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: 4,
-                          backgroundColor: token.colorPrimaryHover,
-                        }}
-                      />
-                    )}
-                  </div>
+                    <div
+                      key={item.key}
+                      onClick={() => handleClick(item)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "10px 20px",
+                        cursor: "pointer",
+                        transition: "background 0.2s",
+                        background:
+                          selectedKey === item.key
+                            ? token.colorPrimaryBgHover
+                            : "transparent",
+                        position: "relative",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (selectedKey !== item.key) {
+                          (e.currentTarget as HTMLDivElement).style.background =
+                            "#e6f7ff";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (selectedKey !== item.key) {
+                          (e.currentTarget as HTMLDivElement).style.background =
+                            "transparent";
+                        }
+                      }}
+                    >
+                      <span style={{ fontSize: 18 }}>{item.icon}</span>
+                      {!collapsed && (
+                        <span style={{ marginLeft: 15 }}>{item.label}</span>
+                      )}
+                      {selectedKey === item.key && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: 4,
+                            backgroundColor: token.colorPrimaryHover,
+                          }}
+                        />
+                      )}
+                    </div>
+                  </Tooltip>
                 ))}
             </div>
           ))}

@@ -1,14 +1,14 @@
 import React from "react";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
+import { useGoBack } from "../../utils/hooks/useGoBack";
 
 const BackButton: React.FC = () => {
-  const navigate = useNavigate();
+  const goBack = useGoBack();
 
   const handleBack = () => {
-    navigate(-1); // Navigates to the previous page
+    goBack({}); // Navigates to the previous page
   };
 
   return (

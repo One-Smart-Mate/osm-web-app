@@ -10,10 +10,9 @@ import {
   Badge,
   Button,
   Card,
-  Col,
   Form,
+  List,
   Modal,
-  Row,
   Space,
   Typography,
 } from "antd";
@@ -34,10 +33,7 @@ import {
   selectSiteUpdatedIndicator,
   setGeneratedSiteCode,
 } from "../../core/genericReducer";
-import {
-  generateShortUUID,
-  getStatusAndText,
-} from "../../utils/Extensions";
+import { generateShortUUID, getStatusAndText } from "../../utils/Extensions";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -52,14 +48,12 @@ import {
   BsTelephone,
   BsTelephoneOutbound,
 } from "react-icons/bs";
-import Loading from "../../pagesRedesign/components/Loading";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import UpdateSite from "./components/UpdateSite";
 import { navigateWithProps } from "../../pagesRedesign/routes/RoutesExtensions";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-
-
+import PaginatedList from "../../components/PaginatedList";
 
 const SitesV2 = () => {
   const [getSites] = useGetCompanySitesMutation();
@@ -213,31 +207,21 @@ const SitesV2 = () => {
   return (
     <>
       <MainContainer
-          title={`${
-            isIhAdmin() ? Strings.sitesOf : Strings.yourSitesOfCompany
-          }`}
-          description={companyName}
-          isLoading={isLoading}
-          enableSearch={isIhAdmin()}
-          onSearchChange={handleOnSearch}
-          enableBackButton={isIhAdmin()}
-          enableCreateButton={isIhAdmin()}
-          onCreateButtonClick={handleOnClickCreateButton}
-          content={
-            <div>
-              <Row gutter={[8, 8]}>
-                <Loading isLoading={isLoading} />
-                {!isLoading &&
-                  data.map((value, index) => (
-                    <Col
-                      key={`Col-${index}`}
-                      xs={{ flex: "100%" }}
-                      sm={{ flex: "60%" }}
-                      md={{ flex: "50%" }}
-                      lg={{ flex: "40%" }}
-                      xl={{ flex: "30%" }}
-                    >
-                      <Card
+        title={`${isIhAdmin() ? Strings.sitesOf : Strings.yourSitesOfCompany}`}
+        description={companyName}
+        isLoading={isLoading}
+        enableSearch={isIhAdmin()}
+        onSearchChange={handleOnSearch}
+        enableBackButton={isIhAdmin()}
+        enableCreateButton={isIhAdmin()}
+        onCreateButtonClick={handleOnClickCreateButton}
+        content={
+          <div>
+             <PaginatedList
+                dataSource={data}
+                renderItem={(value: Site, index: number) => (
+                  <List.Item key={index}>
+                    <Card
                         hoverable
                         className="rounded-xl shadow-md"
                         title={
@@ -254,14 +238,16 @@ const SitesV2 = () => {
                         }
                         actions={[
                           <UpdateSite siteId={value.id} />,
-                          isIhAdmin() && <Button
-                          onClick={() => {
-                            setSelectedSite(value);
-                            setModalActions(true);
-                          }}
-                        >
-                          {Strings.actions}
-                        </Button>,
+                          isIhAdmin() && (
+                            <Button
+                              onClick={() => {
+                                setSelectedSite(value);
+                                setModalActions(true);
+                              }}
+                            >
+                              {Strings.actions}
+                            </Button>
+                          ),
                         ]}
                       >
                         <AnatomySection
@@ -319,93 +305,94 @@ const SitesV2 = () => {
                           }
                         />
                       </Card>
-                    </Col>
-                  ))}
-              </Row>
+                  </List.Item>
+                )}
+                loading={isLoading}
+              />
 
-              <Modal
-                title={Strings.actions}
-                open={modalActions}
-                onOk={() => setModalActions(false)}
-                onCancel={() => setModalActions(false)}
-              >
-                <Space wrap>
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.charts,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewCharts}
-                  </Button>
+            <Modal
+              title={Strings.actions}
+              open={modalActions}
+              onOk={() => setModalActions(false)}
+              onCancel={() => setModalActions(false)}
+            >
+              <Space wrap>
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.charts,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewCharts}
+                </Button>
 
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.cards,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewCards}
-                  </Button>
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.cards,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewCards}
+                </Button>
 
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.users,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewUsers}
-                  </Button>
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.users,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewUsers}
+                </Button>
 
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.priorities,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewPriorities}
-                  </Button>
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.priorities,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewPriorities}
+                </Button>
 
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.cardTypes,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewCardTypes}
-                  </Button>
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.cardTypes,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewCardTypes}
+                </Button>
 
-                  <Button
-                    onClick={() => {
-                        navigateProps({
-                            path: Constants.ROUTES_PATH.levels,
-                            siteId: selectedSite?.id,
-                            siteName: selectedSite?.name,
-                        })
-                    }}
-                  >
-                    {Strings.viewLevels}
-                  </Button>
-                </Space>
-              </Modal>
-            </div>
-          }
-        />
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.levels,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewLevels}
+                </Button>
+              </Space>
+            </Modal>
+          </div>
+        }
+      />
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnFormCreateFinish(values);

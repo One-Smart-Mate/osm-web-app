@@ -4,17 +4,10 @@ import {
   useGetPrioritiesMutation,
 } from "../../services/priorityService";
 import { Priority } from "../../data/priority/priority";
-import {
-  Badge,
-  Card,
-  Col,
-  Form,
-
-  List,
-  Row,
-  Typography,
-} from "antd";
+import { Form, Input, List, Space } from "antd";
+import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
+import CustomButton from "../../components/CustomButtons";
 import PriorityTable from "./components/PriorityTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import ModalForm from "../../components/ModalForm";
@@ -30,23 +23,17 @@ import {
   resetPriorityUpdatedIndicator,
   selectPriorityUpdatedIndicator,
 } from "../../core/genericReducer";
+import PageTitle from "../../components/PageTitle";
 import PaginatedList from "../../components/PaginatedList";
 import PriorityCard from "./components/PriorityCard";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import Loading from "../../pagesRedesign/components/Loading";
-import { FormInstance } from "antd/lib";
-import { getStatusAndText, isRedesign } from "../../utils/Extensions";
-import UpdatePriority from "./components/UpdatePriority";
-import AnatomySection from "../../pagesRedesign/components/AnatomySection";
-import { BsCalendarCheck, BsClock, BsListNested } from "react-icons/bs";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const Priorities = () => {
   const [getPriorities] = useGetPrioritiesMutation();
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
   const [data, setData] = useState<Priority[]>([]);
+  const [querySearch, setQuerySearch] = useState(Strings.empty);
   const [dataBackup, setDataBackup] = useState<Priority[]>([]);
   const [modalIsOpen, setModalOpen] = useState(false);
   const [registerPriority] = useCreatePriorityMutation();
@@ -54,8 +41,6 @@ const Priorities = () => {
   const dispatch = useAppDispatch();
   const isPriorityUpdated = useAppSelector(selectPriorityUpdatedIndicator);
   const navigate = useNavigate();
-  const siteName = location?.state?.siteName || Strings.empty;
-  const {isIhAdmin} = useCurrentUser();
 
   useEffect(() => {
     if (isPriorityUpdated) {
@@ -73,8 +58,8 @@ const Priorities = () => {
     }
   };
 
-  const handleOnSearch = (query: string) => {
-    const getSearch = query;
+  const handleOnSearch = (event: any) => {
+    const getSearch = event.target.value;
 
     if (getSearch.length > 0) {
       const filterData = dataBackup.filter((item) => search(item, getSearch));
@@ -83,6 +68,7 @@ const Priorities = () => {
     } else {
       setData(dataBackup);
     }
+    setQuerySearch(getSearch);
   };
 
   const search = (item: Priority, search: string) => {
@@ -99,7 +85,6 @@ const Priorities = () => {
       navigate(UnauthorizedRoute);
       return;
     }
-    setLoading(true);
     const response = await getPriorities(location.state.siteId).unwrap();
     setData(response);
     setDataBackup(response);
@@ -125,112 +110,71 @@ const Priorities = () => {
       handleGetPriorities();
       handleSucccessNotification(NotificationSuccess.REGISTER);
     } catch (error) {
-      console.log("Error occurred:", error);
+      console.log("Error occurred:", error); 
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);
     }
   };
 
-  return (
-    <MainContainer
-      title={Strings.prioritiesOf} 
-      description={siteName}
-      enableCreateButton={true}
-      onCreateButtonClick={handleOnClickCreateButton}
-      onSearchChange={handleOnSearch}
-      enableSearch={true}
-      enableBackButton={isIhAdmin()}
-      content={
-        <div>
-          {isRedesign() ? (
-            <Row gutter={[8, 8]}>
-              <Loading isLoading={isLoading} />
-              {!isLoading &&
-                data.map((value, index) => (
-                  <Col
-                    key={`Col-${index}`}
-                    xs={{ flex: "100%" }}
-                    sm={{ flex: "60%" }}
-                    md={{ flex: "50%" }}
-                    lg={{ flex: "40%" }}
-                    xl={{ flex: "30%" }}
-                  >
-                    <Card
-                      hoverable
-                      title={
-                        <Typography.Title level={5}>
-                          {value.priorityDescription}
-                        </Typography.Title>
-                      }
-                      className="rounded-xl shadow-md"
-                      actions={[<UpdatePriority priorityId={value.id} />]}
-                    >
-                      <AnatomySection
-                        title={Strings.priority}
-                        label={value.priorityCode}
-                        icon={<BsCalendarCheck />}
-                      />
-                      <AnatomySection
-                        title={Strings.description}
-                        label={value.priorityDescription}
-                        icon={<BsListNested />}
-                      />
-                      <AnatomySection
-                        title={Strings.daysNumber}
-                        label={value.priorityDays}
-                        icon={<BsClock />}
-                      />
-                      <AnatomySection
-                        title={Strings.status}
-                        label={
-                          <Badge
-                            status={getStatusAndText(value.status).status}
-                            text={getStatusAndText(value.status).text}
-                          />
-                        }
-                      />
-                    </Card>
-                  </Col>
-                ))}
-            </Row>
-          ) : (
-            <div>
-              <div className="flex-1 overflow-auto hidden lg:block">
-                <PriorityTable data={data} isLoading={isLoading} />
-              </div>
-              <div className="flex-1 overflow-auto lg:hidden">
-                <PaginatedList
-                  dataSource={data}
-                  renderItem={(item: Priority, index: number) => (
-                    <List.Item>
-                      <PriorityCard key={index} data={item} />
-                    </List.Item>
-                  )}
-                  loading={isLoading}
-                />
-              </div>
-            </div>
-          )}
+  const siteName = location?.state?.siteName || Strings.empty;
 
-          <Form.Provider
-            onFormFinish={async (_, { values }) => {
-              await handleOnFormCreateFinish(values);
-            }}
-          >
-            <ModalForm
-              open={modalIsOpen}
-              onCancel={handleOnCancelButton}
-              FormComponent={(form: FormInstance) => (
-                <RegisterPriorityForm form={form} />
-              )}
-              title={Strings.createPriority.concat(` ${siteName}`)}
-              isLoading={modalIsLoading}
-            />
-          </Form.Provider>
+  return (
+    <>
+      <div className="h-full flex flex-col">
+        <div className="flex flex-col gap-2 items-center m-3">
+          <PageTitle mainText={Strings.prioritiesOf} subText={siteName} />
+          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
+            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
+              <Space className="w-full md:w-auto mb-1 md:mb-0">
+                <Input
+                  className="w-full"
+                  onChange={handleOnSearch}
+                  value={querySearch}
+                  addonAfter={<IoIosSearch />}
+                />
+              </Space>
+            </div>
+            <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
+              <CustomButton
+                type="success"
+                onClick={handleOnClickCreateButton}
+                className="w-full md:w-auto"
+              >
+                {Strings.create}
+              </CustomButton>
+            </div>
+          </div>
         </div>
-      }
-    />
+        <div className="flex-1 overflow-auto hidden lg:block">
+          <PriorityTable data={data} isLoading={isLoading} />
+        </div>
+        <div className="flex-1 overflow-auto lg:hidden">
+          <PaginatedList
+            dataSource={data}
+            renderItem={(item: Priority, index: number) => (
+              <List.Item>
+                <PriorityCard key={index} data={item} />
+              </List.Item>
+            )}
+            loading={isLoading}
+          />
+        </div>
+      </div>
+      <Form.Provider
+        onFormFinish={async (_, { values }) => {
+          await handleOnFormCreateFinish(values);
+        }}
+      >
+        <ModalForm
+          open={modalIsOpen}
+          onCancel={handleOnCancelButton}
+          FormComponent={RegisterPriorityForm}
+          title={Strings.createPriority.concat(` ${siteName}`)}
+          isLoading={modalIsLoading}
+        />
+      </Form.Provider>
+    </>
   );
 };
 

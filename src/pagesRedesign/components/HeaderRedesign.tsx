@@ -10,7 +10,6 @@ interface HeaderProps {
   avatarSrc: string;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
-  onLogout: () => void;
 }
 
 const HeaderRedesign: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
