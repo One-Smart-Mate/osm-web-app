@@ -94,6 +94,9 @@ export const buildRoute = (path: string): string => {
   return `/${Constants.ROUTES_PATH.dashboard}/${path}`;
 };
 
+export const buildSitesRoute = (): string => {
+  return `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`;
+};
 export const buildInitRoute = (user: User): string => {
   const rol = getUserRol(user);
   if(rol === UserRoles.IHSISADMIN) {

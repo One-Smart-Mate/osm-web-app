@@ -4,6 +4,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { adminSites } from "../../routes/Routes";
 import { isRedesign } from "../../../utils/Extensions";
 import { Button } from "antd";
+import { buildSitesRoute } from "../../../pagesRedesign/routes/RoutesExtensions";
 
 interface props {
   companyId: string;
@@ -18,10 +19,23 @@ const ViewSitesButton = ({ companyId, companyName, companyAddress,companyPhone,c
   const navigate = useNavigate();
 
   const handleOnViewPriorities = (companyId: string, companyName: string, companyAddress:string, companyPhone: string, companyLogo:string ) => {
-    navigate(adminSites.fullPath.replace(Strings.companyParam, companyId), {
-      state: { companyId, companyName, companyAddress,companyPhone, companyLogo},
-      });
+    if(isRedesign()) {
+      navigate(buildSitesRoute(),{
+        state: { 
+          companyId: companyId, 
+          companyName: companyName, 
+          companyAddress: companyAddress,
+          companyPhone: companyPhone, 
+          companyLogo: companyLogo
+        },
+      })
+    } else { 
+      navigate(adminSites.fullPath.replace(Strings.companyParam, companyId)), {
+        state: { companyId, companyName, companyAddress,companyPhone, companyLogo},
+        };
+    }   
   };
+
 
   return (
     isRedesign() ? <Button

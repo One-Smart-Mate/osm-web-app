@@ -65,7 +65,8 @@ const es = "ES";
 const en = "EN";
 
 const ROUTES_PATH = {
-  dashboard: "dashboard"
+  dashboard: "dashboard",
+  sites:'sites',
 }
 
 const ROUTES_PARAMS = {

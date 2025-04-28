@@ -24,6 +24,8 @@ import SiteUsersV2 from "../../pages/user/SiteUsersV2";
 import Priorities from "../../pages/priority/Priorities";
 import LevelsV2 from "../../pages/level/LevelsV2";
 import Companies from "../../pages/company/Companies";
+import Sites from "../../pages/site/Sites";
+import CompaniesV2 from "../../pages/company/CompaniesV2";
 
 // Routes for local admin
 const localAdminCardsV2 = new RouteV2(
@@ -94,7 +96,15 @@ const sisAdminLevelsV2 = new RouteV2(
 const ihSisAdminCompaniesV2 = new RouteV2(
   "Companies",
   "companies",
-  <Companies />,
+  <CompaniesV2 />,
+  <BsBuildingAdd />,
+  "Catalogs"
+);
+
+const ihSisAdminSitesV2 = new RouteV2(
+  "Sites",
+  "sites",
+  <Sites rol={UserRoles.IHSISADMIN} />,
   <BsBuildingAdd />,
   "Catalogs"
 );
@@ -128,7 +138,7 @@ const sisAdminRoutesV2: RouteV2[] = [
 ];
 
 
-const ihSisAdminRoutesV2: RouteV2[] = [ihSisAdminCompaniesV2];
+const ihSisAdminRoutesV2: RouteV2[] = [ihSisAdminCompaniesV2, ihSisAdminSitesV2];
 
 
 const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute];
