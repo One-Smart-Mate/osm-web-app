@@ -8,6 +8,7 @@ import {
   useGetlevelsMutation,
   useUdpateLevelMutation,
 } from "../../services/levelService";
+import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
 import { Form, Drawer, Spin, Modal, Button } from "antd";
 import { useAppDispatch } from "../../core/store";
@@ -59,9 +60,11 @@ const Levels = ({ role }: Props) => {
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
+  const [getCardsByLevel] = useGetCardsByLevelMutation();
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
+  const [levelCardCounts, setLevelCardCounts] = useState<{[key: string]: number}>({});
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
     const storedState = localStorage.getItem('treeExpandedState');
     return storedState === 'true';
@@ -172,6 +175,30 @@ const Levels = ({ role }: Props) => {
         
         applyExpandState(hierarchyData);
       }
+      
+      // Fetch card counts for each level
+      const cardCountsObj: {[key: string]: number} = {};
+      
+      // Create an array of promises for fetching card counts
+      const countPromises = response.map(async (level) => {
+        try {
+          const cards = await getCardsByLevel({ 
+            levelId: level.id, 
+            siteId: location.state.siteId 
+          }).unwrap();
+          
+          cardCountsObj[level.id] = cards.length;
+        } catch (error) {
+          console.error(`Error fetching cards for level ${level.id}:`, error);
+          cardCountsObj[level.id] = 0;
+        }
+      });
+      
+      // Wait for all card count requests to complete
+      await Promise.all(countPromises);
+      
+      // Update state with card counts
+      setLevelCardCounts(cardCountsObj);
       
       setTreeData([
         {
@@ -448,18 +475,6 @@ const Levels = ({ role }: Props) => {
     }
   };
 
-  const renderCustomNodeElement = (rd3tProps: any) => (
-    <CustomNodeElement
-      nodeDatum={rd3tProps.nodeDatum}
-      toggleNode={rd3tProps.toggleNode}
-      containerRef={containerRef}
-      setContextMenuVisible={setContextMenuVisible}
-      setContextMenuPos={setContextMenuPos}
-      setSelectedNode={setSelectedNode}
-      handleShowDetails={handleShowDetails}
-    />
-  );
-
   const isRootNode = selectedNode?.data?.id === "0";
 
   return (
@@ -494,7 +509,18 @@ const Levels = ({ role }: Props) => {
                 data={treeData}
                 orientation="horizontal"
                 translate={translate}
-                renderCustomNodeElement={renderCustomNodeElement}
+                renderCustomNodeElement={(rd3tProps) => (
+                  <CustomNodeElement
+                    nodeDatum={rd3tProps.nodeDatum}
+                    toggleNode={rd3tProps.toggleNode}
+                    containerRef={containerRef}
+                    setContextMenuVisible={setContextMenuVisible}
+                    setContextMenuPos={setContextMenuPos}
+                    setSelectedNode={setSelectedNode}
+                    handleShowDetails={handleShowDetails}
+                    cardCounts={levelCardCounts}
+                  />
+                )}
                 collapsible={true}
               />
             )}

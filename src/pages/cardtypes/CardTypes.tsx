@@ -1,4 +1,4 @@
-import { Button, Drawer, Dropdown, Form, notification, Spin } from "antd";
+import { Drawer, Dropdown, Form, notification, Spin } from "antd";
 import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ import {
   UpdateCardTypeReq,
 } from "../../data/cardtypes/cardTypes.request";
 import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
-import { isRedesign, UserRoles } from "../../utils/Extensions";
+import { UserRoles } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 
@@ -234,19 +234,14 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
         applyExpandState(hierarchy);
       }
 
-      // Only set tree data if we have valid hierarchy data
-      if (hierarchy && hierarchy.length > 0) {
-        setTreeData([
-          {
-            name: `${Strings.cardType} ${location.state.siteName}`,
-            nodeType: "cardType",
-            children: hierarchy,
-          },
-        ]);
-      } else {
-        // Set empty tree data if no hierarchy was built
-        setTreeData([]);
-      }
+      setTreeData([
+        {
+          name: `${Strings.cardType} ${location.state.siteName}`,
+          nodeType: "cardType",
+          id: "0",
+          children: hierarchy,
+        },
+      ]);
 
       dispatch(setSiteId(siteId));
 
@@ -541,17 +536,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const preMenu = [
       {
         key: "editPre",
-        label: isRedesign() ? (
-          <Button
-            type="primary"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEditPre();
-            }}
-          >
-            {Strings.cardTypesEditPreclassifier}
-          </Button>
-        ) : (
+        label: (
           <button
             className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -565,17 +550,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: "clonePre",
-        label: isRedesign() ? (
-          <Button
-            type="default"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClonePre();
-            }}
-          >
-            {Strings.cardTypesClonePreclassifier}
-          </Button>
-        ) : (
+        label: (
           <button
             className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs"
             onClick={(e) => {
@@ -624,9 +599,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
     const ctMenu = [
       {
         key: Strings.cardTypesOptionEdit,
-        label: isRedesign() ? (
-          <Button type="primary">{Strings.cardTypesEdit}</Button>
-        ) : (
+        label: (
           <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesEdit}
           </button>
@@ -635,9 +608,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionClone,
-        label: isRedesign() ? (
-          <Button type="default">{Strings.cardTypesCloneCardType}</Button>
-        ) : (
+        label: (
           <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCloneCardType}
           </button>
@@ -646,11 +617,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
       },
       {
         key: Strings.cardTypesOptionCreate,
-        label: isRedesign() ? (
-          <Button type="link" variant="dashed">
-            {Strings.cardTypesCreatePreclassifier}
-          </Button>
-        ) : (
+        label: (
           <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
             {Strings.cardTypesCreatePreclassifier}
           </button>
@@ -810,10 +777,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
   };
 
   return (
-    <div
-      className="flex flex-col h-full overflow-hidden"
-      style={{ height: window.screen.availHeight * 0.8 }}
-    >
+    <div className="flex flex-col h-full overflow-hidden">
       <div ref={containerRef} className="relative flex-1 overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center h-full">
@@ -823,23 +787,14 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
           <>
             {/* Toggle expand/collapse button */}
             <div className="absolute top-4 right-4 z-10">
-              {isRedesign() ? (
-                <Button
-                  onClick={toggleAllNodes}
-                  type={isTreeExpanded ? "primary" : "default"}
-                >
-                  {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-                </Button>
-              ) : (
-                <button
-                  className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
-                    isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
-                  }`}
-                  onClick={toggleAllNodes}
-                >
-                  {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-                </button>
-              )}
+              <button
+                className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
+                  isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
+                }`}
+                onClick={toggleAllNodes}
+              >
+                {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+              </button>
             </div>
 
             {treeData && treeData.length > 0 && (
