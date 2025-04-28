@@ -59,7 +59,6 @@ import {
   BsMailbox,
   BsPerson,
   BsPinMap,
-  BsSearch,
   BsTelephone,
   BsTelephoneOutbound,
 } from "react-icons/bs";
