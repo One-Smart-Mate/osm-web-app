@@ -1,11 +1,10 @@
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Form, Button, Input, Layout, Card } from "antd";
+import { Form, Button, Input, Card, Typography } from "antd";
 import {
   handleErrorNotification,
   handleSucccessNotification,
   NotificationSuccess,
 } from "../../utils/Notifications";
-import Meta from "antd/es/card/Meta";
 import { validateEmail } from "../../utils/Extensions";
 import Strings from "../../utils/localizations/Strings";
 import { useState } from "react";
@@ -21,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Routes from "../../utils/Routes";
 import LanguageDropdown from "../layouts/LanguageDropdown";
+import { BsEnvelope } from "react-icons/bs";
 
 const ResetPassword = () => {
   const [sendCodeToEmail] = useSendCodeToEmailMutation();
@@ -41,7 +41,7 @@ const ResetPassword = () => {
       setEmail(values.email.trim());
       setShowEnterCodeSection(true);
     } catch (error) {
-      console.error("Error al enviar el código al email:", error);
+      console.error("[ResetPassword] onSendEmailFormFinish", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ const ResetPassword = () => {
       setCode(values.code);
       setShowChangePasswordSection(true);
     } catch (error) {
-      console.error("Error al verificar el código:", error);
+      console.error("[ResetPassword] onSendCodeFormFinish", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ const ResetPassword = () => {
       navigate(Routes.Login);
       handleSucccessNotification(NotificationSuccess.RESET_PASSWORD);
     } catch (error) {
-      console.error("Error al cambiar la contraseña:", error);
+      console.error("[ResetPassword] onChangePasswordFormFinish", error);
       handleErrorNotification(error);
     } finally {
       setLoading(false);
@@ -81,189 +81,188 @@ const ResetPassword = () => {
 
   return (
     <>
-      <div 
-        style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 9999,
-          backgroundColor: 'white',
-          padding: '8px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-          border: '1px solid #ccc'
-        }}
-      >
-        <LanguageDropdown />
-      </div>
-      
-      <Layout className="flex justify-center items-center min-h-screen relative">
-        {!showEnterCodeSection && (
-          <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
-            <Meta
-              title={
-                <h1 className="text-center text-3xl block font-semibold">
-                  {Strings.resetPassword}
-                </h1>
-              }
-              description={
-                <p className="block text-base">
-                  {Strings.sendCodeMessage}
-                </p>
-              }
-            />
-            <Form
-              className="mt-6"
-              initialValues={{ remember: true }}
-              onFinish={onSendEmailFormFinish}
-              validateTrigger="onSubmit"
-            >
-              <Form.Item name="email" rules={[{ validator: validateEmail }]}>
-                <Input
-                  size="large"
-                  addonBefore={<MailOutlined/>}
-                  placeholder={Strings.email}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  loading={isLoading}
-                  block
-                  size="large"
-                  className="w-full mt-3"
-                  type="primary"
-                  htmlType="submit"
-                >
-                  {Strings.sendCode}
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        )}
+      <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+        {/* Left Side - Image */}
+        <div
+          className="lg:flex-1 h-64 lg:h-auto bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url(https://firebasestorage.googleapis.com/v0/b/osm-dev-c2f20.firebasestorage.app/o/Screenshot%202025-04-27%20at%2016.05.55.png?alt=media&token=9b368678-4547-47ec-89f0-8958033a305a)", // Replace with your image URL
+          }}
+        />
 
-        {showEnterCodeSection && !showChangePasswordSection && (
-          <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
-            <Meta
+        {/* Right Side - Login Form */}
+        <div className="lg:flex-1 flex justify-center items-center p-4">
+          <div>
+            <div className="flex justify-end mb-4">
+              <LanguageDropdown />
+            </div>
+            <Card
+              className="shadow-lg rounded-lg w-full max-w-md"
+              style={{ padding: "24px" }}
+              hoverable
               title={
-                <h1 className="text-center text-3xl block font-semibol">
-                  {Strings.enterCode}
-                </h1>
-              }
-              description={
-                <p className="block text-base">
-                  {Strings.enterTheCode}
-                </p>
-              }
-            />
-            <Form
-              className="mt-6"
-              onFinish={onSendCodeFormFinish}
-              validateTrigger="onSubmit"
-            >
-              <Form.Item
-                name="code"
-                rules={[{ required: true, message: Strings.requiredCode }]}
-              >
-                <Input.OTP size="large" formatter={(str) => str.toUpperCase()} />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  loading={isLoading}
-                  block
-                  size="large"
-                  className="w-full mt-3"
-                  type="primary"
-                  htmlType="submit"
-                >
-                  {Strings.sendCode}
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        )}
-        {showChangePasswordSection && (
-          <Card className="p-3 relative  lg:w-96  shadow-2xl rounded-2xl">
-            <Meta
-              title={
-                <h1 className="text-center text-3xl block font-semibold">
+                <Typography.Title level={3} className="text-center">
                   {Strings.resetPassword}
-                </h1>
+                </Typography.Title>
               }
-              description={
-                <p className="block text-base">
-                  {Strings.enterTheNewPassword}
-                </p>
-              }
-            />
-            <Form
-              className="mt-6"
-              onFinish={onChangePasswordFormFinish}
-              validateTrigger="onSubmit"
             >
-              <Form.Item name="email" className="hidden">
-                <Input
-                  size="large"
-                  addonBefore={<MailOutlined/>}
-                  placeholder={Strings.email}
-                />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                validateFirst
-                rules={[
-                  { min: 8, message: Strings.passwordLenght },
-                  { required: true, message: Strings.requiredPassword },
-                ]}
-                className="flex-1 mr-1"
-              >
-                <Input.Password
-                  size="large"
-                  minLength={8}
-                  addonBefore={<LockOutlined />}
-                  type="password"
-                  placeholder={Strings.newPassword}
-                />
-              </Form.Item>
-              <Form.Item
-                name="confirmPassword"
-                dependencies={["password"]}
-                className="flex-1"
-                rules={[
-                  { required: true, message: Strings.requiredConfirmPassword },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue("password") === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(
-                        new Error(Strings.passwordsDoNotMatch)
-                      );
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password
-                  size="large"
-                  addonBefore={<LockOutlined/>}
-                  placeholder={Strings.confirmPassword}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  loading={isLoading}
-                  block
-                  size="large"
-                  className="w-full mt-3"
-                  type="primary"
-                  htmlType="submit"
-                >
-                  {Strings.save}
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        )}
-      </Layout>
+              {!showEnterCodeSection && (
+                <>
+                  <Typography.Paragraph className="text-center">
+                    {Strings.sendCodeMessage}
+                  </Typography.Paragraph>
+                  <Form
+                    className="mt-6"
+                    initialValues={{ remember: true }}
+                    onFinish={onSendEmailFormFinish}
+                    validateTrigger="onSubmit"
+                  >
+                    <Form.Item
+                      name="email"
+                      rules={[{ validator: validateEmail }]}
+                    >
+                      <Input
+                        size="large"
+                        type="email"
+                        addonBefore={<BsEnvelope />}
+                        placeholder={Strings.email}
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        loading={isLoading}
+                        block
+                        size="large"
+                        className="w-full mt-3"
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        {Strings.sendCode}
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </>
+              )}
+
+              {showEnterCodeSection && !showChangePasswordSection && (
+                <>
+                  <Typography.Paragraph className="text-center">
+                    {Strings.enterTheCode}
+                  </Typography.Paragraph>
+                  <Form
+                    className="mt-6"
+                    onFinish={onSendCodeFormFinish}
+                    validateTrigger="onSubmit"
+                  >
+                    <Form.Item
+                      name="code"
+                      className="flex w-full justify-center"
+                      rules={[
+                        { required: true, message: Strings.requiredCode },
+                      ]}
+                    >
+                      <Input.OTP
+                        size="large"
+                        formatter={(str) => str.toUpperCase()}
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        loading={isLoading}
+                        block
+                        size="large"
+                        className="w-full mt-3"
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        {Strings.sendCode}
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </>
+              )}
+
+              {showChangePasswordSection && (
+                <>
+                  <Typography.Paragraph className="text-center">
+                    {Strings.enterTheNewPassword}
+                  </Typography.Paragraph>
+                  <Form
+                    className="mt-6"
+                    onFinish={onChangePasswordFormFinish}
+                    validateTrigger="onSubmit"
+                  >
+                    <Form.Item name="email" className="hidden">
+                      <Input
+                        size="large"
+                        addonBefore={<MailOutlined />}
+                        placeholder={Strings.email}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="password"
+                      validateFirst
+                      rules={[
+                        { min: 8, message: Strings.passwordLenght },
+                        { required: true, message: Strings.requiredPassword },
+                      ]}
+                      className="flex-1 mr-1"
+                    >
+                      <Input.Password
+                        size="large"
+                        minLength={8}
+                        addonBefore={<LockOutlined />}
+                        type="password"
+                        placeholder={Strings.newPassword}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="confirmPassword"
+                      dependencies={["password"]}
+                      className="flex-1"
+                      rules={[
+                        {
+                          required: true,
+                          message: Strings.requiredConfirmPassword,
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value || getFieldValue("password") === value) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(
+                              new Error(Strings.passwordsDoNotMatch)
+                            );
+                          },
+                        }),
+                      ]}
+                    >
+                      <Input.Password
+                        size="large"
+                        addonBefore={<LockOutlined />}
+                        placeholder={Strings.confirmPassword}
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        loading={isLoading}
+                        block
+                        size="large"
+                        className="w-full mt-3"
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        {Strings.save}
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </>
+              )}
+            </Card>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
