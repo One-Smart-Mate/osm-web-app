@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button, Input, Table, Form, Tag, Spin, List, Typography } from "antd";
-import { SearchOutlined, EditOutlined, FilePdfOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  EditOutlined,
+  FilePdfOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import LevelTreeModal from "./components/LevelTreeModal";
 import RegisterPositionForm from "./components/RegisterPositionForm";
 import UpdatePositionForm from "./components/UpdatePositionForm";
 import { useGetSiteMutation } from "../../services/siteService";
-import { useGetPositionsBySiteIdQuery, useGetPositionUsersQuery } from "../../services/positionService";
+import {
+  useGetPositionsBySiteIdQuery,
+  useGetPositionUsersQuery,
+} from "../../services/positionService";
 import { Position } from "../../data/postiions/positions";
 import { Responsible } from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import Constants from "../../utils/Constants";
+import { isRedesign } from "../../utils/Extensions";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const { Text } = Typography;
 
@@ -21,21 +32,24 @@ const PositionsPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<any>(null);
   const [isPositionFormVisible, setIsPositionFormVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
+    null
+  );
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
   const [positionForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
-  
+  const { isIhAdmin } = useCurrentUser();
+
   const location = useLocation();
   const siteId = location.state?.siteId || "";
   const siteName = location.state?.siteName || "";
 
   // Fetch positions by site ID
-  const { 
-    data: positions = [], 
+  const {
+    data: positions = [],
     isLoading: isLoadingPositions,
-    refetch: refetchPositions
+    refetch: refetchPositions,
   } = useGetPositionsBySiteIdQuery(siteId, {
     skip: !siteId,
     // Refetch positions every 30 seconds
@@ -57,7 +71,7 @@ const PositionsPage = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
     if (!positions) return;
-    
+
     const filtered = positions.filter(
       (position) =>
         position.areaName?.toLowerCase().includes(value.toLowerCase()) ||
@@ -79,12 +93,12 @@ const PositionsPage = () => {
 
   const handleLevelSelect = async (levelData: any) => {
     console.log("Selected level for position creation:", levelData);
-    
+
     try {
       // Fetch site data to get the siteType
       const siteResponse = await getSite(siteId).unwrap();
       console.log("Site data:", siteResponse);
-      
+
       // Enhance the level data with site information
       const enhancedLevelData = {
         ...levelData,
@@ -92,7 +106,7 @@ const PositionsPage = () => {
         siteName: siteName,
         siteType: siteResponse.siteType, // Get siteType from API response
       };
-      
+
       setSelectedLevel(enhancedLevelData);
       setIsPositionFormVisible(true);
     } catch (error) {
@@ -142,7 +156,8 @@ const PositionsPage = () => {
 
   // Component to render users assigned to a position
   const PositionUsers = ({ positionId }: { positionId: string }) => {
-    const { data: users = [], isLoading } = useGetPositionUsersQuery(positionId);
+    const { data: users = [], isLoading } =
+      useGetPositionUsersQuery(positionId);
 
     if (isLoading) {
       return <Spin size="small" />;
@@ -219,16 +234,16 @@ const PositionsPage = () => {
       width: 100,
       render: (_: any, record: Position) => (
         <div className="flex space-x-2">
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<EditOutlined />}
             onClick={(e) => {
               e.stopPropagation();
               handleEditPosition(record);
             }}
           />
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<FilePdfOutlined />}
             onClick={(e) => e.stopPropagation()}
           />
@@ -237,7 +252,103 @@ const PositionsPage = () => {
     },
   ];
 
-  return (
+  return isRedesign() ? (
+    <MainContainer
+      title={siteName}
+      description={Strings.positions}
+      enableCreateButton={true}
+      onCreateButtonClick={showTreeModal}
+      enableBackButton={isIhAdmin()}
+      enableSearch={true}
+      onSearchChange={handleSearch}
+      isLoading={isLoadingPositions}
+      content={
+        <div>
+          <div className="overflow-x-auto">
+            <Table
+              dataSource={filteredPositions}
+              columns={columns}
+              rowKey={(record) => record.id.toString()}
+              onRow={(record) => ({
+                onClick: () =>
+                  handlePopoverVisibleChange(
+                    openPopoverId !== record.id.toString(),
+                    record.id.toString()
+                  ),
+                className:
+                  openPopoverId === record.id.toString() ? "bg-blue-50" : "",
+              })}
+              pagination={{
+                pageSize: Constants.DEFAULT_PAGE_SIZE,
+                showSizeChanger: true,
+                pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
+                position: ["bottomCenter"],
+              }}
+              locale={{
+                emptyText: Strings.noPositionsToShow,
+                filterConfirm: Strings.accept,
+                filterReset: Strings.reset,
+                filterSearchPlaceholder: Strings.search,
+                filterTitle: Strings.filter,
+                selectAll: Strings.selectCurrentPage,
+                selectInvert: Strings.invertSelection,
+                selectionAll: Strings.selectAll,
+                sortTitle: Strings.sort,
+                triggerDesc: Strings.sortDesc,
+                triggerAsc: Strings.sortAsc,
+                cancelSort: Strings.cancelSort,
+              }}
+              scroll={Constants.TABLE_SCROLL_CONFIG}
+            />
+          </div>
+          {openPopoverId && (
+            <div
+              className="fixed shadow-lg rounded-md bg-white z-50 p-4 border"
+              style={Constants.POSITION_POPUP_STYLE}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <div className="font-medium text-blue-600">
+                  {Strings.assignedUsers}
+                </div>
+                <Button
+                  type="text"
+                  size="small"
+                  onClick={() => setOpenPopoverId(null)}
+                >
+                  ×
+                </Button>
+              </div>
+              <PositionUsers positionId={openPopoverId} />
+            </div>
+          )}
+
+          <LevelTreeModal
+            isVisible={isTreeModalVisible}
+            onClose={hideTreeModal}
+            siteId={siteId}
+            siteName={siteName}
+            onSelectLevel={handleLevelSelect}
+          />
+
+          <RegisterPositionForm
+            form={positionForm}
+            levelData={selectedLevel}
+            isVisible={isPositionFormVisible}
+            onCancel={handleFormCancel}
+            onSuccess={handleFormSuccess}
+          />
+
+          <UpdatePositionForm
+            form={updateForm}
+            position={selectedPosition}
+            isVisible={isUpdateFormVisible}
+            onCancel={handleUpdateCancel}
+            onSuccess={handleUpdateSuccess}
+          />
+        </div>
+      }
+    />
+  ) : (
     <div className="p-4 h-full overflow-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">
@@ -247,7 +358,7 @@ const PositionsPage = () => {
           {Strings.createPosition}
         </Button>
       </div>
-      
+
       <div className="mb-4 flex justify-between items-center">
         <Input
           placeholder={Strings.searchPositions}
@@ -258,12 +369,13 @@ const PositionsPage = () => {
           allowClear
         />
         <div className="text-sm text-gray-500">
-          {filteredPositions.length} {filteredPositions.length === 1 
-            ? Strings.positionFound 
+          {filteredPositions.length}{" "}
+          {filteredPositions.length === 1
+            ? Strings.positionFound
             : Strings.positionsFound}
         </div>
       </div>
-      
+
       {isLoadingPositions ? (
         <div className="flex justify-center items-center h-64">
           <Spin size="large" tip={Strings.loadingPositions} />
@@ -275,16 +387,21 @@ const PositionsPage = () => {
             columns={columns}
             rowKey={(record) => record.id.toString()}
             onRow={(record) => ({
-              onClick: () => handlePopoverVisibleChange(openPopoverId !== record.id.toString(), record.id.toString()),
-              className: openPopoverId === record.id.toString() ? "bg-blue-50" : ""
+              onClick: () =>
+                handlePopoverVisibleChange(
+                  openPopoverId !== record.id.toString(),
+                  record.id.toString()
+                ),
+              className:
+                openPopoverId === record.id.toString() ? "bg-blue-50" : "",
             })}
-            pagination={{ 
+            pagination={{
               pageSize: Constants.DEFAULT_PAGE_SIZE,
-              showSizeChanger: true, 
+              showSizeChanger: true,
               pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
-              position: ['bottomCenter']
+              position: ["bottomCenter"],
             }}
-            locale={{ 
+            locale={{
               emptyText: Strings.noPositionsToShow,
               filterConfirm: Strings.accept,
               filterReset: Strings.reset,
@@ -296,23 +413,25 @@ const PositionsPage = () => {
               sortTitle: Strings.sort,
               triggerDesc: Strings.sortDesc,
               triggerAsc: Strings.sortAsc,
-              cancelSort: Strings.cancelSort
+              cancelSort: Strings.cancelSort,
             }}
             scroll={Constants.TABLE_SCROLL_CONFIG}
           />
         </div>
       )}
-      
+
       {openPopoverId && (
-        <div 
+        <div
           className="fixed shadow-lg rounded-md bg-white z-50 p-4 border"
           style={Constants.POSITION_POPUP_STYLE}
         >
           <div className="flex justify-between items-center mb-2">
-            <div className="font-medium text-blue-600">{Strings.assignedUsers}</div>
-            <Button 
-              type="text" 
-              size="small" 
+            <div className="font-medium text-blue-600">
+              {Strings.assignedUsers}
+            </div>
+            <Button
+              type="text"
+              size="small"
               onClick={() => setOpenPopoverId(null)}
             >
               ×
@@ -321,17 +440,17 @@ const PositionsPage = () => {
           <PositionUsers positionId={openPopoverId} />
         </div>
       )}
-      
-      <LevelTreeModal 
+
+      <LevelTreeModal
         isVisible={isTreeModalVisible}
         onClose={hideTreeModal}
         siteId={siteId}
         siteName={siteName}
         onSelectLevel={handleLevelSelect}
       />
-      
-      <RegisterPositionForm 
-        form={positionForm} 
+
+      <RegisterPositionForm
+        form={positionForm}
         levelData={selectedLevel}
         isVisible={isPositionFormVisible}
         onCancel={handleFormCancel}

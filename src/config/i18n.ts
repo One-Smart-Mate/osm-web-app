@@ -767,6 +767,7 @@ const resources = {
       catalogs: "Catalogs",
       accounts: "Accounts",
       dashboard: "Dashboard",
+      technicalSupport: "Technical Support",
     },
   },
   es: {
@@ -1539,6 +1540,7 @@ const resources = {
       catalogs: "Catálogos",
       accounts: "Cuentas",
       dashboard: "Panel",
+      technicalSupport: "Soporte Técnico",
     },
   },
 };

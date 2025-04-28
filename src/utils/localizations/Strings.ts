@@ -704,6 +704,7 @@ class StringsBase {
   static catalogs: "catalogs";
   static accounts: "accounts";
   static dashboard: "dashboard";
+  static technicalSupport: "technicalSupport";
 
 }
 

@@ -6,6 +6,7 @@ import {
   BsDiagram3,
   BsLifePreserver,
   BsNodePlus,
+  BsPeople,
   BsPersonPlus,
 } from "react-icons/bs";
 import { RouteV2 } from "./models/RouteV2";
@@ -28,6 +29,7 @@ import { MdHealthAndSafety } from "react-icons/md";
 import SitesV2 from "../../pages/site/SitesV2";
 import ChartsV2 from "../../pages/charts/ChartsV2";
 import TagsV2 from "../../pages/card/TagsV2";
+import PositionsPage from "../../pages/positions/PositionsPage";
 
 const buildDashboardSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();
@@ -67,13 +69,6 @@ const sisAdminCardTypesV2 = new RouteV2(
   <BsNodePlus />,
   buildCatalogsSectionName()
 );
-const sisAdminLevelsV2 = new RouteV2(
-  Strings.levelsSB,
-  Constants.ROUTES_PATH.levels,
-  <LevelsV2 role={UserRoles.LOCALSYSADMIN} />,
-  <BsDiagram3 />,
-  buildCatalogsSectionName()
-);
 
 //Routes for IHSISADMIN
 const ihSisAdminCompaniesV2 = new RouteV2(
@@ -94,6 +89,13 @@ const ihSisAdminSystemHealthV2 = new RouteV2(
 );
 
 // Common routes
+const levelsV2 = new RouteV2(
+  Strings.levelsSB,
+  Constants.ROUTES_PATH.levels,
+  <LevelsV2  />,
+  <BsDiagram3 />,
+  buildCatalogsSectionName()
+);
 
 const tagsV2 = new RouteV2(
   Strings.cardsSB,
@@ -128,11 +130,19 @@ const siteUsersV2 = new RouteV2(
 );
 
 const technicalSupportRoute = new RouteV2(
-  "Technical Support",
+  Strings.technicalSupport,
   "technicalSupport",
   <TechnicalSupport />,
   <BsLifePreserver />,
   buildSupportSectionName()
+);
+
+const positionsV2 = new RouteV2(
+  Strings.positions,
+  Constants.ROUTES_PATH.positions,
+  <PositionsPage  />,
+  <BsPeople />,
+  buildDashboardSectionName()
 );
 
 export const cardDetailRoute = new RouteV2(
@@ -148,7 +158,6 @@ const localAdminRoutesV2: RouteV2[] = [];
 const sisAdminRoutesV2: RouteV2[] = [
   sisAdminCardTypesV2,
   sisAdminPrioritiesV2,
-  sisAdminLevelsV2,
 ];
 
 const ihSisAdminRoutesV2: RouteV2[] = [
@@ -156,7 +165,7 @@ const ihSisAdminRoutesV2: RouteV2[] = [
   ihSisAdminSystemHealthV2,
 ];
 
-const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute, siteUsersV2, sitesV2, chartsV2, tagsV2];
+const commonRoutes: RouteV2[] = [technicalSupportRoute, cardDetailRoute, siteUsersV2, sitesV2, chartsV2, tagsV2, levelsV2, positionsV2];
 
 const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
   const items: MenuProps["items"] = [
@@ -177,6 +186,12 @@ const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: technicalSupportRoute.path,
       icon: technicalSupportRoute.icon,
       section: technicalSupportRoute.section,
+    }),
+    getItemV2({
+      label: positionsV2.label,
+      key: positionsV2.path,
+      icon: positionsV2.icon,
+      section: positionsV2.section,
     }),
   ];
   return items;
@@ -203,10 +218,10 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       section: sitesV2.section,
     }),
     getItemV2({
-      label: sisAdminLevelsV2.label,
-      key: sisAdminLevelsV2.path,
-      icon: sisAdminLevelsV2.icon,
-      section: sisAdminLevelsV2.section,
+      label: levelsV2.label,
+      key: levelsV2.path,
+      icon: levelsV2.icon,
+      section: levelsV2.section,
     }),
     getItemV2({
       label: sisAdminCardTypesV2.label,
@@ -232,6 +247,12 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       icon: technicalSupportRoute.icon,
       section: technicalSupportRoute.section,
     }),
+    getItemV2({
+      label: positionsV2.label,
+      key: positionsV2.path,
+      icon: positionsV2.icon,
+      section: positionsV2.section,
+    }),
   ];
   return items;
 };
@@ -250,6 +271,12 @@ const localIHSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: ihSisAdminSystemHealthV2.path,
       icon: ihSisAdminSystemHealthV2.icon,
       section: ihSisAdminSystemHealthV2.section,
+    }),
+    getItemV2({
+      label: technicalSupportRoute.label,
+      key: technicalSupportRoute.path,
+      icon: technicalSupportRoute.icon,
+      section: technicalSupportRoute.section,
     }),
   ];
   return items;
