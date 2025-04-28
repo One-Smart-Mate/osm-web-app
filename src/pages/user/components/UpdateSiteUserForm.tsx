@@ -8,7 +8,9 @@ import { Role, UserUpdateForm } from "../../../data/user/user";
 import { useGetRolesMutation } from "../../../services/roleService";
 import { useAppSelector } from "../../../core/store";
 import { selectCurrentRowData } from "../../../core/genericReducer";
+import { selectCurrentUser } from "../../../core/authReducer";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import Constants from "../../../utils/Constants";
 
 interface FormProps {
   form: FormInstance;
@@ -32,24 +34,28 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
   const rowData = useAppSelector(
     selectCurrentRowData
   ) as unknown as UserUpdateForm;
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const handleGetData = async () => {
     const [rolesResponse] = await Promise.all([getRoles().unwrap()]);
     
-    // Find the admin role ID
-    const adminRole = rolesResponse.find(role => role.name === "IH_sis_admin");
+    const adminRole = rolesResponse.find(role => role.name === Constants.ihSisAdmin);
     if (adminRole) {
       setAdminRoleId(adminRole.id);
     }
     
-    // Check if user has the admin role
     const hasAdminRole = adminRole && rowData?.roles?.includes(adminRole.id);
     setUserHasAdminRole(!!hasAdminRole);
     
-    // If user has admin role, include it in the roles list, otherwise filter it out
-    const filteredRoles = hasAdminRole 
+    const currentUserHasAdminRole = currentUser?.roles?.some((role: string | Role) => 
+      typeof role === 'string' 
+        ? role === Constants.ihSisAdmin 
+        : role.name === Constants.ihSisAdmin
+    );
+    
+    const filteredRoles = hasAdminRole || currentUserHasAdminRole
       ? rolesResponse 
-      : rolesResponse.filter(role => role.name !== "IH_sis_admin");
+      : rolesResponse.filter(role => role.name !== Constants.ihSisAdmin);
     
     setRoles(filteredRoles);
   };
