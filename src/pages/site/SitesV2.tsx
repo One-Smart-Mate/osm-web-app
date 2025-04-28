@@ -388,6 +388,18 @@ const SitesV2 = () => {
                 >
                   {Strings.viewLevels}
                 </Button>
+
+                <Button
+                  onClick={() => {
+                    navigateProps({
+                      path: Constants.ROUTES_PATH.positions,
+                      siteId: selectedSite?.id,
+                      siteName: selectedSite?.name,
+                    });
+                  }}
+                >
+                  {Strings.viewPositions}
+                </Button>
               </Space>
             </Modal>
           </div>

@@ -1,4 +1,4 @@
-import { Dropdown, Avatar, Space, Tooltip, Tag, Typography } from "antd";
+import { Dropdown, Avatar, Tooltip, Tag, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import User, { getSiteName } from "../../data/user/user";
 import Logout from "../../pages/auth/Logout";
@@ -29,7 +29,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
           <div className="flex flex-col flex-wrap mr-2">
             <Typography.Text>{user?.name}</Typography.Text>
             <div>
-              <Space wrap>
+              <div className="flex flex-wrap flex-row max-w-[200px] gap-2">
                 {user?.roles.map((role: string) => (
                   <Tooltip key={role} title={role}>
                     <Tag color="blue" style={{ fontSize: 10 }}>
@@ -37,7 +37,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
                     </Tag>
                   </Tooltip>
                 ))}
-              </Space>
+              </div>
             </div>
           </div>
           <Logout />

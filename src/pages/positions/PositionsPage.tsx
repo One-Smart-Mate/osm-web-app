@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Button, Input, Table, Form, Tag, Spin, List, Typography } from "antd";
+import {
+  Button,
+  Input,
+  Table,
+  Form,
+  Tag,
+  Spin,
+  List,
+  Typography,
+  Card,
+} from "antd";
 import {
   SearchOutlined,
   EditOutlined,
@@ -22,6 +32,9 @@ import Constants from "../../utils/Constants";
 import { isRedesign } from "../../utils/Extensions";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import PaginatedList from "../../components/PaginatedList";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
+import { BsDiagram2, BsLightbulb, BsList } from "react-icons/bs";
 
 const { Text } = Typography;
 
@@ -264,43 +277,110 @@ const PositionsPage = () => {
       isLoading={isLoadingPositions}
       content={
         <div>
-          <div className="overflow-x-auto">
-            <Table
+          {isRedesign() ? (
+            <PaginatedList
               dataSource={filteredPositions}
-              columns={columns}
-              rowKey={(record) => record.id.toString()}
-              onRow={(record) => ({
-                onClick: () =>
-                  handlePopoverVisibleChange(
-                    openPopoverId !== record.id.toString(),
-                    record.id.toString()
-                  ),
-                className:
-                  openPopoverId === record.id.toString() ? "bg-blue-50" : "",
-              })}
-              pagination={{
-                pageSize: Constants.DEFAULT_PAGE_SIZE,
-                showSizeChanger: true,
-                pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
-                position: ["bottomCenter"],
-              }}
-              locale={{
-                emptyText: Strings.noPositionsToShow,
-                filterConfirm: Strings.accept,
-                filterReset: Strings.reset,
-                filterSearchPlaceholder: Strings.search,
-                filterTitle: Strings.filter,
-                selectAll: Strings.selectCurrentPage,
-                selectInvert: Strings.invertSelection,
-                selectionAll: Strings.selectAll,
-                sortTitle: Strings.sort,
-                triggerDesc: Strings.sortDesc,
-                triggerAsc: Strings.sortAsc,
-                cancelSort: Strings.cancelSort,
-              }}
-              scroll={Constants.TABLE_SCROLL_CONFIG}
+              renderItem={(item: Position, index: number) => (
+                <List.Item key={index}>
+                  <Card
+                    hoverable
+                    title={
+                      <Typography.Title level={5}>
+                        {item.areaName}
+                      </Typography.Title>
+                    }
+                    className="rounded-xl shadow-md"
+                    onClick={() => {
+                      handlePopoverVisibleChange(
+                        openPopoverId !== item.id.toString(),
+                        item.id.toString()
+                      );
+                    }}
+                    actions={[
+                      <Button
+                        type="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditPosition(item);
+                        }}
+                      >
+                        {Strings.edit}
+                      </Button>,
+                      <Button
+                        type="default"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        PDF
+                      </Button>,
+                    ]}
+                  >
+                    <AnatomySection
+                      title={Strings.positionNodeZoneHeader}
+                      label={item.levelName}
+                      icon={<BsDiagram2 />}
+                    />
+
+                    <AnatomySection
+                      title={Strings.positionNameHeader}
+                      label={item.name}
+                      icon={<BsLightbulb />}
+                    />
+
+                    <AnatomySection
+                      title={Strings.positionDescriptionHeader}
+                      label={item.description}
+                      icon={<BsList />}
+                    />
+
+                    <AnatomySection
+                      title={Strings.positionStatusHeader}
+                      label={renderStatusTag(item.status)}
+                    />
+                  </Card>
+                </List.Item>
+              )}
+              loading={isLoadingPositions}
             />
-          </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table
+                dataSource={filteredPositions}
+                columns={columns}
+                rowKey={(record) => record.id.toString()}
+                onRow={(record) => ({
+                  onClick: () =>
+                    handlePopoverVisibleChange(
+                      openPopoverId !== record.id.toString(),
+                      record.id.toString()
+                    ),
+                  className:
+                    openPopoverId === record.id.toString() ? "bg-blue-50" : "",
+                })}
+                pagination={{
+                  pageSize: Constants.DEFAULT_PAGE_SIZE,
+                  showSizeChanger: true,
+                  pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
+                  position: ["bottomCenter"],
+                }}
+                locale={{
+                  emptyText: Strings.noPositionsToShow,
+                  filterConfirm: Strings.accept,
+                  filterReset: Strings.reset,
+                  filterSearchPlaceholder: Strings.search,
+                  filterTitle: Strings.filter,
+                  selectAll: Strings.selectCurrentPage,
+                  selectInvert: Strings.invertSelection,
+                  selectionAll: Strings.selectAll,
+                  sortTitle: Strings.sort,
+                  triggerDesc: Strings.sortDesc,
+                  triggerAsc: Strings.sortAsc,
+                  cancelSort: Strings.cancelSort,
+                }}
+                scroll={Constants.TABLE_SCROLL_CONFIG}
+              />
+            </div>
+          )}
+
           {openPopoverId && (
             <div
               className="fixed shadow-lg rounded-md bg-white z-50 p-4 border"
