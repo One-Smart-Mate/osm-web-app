@@ -705,6 +705,8 @@ class StringsBase {
   static accounts: "accounts";
   static dashboard: "dashboard";
   static technicalSupport: "technicalSupport";
+  static enterEmail: "enterEmail";
+  static enterPassword: "enterPassword";
 
 }
 

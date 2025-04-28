@@ -768,6 +768,8 @@ const resources = {
       accounts: "Accounts",
       dashboard: "Dashboard",
       technicalSupport: "Technical Support",
+      enterEmail: "Enter your email",
+      enterPassword: "Enter your password",
     },
   },
   es: {
@@ -1543,6 +1545,8 @@ const resources = {
       technicalSupport: "Soporte Técnico",
       tagVersion: import.meta.env.VITE_AP_VERSION,
       redesign: import.meta.env.VITE_IS_REDESIGN,
+      enterEmail: "Introduce tu correo electrónico",
+      enterPassword: "Introduce tu contraseña",
     },
   },
 };

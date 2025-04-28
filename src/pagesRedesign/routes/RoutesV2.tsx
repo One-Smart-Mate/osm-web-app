@@ -119,7 +119,7 @@ const sitesV2 = new RouteV2(
   Constants.ROUTES_PATH.sites,
   <SitesV2 />,
   <BsBuildingAdd />,
-  buildDashboardSectionName()
+  buildCatalogsSectionName()
 );
 
 const siteUsersV2 = new RouteV2(
@@ -143,7 +143,7 @@ const positionsV2 = new RouteV2(
   Constants.ROUTES_PATH.positions,
   <PositionsPage  />,
   <BsPeople />,
-  buildDashboardSectionName()
+  buildCatalogsSectionName()
 );
 
 export const cardDetailRoute = new RouteV2(
