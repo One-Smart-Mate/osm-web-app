@@ -6,7 +6,18 @@ import {
 } from "../../services/siteService";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Form, Input, List, Space } from "antd";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  List,
+  Row,
+  Space,
+  Typography,
+} from "antd";
 import CustomButton from "../../components/CustomButtons";
 import SiteTable from "./components/SiteTable";
 import { IoIosSearch } from "react-icons/io";
@@ -30,11 +41,31 @@ import {
   setGeneratedSiteCode,
 } from "../../core/genericReducer";
 import PageTitle from "../../components/PageTitle";
-import { generateShortUUID, UserRoles } from "../../utils/Extensions";
+import {
+  generateShortUUID,
+  getStatusAndText,
+  isRedesign,
+  UserRoles,
+} from "../../utils/Extensions";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { FormInstance } from "antd/lib";
+import PageTitleTag from "../../components/PageTitleTag";
+import {
+  BsBuildingAdd,
+  BsDiagram3,
+  BsFiles,
+  BsMailbox,
+  BsPerson,
+  BsPinMap,
+  BsSearch,
+  BsTelephone,
+  BsTelephoneOutbound,
+} from "react-icons/bs";
+import Loading from "../../pagesRedesign/components/Loading";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
+import BackButton from "../../pagesRedesign/components/BackButton";
 
 interface SitesProps {
   rol: UserRoles;
@@ -56,14 +87,12 @@ const Sites = ({ rol }: SitesProps) => {
   const [getSessionUser] = useSessionStorage<User>(Strings.empty);
   const navigate = useNavigate();
   const [siteURL, setSiteURL] = useState<string>();
-  
 
   const handleGetSites = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
     }
-
 
     const companyInfo = {
       companyId: location.state.companyId,
@@ -74,7 +103,6 @@ const Sites = ({ rol }: SitesProps) => {
     };
 
     sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
-
 
     const user = getSessionUser() as User;
     setLoading(true);
@@ -155,13 +183,23 @@ const Sites = ({ rol }: SitesProps) => {
             </Space>
           </div>
           <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-            <CustomButton
-              type="success"
-              onClick={handleOnClickCreateButton}
-              className="w-full md:w-auto"
-            >
-              {Strings.create}
-            </CustomButton>
+            {isRedesign() ? (
+              <Button
+                type="primary"
+                onClick={handleOnClickCreateButton}
+                className="w-full md:w-auto"
+              >
+                {Strings.create}
+              </Button>
+            ) : (
+              <CustomButton
+                type="success"
+                onClick={handleOnClickCreateButton}
+                className="w-full md:w-auto"
+              >
+                {Strings.create}
+              </CustomButton>
+            )}
           </div>
         </div>
       );
@@ -170,7 +208,7 @@ const Sites = ({ rol }: SitesProps) => {
   };
 
   const handleOnFormCreateFinish = async (values: any) => {
-    try { 
+    try {
       setModalLoading(true);
       if (siteURL == null || siteURL == undefined || siteURL == "") {
         handleErrorNotification(Strings.requiredLogo);
@@ -222,33 +260,139 @@ const Sites = ({ rol }: SitesProps) => {
 
   return (
     <>
-      <div className="h-full flex flex-col">
-        <div className="flex flex-col gap-2 items-center m-3">
-          <PageTitle
-            mainText={`${
-              rol === UserRoles.IHSISADMIN
-                ? Strings.sitesOf
-                : Strings.yourSitesOfCompany
-            }`}
-            subText={companyName}
-          />
-          {buildSitePageActions()}
+      {isRedesign() ? (
+        <div>
+          {rol === UserRoles.IHSISADMIN && <BackButton /> }
+          <div className="h-full flex flex-col">
+            <div className="flex flex-col items-center m-3">
+              <PageTitleTag
+                mainText={`${
+                  rol === UserRoles.IHSISADMIN
+                    ? Strings.sitesOf
+                    : Strings.yourSitesOfCompany
+                }`}
+                subText={companyName}
+              />
+              {buildSitePageActions()}
+            </div>
+            <Row gutter={[8, 8]}>
+              <Loading isLoading={isLoading} />
+              {!isLoading &&
+                data.map((value, index) => (
+                  <Col
+                    key={`Col-${index}`}
+                    xs={{ flex: "100%" }}
+                    sm={{ flex: "60%" }}
+                    md={{ flex: "50%" }}
+                    lg={{ flex: "40%" }}
+                    xl={{ flex: "30%" }}
+                  >
+                    <Card
+                      hoverable
+                      className="rounded-xl shadow-md"
+                      title={
+                        <Typography.Title level={5}>
+                          {value.name}
+                        </Typography.Title>
+                      }
+                      cover={
+                        <img
+                          alt={value.name}
+                          style={{ width: "auto", height: 200 }}
+                          src={value.logo}
+                        />
+                      }
+                      actions={[]}
+                    >
+                      <AnatomySection
+                        title={Strings.name}
+                        label={value.name}
+                        icon={<BsBuildingAdd />}
+                      />
+                      <AnatomySection
+                        title={Strings.rfc}
+                        label={value.rfc}
+                        icon={<BsFiles />}
+                      />
+                      <AnatomySection
+                        title={Strings.companyAddress}
+                        label={value.address}
+                        icon={<BsPinMap />}
+                      />
+                      <AnatomySection
+                        title={Strings.contact}
+                        label={value.contact}
+                        icon={<BsPerson />}
+                      />
+                      <AnatomySection
+                        title={Strings.position}
+                        label={value.position}
+                        icon={<BsDiagram3 />}
+                      />
+                      <AnatomySection
+                        title={Strings.phone}
+                        label={value.phone}
+                        icon={<BsTelephone />}
+                      />
+                      <AnatomySection
+                        title={Strings.extension}
+                        label={value.extension}
+                        icon={<BsTelephoneOutbound />}
+                      />
+                      <AnatomySection
+                        title={Strings.email}
+                        label={value.email}
+                        icon={<BsMailbox />}
+                      />
+                      <AnatomySection
+                        title={Strings.cellular}
+                        label={value.cellular}
+                        icon={<BsTelephone />}
+                      />
+                      <AnatomySection
+                        title={Strings.status}
+                        label={
+                          <Badge
+                            status={getStatusAndText(value.status).status}
+                            text={getStatusAndText(value.status).text}
+                          />
+                        }
+                      />
+                    </Card>
+                  </Col>
+                ))}
+            </Row>
+          </div>
         </div>
-        <div className="flex-1 overflow-auto hidden lg:block">
-          <SiteTable data={data} isLoading={isLoading} rol={rol} />
+      ) : (
+        <div className="h-full flex flex-col">
+          <div className="flex flex-col gap-2 items-center m-3">
+            <PageTitle
+              mainText={`${
+                rol === UserRoles.IHSISADMIN
+                  ? Strings.sitesOf
+                  : Strings.yourSitesOfCompany
+              }`}
+              subText={companyName}
+            />
+            {buildSitePageActions()}
+          </div>
+          <div className="flex-1 overflow-auto hidden lg:block">
+            <SiteTable data={data} isLoading={isLoading} rol={rol} />
+          </div>
+          <div className="flex-1 overflow-auto lg:hidden">
+            <PaginatedList
+              dataSource={data}
+              renderItem={(item: Site, index: number) => (
+                <List.Item>
+                  <SiteCard key={index} data={item} rol={rol} />
+                </List.Item>
+              )}
+              loading={isLoading}
+            />
+          </div>
         </div>
-        <div className="flex-1 overflow-auto lg:hidden">
-          <PaginatedList
-            dataSource={data}
-            renderItem={(item: Site, index: number) => (
-              <List.Item>
-                <SiteCard key={index} data={item} rol={rol} />
-              </List.Item>
-            )}
-            loading={isLoading}
-          />
-        </div>
-      </div>
+      )}
       <Form.Provider
         onFormFinish={async (_, { values }) => {
           await handleOnFormCreateFinish(values);
@@ -257,7 +401,12 @@ const Sites = ({ rol }: SitesProps) => {
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={(form: FormInstance) => <RegisterSiteForm form={form} onSuccessUpload={(url) => setSiteURL(url)} />}
+          FormComponent={(form: FormInstance) => (
+            <RegisterSiteForm
+              form={form}
+              onSuccessUpload={(url) => setSiteURL(url)}
+            />
+          )}
           title={Strings.createSite.concat(` ${companyName}`)}
           isLoading={modalIsLoading}
         />
