@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import {  List } from "antd";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { List } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetCardsMutation } from "../../services/cardService";
@@ -9,38 +9,34 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import TagCardV2 from "./components/TagCardV2";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-
+import { useDebounce } from "use-debounce";
+import { handleErrorNotification } from "../../utils/Notifications";
 
 const TagsV2 = () => {
   const [getCards] = useGetCardsMutation();
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
   const [data, setData] = useState<CardInterface[]>([]);
-  const [dataBackup, setDataBackup] = useState<CardInterface[]>([]);
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
-  const {isIhAdmin} = useCurrentUser();
+  const { isIhAdmin } = useCurrentUser();
 
-  const handleOnSearch = (query: string) => {
-    const getSearch = query;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery] = useDebounce(searchQuery, 300);
 
-    if (getSearch.length > 0) {
-      const filterData = dataBackup.filter((item) => search(item, getSearch));
-      setData(filterData);
-    } else {
-      setData(dataBackup);
-    }
-  };
+  const handleOnSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
 
-  const search = (item: CardInterface, search: string) => {
-    const { creatorName, areaName, cardTypeMethodologyName } = item;
-
+  const search = useCallback((item: CardInterface, query: string) => {
+    const normalizedQuery = query.toLowerCase();
+  
     return (
-      creatorName.toLowerCase().includes(search.toLowerCase()) ||
-      areaName.toLowerCase().includes(search.toLowerCase()) ||
-      cardTypeMethodologyName.toLowerCase().includes(search.toLocaleLowerCase())
+      item.creatorName.toLowerCase().includes(normalizedQuery) ||
+      item.areaName.toLowerCase().includes(normalizedQuery) ||
+      item.cardTypeMethodologyName.toLowerCase().includes(normalizedQuery)
     );
-  };
+  }, []);
 
   const handleGetCards = async () => {
     if (!location.state) {
@@ -48,16 +44,26 @@ const TagsV2 = () => {
       return;
     }
     setLoading(true);
-    const response = await getCards(location.state.siteId).unwrap();
-    setData(response);
-    setDataBackup(response);
-    setLoading(false);
+    try {
+      const response = await getCards(location.state.siteId).unwrap();
+      setData(response);
+    } catch (error) {
+      handleErrorNotification(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     handleGetCards();
   }, [location.state]);
 
+  const filteredData = useMemo(() => {
+    if (debouncedQuery.length > 0) {
+      return data.filter((item) => search(item, debouncedQuery));
+    }
+    return data;
+  }, [debouncedQuery, data]);
 
   return (
     <MainContainer
@@ -69,7 +75,7 @@ const TagsV2 = () => {
       onSearchChange={handleOnSearch}
       content={
         <PaginatedList
-          dataSource={data}
+          dataSource={filteredData}
           renderItem={(item: CardInterface, index: number) => (
             <List.Item key={index}>
               <TagCardV2 data={item} />

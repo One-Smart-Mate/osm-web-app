@@ -31,8 +31,6 @@ const rangePresets: TimeRangePickerProps["presets"] = [
   { label: Strings.last90days, value: [dayjs().add(-90, "d"), dayjs()] },
 ];
 
-
-
 const ChartsV2 = () => {
   const location = useLocation();
   const [getMethodologiesCatalog] = useGetCardTypesCatalogsMutation();
@@ -54,7 +52,7 @@ const ChartsV2 = () => {
   const siteId = location?.state?.siteId || Strings.empty;
 
 
-  const handleGetMethodologiesCatalog = async () => {
+  const handleGetMethodologiesCatalog = async (): Promise<void> => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
@@ -76,22 +74,21 @@ const ChartsV2 = () => {
   };
 
   useEffect(() => {
-    handleGetMethodologiesCatalog();
-  }, [location.state]);
+    if (location.state?.siteId) {
+      handleGetMethodologiesCatalog();
+    }
+  }, [location.state?.siteId, startDate, endDate]);
 
-  useEffect(() => {
-    handleGetMethodologiesCatalog();
-  }, [startDate, endDate]);
-
- 
 
   const onRangeChange = (
     dates: null | (Dayjs | null)[],
     dateStrings: string[]
   ) => {
     if (dates) {
-      setStartDate(dateStrings[0]);
-      setEndDate(dateStrings[1]);
+      if (dateStrings[0] !== startDate || dateStrings[1] !== endDate) {
+        setStartDate(dateStrings[0]);
+        setEndDate(dateStrings[1]);
+      }
     } else {
       setStartDate(Strings.empty);
       setEndDate(Strings.empty);

@@ -36,7 +36,7 @@ const PdfContent = () => {
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
   const [isLoading, setLoading] = useState(false);
 
-  const storedCompanyInfo = JSON.parse(sessionStorage.getItem("companyInfo") || "{}");
+  const storedCompanyInfo = JSON.parse(sessionStorage.getItem(Constants.SESSION_KEYS.companyInfo) || "{}");
  
 
   useEffect(() => {

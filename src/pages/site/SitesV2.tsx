@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useGetCompanySitesMutation,
   useGetUserSitesMutation,
 } from "../../services/siteService";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Badge,
-  Button,
-  Card,
-  List,
-  Modal,
-  Space,
-  Typography,
-} from "antd";
+import { Badge, Button, Card, List, Modal, Space, Typography } from "antd";
 import { Site } from "../../data/site/site";
 import Constants from "../../utils/Constants";
 import { useAppDispatch, useAppSelector } from "../../core/store";
@@ -21,7 +13,7 @@ import {
   resetSiteUpdatedIndicator,
   selectSiteUpdatedIndicator,
 } from "../../core/genericReducer";
-import {  getStatusAndText } from "../../utils/Extensions";
+import { getStatusAndText } from "../../utils/Extensions";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -48,7 +40,6 @@ const SitesV2 = () => {
   const location = useLocation();
   const [data, setData] = useState<Site[]>([]);
   const [isLoading, setLoading] = useState(false);
-  const [dataBackup, setDataBackup] = useState<Site[]>([]);
   const dispatch = useAppDispatch();
   const isSiteUpdated = useAppSelector(selectSiteUpdatedIndicator);
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
@@ -58,8 +49,9 @@ const SitesV2 = () => {
   const { isIhAdmin } = useCurrentUser();
   const companyName = location?.state?.companyName || Strings.empty;
   const navigateProps = navigateWithProps();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleGetSites = async () => {
+  const handleGetSites = async (): Promise<void> => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
@@ -73,50 +65,50 @@ const SitesV2 = () => {
       companyLogo: location.state.companyLogo,
     };
     console.log(`[COMPANY] ${JSON.stringify(companyInfo)}`);
-    sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
+    sessionStorage.setItem(
+      Constants.SESSION_KEYS.companyInfo,
+      JSON.stringify(companyInfo)
+    );
 
     const user = getSessionUser() as User;
     setLoading(true);
-    var response;
-    if (isIhAdmin()) {
-      response = await getSites(location.state.companyId).unwrap();
-    } else {
-      response = await getUserSites(user.userId).unwrap();
-    }
+    const response = isIhAdmin()
+      ? await getSites(location.state.companyId).unwrap()
+      : await getUserSites(user.userId).unwrap();
     setData(response);
-    setDataBackup(response);
     setLoading(false);
   };
 
   useEffect(() => {
     handleGetSites();
-  }, []);
+  }, [isSiteUpdated]);
 
   useEffect(() => {
     if (isSiteUpdated) {
-      handleGetSites();
       dispatch(resetSiteUpdatedIndicator());
     }
   }, [isSiteUpdated, dispatch]);
 
-  const handleOnSearch = (query: string) => {
-    const getSearch = query;
-
-    if (getSearch.length > 0) {
-      const filterData = dataBackup.filter((item) => search(item, getSearch));
-
-      setData(filterData);
-    } else {
-      setData(dataBackup);
-    }
-  };
-
-  const search = (item: Site, search: string) => {
-    const { name, email } = item;
+  const search = useCallback((item: Site, query: string): boolean => {
+    const normalizedQuery = query.toLowerCase();
+    const { name, address, contact } = item;
+  
     return (
-      email.toLowerCase().includes(search.toLowerCase()) ||
-      name.toLowerCase().includes(search.toLowerCase())
+      name.toLowerCase().includes(normalizedQuery) ||
+      address.toLowerCase().includes(normalizedQuery) ||
+      contact.toLowerCase().includes(normalizedQuery)
     );
+  }, []);
+
+  const filteredData = useMemo(() => {
+    if (searchQuery.length > 0) {
+      return data.filter((item) => search(item, searchQuery));
+    }
+    return data;
+  }, [searchQuery, data]);
+
+  const handleOnSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   return (
@@ -130,103 +122,112 @@ const SitesV2 = () => {
         enableBackButton={isIhAdmin()}
         enableCreateButton={isIhAdmin()}
         createButtonComponent={
-          <SiteForm onComplete={() => handleGetSites()} companyName={companyName} formType={SiteFormType.CREATE} />
+          <SiteForm
+            onComplete={() => handleGetSites()}
+            companyName={companyName}
+            formType={SiteFormType.CREATE}
+          />
         }
         content={
           <div>
-             <PaginatedList
-                dataSource={data}
-                renderItem={(value: Site, index: number) => (
-                  <List.Item key={index}>
-                    <Card
-                        hoverable
-                        className="rounded-xl shadow-md"
-                        title={
-                          <Typography.Title level={5}>
-                            {value.name}
-                          </Typography.Title>
-                        }
-                        cover={
-                          <img
-                            alt={value.name}
-                            style={{ width: "auto", height: 200 }}
-                            src={value.logo}
-                          />
-                        }
-                        actions={[
-                          <SiteForm data={value} onComplete={() => handleGetSites()} companyName={companyName} formType={SiteFormType.UPDATE} />,
-                          isIhAdmin() && (
-                            <Button
-                            type="primary"
-                              onClick={() => {
-                                setSelectedSite(value);
-                                setModalActions(true);
-                              }}
-                            >
-                              {Strings.actions}
-                            </Button>
-                          ),
-                        ]}
-                      >
-                        <AnatomySection
-                          title={Strings.name}
-                          label={value.name}
-                          icon={<BsBuildingAdd />}
+            <PaginatedList
+              dataSource={filteredData}
+              renderItem={(value: Site, index: number) => (
+                <List.Item key={index}>
+                  <Card
+                    hoverable
+                    className="rounded-xl shadow-md"
+                    title={
+                      <Typography.Title level={5}>
+                        {value.name}
+                      </Typography.Title>
+                    }
+                    cover={
+                      <img
+                        alt={value.name}
+                        style={{ width: "auto", height: 200 }}
+                        src={value.logo}
+                      />
+                    }
+                    actions={[
+                      <SiteForm
+                        data={value}
+                        onComplete={() => handleGetSites()}
+                        companyName={companyName}
+                        formType={SiteFormType.UPDATE}
+                      />,
+                      isIhAdmin() && (
+                        <Button
+                          type="primary"
+                          onClick={() => {
+                            setSelectedSite(value);
+                            setModalActions(true);
+                          }}
+                        >
+                          {Strings.actions}
+                        </Button>
+                      ),
+                    ]}
+                  >
+                    <AnatomySection
+                      title={Strings.name}
+                      label={value.name}
+                      icon={<BsBuildingAdd />}
+                    />
+                    <AnatomySection
+                      title={Strings.rfc}
+                      label={value.rfc}
+                      icon={<BsFiles />}
+                    />
+                    <AnatomySection
+                      title={Strings.companyAddress}
+                      label={value.address}
+                      icon={<BsPinMap />}
+                    />
+                    <AnatomySection
+                      title={Strings.contact}
+                      label={value.contact}
+                      icon={<BsPerson />}
+                    />
+                    <AnatomySection
+                      title={Strings.position}
+                      label={value.position}
+                      icon={<BsDiagram3 />}
+                    />
+                    <AnatomySection
+                      title={Strings.phone}
+                      label={value.phone}
+                      icon={<BsTelephone />}
+                    />
+                    <AnatomySection
+                      title={Strings.extension}
+                      label={value.extension}
+                      icon={<BsTelephoneOutbound />}
+                    />
+                    <AnatomySection
+                      title={Strings.email}
+                      label={value.email}
+                      icon={<BsMailbox />}
+                    />
+                    <AnatomySection
+                      title={Strings.cellular}
+                      label={value.cellular}
+                      icon={<BsTelephone />}
+                    />
+                    <AnatomySection
+                      title={Strings.status}
+                      label={
+                        <Badge
+                          status={getStatusAndText(value.status).status}
+                          text={getStatusAndText(value.status).text}
                         />
-                        <AnatomySection
-                          title={Strings.rfc}
-                          label={value.rfc}
-                          icon={<BsFiles />}
-                        />
-                        <AnatomySection
-                          title={Strings.companyAddress}
-                          label={value.address}
-                          icon={<BsPinMap />}
-                        />
-                        <AnatomySection
-                          title={Strings.contact}
-                          label={value.contact}
-                          icon={<BsPerson />}
-                        />
-                        <AnatomySection
-                          title={Strings.position}
-                          label={value.position}
-                          icon={<BsDiagram3 />}
-                        />
-                        <AnatomySection
-                          title={Strings.phone}
-                          label={value.phone}
-                          icon={<BsTelephone />}
-                        />
-                        <AnatomySection
-                          title={Strings.extension}
-                          label={value.extension}
-                          icon={<BsTelephoneOutbound />}
-                        />
-                        <AnatomySection
-                          title={Strings.email}
-                          label={value.email}
-                          icon={<BsMailbox />}
-                        />
-                        <AnatomySection
-                          title={Strings.cellular}
-                          label={value.cellular}
-                          icon={<BsTelephone />}
-                        />
-                        <AnatomySection
-                          title={Strings.status}
-                          label={
-                            <Badge
-                              status={getStatusAndText(value.status).status}
-                              text={getStatusAndText(value.status).text}
-                            />
-                          }
-                        />
-                      </Card>
-                  </List.Item>
-                )}
-                loading={isLoading}
-              />
+                      }
+                    />
+                  </Card>
+                </List.Item>
+              )}
+              loading={isLoading}
+            />
 
             <Modal
               title={Strings.actions}
@@ -236,7 +237,7 @@ const SitesV2 = () => {
             >
               <Space wrap>
                 <Button
-                type="default"
+                  type="default"
                   onClick={() => {
                     navigateProps({
                       path: Constants.ROUTES_PATH.charts,

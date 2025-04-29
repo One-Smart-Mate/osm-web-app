@@ -73,7 +73,7 @@ const Sites = ({ rol }: SitesProps) => {
       companyLogo: location.state.companyLogo,
     };
 
-    sessionStorage.setItem("companyInfo", JSON.stringify(companyInfo));
+    sessionStorage.setItem(Constants.SESSION_KEYS.companyInfo, JSON.stringify(companyInfo));
 
 
     const user = getSessionUser() as User;

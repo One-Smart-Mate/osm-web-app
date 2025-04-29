@@ -85,7 +85,8 @@ const ROUTES_PARAMS = {
 }
 
 const SESSION_KEYS = {
-  user:'user_key'
+  user:'user_key',
+  companyInfo: 'company_info_key'
 }
 export default {
   PAGE_SIZE,
