@@ -197,7 +197,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
               bottom: 10,
             }}
           >
-            1.1.28-dev
+            1.1.29-dev
           </div>
         )}
       </div>

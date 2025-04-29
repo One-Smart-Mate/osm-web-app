@@ -13,17 +13,12 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import {
-  commonRoutes,
-  ihSisAdminRoutesV2,
-  localAdminRoutesV2,
-  sisAdminRoutesV2,
-} from "./pagesRedesign/routes/RoutesV2";
 import Constants from "./utils/Constants";
 import { isRedesign } from "./utils/Extensions";
 import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import React, { useEffect } from "react";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import { routesV2 } from "./pagesRedesign/routes/RoutesV2";
 const BaseLayoutRedesign = React.lazy(() => import("./pagesRedesign/layout/BaseLayoutRedesign"));
 function App() {
   useEffect(() => {
@@ -135,17 +130,7 @@ function App() {
               path={Constants.ROUTES_PATH.dashboard}
               element={<BaseLayoutRedesign />}
             >
-              {commonRoutes.map((value, index) => (
-                <Route key={index} path={value.path} element={value.element} />
-              ))}
-              {localAdminRoutesV2.map((value, index) => (
-                <Route key={index} path={value.path} element={value.element} />
-              ))}
-              {sisAdminRoutesV2.map((value, index) => (
-                <Route key={index} path={value.path} element={value.element} />
-              ))}
-
-              {ihSisAdminRoutesV2.map((value, index) => (
+              {routesV2.map((value, index) => (
                 <Route key={index} path={value.path} element={value.element} />
               ))}
             </Route>
