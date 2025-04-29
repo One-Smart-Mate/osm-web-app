@@ -24,6 +24,7 @@ import Constants from "./utils/Constants";
 import { isRedesign } from "./utils/Extensions";
 import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import { useEffect } from "react";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   useEffect(() => {
@@ -130,7 +131,7 @@ function App() {
             </Route>
           </Route>
 
-          <Route element={<PrivateRoutes />}>
+          <Route element={<ProtectedRoutes />}>
             <Route
               path={Constants.ROUTES_PATH.dashboard}
               element={<BaseLayoutRedesign />}

@@ -132,7 +132,7 @@ const siteUsersV2 = new RouteV2(
 
 const technicalSupportRoute = new RouteV2(
   Strings.technicalSupport,
-  "technicalSupport",
+  Constants.ROUTES_PATH.technicalSupport,
   <TechnicalSupport />,
   <BsLifePreserver />,
   buildSupportSectionName()

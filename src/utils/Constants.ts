@@ -76,6 +76,7 @@ const ROUTES_PATH = {
   companies: 'companies',
   cardDetail: 'card-detail',
   positions:'positions',
+  technicalSupport: 'technicalSupport'
 }
 
 const ROUTES_PARAMS = {
