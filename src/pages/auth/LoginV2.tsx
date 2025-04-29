@@ -29,13 +29,14 @@ import {
 } from "../../pagesRedesign/routes/RoutesExtensions";
 import { BsFileLock, BsPersonLock } from "react-icons/bs";
 import LanguageDropdown from "../layouts/LanguageDropdown";
+import Constants from "../../utils/Constants";
 
 const LoginPage = () => {
   const [isPasswordVisible, setPasswordVisible] = React.useState(false);
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useAppDispatch();
   const [getSessionUser, setSessionUser] = useSessionStorage<User>(
-    Strings.empty
+    Constants.SESSION_KEYS.user
   );
   const navigate = useNavigate();
   const navigatewithState = navigateWithState();

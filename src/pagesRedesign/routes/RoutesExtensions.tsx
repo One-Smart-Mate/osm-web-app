@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { MenuProps } from "antd";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
-import Strings from "../../utils/localizations/Strings";
 import { ItemType } from "antd/es/menu/interface";
 import { getUserRol, UserRoles } from "../../utils/Extensions";
 import { cardDetailRoute, localAdminRoutesSiderOptionsV2, localIHSisAdminRoutesSiderOptionsV2, localSisAdminRoutesSiderOptionsV2 } from "./RoutesV2";
@@ -10,7 +9,7 @@ import Constants from "../../utils/Constants";
 
 export function navigateWithState() {
   
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const navigate = useNavigate();
   const user = getSessionUser();
   const defaultSite = user?.sites[0];

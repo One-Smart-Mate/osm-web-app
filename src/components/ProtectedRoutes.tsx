@@ -4,11 +4,11 @@ import useRouteValidation from "../utils/hooks/useRouteValidation";
 import { useAppDispatch } from "../core/store";
 import { useSessionStorage } from "../core/useSessionStorage";
 import User from "../data/user/user";
-import Strings from "../utils/localizations/Strings";
 import { setCredentials } from "../core/authReducer";
+import Constants from "../utils/Constants";
 
 const ProtectedRoutes: React.FC = () => {
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const canAccess = useRouteValidation();
   const location = useLocation();
 

@@ -53,7 +53,7 @@ const Sites = ({ rol }: SitesProps) => {
   const [modalIsLoading, setModalLoading] = useState(false);
   const dispatch = useAppDispatch();
   const isSiteUpdated = useAppSelector(selectSiteUpdatedIndicator);
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const navigate = useNavigate();
   const [siteURL, setSiteURL] = useState<string>();
   

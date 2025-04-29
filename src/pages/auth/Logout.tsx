@@ -14,7 +14,7 @@ import {
 
 const Logout = () => {
   const navigate = useNavigate();
-  const [getSessionUser, _, removeSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser, _, removeSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const dispatch = useAppDispatch();
   const [modal, contextHolder] = Modal.useModal();
   const [logout] = useLogoutMutation();

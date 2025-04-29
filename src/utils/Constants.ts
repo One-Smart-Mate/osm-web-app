@@ -84,6 +84,9 @@ const ROUTES_PARAMS = {
   cardId: ':cardId'
 }
 
+const SESSION_KEYS = {
+  user:'user_key'
+}
 export default {
   PAGE_SIZE,
   DATE_FORMAT,
@@ -127,5 +130,6 @@ export default {
   es,
   en,
   ROUTES_PATH,
-  ROUTES_PARAMS
+  ROUTES_PARAMS,
+  SESSION_KEYS
 };

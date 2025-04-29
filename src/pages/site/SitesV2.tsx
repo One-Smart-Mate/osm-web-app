@@ -51,7 +51,7 @@ const SitesV2 = () => {
   const [dataBackup, setDataBackup] = useState<Site[]>([]);
   const dispatch = useAppDispatch();
   const isSiteUpdated = useAppSelector(selectSiteUpdatedIndicator);
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const navigate = useNavigate();
   const [modalActions, setModalActions] = useState(false);
   const [selectedSite, setSelectedSite] = useState<Site | null>(null);

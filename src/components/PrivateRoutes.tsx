@@ -4,10 +4,10 @@ import User from "../data/user/user";
 import { useAppDispatch } from "../core/store";
 import { useEffect } from "react";
 import { setCredentials } from "../core/authReducer";
-import Strings from "../utils/localizations/Strings";
+import Constants from "../utils/Constants";
 
 const PrivateRoutes = () => {
-  const [getSessionUser] = useSessionStorage<User>(Strings.empty);
+  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const location = useLocation();
   const dispatch = useAppDispatch();
 
