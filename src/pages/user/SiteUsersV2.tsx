@@ -41,6 +41,7 @@ import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../../components/PaginatedList";
+import { FormInstance } from "antd/lib";
 
 const SiteUsersV2 = () => {
   const [getUsers] = useGetSiteUsersMutation();
@@ -119,11 +120,11 @@ const SiteUsersV2 = () => {
     setModalType(modalType);
   };
 
-  const selectFormByModalType = (modalType: string) => {
+  const selectFormByModalType = (modalType: string, form: FormInstance): React.ReactElement => {
     if (modalType === Strings.users) {
-      return RegisterSiteUserForm;
+      return <RegisterSiteUserForm form={form} />;
     } else {
-      return ImportUsersForm;
+      return <ImportUsersForm form={form} />;
     }
   };
 
@@ -298,7 +299,7 @@ const SiteUsersV2 = () => {
             <ModalForm
               open={modalIsOpen}
               onCancel={handleOnCancelButton}
-              FormComponent={selectFormByModalType(modalType)}
+              FormComponent={(form: FormInstance) => selectFormByModalType(modalType, form)}
               title={selecTitleByModalType(modalType)}
               isLoading={modalIsLoading}
             />

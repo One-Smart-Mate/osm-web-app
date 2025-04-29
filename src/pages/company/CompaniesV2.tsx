@@ -1,42 +1,30 @@
 import { useEffect, useState } from "react";
 import {
-  useCreateCompanyMutation,
   useGetCompaniesMutation,
 } from "../../services/companyService";
 import {
   Badge,
-  Button,
   Card,
   Col,
-  Form,
   Input,
   Row,
   Space,
   Typography,
 } from "antd";
 import { Company } from "../../data/company/company";
-import RegisterCompanyForm from "./components/RegisterCompanyForm";
-import ModalForm from "../../components/ModalForm";
-import { CreateCompany } from "../../data/company/company.request";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../utils/Notifications";
 import Strings from "../../utils/localizations/Strings";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
   resetCompanyUpdatedIndicator,
   selectCompanyUpdatedIndicator,
 } from "../../core/genericReducer";
-import { FormInstance } from "antd/lib";
 import { getStatusAndText } from "../../utils/Extensions";
 import PageTitleTag from "../../components/PageTitleTag";
-import { BsBuildingAdd, BsDiagram3, BsFiles, BsMailbox, BsPerson, BsPinMap, BsSearch, BsTelephone, BsTelephoneOutbound } from "react-icons/bs";
+import { BsBuildingAdd, BsDiagram3, BsFiles, BsMailbox, BsPerson, BsPhone, BsPinMap, BsSearch, BsTelephone, BsTelephoneOutbound } from "react-icons/bs";
 import Loading from "../../pagesRedesign/components/Loading";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import ViewSitesButton from "./components/ViewSitesButton";
-import UpdateCompany from "./components/UpdateCompany";
+import CompanyForm, { CompanyFormType } from "./components/CompanyForm";
 
 const CompaniesV2 = () => {
   const [getCompanies] = useGetCompaniesMutation();
@@ -44,12 +32,8 @@ const CompaniesV2 = () => {
   const [isLoading, setLoading] = useState(false);
   const [querySearch, setQuerySearch] = useState(Strings.empty);
   const [dataBackup, setDataBackup] = useState<Company[]>([]);
-  const [modalIsOpen, setModalOpen] = useState(false);
-  const [registerCompany] = useCreateCompanyMutation();
-  const [modalIsLoading, setModalLoading] = useState(false);
   const dispatch = useAppDispatch();
   const isCompanyUpdated = useAppSelector(selectCompanyUpdatedIndicator);
-  const [companyURL, setCompanyURL] = useState<string>();
 
   useEffect(() => {
     if (isCompanyUpdated) {
@@ -92,50 +76,6 @@ const CompaniesV2 = () => {
     );
   };
 
-  const handleOnClickCreateButton = () => {
-    setModalOpen(true);
-  };
-
-  const handleOnCancelButton = () => {
-    if (!modalIsLoading) {
-      setModalOpen(false);
-    }
-  };
-
-  const handleOnFormCreateFinish = async (values: any) => {
-    try {
-      setModalLoading(true);
-      if (companyURL == null || companyURL == undefined || companyURL == "") {
-        handleErrorNotification(Strings.requiredLogo);
-        setModalLoading(false);
-        return;
-      }
-      await registerCompany(
-        new CreateCompany(
-          values.name,
-          values.rfc,
-          values.address,
-          values.contact,
-          values.position,
-          values.phone.toString(),
-          values.extension?.toString(),
-          values.cellular?.toString(),
-          values.email,
-          companyURL
-        )
-      ).unwrap();
-      setModalOpen(false);
-      handleGetCompanies();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
-      setCompanyURL("");
-    } catch (error) {
-      console.error("Error creating company:", error);
-      handleErrorNotification(error);
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
   return (
     <div className="h-full flex flex-col">
     <div className="flex flex-col items-center m-3">
@@ -153,13 +93,7 @@ const CompaniesV2 = () => {
           </Space>
         </div>
         <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-          <Button
-            onClick={handleOnClickCreateButton}
-            className="w-full md:w-auto"
-            type="primary"
-          >
-            {Strings.create}
-          </Button>
+          <CompanyForm onComplete={() => handleGetCompanies()} formType={CompanyFormType.CREATE} />
         </div>
       </div>
     </div>
@@ -191,7 +125,7 @@ const CompaniesV2 = () => {
                   companyLogo={value.logo}
                 />,
 
-                <UpdateCompany data={value} />,
+                <CompanyForm onComplete={() => handleGetCompanies()} formType={CompanyFormType.UPDATE} data={value} />
               ]}
             >
               <AnatomySection title={Strings.name} label={value.name} icon={<BsBuildingAdd />} />
@@ -217,7 +151,7 @@ const CompaniesV2 = () => {
               <AnatomySection
                 title={Strings.cellular}
                 label={value.cellular}
-                icon={<BsTelephone />}
+                icon={<BsPhone />}
               />
               <AnatomySection
                 title={Strings.status}
@@ -232,24 +166,7 @@ const CompaniesV2 = () => {
           </Col>
         ))}
     </Row>
-    <Form.Provider
-      onFormFinish={async (_, { values }) => {
-        await handleOnFormCreateFinish(values);
-      }}
-    >
-      <ModalForm
-        open={modalIsOpen}
-        onCancel={handleOnCancelButton}
-        title={Strings.createCompany}
-        isLoading={modalIsLoading}
-        FormComponent={(form: FormInstance) => (
-          <RegisterCompanyForm
-            form={form}
-            onSuccessUpload={(url: string) => setCompanyURL(url)}
-          />
-        )}
-      />
-    </Form.Provider>
+
   </div>  
   );
 };
