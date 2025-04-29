@@ -15,8 +15,6 @@ import {
   CreateCompany,
   UpdateCompanyRequest,
 } from "../../../data/company/company.request";
-import { useAppDispatch } from "../../../core/store";
-import { resetRowData, setRowData } from "../../../core/genericReducer";
 import ModalForm from "../../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import CompanyFormCard from "./CompanyFormCard";
@@ -35,20 +33,16 @@ export enum CompanyFormType {
 const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
   const [registerCompany] = useCreateCompanyMutation();
   const [updateCompany] = useUpdateCompanyMutation();
-
-  const dispatch = useAppDispatch();
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [logo, setLogo] = useState<string>();
 
   const handleOnClickButton = () => {
-    dispatch(setRowData(data));
     setModalOpen(true);
   };
 
   const handleOnCancelButton = () => {
     if (!isLoading) {
-      dispatch(resetRowData());
       setModalOpen(false);
     }
   };

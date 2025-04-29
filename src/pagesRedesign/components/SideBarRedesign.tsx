@@ -194,7 +194,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
               bottom: 10,
             }}
           >
-            {Strings.tagVersion}
+            1.1.26-dev
           </div>
         )}
       </div>

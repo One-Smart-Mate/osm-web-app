@@ -17,11 +17,12 @@ interface MainContainerProps {
   enableCreateButton?: boolean;
   isLoading?: boolean;
   enableBackButton?: boolean;
+  createButtonComponent?: React.ReactElement,
   onCreateButtonClick?: () => void;
   onSearchChange?: (value: string) => void;
 }
 
-const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading }) => {
+const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading, createButtonComponent }) => {
     return (
     <div>
         {enableBackButton && <BackButton />}
@@ -51,13 +52,13 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
             </div>
             {enableCreateButton && <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
               {isRedesign() ? (
-                <Button
-                  onClick={onCreateButtonClick}
-                  className="w-full md:w-auto"
-                  type="primary"
-                >
-                  {Strings.create}
-                </Button>
+                createButtonComponent ?? <Button
+                onClick={onCreateButtonClick}
+                className="w-full md:w-auto"
+                type="primary"
+              >
+                {Strings.create}
+              </Button>
               ) : (
                 <CustomButton
                   type="success"
