@@ -701,13 +701,13 @@ class StringsBase {
   static databaseConnectionTest = "databaseConnectionTest";
   static verificationOfServices = "verificationOfServices";
   
-  static catalogs: "catalogs";
-  static accounts: "accounts";
-  static dashboard: "dashboard";
-  static technicalSupport: "technicalSupport";
-  static enterEmail: "enterEmail";
-  static enterPassword: "enterPassword";
-  static permissionsError: "permissionsError";
+  static catalogs= "catalogs";
+  static accounts= "accounts";
+  static dashboard= "dashboard";
+  static technicalSupport= "technicalSupport";
+  static enterEmail= "enterEmail";
+  static enterPassword= "enterPassword";
+  static permissionsError= "permissionsError";
 
 }
 

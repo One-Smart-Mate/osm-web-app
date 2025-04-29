@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import { Role } from "../../../data/user/user";
 import { useGetRolesMutation } from "../../../services/roleService";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import Constants from "../../../utils/Constants";
+import { useAppSelector } from "../../../core/store";
+import { selectCurrentUser } from "../../../core/authReducer";
 
 interface FormProps {
   form: FormInstance;
@@ -17,11 +20,22 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const handleGetData = async () => {
     const rolesResponse = await getRoles().unwrap();
     // Filter out the "IH_sis_admin" role from available options
-    const filteredRoles = rolesResponse.filter(role => role.name !== "IH_sis_admin");
+
+    const hasAdminRole = currentUser?.roles?.some((role: string | Role) =>
+      typeof role === "string"
+        ? role === Constants.ihSisAdmin
+        : role.name === Constants.ihSisAdmin
+    );
+
+    const filteredRoles = hasAdminRole
+      ? rolesResponse
+      : rolesResponse.filter((role) => role.name !== Constants.ihSisAdmin);
+
     setRoles(filteredRoles);
   };
 
@@ -111,9 +125,7 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    new Error(Strings.passwordsDoNotMatch)
-                  );
+                  return Promise.reject(new Error(Strings.passwordsDoNotMatch));
                 },
               }),
             ]}
@@ -137,7 +149,9 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
             className="flex-1"
           >
             <Checkbox value={1}>{Strings.enable}</Checkbox>
-            <Tooltip title={`${Strings.userUploadCardDataWithDataNetTooltip} ${Strings.userUploadCardEvidenceWithDataNetTooltip}`}>
+            <Tooltip
+              title={`${Strings.userUploadCardDataWithDataNetTooltip} ${Strings.userUploadCardEvidenceWithDataNetTooltip}`}
+            >
               <QuestionCircleOutlined className="ml-2 mb-6 text-sm text-blue-500" />
             </Tooltip>
           </Form.Item>
