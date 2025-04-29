@@ -11,25 +11,27 @@ import {
 } from "react-icons/bs";
 import { RouteV2 } from "./models/RouteV2";
 import { UserRoles } from "../../utils/Extensions";
-import TechnicalSupport from "../components/TechnicalSupport";
 import { ItemType } from "antd/es/menu/interface";
 import { MenuProps } from "antd";
 import { getItemV2 } from "./RoutesExtensions";
 import Strings from "../../utils/localizations/Strings";
-import CardDetails from "../../pages/carddetails/CardDetails";
 import Constants from "../../utils/Constants";
-import CardTypesTree from "../../pages/cardtypes/CardTypes";
-import SiteUsersV2 from "../../pages/user/SiteUsersV2";
-import LevelsV2 from "../../pages/level/LevelsV2";
-import CompaniesV2 from "../../pages/company/CompaniesV2";
 import i18next from "i18next";
-import SystemHealth from "../../pages/systemhealth/SystemHealth";
 import { MdHealthAndSafety } from "react-icons/md";
-import SitesV2 from "../../pages/site/SitesV2";
-import ChartsV2 from "../../pages/charts/ChartsV2";
-import TagsV2 from "../../pages/card/TagsV2";
-import PositionsPage from "../../pages/positions/PositionsPage";
-import PrioritiesV2 from "../../pages/priority/PrioritiesV2";
+import React from "react";
+
+const CardTypesTree = React.lazy(() => import("../../pages/cardtypes/CardTypes"));
+const CompaniesV2 = React.lazy(() => import("../../pages/company/CompaniesV2"));
+const CardDetails = React.lazy(() => import("../../pages/carddetails/CardDetails"));
+const SiteUsersV2 = React.lazy(() => import("../../pages/user/SiteUsersV2"));
+const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
+const SystemHealth = React.lazy(() => import("../../pages/systemhealth/SystemHealth"));
+const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
+const ChartsV2 = React.lazy(() => import("../../pages/charts/ChartsV2"));
+const PositionsPage = React.lazy(() => import("../../pages/positions/PositionsPage"));
+const PrioritiesV2 = React.lazy(() => import("../../pages/priority/PrioritiesV2"));
+const TechnicalSupport = React.lazy(() => import("../components/TechnicalSupport"));
+const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
 
 const buildDashboardSectionName = (): string => {
   const currentLang = i18next.language.split("-")[0].toUpperCase();

@@ -13,7 +13,6 @@ import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
 import PublicCardDetails from "./pages/carddetails/PublicCardDetails";
-import BaseLayoutRedesign from "./pagesRedesign/layout/BaseLayoutRedesign";
 import {
   commonRoutes,
   ihSisAdminRoutesV2,
@@ -23,9 +22,9 @@ import {
 import Constants from "./utils/Constants";
 import { isRedesign } from "./utils/Extensions";
 import { listenForBackgroundMessages } from "./config/firebaseMessaging";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-
+const BaseLayoutRedesign = React.lazy(() => import("./pagesRedesign/layout/BaseLayoutRedesign"));
 function App() {
   useEffect(() => {
     listenForBackgroundMessages();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
@@ -34,10 +34,13 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
     }
   }, []);
 
-  const handleClick = (item: any) => {
-    setSelectedKey(item.key);
-    navigate(buildRoute(item.key));
-  };
+  const handleClick = useCallback(
+    (item: any) => {
+      setSelectedKey(item.key);
+      navigate(buildRoute(item.key));
+    },
+    [navigate]
+  );
 
   const setDefaultRoute = () => {
     const defaultKey = location.pathname.split("/").filter(Boolean).pop() || "";
@@ -45,10 +48,10 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
   };
 
   // Get just the sections
-  const getSections = () => {
-    const sections = new Set(menuItems.map((item) => item.section));
-    return Array.from(sections);
-  };
+  const sections = useMemo(() => {
+    const uniqueSections = new Set(menuItems.map((item) => item.section));
+    return Array.from(uniqueSections);
+  }, [menuItems]);
 
   return (
     <>
@@ -113,7 +116,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
         </div>
 
         <div style={{ marginTop: 20 }}>
-          {getSections().map((section, sectionIndex) => (
+          {sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {!collapsed && (
                 <div
@@ -194,7 +197,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
               bottom: 10,
             }}
           >
-            1.1.27-dev
+            1.1.28-dev
           </div>
         )}
       </div>
