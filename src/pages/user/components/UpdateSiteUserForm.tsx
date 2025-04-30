@@ -9,6 +9,8 @@ import { useGetRolesMutation } from "../../../services/roleService";
 import { useAppSelector } from "../../../core/store";
 import { selectCurrentRowData } from "../../../core/genericReducer";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { selectCurrentUser } from "../../../core/authReducer";
+import Constants from "../../../utils/Constants";
 
 interface FormProps {
   form: FormInstance;
@@ -27,29 +29,38 @@ const UpdateSiteUserForm = ({ form }: FormProps) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [adminRoleId, setAdminRoleId] = useState<string | null>(null);
+  const [adminRoleId] = useState<string | null>(null);
   const [userHasAdminRole, setUserHasAdminRole] = useState(false);
   const rowData = useAppSelector(
     selectCurrentRowData
   ) as unknown as UserUpdateForm;
 
+  const currentUser = useAppSelector(selectCurrentUser);
+
   const handleGetData = async () => {
     const [rolesResponse] = await Promise.all([getRoles().unwrap()]);
     
     // Find the admin role ID
-    const adminRole = rolesResponse.find(role => role.name === "IH_sis_admin");
-    if (adminRole) {
-      setAdminRoleId(adminRole.id);
-    }
+    const adminRole = rolesResponse.find(
+      (role) => role.name === Constants.ihSisAdmin
+    );
     
     // Check if user has the admin role
     const hasAdminRole = adminRole && rowData?.roles?.includes(adminRole.id);
     setUserHasAdminRole(!!hasAdminRole);
     
+    const currentUserHasAdminRole = currentUser?.roles?.some(
+      (role: string | Role) =>
+        typeof role === "string"
+          ? role === Constants.ihSisAdmin
+          : role.name === Constants.ihSisAdmin
+    );
+
     // If user has admin role, include it in the roles list, otherwise filter it out
-    const filteredRoles = hasAdminRole 
-      ? rolesResponse 
-      : rolesResponse.filter(role => role.name !== "IH_sis_admin");
+    const filteredRoles =
+      hasAdminRole || currentUserHasAdminRole
+        ? rolesResponse
+        : rolesResponse.filter((role) => role.name !== Constants.ihSisAdmin);
     
     setRoles(filteredRoles);
   };
