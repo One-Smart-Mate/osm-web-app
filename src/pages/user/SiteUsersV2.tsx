@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -12,8 +12,7 @@ import {
 import Strings from "../../utils/localizations/Strings";
 import {
   useCreateUserMutation,
-  useGetSiteUsersMutation,
-  useGetUserPositionsMutation,
+  useGetUsersWithPositionsMutation,
   useImportUsersMutation,
 } from "../../services/userService";
 import { Role, UserCardInfo } from "../../data/user/user";
@@ -44,11 +43,10 @@ import PaginatedList from "../../components/PaginatedList";
 import { FormInstance } from "antd/lib";
 
 const SiteUsersV2 = () => {
-  const [getUsers] = useGetSiteUsersMutation();
+  const [getUsersWithPositions] = useGetUsersWithPositionsMutation();
   const [data, setData] = useState<UserCardInfo[]>([]);
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
-  const [dataBackup, setDataBackup] = useState<UserCardInfo[]>([]);
   const [modalIsOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState(Strings.empty);
   const [registerUser] = useCreateUserMutation();
@@ -57,8 +55,10 @@ const SiteUsersV2 = () => {
   const isSiteUpdated = useAppSelector(selectUserUpdatedIndicator);
   const [importUsers] = useImportUsersMutation();
   const navigate = useNavigate();
-  const [getUserPositions] = useGetUserPositionsMutation();
   const { isIhAdmin } = useCurrentUser();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const siteName = location?.state?.siteName || Strings.empty;
+  const siteId = location?.state.siteId || Strings.empty;
 
   const handleOnCancelButton = () => {
     if (!modalIsLoading) {
@@ -79,23 +79,10 @@ const SiteUsersV2 = () => {
       return;
     }
     setLoading(true);
-    const response = await getUsers(location.state.siteId).unwrap();
-    let data = [];
-    for await (const user of response) {
-      const positions = await getUserPositions(user.id).unwrap();
-      data.push(
-        new UserCardInfo(
-          user.id,
-          user.name,
-          user.email,
-          user.roles,
-          user.sites,
-          positions
-        )
-      );
-    }
-    setData(data.sort((a, b) => a.name.localeCompare(b.name)));
-    setDataBackup(data);
+    const response = await getUsersWithPositions(
+      location.state.siteId
+    ).unwrap();
+    setData(response);
     setLoading(false);
   };
 
@@ -103,24 +90,40 @@ const SiteUsersV2 = () => {
     handleGetUsers();
   }, [location.state]);
 
-  const handleOnSearch = (query: string) => {
-    const getSearch = query;
 
-    if (getSearch.length > 0) {
-      const filterData = dataBackup.filter((item) => search(item, getSearch));
+  const search = useCallback((item: UserCardInfo, query: string): boolean => {
+    const normalizedQuery = query.toLowerCase();
+    const { name, email } = item;
+  
+    return (
+      email.toLowerCase().includes(normalizedQuery) ||
+      name.toLowerCase().includes(normalizedQuery)
+    );
+  }, []);
 
-      setData(filterData);
-    } else {
-      setData(dataBackup);
+  const filteredData = useMemo(() => {
+    if (searchQuery.length > 0) {
+      return data.filter((item) =>
+        search(item, searchQuery)
+      );
     }
+    return data;
+  }, [searchQuery, data]);
+  
+  const handleOnSearch = (query: string) => {
+    setSearchQuery(query);
   };
+
 
   const handleOnOpenModal = (modalType: string) => {
     setModalOpen(true);
     setModalType(modalType);
   };
 
-  const selectFormByModalType = (modalType: string, form: FormInstance): React.ReactElement => {
+  const selectFormByModalType = (
+    modalType: string,
+    form: FormInstance
+  ): React.ReactElement => {
     if (modalType === Strings.users) {
       return <RegisterSiteUserForm form={form} />;
     } else {
@@ -151,17 +154,7 @@ const SiteUsersV2 = () => {
     }
   };
 
-  const search = (item: UserCardInfo, search: string) => {
-    const { name, email } = item;
 
-    return (
-      email.toLowerCase().includes(search.toLowerCase()) ||
-      name.toLowerCase().includes(search.toLowerCase())
-    );
-  };
-
-  const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state.siteId || Strings.empty;
 
   const handleOnFormFinish = async (values: any) => {
     try {
@@ -210,7 +203,7 @@ const SiteUsersV2 = () => {
         <div>
           <div className="flex justify-end pb-2">{buildActions()}</div>
           <PaginatedList
-            dataSource={data}
+            dataSource={filteredData}
             renderItem={(value: UserCardInfo, index: number) => (
               <List.Item key={index}>
                 <Card
@@ -299,7 +292,9 @@ const SiteUsersV2 = () => {
             <ModalForm
               open={modalIsOpen}
               onCancel={handleOnCancelButton}
-              FormComponent={(form: FormInstance) => selectFormByModalType(modalType, form)}
+              FormComponent={(form: FormInstance) =>
+                selectFormByModalType(modalType, form)
+              }
               title={selecTitleByModalType(modalType)}
               isLoading={modalIsLoading}
             />

@@ -15,7 +15,6 @@ import { MenuProps } from "antd";
 import { getItemV2 } from "./RoutesExtensions";
 import Strings from "../../utils/localizations/Strings";
 import Constants from "../../utils/Constants";
-import i18next from "i18next";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
@@ -32,32 +31,13 @@ const PrioritiesV2 = React.lazy(() => import("../../pages/priority/PrioritiesV2"
 const TechnicalSupport = React.lazy(() => import("../components/TechnicalSupport"));
 const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
 
-const currentLang = i18next.language.split("-")[0].toUpperCase();
-
-const buildDashboardSectionName = (): string => {
-  return currentLang === Constants.es ? "Panel" : "Dashboard";
-};
-
-const buildAccountSectionName = (): string => {
-  return currentLang === Constants.es ? "Cuentas" : "Accounts";
-};
-
-const buildCatalogsSectionName = (): string => {
-  return currentLang === Constants.es ? "Catálogos" : "Catalogs";
-};
-
-const buildSupportSectionName = (): string => {
-  return currentLang === Constants.es ? "Soporte Técnico" : "Technical Support";
-};
-
 // Common routes
-
 const prioritiesV2 = new RouteV2(
   Strings.prioritiesSB,
   Constants.ROUTES_PATH.priorities,
   <PrioritiesV2 />,
   <BsCalendarCheck />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const levelsV2 = new RouteV2(
@@ -65,7 +45,7 @@ const levelsV2 = new RouteV2(
   Constants.ROUTES_PATH.levels,
   <LevelsV2  />,
   <BsDiagram3 />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const tagsV2 = new RouteV2(
@@ -73,7 +53,7 @@ const tagsV2 = new RouteV2(
   Constants.ROUTES_PATH.cards,
   <TagsV2 />,
   <BsCardChecklist />,
-  buildDashboardSectionName()
+  Strings.dashboard
 );
 
 const chartsV2 = new RouteV2(
@@ -81,7 +61,7 @@ const chartsV2 = new RouteV2(
   Constants.ROUTES_PATH.charts,
   <ChartsV2 />,
   <BsBarChartLine />,
-  buildDashboardSectionName()
+  Strings.dashboard
 );
 
 const sitesV2 = new RouteV2(
@@ -89,7 +69,7 @@ const sitesV2 = new RouteV2(
   Constants.ROUTES_PATH.sites,
   <SitesV2 />,
   <BsBuildingAdd />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const siteUsersV2 = new RouteV2(
@@ -97,7 +77,7 @@ const siteUsersV2 = new RouteV2(
   Constants.ROUTES_PATH.users,
   <SiteUsersV2 />,
   <BsPersonPlus />,
-  buildAccountSectionName()
+  Strings.accounts
 );
 
 const technicalSupportRoute = new RouteV2(
@@ -105,7 +85,7 @@ const technicalSupportRoute = new RouteV2(
   Constants.ROUTES_PATH.technicalSupport,
   <TechnicalSupport />,
   <BsLifePreserver />,
-  buildSupportSectionName()
+ Strings.technicalSupport
 );
 
 const positionsV2 = new RouteV2(
@@ -113,7 +93,7 @@ const positionsV2 = new RouteV2(
   Constants.ROUTES_PATH.positions,
   <PositionsPage  />,
   <BsPeople />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const cardTypesV2 = new RouteV2(
@@ -121,7 +101,7 @@ const cardTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.cardTypes,
   <CardTypesV2  />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const companiesV2 = new RouteV2(
@@ -129,7 +109,7 @@ const companiesV2 = new RouteV2(
   Constants.ROUTES_PATH.companies,
   <CompaniesV2 />,
   <BsBuildingAdd />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 
@@ -138,7 +118,7 @@ const systemHealthV2 = new RouteV2(
   "system-health",
   <SystemHealth />,
   <MdHealthAndSafety />,
-  buildSupportSectionName()
+  Strings.technicalSupport
 );
 
 

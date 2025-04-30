@@ -1,6 +1,7 @@
 import { apiSlice } from "./apiSlice";
 import {
   Responsible,
+  UserCardInfo,
   UserTable,
   UserUpdateForm, 
 } from "../data/user/user";
@@ -164,6 +165,14 @@ export const userService = apiSlice.injectEndpoints({
         body: tokenData,
       }),
     }),
+    getUsersWithPositions: builder.mutation<UserCardInfo[], string>({
+      query: (userId) => `sites/${userId}/users/roles-and-positions`,
+      transformResponse: (response: {
+        data: UserCardInfo[];
+        status: number;
+        message: string;
+      }) => response.data,
+    }),
   }),
 });
 
@@ -183,5 +192,6 @@ export const {
   useGetUsersByRoleMutation,
   useGetUserPositionsMutation,
   useLogoutMutation,
-  useSetAppTokenMutation, 
+  useSetAppTokenMutation,
+  useGetUsersWithPositionsMutation
 } = userService;
