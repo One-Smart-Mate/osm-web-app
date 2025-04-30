@@ -36,6 +36,11 @@ class StringsBase {
   static domComplete = "domComplete";
   static networkLatency = "networkLatency";
 
+  // CILT related strings
+  static createCiltProcedure = "createCiltProcedure";
+  static createCiltProcedureForPosition = "createCiltProcedureForPosition";
+  static for = "for";
+
   // Rooutes
   static companyParam = "companyParam";
   static siteParam = "siteParam";
@@ -513,7 +518,6 @@ class StringsBase {
   static yes = "yes";
   static no = "no";
   static detailsStatusCancelled = "detailsStatusCancelled";
-  static for = "for";
 
   static errorFetchingData = "errorFetchingData";
   static namePlaceholder = "namePlaceholder";
@@ -708,6 +712,38 @@ class StringsBase {
   static enterEmail = "enterEmail";
   static enterPassword = "enterPassword";
   static permissionsError = "permissionsError";
+
+  // CILT MASTER CREATE
+  static ciltMasterCreateSuccess = "ciltMasterCreateSuccess";
+  static ciltMasterCreateError = "ciltMasterCreateError";
+  static ciltName = "ciltName";
+  static registerCiltNameRequiredValidation = "registerCiltNameRequiredValidation";
+  static registerCiltNameMaxLengthValidation = "registerCiltNameMaxLengthValidation";
+  static registerCiltNamePlaceholer = "registerCiltNamePlaceholer";
+  static ciltDescription = "ciltDescription";
+  static registerCiltDescriptionRequiredValidation = "registerCiltDescriptionRequiredValidation";
+  static registerCiltDescriptionMaxLengthValidation = "registerCiltDescriptionMaxLengthValidation";
+  static registerCiltDescriptionPlaceholer = "registerCiltDescriptionPlaceholer";
+  static standardTime = "standardTime";
+  static registerCiltStandardTimeRequiredValidation = "registerCiltStandardTimeRequiredValidation";
+  static registerCiltStandardTimePlaceholer = "registerCiltStandardTimePlaceholer";
+  static learningTime = "learningTime";
+  static registerCiltLearningTimeRequiredValidation = "registerCiltLearningTimeRequiredValidation";
+  static registerCiltLearningTimePlaceholer = "registerCiltLearningTimePlaceholer";
+  static ciltCreator = "ciltCreator";
+  static registerCiltCreatorRequiredValidation = "registerCiltCreatorRequiredValidation";
+  static reviewer = "reviewer";
+  static registerCiltReviewerRequiredValidation = "registerCiltReviewerRequiredValidation";
+  static registerCiltReviewerPlaceholer = "registerCiltReviewerPlaceholer";
+  static approver = "approver";
+  static registerCiltApproverRequiredValidation = "registerCiltApproverRequiredValidation";
+  static registerCiltApproverPlaceholer = "registerCiltApproverPlaceholer";
+  static layoutImage = "layoutImage";
+  static registerCiltLayoutImageRequiredValidation = "registerCiltLayoutImageRequiredValidation";
+  static imageUploadError = "imageUploadError";
+  static selectCreator = "selectCreator";
+  static selectReviewer = "selectReviewer";
+  static selectApprover = "selectApprover";
 
 }
 

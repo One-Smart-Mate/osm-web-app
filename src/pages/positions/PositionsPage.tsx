@@ -10,6 +10,7 @@ import {
   List,
   Typography,
   Card,
+  Modal,
 } from "antd";
 import {
   SearchOutlined,
@@ -20,6 +21,7 @@ import {
 import LevelTreeModal from "./components/LevelTreeModal";
 import RegisterPositionForm from "./components/RegisterPositionForm";
 import UpdatePositionForm from "./components/UpdatePositionForm";
+import CreateCiltForm from "./components/CreateCiltForm";
 import { useGetSiteMutation } from "../../services/siteService";
 import {
   useGetPositionsBySiteIdQuery,
@@ -45,12 +47,14 @@ const PositionsPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<any>(null);
   const [isPositionFormVisible, setIsPositionFormVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
+  const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(
     null
   );
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
   const [positionForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
   const { isIhAdmin } = useCurrentUser();
 
@@ -163,6 +167,16 @@ const PositionsPage = () => {
     refetchPositions();
   };
 
+  const handleCreateCilt = (position: Position) => {
+    setSelectedPosition(position);
+    setIsCiltFormVisible(true);
+  };
+
+  const handleCiltFormCancel = () => {
+    setIsCiltFormVisible(false);
+    setSelectedPosition(null);
+  };
+
   const handlePopoverVisibleChange = (visible: boolean, positionId: string) => {
     setOpenPopoverId(visible ? positionId : null);
   };
@@ -256,7 +270,7 @@ const PositionsPage = () => {
             }}
           />
           <Button
-            type="primary"
+            type="default"
             icon={<FilePdfOutlined />}
             onClick={(e) => e.stopPropagation()}
           />
@@ -311,6 +325,15 @@ const PositionsPage = () => {
                         onClick={(e) => e.stopPropagation()}
                       >
                         PDF
+                      </Button>,
+                      <Button
+                        type="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCreateCilt(item);
+                        }}
+                      >
+                        {Strings.createCiltProcedure}
                       </Button>,
                     ]}
                   >
@@ -425,6 +448,26 @@ const PositionsPage = () => {
             onCancel={handleUpdateCancel}
             onSuccess={handleUpdateSuccess}
           />
+
+          {/* CILT Form Modal */}
+          <Modal
+            title={`${Strings.createCiltProcedureForPosition}: ${selectedPosition?.name || ''}`}
+            open={isCiltFormVisible}
+            onCancel={handleCiltFormCancel}
+            footer={null}
+            width={800}
+            destroyOnClose
+          >
+            {selectedPosition && (
+              <div className="p-4">
+                <CreateCiltForm 
+                  form={ciltForm} 
+                  position={selectedPosition}
+                  onSuccess={handleCiltFormCancel}
+                />
+              </div>
+            )}
+          </Modal>
         </div>
       }
     />
@@ -544,6 +587,26 @@ const PositionsPage = () => {
         onCancel={handleUpdateCancel}
         onSuccess={handleUpdateSuccess}
       />
+
+      {/* CILT Form Modal */}
+      <Modal
+        title={`${Strings.createCiltProcedureForPosition}: ${selectedPosition?.name || ''}`}
+        open={isCiltFormVisible}
+        onCancel={handleCiltFormCancel}
+        footer={null}
+        width={800}
+        destroyOnClose
+      >
+        {selectedPosition && (
+          <div className="p-4">
+            <CreateCiltForm 
+              form={ciltForm} 
+              position={selectedPosition}
+              onSuccess={handleCiltFormCancel}
+            />
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };
