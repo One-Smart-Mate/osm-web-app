@@ -8,6 +8,10 @@ import { Role } from "../../../data/user/user";
 import { useGetRolesMutation } from "../../../services/roleService";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
+import Constants from "../../../utils/Constants";
+import { useAppSelector } from "../../../core/store";
+import { selectCurrentUser } from "../../../core/authReducer";
+
 interface FormProps {
   form: FormInstance;
 }
@@ -17,11 +21,20 @@ const RegisterSiteUserForm = ({ form }: FormProps) => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const handleGetData = async () => {
     const rolesResponse = await getRoles().unwrap();
     // Filter out the "IH_sis_admin" role from available options
-    const filteredRoles = rolesResponse.filter(role => role.name !== "IH_sis_admin");
+    const hasAdminRole = currentUser?.roles?.some((role: string | Role) =>
+      typeof role === "string"
+        ? role === Constants.ihSisAdmin
+        : role.name === Constants.ihSisAdmin
+    );
+
+    const filteredRoles = hasAdminRole
+      ? rolesResponse
+      : rolesResponse.filter((role) => role.name !== Constants.ihSisAdmin);
     setRoles(filteredRoles);
   };
 
