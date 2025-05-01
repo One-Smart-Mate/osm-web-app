@@ -747,6 +747,12 @@ class StringsBase {
 
   static ciltProceduresSB = "ciltProceduresSB";
   static ciltProceduresDescription = "ciltProceduresDescription";
+  static oplSB = "oplSB";
+  static oplDescription = "oplDescription";
+  static ciltTypesSB = "ciltTypesSB";
+  static ciltTypesDescription = "ciltTypesDescription";
+  static ciltFrecuenciesSB = "ciltFrecuenciesSB";
+  static ciltFrecuenciesDescription = "ciltFrecuenciesDescription";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

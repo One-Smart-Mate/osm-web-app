@@ -45,6 +45,13 @@ const TechnicalSupport = React.lazy(
 const CiltProceduresPage = React.lazy(
   () => import("../../pages/cilt/CiltProceduresPage")
 );
+const OplPage = React.lazy(() => import("../../pages/opl/OplPage"));
+const CiltTypesPage = React.lazy(
+  () => import("../../pages/ciltTypes/CiltTypesPage")
+);
+const CiltFrecuenciesPage = React.lazy(
+  () => import("../../pages/ciltFrecuencies/CiltFrecuenciesPage")
+);
 const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
 
 const currentLang = i18next.language.split("-")[0].toUpperCase();
@@ -147,6 +154,30 @@ const ciltProceduresV2 = new RouteV2(
   buildCatalogsSectionName()
 );
 
+const oplV2 = new RouteV2(
+  Strings.oplSB,
+  Constants.ROUTES_PATH.opl,
+  <OplPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltTypesV2 = new RouteV2(
+  Strings.ciltTypesSB,
+  Constants.ROUTES_PATH.ciltTypes,
+  <CiltTypesPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltFrecuenciesV2 = new RouteV2(
+  Strings.ciltFrecuenciesSB,
+  Constants.ROUTES_PATH.ciltFrecuencies,
+  <CiltFrecuenciesPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
 const companiesV2 = new RouteV2(
   Strings.companiesSB,
   Constants.ROUTES_PATH.companies,
@@ -185,6 +216,9 @@ const routesV2: RouteV2[] = [
   companiesV2,
   systemHealthV2,
   ciltProceduresV2,
+  oplV2,
+  ciltTypesV2,
+  ciltFrecuenciesV2,
 ];
 
 const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
@@ -278,6 +312,24 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: ciltProceduresV2.path,
       icon: ciltProceduresV2.icon,
       section: ciltProceduresV2.section,
+    }),
+    getItemV2({
+      label: oplV2.label,
+      key: oplV2.path,
+      icon: oplV2.icon,
+      section: oplV2.section,
+    }),
+    getItemV2({
+      label: ciltTypesV2.label,
+      key: ciltTypesV2.path,
+      icon: ciltTypesV2.icon,
+      section: ciltTypesV2.section,
+    }),
+    getItemV2({
+      label: ciltFrecuenciesV2.label,
+      key: ciltFrecuenciesV2.path,
+      icon: ciltFrecuenciesV2.icon,
+      section: ciltFrecuenciesV2.section,
     }),
   ];
   return items;

@@ -77,7 +77,10 @@ const ROUTES_PATH = {
   cardDetail: 'card-detail',
   positions:'positions',
   technicalSupport: 'technicalSupport',
-  ciltProcedures: 'cilt-procedures'
+  ciltProcedures: 'cilt-procedures',
+  opl: 'opl',
+  ciltTypes: 'cilt-types',
+  ciltFrecuencies: 'cilt-frecuencies'
 }
 
 const ROUTES_PARAMS = {
