@@ -19,17 +19,32 @@ import i18next from "i18next";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
-const CardTypesV2 = React.lazy(() => import("../../pages/cardtypes/CardTypesV2"));
+const CardTypesV2 = React.lazy(
+  () => import("../../pages/cardtypes/CardTypesV2")
+);
 const CompaniesV2 = React.lazy(() => import("../../pages/company/CompaniesV2"));
-const CardDetails = React.lazy(() => import("../../pages/carddetails/CardDetails"));
+const CardDetails = React.lazy(
+  () => import("../../pages/carddetails/CardDetails")
+);
 const SiteUsersV2 = React.lazy(() => import("../../pages/user/SiteUsersV2"));
 const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
-const SystemHealth = React.lazy(() => import("../../pages/systemhealth/SystemHealth"));
+const SystemHealth = React.lazy(
+  () => import("../../pages/systemhealth/SystemHealth")
+);
 const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
 const ChartsV2 = React.lazy(() => import("../../pages/charts/ChartsV2"));
-const PositionsPage = React.lazy(() => import("../../pages/positions/PositionsPage"));
-const PrioritiesV2 = React.lazy(() => import("../../pages/priority/PrioritiesV2"));
-const TechnicalSupport = React.lazy(() => import("../components/TechnicalSupport"));
+const PositionsPage = React.lazy(
+  () => import("../../pages/positions/PositionsPage")
+);
+const PrioritiesV2 = React.lazy(
+  () => import("../../pages/priority/PrioritiesV2")
+);
+const TechnicalSupport = React.lazy(
+  () => import("../components/TechnicalSupport")
+);
+const CiltProceduresPage = React.lazy(
+  () => import("../../pages/cilt/CiltProceduresPage")
+);
 const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
 
 const currentLang = i18next.language.split("-")[0].toUpperCase();
@@ -63,7 +78,7 @@ const prioritiesV2 = new RouteV2(
 const levelsV2 = new RouteV2(
   Strings.levelsSB,
   Constants.ROUTES_PATH.levels,
-  <LevelsV2  />,
+  <LevelsV2 />,
   <BsDiagram3 />,
   buildCatalogsSectionName()
 );
@@ -111,7 +126,7 @@ const technicalSupportRoute = new RouteV2(
 const positionsV2 = new RouteV2(
   Strings.positions,
   Constants.ROUTES_PATH.positions,
-  <PositionsPage  />,
+  <PositionsPage />,
   <BsPeople />,
   buildCatalogsSectionName()
 );
@@ -119,7 +134,15 @@ const positionsV2 = new RouteV2(
 const cardTypesV2 = new RouteV2(
   Strings.cardTypesSB,
   Constants.ROUTES_PATH.cardTypes,
-  <CardTypesV2  />,
+  <CardTypesV2 />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltProceduresV2 = new RouteV2(
+  Strings.ciltProceduresSB,
+  Constants.ROUTES_PATH.ciltProcedures,
+  <CiltProceduresPage />,
   <BsNodePlus />,
   buildCatalogsSectionName()
 );
@@ -132,7 +155,6 @@ const companiesV2 = new RouteV2(
   buildCatalogsSectionName()
 );
 
-
 const systemHealthV2 = new RouteV2(
   Strings.systemHealthSB,
   "system-health",
@@ -140,7 +162,6 @@ const systemHealthV2 = new RouteV2(
   <MdHealthAndSafety />,
   buildSupportSectionName()
 );
-
 
 export const cardDetailRoute = new RouteV2(
   Strings.cardDetailsSB,
@@ -150,20 +171,20 @@ export const cardDetailRoute = new RouteV2(
   ""
 );
 
-
 const routesV2: RouteV2[] = [
-  technicalSupportRoute, 
-  cardDetailRoute, 
-  siteUsersV2, 
-  sitesV2, 
-  chartsV2, 
-  tagsV2, 
-  levelsV2, 
-  positionsV2, 
+  technicalSupportRoute,
+  cardDetailRoute,
+  siteUsersV2,
+  sitesV2,
+  chartsV2,
+  tagsV2,
+  levelsV2,
+  positionsV2,
   prioritiesV2,
   cardTypesV2,
   companiesV2,
-  systemHealthV2
+  systemHealthV2,
+  ciltProceduresV2,
 ];
 
 const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
@@ -251,6 +272,12 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: positionsV2.path,
       icon: positionsV2.icon,
       section: positionsV2.section,
+    }),
+    getItemV2({
+      label: ciltProceduresV2.label,
+      key: ciltProceduresV2.path,
+      icon: ciltProceduresV2.icon,
+      section: ciltProceduresV2.section,
     }),
   ];
   return items;

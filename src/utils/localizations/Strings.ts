@@ -745,6 +745,8 @@ class StringsBase {
   static selectReviewer = "selectReviewer";
   static selectApprover = "selectApprover";
 
+  static ciltProceduresSB = "ciltProceduresSB";
+  static ciltProceduresDescription = "ciltProceduresDescription";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

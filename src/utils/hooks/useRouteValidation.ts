@@ -21,6 +21,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.positions}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
      new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/\\d+/\\d+$`),
     ],
     [UserRoles.LOCALSYSADMIN]: [
@@ -28,6 +29,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.positions}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardTypes}`,
