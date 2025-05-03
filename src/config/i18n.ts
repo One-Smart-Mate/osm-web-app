@@ -702,15 +702,18 @@ const resources = {
       noUsersAvailableForSite: "No users available for this site",
       positionName: "Position name",
       positionDescription: "Position description",
-      selectUsersForPosition: "Select users that will be assigned to this position",
+      selectUsersForPosition:
+        "Select users that will be assigned to this position",
       cancelPosition: "Cancel",
       updatePositionTitle: "Edit Position: {{name}}",
       selectStatus: "Select a status",
       positionNameMaxLength: "The name cannot exceed 45 characters",
-      positionDescriptionMaxLength: "The description cannot exceed 100 characters",
+      positionDescriptionMaxLength:
+        "The description cannot exceed 100 characters",
       noPositionData: "No position data found for update.",
       positionUpdatedSuccess: "The position has been updated successfully.",
-      positionUpdateError: "An error occurred while updating the position. Please try again.",
+      positionUpdateError:
+        "An error occurred while updating the position. Please try again.",
       pleaseSelectStatus: "Please select a status",
 
       // Table locale strings
@@ -736,11 +739,16 @@ const resources = {
 
       success: "Success",
       error: "Error",
-      "No position data found for update.": "No position data found for update.",
-      "The position has been updated successfully.": "The position has been updated successfully.",
-      "An error occurred while updating the position. Please try again.": "An error occurred while updating the position. Please try again.",
-      "The name cannot exceed 45 characters": "The name cannot exceed 45 characters",
-      "The description cannot exceed 100 characters": "The description cannot exceed 100 characters",
+      "No position data found for update.":
+        "No position data found for update.",
+      "The position has been updated successfully.":
+        "The position has been updated successfully.",
+      "An error occurred while updating the position. Please try again.":
+        "An error occurred while updating the position. Please try again.",
+      "The name cannot exceed 45 characters":
+        "The name cannot exceed 45 characters",
+      "The description cannot exceed 100 characters":
+        "The description cannot exceed 100 characters",
       "Please select a status": "Please select a status",
       "Select a status": "Select a status",
       "Edit Position: {{name}}": "Edit Position: {{name}}",
@@ -752,7 +760,8 @@ const resources = {
       userPositions: "Positions",
       confirmCloneLevel: "Confirm Clone Level",
       confirmCloneLevelMessage: "Are you sure you want to clone the level?. ",
-      levelSubLebelsWarning: "If you clone a level, all its sub-levels will also be cloned.",
+      levelSubLebelsWarning:
+        "If you clone a level, all its sub-levels will also be cloned.",
       defaultNotificationTitle: "Notification",
       defaultNotificationMessage: "You have received a new notification",
       notificationReceived: "Notification received",
@@ -770,7 +779,8 @@ const resources = {
       technicalSupport: "Technical Support",
       enterEmail: "Enter your email",
       enterPassword: "Enter your password",
-      permissionsError: "You do not have permission to access this application.",
+      permissionsError:
+        "You do not have permission to access this application.",
 
       // CILT related strings
       createCiltProcedure: "Create CILT procedure",
@@ -780,14 +790,18 @@ const resources = {
       registerCiltNameMaxLengthValidation: "Name cannot exceed 100 characters",
       registerCiltNamePlaceholer: "Enter CILT name",
       ciltDescription: "CILT description",
-      registerCiltDescriptionRequiredValidation: "Please enter the CILT description",
-      registerCiltDescriptionMaxLengthValidation: "Description cannot exceed 500 characters",
+      registerCiltDescriptionRequiredValidation:
+        "Please enter the CILT description",
+      registerCiltDescriptionMaxLengthValidation:
+        "Description cannot exceed 500 characters",
       registerCiltDescriptionPlaceholer: "Enter CILT description",
       standardTime: "Standard time",
-      registerCiltStandardTimeRequiredValidation: "Please enter the standard time",
+      registerCiltStandardTimeRequiredValidation:
+        "Please enter the standard time",
       registerCiltStandardTimePlaceholer: "Standard time",
       learningTime: "Learning time",
-      registerCiltLearningTimeRequiredValidation: "Please enter the learning time",
+      registerCiltLearningTimeRequiredValidation:
+        "Please enter the learning time",
       registerCiltLearningTimePlaceholer: "Learning time",
       reviewer: "Reviewer",
       registerCiltReviewerRequiredValidation: "Please enter the reviewer",
@@ -802,15 +816,19 @@ const resources = {
       selectReviewer: "Select a reviewer",
       selectApprover: "Select an approver",
       ciltProceduresSB: "CILT Procedures",
-      ciltProceduresDescription: "This page contains information about CILT procedures and their implementation.",
+      ciltProceduresDescription:
+        "This page contains information about CILT procedures and their implementation.",
       oplSB: "OPL",
-      oplDescription: "This page contains information about One Point Lessons (OPL).",
+      oplDescription:
+        "This page contains information about One Point Lessons (OPL).",
       ciltTypesSB: "CILT Types",
-      ciltTypesDescription: "This page contains information about different types of CILT.",
+      ciltTypesDescription:
+        "This page contains information about different types of CILT.",
       ciltFrecuenciesSB: "CILT Frequencies",
-      ciltFrecuenciesDescription: "This page contains information about CILT frequencies.",
+      ciltFrecuenciesDescription:
+        "This page contains information about CILT frequencies.",
 
-      //CILT TYPES IN ENGLISH 
+      //CILT TYPES IN ENGLISH
       searchbyname: "Search by name",
       addNewCiltType: "Add new type of CILT",
       errorLoadingNewTypesCilt: "Error loading CILT types",
@@ -836,8 +854,65 @@ const resources = {
       noCiltFrequencies: "No frequencies available",
       obligatoryCode: "Frequency code is required",
       obligatoryDescription: "Description is required",
-      searchbyDescriptionOrCode: "Search by code or description"
+      searchbyDescriptionOrCode: "Search by code or description",
 
+      // CILT Master strings
+      ciltMstrPageTitle: "CILT Procedures",
+      ciltMstrCreateSuccess: "CILT procedure created successfully",
+      ciltMstrSelectPositionTitle: "Select a position",
+      ciltMstrCreateButtonLabel: "Create CILT procedure",
+      ciltMstrCreateModalTitle: "Create CILT procedure",
+      ciltMstrPositionLabel: "Position",
+      // CILT Edit Modal strings
+      ciltMstrEditModalTitle: "Edit CILT",
+      ciltMstrSaveChangesButton: "Save Changes",
+      ciltMstrCancelButton: "Cancel",
+      ciltMstrUpdateError: "Error updating. Please try again.",
+      ciltMstrNameLabel: "CILT Name",
+      ciltMstrNameRequired: "Please enter the name!",
+      ciltMstrDescriptionLabel: "Description",
+      ciltMstrStandardTimeLabel: "Standard Time (min)",
+      ciltMstrInvalidNumberMessage: "Please enter a valid number",
+      ciltMstrLearningTimeLabel: "Learning Time",
+      ciltMstrStatusLabel: "Status",
+      ciltMstrStatusRequired: "Please select a status!",
+      ciltMstrStatusPlaceholder: "Select a status",
+      ciltMstrStatusActive: "Active",
+      ciltMstrStatusSuspended: "Suspended",
+      ciltMstrStatusCanceled: "Canceled",
+      
+      // CILT Details Modal strings
+      ciltMstrDetailsModalTitle: "CILT Details",
+      ciltMstrCloseButton: "Close",
+      ciltMstrDetailsNameLabel: "Name",
+      ciltMstrDetailsDescriptionLabel: "Description",
+      ciltMstrCreatorLabel: "Creator",
+      ciltMstrReviewerLabel: "Reviewer",
+      ciltMstrApproverLabel: "Approved by",
+      ciltMstrDetailsStandardTimeLabel: "Standard Time (min)",
+      ciltMstrDetailsLearningTimeLabel: "Learning Time",
+      ciltMstrOrderLabel: "Order",
+      ciltMstrDetailsStatusLabel: "Status",
+      ciltMstrLastUsedLabel: "Last Used",
+      ciltMstrLayoutLabel: "Layout",
+      ciltMstrViewFullImage: "View full image",
+      ciltMstrNotAvailable: "Not available",
+      ciltMstrNA: "N/A",
+      
+      // CILT Card List strings
+      ciltMstrListNameColumn: "Name",
+      ciltMstrListDescriptionColumn: "Description",
+      ciltMstrListCreatorColumn: "Creator",
+      ciltMstrListStandardTimeColumn: "Standard Time (min)",
+      ciltMstrListStatusColumn: "Status",
+      ciltMstrListCreationDateColumn: "Creation Date",
+      ciltMstrListActionsColumn: "Actions",
+      ciltMstrListEditAction: "Edit",
+      ciltMstrListDetailsAction: "Details",
+      ciltMstrListSequencesAction: "Sequences",
+      ciltMstrListActiveFilter: "Active",
+      ciltMstrListSuspendedFilter: "Suspended",
+      ciltMstrListCanceledFilter: "Canceled",
     },
   },
   es: {
@@ -1323,8 +1398,7 @@ const resources = {
       companyContactNameTooltip: "Nombre del contacto principal.",
       companyPositionTooltip: "Puesto del contacto.",
       companyPhoneTooltip: "Teléfono fijo de la empresa.",
-      companyExtensionTooltip:
-        "Extensión telefónica (si aplica).",
+      companyExtensionTooltip: "Extensión telefónica (si aplica).",
       companyCellularTooltip: "Teléfono móvil principal.",
       companyEmailTooltip: "Correo electrónico oficial de la empresa.",
       companyLogoTooltip: "Sube el logo de la empresa en formato de imagen.",
@@ -1546,15 +1620,18 @@ const resources = {
       noUsersAvailableForSite: "No hay usuarios disponibles para este sitio",
       positionName: "Nombre de la posición",
       positionDescription: "Descripción de la posición",
-      selectUsersForPosition: "Seleccione los usuarios que estarán asignados a esta posición",
+      selectUsersForPosition:
+        "Seleccione los usuarios que estarán asignados a esta posición",
       cancelPosition: "Cancelar",
       updatePositionTitle: "Editar Posición: {{name}}",
       selectStatus: "Seleccione un estado",
       positionNameMaxLength: "El nombre no puede exceder los 45 caracteres",
-      positionDescriptionMaxLength: "La descripción no puede exceder los 100 caracteres",
+      positionDescriptionMaxLength:
+        "La descripción no puede exceder los 100 caracteres",
       noPositionData: "No se encontraron datos de posición para actualizar.",
       positionUpdatedSuccess: "La posición ha sido actualizada exitosamente.",
-      positionUpdateError: "Ocurrió un error al actualizar la posición. Por favor intente de nuevo.",
+      positionUpdateError:
+        "Ocurrió un error al actualizar la posición. Por favor intente de nuevo.",
       pleaseSelectStatus: "Por favor seleccione un estado",
 
       // Table locale strings
@@ -1580,11 +1657,16 @@ const resources = {
 
       success: "Éxito",
       error: "Error",
-      "No position data found for update.": "No se encontró información de posición para actualizar.",
-      "The position has been updated successfully.": "La posición se actualizó con éxito.",
-      "An error occurred while updating the position. Please try again.": "Ocurrió un error al actualizar la posición. Por favor, inténtalo de nuevo.",
-      "The name cannot exceed 45 characters": "El nombre no puede exceder los 45 caracteres",
-      "The description cannot exceed 100 characters": "La descripción no puede exceder los 100 caracteres",
+      "No position data found for update.":
+        "No se encontró información de posición para actualizar.",
+      "The position has been updated successfully.":
+        "La posición se actualizó con éxito.",
+      "An error occurred while updating the position. Please try again.":
+        "Ocurrió un error al actualizar la posición. Por favor, inténtalo de nuevo.",
+      "The name cannot exceed 45 characters":
+        "El nombre no puede exceder los 45 caracteres",
+      "The description cannot exceed 100 characters":
+        "La descripción no puede exceder los 100 caracteres",
       "Please select a status": "Por favor, selecciona un estado",
       "Select a status": "Selecciona un estado",
       "Edit Position: {{name}}": "Editar Posición: {{name}}",
@@ -1595,8 +1677,10 @@ const resources = {
       noPositionsAvailable: "No hay posiciones disponibles",
       userPositions: "Posiciones",
       confirmCloneLevel: "Confirmar Clonación de Nivel",
-      confirmCloneLevelMessage: "¿Estás seguro de que deseas clonar el nivel?. ",
-      levelSubLebelsWarning: "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
+      confirmCloneLevelMessage:
+        "¿Estás seguro de que deseas clonar el nivel?. ",
+      levelSubLebelsWarning:
+        "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
       defaultNotificationTitle: "Notificación",
       defaultNotificationMessage: "Has recibido una nueva notificación",
       notificationReceived: "Notificación recibida",
@@ -1605,7 +1689,8 @@ const resources = {
       expandAll: "Expandir todo",
       machinesOfArea: "Zonas del Area",
       assignPositions: "Asignar Posiciones",
-      uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
+      uploadCardAndEvidenceWithDataNet:
+        "Cargar tarjeta y evidencias con datos de red",
       databaseConnectionTest: "Prueba de conexión a base de datos",
       verificationOfServices: "Verificación de Servicios",
       catalogs: "Catálogos",
@@ -1616,24 +1701,30 @@ const resources = {
       redesign: import.meta.env.VITE_IS_REDESIGN,
       enterEmail: "Introduce tu correo electrónico",
       enterPassword: "Introduce tu contraseña",
-      permissionsError: 'No tienes permisos para acceder a esta aplicación.',
+      permissionsError: "No tienes permisos para acceder a esta aplicación.",
 
       // CILT related strings
       createCiltProcedure: "Crear procedimiento CILT",
       createCiltProcedureForPosition: "Crear procedimiento CILT para posición",
       ciltName: "Nombre del procedimiento CILT",
-      registerCiltNameRequiredValidation: "Por favor, ingresa el nombre del procedimiento CILT",
-      registerCiltNameMaxLengthValidation: "Nombre del procedimiento CILT no puede exceder 100 caracteres",
+      registerCiltNameRequiredValidation:
+        "Por favor, ingresa el nombre del procedimiento CILT",
+      registerCiltNameMaxLengthValidation:
+        "Nombre del procedimiento CILT no puede exceder 100 caracteres",
       registerCiltNamePlaceholer: "Nombre del procedimiento CILT",
       ciltDescription: "Descripción del procedimiento CILT",
-      registerCiltDescriptionRequiredValidation: "Por favor, ingresa la descripción del procedimiento CILT",
-      registerCiltDescriptionMaxLengthValidation: "Descripción del procedimiento CILT no puede exceder 500 caracteres",
+      registerCiltDescriptionRequiredValidation:
+        "Por favor, ingresa la descripción del procedimiento CILT",
+      registerCiltDescriptionMaxLengthValidation:
+        "Descripción del procedimiento CILT no puede exceder 500 caracteres",
       registerCiltDescriptionPlaceholer: "Descripción del procedimiento CILT",
       standardTime: "Tiempo estándar",
-      registerCiltStandardTimeRequiredValidation: "Por favor, ingresa el tiempo estándar",
+      registerCiltStandardTimeRequiredValidation:
+        "Por favor, ingresa el tiempo estándar",
       registerCiltStandardTimePlaceholer: "Tiempo estándar",
       learningTime: "Tiempo de aprendizaje",
-      registerCiltLearningTimeRequiredValidation: "Por favor, ingresa el tiempo de aprendizaje",
+      registerCiltLearningTimeRequiredValidation:
+        "Por favor, ingresa el tiempo de aprendizaje",
       registerCiltLearningTimePlaceholer: "Tiempo de aprendizaje",
       ciltCreator: "Creador",
       registerCiltCreatorRequiredValidation: "Por favor, ingresa el creador",
@@ -1644,21 +1735,26 @@ const resources = {
       registerCiltApproverRequiredValidation: "Por favor, ingresa el aprobador",
       registerCiltApproverPlaceholer: "Selecciona un aprobador",
       layoutImage: "Imagen de la plantilla",
-      registerCiltLayoutImageRequiredValidation: "Por favor, ingresa la imagen de la plantilla",
+      registerCiltLayoutImageRequiredValidation:
+        "Por favor, ingresa la imagen de la plantilla",
       imageUploadError: "Only image files are allowed",
       selectCreator: "Selecciona un creador",
       selectReviewer: "Selecciona un revisor",
       selectApprover: "Selecciona un aprobador",
       ciltProceduresSB: "Procedimientos CILT",
-      ciltProceduresDescription: "Esta página contiene información sobre los procedimientos CILT y su implementación.",
+      ciltProceduresDescription:
+        "Esta página contiene información sobre los procedimientos CILT y su implementación.",
       oplSB: "OPL",
-      oplDescription: "Esta página contiene información sobre One Point Lessons (OPL).",
+      oplDescription:
+        "Esta página contiene información sobre One Point Lessons (OPL).",
       ciltTypesSB: "Tipos de CILT",
-      ciltTypesDescription: "Esta página contiene información sobre diferentes tipos de CILT.",
+      ciltTypesDescription:
+        "Esta página contiene información sobre diferentes tipos de CILT.",
       ciltFrecuenciesSB: "Frecuencias de CILT",
-      ciltFrecuenciesDescription: "Esta página contiene información sobre frecuencias de CILT.",
+      ciltFrecuenciesDescription:
+        "Esta página contiene información sobre frecuencias de CILT.",
 
-      //CILT Types in Spanish
+      //CILT TYPES IN ENGLISH
       searchbyname: "Buscar por nombre",
       addNewCiltType: "Agregar nuevo tipo de CILT",
       errorLoadingNewTypesCilt: "Error al cargar los tipos de CILT",
@@ -1671,7 +1767,7 @@ const resources = {
       editCiltType: "Editar Tipo de CILT",
       addCiltType: "Agregar Tipo de CILT",
 
-      //CILT Frequencies in Spanish
+      //CILT FREQUENCIES IN ENGLISH
       frequencyCode: "Código de frecuencia",
       addNewCiltFrequency: "Agregar nueva frecuencia Cilt",
       editCiltFrequency: "Editar frecuencia Cilt",
@@ -1682,10 +1778,67 @@ const resources = {
       errorUpdatingCiltFrequency: "Error al actualizar la frecuencia",
       errorLoadingCiltFrequencies: "Error al cargar las frecuencias",
       noCiltFrequencies: "No hay frecuencias disponibles",
-      obligatoryCode: "El código de frecuencia es obligatorio",
-      obligatoryDescription: "La descripción es obligatoria",
-      searchbyDescriptionOrCode: "Buscar por código o descripción"
+      obligatoryCode: "Código de frecuencia es obligatorio",
+      obligatoryDescription: "Descripción es obligatoria",
+      searchbyDescriptionOrCode: "Buscar por código o descripción",
 
+      // CILT Master strings
+      ciltMstrPageTitle: "Procedimientos CILT",
+      ciltMstrCreateSuccess: "Procedimiento CILT creado exitosamente",
+      ciltMstrSelectPositionTitle: "Selecciona una posición",
+      ciltMstrCreateButtonLabel: "Crear procedimiento CILT",
+      ciltMstrCreateModalTitle: "Crear procedimiento CILT",
+      ciltMstrPositionLabel: "Posición",
+      // CILT Edit Modal strings
+      ciltMstrEditModalTitle: "Editar CILT",
+      ciltMstrSaveChangesButton: "Guardar Cambios",
+      ciltMstrCancelButton: "Cancelar",
+      ciltMstrUpdateError: "Error al actualizar. Intente de nuevo.",
+      ciltMstrNameLabel: "Nombre CILT",
+      ciltMstrNameRequired: "Por favor ingrese el nombre!",
+      ciltMstrDescriptionLabel: "Descripción",
+      ciltMstrStandardTimeLabel: "Tiempo Estándar (min)",
+      ciltMstrInvalidNumberMessage: "Ingrese un número válido",
+      ciltMstrLearningTimeLabel: "Tiempo Aprendizaje",
+      ciltMstrStatusLabel: "Estado",
+      ciltMstrStatusRequired: "Por favor seleccione un estado!",
+      ciltMstrStatusPlaceholder: "Seleccione un estado",
+      ciltMstrStatusActive: "Activo",
+      ciltMstrStatusSuspended: "Suspendido",
+      ciltMstrStatusCanceled: "Cancelado",
+      
+      // CILT Details Modal strings
+      ciltMstrDetailsModalTitle: "Detalles del CILT",
+      ciltMstrCloseButton: "Cerrar",
+      ciltMstrDetailsNameLabel: "Nombre",
+      ciltMstrDetailsDescriptionLabel: "Descripción",
+      ciltMstrCreatorLabel: "Creador",
+      ciltMstrReviewerLabel: "Revisor",
+      ciltMstrApproverLabel: "Aprobado por",
+      ciltMstrDetailsStandardTimeLabel: "Tiempo Estándar (min)",
+      ciltMstrDetailsLearningTimeLabel: "Tiempo Aprendizaje",
+      ciltMstrOrderLabel: "Orden",
+      ciltMstrDetailsStatusLabel: "Estado",
+      ciltMstrLastUsedLabel: "Última vez utilizado",
+      ciltMstrLayoutLabel: "Diseño",
+      ciltMstrViewFullImage: "Ver imagen completa",
+      ciltMstrNotAvailable: "No disponible",
+      ciltMstrNA: "N/D",
+      
+      // CILT Card List strings
+      ciltMstrListNameColumn: "Nombre",
+      ciltMstrListDescriptionColumn: "Descripción",
+      ciltMstrListCreatorColumn: "Creador",
+      ciltMstrListStandardTimeColumn: "Tiempo Estándar (min)",
+      ciltMstrListStatusColumn: "Estado",
+      ciltMstrListCreationDateColumn: "Fecha de Creación",
+      ciltMstrListActionsColumn: "Acciones",
+      ciltMstrListEditAction: "Editar",
+      ciltMstrListDetailsAction: "Detalles",
+      ciltMstrListSequencesAction: "Secuencias",
+      ciltMstrListActiveFilter: "Activo",
+      ciltMstrListSuspendedFilter: "Suspendido",
+      ciltMstrListCanceledFilter: "Cancelado",
     },
   },
 };

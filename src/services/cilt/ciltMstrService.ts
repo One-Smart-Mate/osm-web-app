@@ -11,7 +11,7 @@ export const ciltMstrService = apiSlice.injectEndpoints({
       query: () => `/cilt-mstr/all`,
       transformResponse: (response: { data: CiltMstr[] }) => response.data,
     }),
-    getCiltMstrBySite: builder.mutation<CiltMstr[], string>({
+    getCiltMstrBySite: builder.query<CiltMstr[], string>({
       query: (siteId) => `/cilt-mstr/site/${siteId}`,
       transformResponse: (response: { data: CiltMstr[] }) => response.data,
     }),
@@ -44,7 +44,7 @@ export const ciltMstrService = apiSlice.injectEndpoints({
 
 export const {
   useGetCiltMstrAllMutation,
-  useGetCiltMstrBySiteMutation,
+  useGetCiltMstrBySiteQuery, // Changed from Mutation to Query
   useGetCiltMstrByPositionMutation,
   useGetCiltMstrByIdMutation,
   useCreateCiltMstrMutation,

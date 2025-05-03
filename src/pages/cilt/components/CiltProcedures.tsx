@@ -1,15 +1,10 @@
-import React from "react";
-import Strings from "../../../utils/localizations/Strings";
-import { Typography } from "antd";
-
-const { Paragraph } = Typography;
+import React from 'react';
+import CiltCardList from './CiltCardList';
 
 const CiltProcedures = (): React.ReactElement => {
   return (
     <div className="cilt-procedures-container">
-      <Paragraph className="cilt-procedures-description">
-        {Strings.ciltProceduresDescription}
-      </Paragraph>
+      <CiltCardList /> 
     </div>
   );
 };
