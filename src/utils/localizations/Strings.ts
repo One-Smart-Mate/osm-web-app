@@ -26,7 +26,7 @@ class StringsBase {
   static testingEvidenceWrite = "testingEvidenceWrite";
   static healthStatusOk = "healthStatusOk";
   static healthStatusFailed = "healthStatusFailed";
-  
+
   // System Health additional strings
   static sessionPerformance = "sessionPerformance";
   static memoryUsage = "memoryUsage";
@@ -595,8 +595,8 @@ class StringsBase {
 
   // PDF 
   static tagDetails = "tagDetails"
-  static problemDetails= "problemDetails"
-  static sharePDF= "sharePDF"
+  static problemDetails = "problemDetails"
+  static sharePDF = "sharePDF"
   static namePDF = "namePDF"
 
   // Login 
@@ -682,7 +682,7 @@ class StringsBase {
   static positionUpdateError = "positionUpdateError";
   static pleaseSelectStatus = "pleaseSelectStatus";
   static createPositionHere = "createPositionHere";
-  
+
   static selectUsers = "selectUsers";
   static selected = "selected";
   static usersSelected = "usersSelected";
@@ -699,12 +699,12 @@ class StringsBase {
   static notificationReceived = "notificationReceived";
   static expandAll = "expandAll";
   static collapseAll = "collapseAll";
-  
+
   static machinesOfArea = "machinesOfArea";
   static uploadCardAndEvidenceWithDataNet = "uploadCardAndEvidenceWithDataNet";
   static databaseConnectionTest = "databaseConnectionTest";
   static verificationOfServices = "verificationOfServices";
-  
+
   static catalogs = "catalogs";
   static accounts = "accounts";
   static dashboard = "dashboard";
@@ -753,6 +753,41 @@ class StringsBase {
   static ciltTypesDescription = "ciltTypesDescription";
   static ciltFrecuenciesSB = "ciltFrecuenciesSB";
   static ciltFrecuenciesDescription = "ciltFrecuenciesDescription";
+
+  //Cilt Types 
+  static searchbyname = "searchbyname";
+  static addNewCiltType = "addNewCiltType";
+  static errorLoadingNewTypesCilt = "errorLoadingNewTypesCilt"
+  static typeCiltUpdated = "typeCiltUpdated"
+  static errorUpdatingCiltType = "errorUpdatingCiltType"
+  static ciltTypeAdded = "ciltTypeAdded"
+  static errorAddingCiltType = "errorAddingCiltType"
+  static noCiltTypes = "noCiltTypes"
+  static obligatoryName = "obligatoryName"
+  static add = "add"
+  static editCiltType = "editCiltType"
+  static addCiltType = "addCiltType"
+
+
+  //Cilt Frequency 
+  static frequencyCode = "frequencyCode"
+  static addNewCiltFrequency = "addNewCiltFrequency"
+  static editCiltFrequency = "editCiltFrequency"
+  static addCiltFrequency = "addCiltFrequency"
+  static ciltFrequencyAdded = "ciltFrequencyAdded"
+  static ciltFrequencyUpdated = "ciltFrequencyUpdated"
+  static errorAddingCiltFrequency = "errorAddingCiltFrequency"
+  static errorUpdatingCiltFrequency = "errorUpdatingCiltFrequency"
+  static errorLoadingCiltFrequencies = "errorLoadingCiltFrequencies"
+  static noCiltFrequencies = "noCiltFrequencies"
+  static obligatoryCode = "obligatoryCode"
+  static obligatoryDescription = "obligatoryDescription"
+  static searchbyDescriptionOrCode = "searchbyDescriptionOrCode"
+
+
+
+
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -2,7 +2,6 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-//ENGLISH
 const resources = {
   en: {
     translation: {
@@ -14,7 +13,7 @@ const resources = {
 
       requiredLevelId: "Level id required",
       requiredLevelName: "Level Name required",
-      requiredRoute: "Required Route" ,
+      requiredRoute: "Required Route",
       requiredAreaId: "Required Area Id",
       requiredAreaName: "Required Area Name",
       tagsIssued: "Tags issued",
@@ -349,6 +348,7 @@ const resources = {
       actions: "Actions",
       delete: "Delete",
       confirm: "Confirm",
+      add: "Add",
 
       tagVersion: import.meta.env.VITE_AP_VERSION,
       redesign: import.meta.env.VITE_IS_REDESIGN,
@@ -677,7 +677,7 @@ const resources = {
       loadingPositions: "Loading positions...",
       positionFound: "position found",
       positionsFound: "positions found",
-      
+
       // System Health
       systemHealthTitle: "System Health Status",
       testingNotifications: "Testing notifications",
@@ -688,7 +688,7 @@ const resources = {
       testingEvidenceWrite: "Testing evidence write",
       healthStatusOk: "OK",
       healthStatusFailed: "FAILED",
-      
+
       // System Health additional strings
       sessionPerformance: "Your Session Performance",
       memoryUsage: "Memory Usage",
@@ -712,7 +712,7 @@ const resources = {
       positionUpdatedSuccess: "The position has been updated successfully.",
       positionUpdateError: "An error occurred while updating the position. Please try again.",
       pleaseSelectStatus: "Please select a status",
-      
+
       // Table locale strings
       accept: "Accept",
       reset: "Reset",
@@ -725,15 +725,15 @@ const resources = {
       sortDesc: "Click to sort descending",
       sortAsc: "Click to sort ascending",
       cancelSort: "Click to cancel sorting",
-      
+
       // Position table headers
       positionAreaHeader: "Area",
       positionNodeZoneHeader: "Node / Zone",
       positionNameHeader: "Name",
-      positionDescriptionHeader: "Description", 
+      positionDescriptionHeader: "Description",
       positionStatusHeader: "Status",
       positionActionsHeader: "Actions",
-      
+
       success: "Success",
       error: "Error",
       "No position data found for update.": "No position data found for update.",
@@ -745,7 +745,7 @@ const resources = {
       "Select a status": "Select a status",
       "Edit Position: {{name}}": "Edit Position: {{name}}",
       createPositionHere: "Create position here",
-      
+
       // User positions
       loadingUserPositions: "Loading positions",
       noPositionsAvailable: "No positions available",
@@ -771,7 +771,7 @@ const resources = {
       enterEmail: "Enter your email",
       enterPassword: "Enter your password",
       permissionsError: "You do not have permission to access this application.",
-      
+
       // CILT related strings
       createCiltProcedure: "Create CILT procedure",
       createCiltProcedureForPosition: "Create CILT procedure for",
@@ -809,6 +809,35 @@ const resources = {
       ciltTypesDescription: "This page contains information about different types of CILT.",
       ciltFrecuenciesSB: "CILT Frequencies",
       ciltFrecuenciesDescription: "This page contains information about CILT frequencies.",
+
+      //CILT TYPES IN ENGLISH 
+      searchbyname: "Search by name",
+      addNewCiltType: "Add new type of CILT",
+      errorLoadingNewTypesCilt: "Error loading CILT types",
+      typeCiltUpdated: "Type Cilt Updated",
+      errorUpdatingCiltType: "Error updating CILT type",
+      ciltTypeAdded: "Cilt type added",
+      errorAddingCiltType: "Error adding CILT type",
+      noCiltTypes: "There are no CILT types to display.",
+      obligatoryName: "The name is obligatory",
+      editCiltType: "Edit Cilt Type",
+      addCiltType: "Add Cilt Type",
+
+      //CILT FREQUENCIES IN ENGLISH
+      frequencyCode: "Frequency Code",
+      addNewCiltFrequency: "Add New Cilt Frequency",
+      editCiltFrequency: "Edit Cilt Frequency",
+      addCiltFrequency: "Add Frequency",
+      ciltFrequencyAdded: "Frequency added successfully",
+      ciltFrequencyUpdated: "Frequency updated successfully",
+      errorAddingCiltFrequency: "Error adding frequency",
+      errorUpdatingCiltFrequency: "Error updating frequency",
+      errorLoadingCiltFrequencies: "Error loading frequencies",
+      noCiltFrequencies: "No frequencies available",
+      obligatoryCode: "Frequency code is required",
+      obligatoryDescription: "Description is required",
+      searchbyDescriptionOrCode: "Search by code or description"
+
     },
   },
   es: {
@@ -818,10 +847,10 @@ const resources = {
       usersSelected: "Usuarios seleccionados",
       noUsersSelected: "No hay usuarios seleccionados",
       selectedUsers: "Usuarios seleccionados",
-      
+
       requiredLevelId: "Id de nivel requerido",
       requiredLevelName: "Nombre del nivel requerido",
-      requiredRoute: "Ruta de posición requerida" ,
+      requiredRoute: "Ruta de posición requerida",
       requiredAreaId: "Id de área requerido",
       requiredAreaName: "Nombre de área requerido",
       tagsIssued: "Tarjetas emitidas",
@@ -1163,6 +1192,7 @@ const resources = {
       actions: "Acciones",
       delete: "Eliminar",
       confirm: "Confirmar",
+      add: "Agregar",
 
       // Tipo de evidencia
       AUCR: "AUCR",
@@ -1481,7 +1511,7 @@ const resources = {
 
       logImgDesc: "Imagen del Log In",
       enSub: "One Smart Mate",
-      
+
       // Positions Page
       positions: "Posiciones",
       createPosition: "Crear Posición",
@@ -1491,7 +1521,7 @@ const resources = {
       loadingPositions: "Cargando posiciones...",
       positionFound: "posición encontrada",
       positionsFound: "posiciones encontradas",
-      
+
       // System Health
       systemHealthTitle: "Estado de Salud del Sistema",
       testingNotifications: "Probando notificaciones",
@@ -1502,7 +1532,7 @@ const resources = {
       testingEvidenceWrite: "Probando escritura de evidencias",
       healthStatusOk: "OK",
       healthStatusFailed: "FALLO",
-      
+
       // System Health additional strings
       sessionPerformance: "Rendimiento de tu Sesión",
       memoryUsage: "Uso de Memoria",
@@ -1526,7 +1556,7 @@ const resources = {
       positionUpdatedSuccess: "La posición ha sido actualizada exitosamente.",
       positionUpdateError: "Ocurrió un error al actualizar la posición. Por favor intente de nuevo.",
       pleaseSelectStatus: "Por favor seleccione un estado",
-      
+
       // Table locale strings
       accept: "Aceptar",
       reset: "Reiniciar",
@@ -1539,15 +1569,15 @@ const resources = {
       sortDesc: "Click para ordenar descendente",
       sortAsc: "Click para ordenar ascendente",
       cancelSort: "Click para cancelar ordenamiento",
-      
+
       // Position table headers
       positionAreaHeader: "Área",
       positionNodeZoneHeader: "Nodo / Zona",
       positionNameHeader: "Nombre",
-      positionDescriptionHeader: "Descripción", 
+      positionDescriptionHeader: "Descripción",
       positionStatusHeader: "Estado",
       positionActionsHeader: "Acciones",
-      
+
       success: "Éxito",
       error: "Error",
       "No position data found for update.": "No se encontró información de posición para actualizar.",
@@ -1559,7 +1589,7 @@ const resources = {
       "Select a status": "Selecciona un estado",
       "Edit Position: {{name}}": "Editar Posición: {{name}}",
       createPositionHere: "Crear posición aquí",
-      
+
       // User positions
       loadingUserPositions: "Cargando posiciones",
       noPositionsAvailable: "No hay posiciones disponibles",
@@ -1587,7 +1617,7 @@ const resources = {
       enterEmail: "Introduce tu correo electrónico",
       enterPassword: "Introduce tu contraseña",
       permissionsError: 'No tienes permisos para acceder a esta aplicación.',
-      
+
       // CILT related strings
       createCiltProcedure: "Crear procedimiento CILT",
       createCiltProcedureForPosition: "Crear procedimiento CILT para posición",
@@ -1627,6 +1657,35 @@ const resources = {
       ciltTypesDescription: "Esta página contiene información sobre diferentes tipos de CILT.",
       ciltFrecuenciesSB: "Frecuencias de CILT",
       ciltFrecuenciesDescription: "Esta página contiene información sobre frecuencias de CILT.",
+
+      //CILT Types in Spanish
+      searchbyname: "Buscar por nombre",
+      addNewCiltType: "Agregar nuevo tipo de CILT",
+      errorLoadingNewTypesCilt: "Error al cargar los tipos de CILT",
+      typeCiltUpdated: "Tipo de Cilt actualizado",
+      errorUpdatingCiltType: "Error al actualizar el Tipo de CILT",
+      ciltTypeAdded: "Tipo de CILT agregado",
+      errorAddingCiltType: "Error al agregar el Tipo de CILT",
+      noCiltTypes: "No hay tipos de CILT para mostrar",
+      obligatoryName: "El nombre es obligatorio",
+      editCiltType: "Editar Tipo de CILT",
+      addCiltType: "Agregar Tipo de CILT",
+
+      //CILT Frequencies in Spanish
+      frequencyCode: "Código de frecuencia",
+      addNewCiltFrequency: "Agregar nueva frecuencia Cilt",
+      editCiltFrequency: "Editar frecuencia Cilt",
+      addCiltFrequency: "Agregar frecuencia",
+      ciltFrequencyAdded: "Frecuencia agregada exitosamente",
+      ciltFrequencyUpdated: "Frecuencia actualizada exitosamente",
+      errorAddingCiltFrequency: "Error al agregar la frecuencia",
+      errorUpdatingCiltFrequency: "Error al actualizar la frecuencia",
+      errorLoadingCiltFrequencies: "Error al cargar las frecuencias",
+      noCiltFrequencies: "No hay frecuencias disponibles",
+      obligatoryCode: "El código de frecuencia es obligatorio",
+      obligatoryDescription: "La descripción es obligatoria",
+      searchbyDescriptionOrCode: "Buscar por código o descripción"
+
     },
   },
 };
