@@ -31,7 +31,6 @@ const CiltTypes = (): React.ReactElement => {
   const [createCiltType] = useCreateCiltTypeMutation();
   const [updateCiltType] = useUpdateCiltTypeMutation();
 
-  // Cargar los datos al montar el componente
   useEffect(() => {
     fetchCiltTypes();
   }, []);
@@ -52,7 +51,7 @@ const CiltTypes = (): React.ReactElement => {
   const filterData = () => {
     let filtered = ciltTypes;
 
-    // Filtro por texto
+   
     if (searchText) {
       filtered = filtered.filter(
         (item) =>
@@ -60,14 +59,14 @@ const CiltTypes = (): React.ReactElement => {
       );
     }
 
-    // Filtro por status
+
     if (statusFilter !== null) {
       filtered = filtered.filter(
         (item) => (statusFilter ? item.status === 'A' : item.status === 'I')
       );
     }
 
-    // Actualizar el estado de los tipos filtrados
+
     setFilteredCiltTypes(filtered);
   };
 
@@ -83,7 +82,7 @@ const CiltTypes = (): React.ReactElement => {
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
-      status: record.status === 'A',   // Convertir 'A' -> true, 'I' -> false
+      status: record.status === 'A',   
     });
     setIsModalVisible(true);
   };
@@ -97,7 +96,7 @@ const CiltTypes = (): React.ReactElement => {
     form.validateFields().then((values) => {
       const payload = {
         ...values,
-        status: values.status ? 'A' : 'I',   // Convertir true -> 'A', false -> 'I'
+        status: values.status ? 'A' : 'I',  
       };
 
       if (isEditMode && currentRecord) {
