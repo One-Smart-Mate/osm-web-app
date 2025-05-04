@@ -399,7 +399,7 @@ const resources = {
       restrictedAccessMessage:
         "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.",
 
-      // Levels Tree
+      // Árbol de niveles
       close: "Close",
       createLevelBtn: "Create Level",
       updateLevelTree: "Update Level",
@@ -418,13 +418,13 @@ const resources = {
       detailsStatsCancelled: "Cancelled",
       levelOptions: "Level Options",
 
-      // Create Update preclassifier tooltips
+      // Tooltips de preclasificadores
       preclassifierCodeTooltip: "Enter the preclassifier code.",
       preclassifierDescriptionTooltip:
         "Provide a detailed description for the preclassifier. Maximum length: 100 characters.",
       preclassifierStatusTooltip: "Select the status of the preclassifier.",
 
-      // Register Priority Form Tooltips
+      // Tooltips del formulario de prioridades
       priorityCodeTooltip:
         "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.",
       priorityDescriptionTooltip:
@@ -595,7 +595,8 @@ const resources = {
       cardTypeTreeColorPlaceholder: "Pick a color",
 
       // Placeholders for Quantity Fields
-      cardTypeTreeQuantityPicturesPlaceholder: "Enter the number of pictures",
+      cardTypeTreeQuantityPicturesPlaceholder:
+        "Enter the number of pictures",
       cardTypeTreeQuantityVideosPlaceholder: "Enter the number of videos",
       cardTypeTreeQuantityAudiosPlaceholder: "Enter the number of audios",
 
@@ -605,13 +606,15 @@ const resources = {
       cardTypeTreeAtDefinitiveSolution: "At Definitive Solution",
 
       // Error Messages
-      cardTypeTreeRequiredCardTypeName: "Card type name is required",
+      cardTypeTreeRequiredCardTypeName:
+        "Card type name is required",
       cardTypeTreeRequiredDescription: "Description is required",
       cardTypeTreeRequiredResponsableId: "Responsible is required",
       cardTypeTreeRequiredColor: "Color is required",
 
       // Notifications
-      cardTypeTreeSuccessCardTypeUpdated: "Card type successfully updated!",
+      cardTypeTreeSuccessCardTypeUpdated:
+        "Card type successfully updated!",
       cardTypeTreeErrorFetchingData: "Error fetching data",
 
       /* Card Types and Preclassifier tree */
@@ -664,7 +667,6 @@ const resources = {
       sharePDF: "Share PDF",
       namePDF: "Tag details.pdf",
 
-      //Login Refactor
       logImgDesc: "Log In Image",
       enSub: "One Smart Mate",
 
@@ -913,6 +915,136 @@ const resources = {
       ciltMstrListActiveFilter: "Active",
       ciltMstrListSuspendedFilter: "Suspended",
       ciltMstrListCanceledFilter: "Canceled",
+      ciltMstrCreateSequenceButton: "Create Sequence",
+      addFiles: "Add Files",
+      
+      // OPL related strings
+      oplViewModalTitle: "OPL Details",
+      oplGeneralInfo: "General Information",
+      oplTitle: "Title",
+      oplObjective: "Objective",
+      oplCreatedBy: "Created By",
+      oplReviewedBy: "Reviewed By",
+      oplCreationDate: "Creation Date",
+      oplContentPreview: "Content Preview",
+      oplNoDetails: "No details available for this OPL",
+      oplTextType: "Text",
+      oplImageType: "Image",
+      oplVideoType: "Video",
+      oplPdfType: "PDF",
+      oplPlayVideo: "Play Video",
+      oplViewPdf: "View PDF",
+      oplOpenInNewTab: "Open in New Tab",
+      oplPdfPreviewTitle: "PDF Preview",
+      oplVideoPreviewTitle: "Video Preview",
+      oplClose: "Close",
+      
+      // OplTable strings
+      oplTableTitleColumn: "Title",
+      oplTableObjectiveColumn: "Objective",
+      oplTableTypeColumn: "Type",
+      oplTableActionsColumn: "Actions",
+      oplTableViewTooltip: "View OPL",
+      oplTableEditTooltip: "Edit OPL",
+      oplTableOplType: "OPL",
+      oplTableSopType: "SOP",
+      
+      // OplTextForm strings
+      oplTextFormLabel: "Text",
+      oplTextFormPlaceholder: "Enter text content",
+      oplTextFormValidationMessage: "Please enter text content",
+      oplTextFormSubmitButton: "Add Text",
+      
+      // OplMediaUploader strings
+      oplMediaImageTitle: "Click or drag an image to this area to upload",
+      oplMediaImageHint: "Supports JPG, PNG, GIF, etc.",
+      oplMediaImageButton: "Upload Image",
+      oplMediaVideoTitle: "Click or drag a video to this area to upload",
+      oplMediaVideoHint: "Supports MP4, MOV, AVI, etc.",
+      oplMediaVideoButton: "Upload Video",
+      oplMediaPdfTitle: "Click or drag a PDF to this area to upload",
+      oplMediaPdfHint: "Supports PDF files only",
+      oplMediaPdfButton: "Upload PDF",
+      oplMediaDefaultTitle: "Click or drag a file to this area to upload",
+      oplMediaDefaultHint: "Supports various file formats",
+      oplMediaDefaultButton: "Upload File",
+      
+      // OplFormModal strings
+      oplFormModalViewTitle: "View OPL",
+      oplFormModalEditTitle: "Edit OPL",
+      oplFormModalCreateTitle: "Create OPL",
+      oplFormModalCloseButton: "Close",
+      oplFormModalCancelButton: "Cancel",
+      oplFormModalSaveButton: "Save",
+      oplFormTitleLabel: "Title",
+      oplFormTitleRequired: "Please enter a title",
+      oplFormTitlePlaceholder: "Enter OPL title",
+      oplFormObjectiveLabel: "Objective",
+      oplFormObjectiveRequired: "Please enter an objective",
+      oplFormObjectivePlaceholder: "Enter OPL objective",
+      oplFormTypeLabel: "Type",
+      oplFormTypeRequired: "Please select a type",
+      oplFormTypePlaceholder: "Select type",
+      oplFormTypeOpl: "OPL",
+      oplFormTypeSop: "SOP",
+      oplFormCreatorLabel: "Creator",
+      oplFormCreatorPlaceholder: "Select a creator (optional)",
+      oplFormReviewerLabel: "Reviewer",
+      oplFormReviewerPlaceholder: "Select a reviewer (optional)",
+      oplFormNotAssigned: "Not assigned",
+      oplFormUpdateButton: "Update",
+      oplFormCreateButton: "Create",
+      
+      // OplDetailsModal strings
+      oplDetailsModalTitle: "OPL Details: {title}",
+      oplDetailsContentPreview: "Content Preview",
+      oplDetailsNoContent: "No details to display.",
+      oplDetailsAddContent: "Add Content",
+      oplDetailsTextType: "Text",
+      oplDetailsImageType: "Image",
+      oplDetailsVideoType: "Video",
+      oplDetailsPdfType: "PDF",
+      oplDetailsAddText: "Add Text",
+      oplDetailsAddImage: "Add Image",
+      oplDetailsAddVideo: "Add Video",
+      oplDetailsAddPdf: "Add PDF",
+      oplDetailsViewTab: "View",
+      oplDetailsPlayVideo: "Play Video",
+      oplDetailsViewPdf: "View PDF",
+      oplDetailsPdfPreviewTitle: "PDF Preview",
+      oplDetailsVideoPreviewTitle: "Video Preview",
+      oplDetailsClose: "Close",
+      oplDetailsOpenInNewTab: "Open in New Tab",
+      
+      // OplDetailsList strings
+      oplDetailsListNoDetails: "No details to display. Add content using the other tabs.",
+      oplDetailsListOrderColumn: "Order",
+      oplDetailsListTypeColumn: "Type",
+      oplDetailsListContentColumn: "Content",
+      oplDetailsListActionsColumn: "Actions",
+      oplDetailsListTextType: "Text",
+      oplDetailsListImageType: "Image",
+      oplDetailsListVideoType: "Video",
+      oplDetailsListPdfType: "PDF",
+      oplDetailsListViewContent: "View {type}",
+      oplDetailsListNoContent: "No content",
+      
+      oplPageManagementTitle: "OPL Management",
+      oplPageCreateButton: "Create OPL",
+      oplPageEditModalTitle: "Edit OPL",
+      oplPageCreateModalTitle: "Create OPL",
+      
+      oplErrorLoadingList: "Error loading OPL list",
+      oplErrorLoadingUsers: "Error loading users",
+      oplErrorLoadingDetails: "Error loading OPL details",
+      oplSuccessUpdated: "OPL updated successfully",
+      oplSuccessCreated: "OPL created successfully",
+      oplErrorSaving: "Error saving the OPL",
+      oplSuccessTextAdded: "Text detail added successfully",
+      oplErrorAddingText: "Error adding text detail",
+      oplErrorNoFileSelected: "No file selected",
+      oplSuccessMediaAdded: "{type} detail added successfully",
+      oplErrorAddingMedia: "Error adding {type} detail",
     },
   },
   es: {
@@ -1351,9 +1483,9 @@ const resources = {
 
       // Tooltips de formularios basados en SiteEntity
       siteNameTooltip:
-        "Introduce el nombre del sitio. Longitud máxima: 100 caracteres.",
+        "Introduce el nombre del sitio . Longitud máxima: 100 caracteres.",
       siteRfcTooltip:
-        "Introduce el RFC para la empresa asociada al sitio. Debe tener exactamente 13 caracteres.",
+        "Introduce el  RFC para la empresa asociada al sitio. Debe tener exactamente 13 caracteres.",
       siteBusinessNameTooltip:
         "Introduce el nombre comercial legal del sitio, tal como está registrado oficialmente. Longitud máxima: 100 caracteres.",
       siteTypeTooltip:
@@ -1369,7 +1501,7 @@ const resources = {
       sitePositionTooltip:
         "Especifica el puesto o título del contacto (por ejemplo, Gerente, Supervisor). Longitud máxima: 100 caracteres.",
       sitePhoneTooltip:
-        "Proporciona el número de teléfono principal, incluyendo el código de área. Longitud máxima: 13 caracteres.",
+        "Proporciona el número de teléfono principal, incluyendo código de área. Longitud máxima: 13 caracteres.",
       siteExtensionTooltip:
         "Si aplica, especifica la extensión telefónica del contacto. Longitud máxima: 10 caracteres.",
       siteCellularTooltip:
@@ -1398,7 +1530,8 @@ const resources = {
       companyContactNameTooltip: "Nombre del contacto principal.",
       companyPositionTooltip: "Puesto del contacto.",
       companyPhoneTooltip: "Teléfono fijo de la empresa.",
-      companyExtensionTooltip: "Extensión telefónica (si aplica).",
+      companyExtensionTooltip:
+        "Extensión telefónica (si aplica).",
       companyCellularTooltip: "Teléfono móvil principal.",
       companyEmailTooltip: "Correo electrónico oficial de la empresa.",
       companyLogoTooltip: "Sube el logo de la empresa en formato de imagen.",
@@ -1438,32 +1571,32 @@ const resources = {
       quantityVideosCreateTooltip:
         "Especifique el número de videos requeridos en la etapa de creación.",
       videosDurationCreateTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de creación.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de creación.",
       quantityAudiosCreateTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de creación.",
       audiosDurationCreateTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de creación.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de creación.",
       quantityPicturesPsTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de solución provisional.",
       quantityVideosPsTooltip:
         "Especifique el número de videos requeridos en la etapa de solución provisional.",
       videosDurationPsTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de solución provisional.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de solución provisional.",
       quantityAudiosPsTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de solución provisional.",
       audiosDurationPsTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución provisional.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de solución provisional.",
 
       quantityPicturesCloseTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de solución definitiva.",
       quantityVideosCloseTooltip:
         "Especifique el número de videos requeridos en la etapa de solución definitiva.",
       videosDurationCloseTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de solución definitiva.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de solución definitiva.",
       quantityAudiosCloseTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de solución definitiva.",
       audiosDurationCloseTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución definitiva.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de solución definitiva.",
       cardTypeStatusTooltip:
         "Seleccione el estado actual del tipo de Tarjeta. Esto determina si el tipo de Tarjeta está activo o inactivo en el sistema.",
       statusCardTypeTooltip: "Puede cambiar el estado del tipo de Tarjeta",
@@ -1475,7 +1608,7 @@ const resources = {
       notificationsSite: "Sitio",
       notificationsSelectSite: "Seleccione un sitio",
       notificationsRequiredSite: "Debe seleccionar un sitio.",
-      notificationsSelectUsers: "Seleccionar Usuarios",
+      notificationsSelectUsers: "Seleccione Usuarios",
       notificationsRequiredUsers: "Debe seleccionar al menos un usuario.",
       notificationsSave: "Guardar",
       notificationsCancel: "Cancelar",
@@ -1508,7 +1641,7 @@ const resources = {
       cardTypeTreeDescriptionPlaceholder: "Introduce la descripción",
       cardTypeTreeResponsiblePlaceholder: "Selecciona un responsable",
       cardTypeTreeStatusPlaceholder: "Selecciona un estado",
-      cardTypeTreeColorPlaceholder: "Selecciona un color",
+      cardTypeTreeColorPlaceholder: "Pick a color",
 
       // Placeholders for Quantity Fields
       cardTypeTreeQuantityPicturesPlaceholder:
@@ -1553,7 +1686,7 @@ const resources = {
       cardTypesLoadingData: "Cargando datos...",
       cardTypesUpdateCardType: "Editar Tipo de Tarjeta",
       cardTypesCreateCardType: "Crear Tipo de Tarjeta",
-      cardTypesClonePreclassifier: "Clonar Preclasificador",
+      cardTypesClonePreclassifier: "Clonar preclasificador",
       cardTypesErrorFetchingData: "Error al obtener datos",
       cardTypesNoCardTypeIdError:
         "No se encontró el ID del tipo de Tarjeta para crear un preclasificador.",
@@ -1755,32 +1888,32 @@ const resources = {
         "Esta página contiene información sobre frecuencias de CILT.",
 
       //CILT TYPES IN ENGLISH
-      searchbyname: "Buscar por nombre",
-      addNewCiltType: "Agregar nuevo tipo de CILT",
-      errorLoadingNewTypesCilt: "Error al cargar los tipos de CILT",
-      typeCiltUpdated: "Tipo de Cilt actualizado",
-      errorUpdatingCiltType: "Error al actualizar el Tipo de CILT",
-      ciltTypeAdded: "Tipo de CILT agregado",
-      errorAddingCiltType: "Error al agregar el Tipo de CILT",
-      noCiltTypes: "No hay tipos de CILT para mostrar",
-      obligatoryName: "El nombre es obligatorio",
-      editCiltType: "Editar Tipo de CILT",
-      addCiltType: "Agregar Tipo de CILT",
+      searchbyname: "Search by name",
+      addNewCiltType: "Add new type of CILT",
+      errorLoadingNewTypesCilt: "Error loading CILT types",
+      typeCiltUpdated: "Type Cilt Updated",
+      errorUpdatingCiltType: "Error updating CILT type",
+      ciltTypeAdded: "Cilt type added",
+      errorAddingCiltType: "Error adding CILT type",
+      noCiltTypes: "There are no CILT types to display.",
+      obligatoryName: "The name is obligatory",
+      editCiltType: "Edit Cilt Type",
+      addCiltType: "Add Cilt Type",
 
       //CILT FREQUENCIES IN ENGLISH
-      frequencyCode: "Código de frecuencia",
-      addNewCiltFrequency: "Agregar nueva frecuencia Cilt",
-      editCiltFrequency: "Editar frecuencia Cilt",
-      addCiltFrequency: "Agregar frecuencia",
-      ciltFrequencyAdded: "Frecuencia agregada exitosamente",
-      ciltFrequencyUpdated: "Frecuencia actualizada exitosamente",
-      errorAddingCiltFrequency: "Error al agregar la frecuencia",
-      errorUpdatingCiltFrequency: "Error al actualizar la frecuencia",
-      errorLoadingCiltFrequencies: "Error al cargar las frecuencias",
-      noCiltFrequencies: "No hay frecuencias disponibles",
-      obligatoryCode: "Código de frecuencia es obligatorio",
-      obligatoryDescription: "Descripción es obligatoria",
-      searchbyDescriptionOrCode: "Buscar por código o descripción",
+      frequencyCode: "Frequency Code",
+      addNewCiltFrequency: "Add New Cilt Frequency",
+      editCiltFrequency: "Edit Cilt Frequency",
+      addCiltFrequency: "Add Frequency",
+      ciltFrequencyAdded: "Frequency added successfully",
+      ciltFrequencyUpdated: "Frequency updated successfully",
+      errorAddingCiltFrequency: "Error adding frequency",
+      errorUpdatingCiltFrequency: "Error updating frequency",
+      errorLoadingCiltFrequencies: "Error loading frequencies",
+      noCiltFrequencies: "No frequencies available",
+      obligatoryCode: "Frequency code is required",
+      obligatoryDescription: "Description is required",
+      searchbyDescriptionOrCode: "Search by code or description",
 
       // CILT Master strings
       ciltMstrPageTitle: "Procedimientos CILT",
@@ -1798,7 +1931,7 @@ const resources = {
       ciltMstrNameRequired: "Por favor ingrese el nombre!",
       ciltMstrDescriptionLabel: "Descripción",
       ciltMstrStandardTimeLabel: "Tiempo Estándar (min)",
-      ciltMstrInvalidNumberMessage: "Ingrese un número válido",
+      ciltMstrInvalidNumberMessage: "Por favor ingrese un número válido",
       ciltMstrLearningTimeLabel: "Tiempo Aprendizaje",
       ciltMstrStatusLabel: "Estado",
       ciltMstrStatusRequired: "Por favor seleccione un estado!",
@@ -1839,6 +1972,136 @@ const resources = {
       ciltMstrListActiveFilter: "Activo",
       ciltMstrListSuspendedFilter: "Suspendido",
       ciltMstrListCanceledFilter: "Cancelado",
+      ciltMstrCreateSequenceButton: "Crear Secuencia",
+      addFiles: "Agregar archivos",
+      
+      // OPL related strings
+      oplViewModalTitle: "Detalles del OPL",
+      oplGeneralInfo: "Información general",
+      oplTitle: "Título",
+      oplObjective: "Objetivo",
+      oplCreatedBy: "Creado por",
+      oplReviewedBy: "Revisado por",
+      oplCreationDate: "Fecha de creación",
+      oplContentPreview: "Vista previa del contenido",
+      oplNoDetails: "No hay detalles disponibles para este OPL",
+      oplTextType: "Texto",
+      oplImageType: "Imagen",
+      oplVideoType: "Video",
+      oplPdfType: "PDF",
+      oplPlayVideo: "Reproducir video",
+      oplViewPdf: "Ver PDF",
+      oplOpenInNewTab: "Abrir en una nueva pestaña",
+      oplPdfPreviewTitle: "Vista previa de PDF",
+      oplVideoPreviewTitle: "Vista previa de video",
+      oplClose: "Cerrar",
+      
+      // OplTable strings
+      oplTableTitleColumn: "Título",
+      oplTableObjectiveColumn: "Objetivo",
+      oplTableTypeColumn: "Tipo",
+      oplTableActionsColumn: "Acciones",
+      oplTableViewTooltip: "Ver OPL",
+      oplTableEditTooltip: "Editar OPL",
+      oplTableOplType: "OPL",
+      oplTableSopType: "SOP",
+      
+      // OplTextForm strings
+      oplTextFormLabel: "Texto",
+      oplTextFormPlaceholder: "Ingrese contenido de texto",
+      oplTextFormValidationMessage: "Por favor, ingrese contenido de texto",
+      oplTextFormSubmitButton: "Agregar texto",
+      
+      // OplMediaUploader strings
+      oplMediaImageTitle: "Haz clic o arrastra una imagen a esta área para subirla",
+      oplMediaImageHint: "Compatible con JPG, PNG, GIF, etc.",
+      oplMediaImageButton: "Subir imagen",
+      oplMediaVideoTitle: "Haz clic o arrastra un video a esta área para subirlo",
+      oplMediaVideoHint: "Compatible con MP4, MOV, AVI, etc.",
+      oplMediaVideoButton: "Subir video",
+      oplMediaPdfTitle: "Haz clic o arrastra un PDF a esta área para subirlo",
+      oplMediaPdfHint: "Compatible con archivos PDF solo",
+      oplMediaPdfButton: "Subir PDF",
+      oplMediaDefaultTitle: "Haz clic o arrastra un archivo a esta área para subirlo",
+      oplMediaDefaultHint: "Compatible con varios formatos de archivo",
+      oplMediaDefaultButton: "Subir archivo",
+      
+      // OplFormModal strings
+      oplFormModalViewTitle: "Ver OPL",
+      oplFormModalEditTitle: "Editar OPL",
+      oplFormModalCreateTitle: "Crear OPL",
+      oplFormModalCloseButton: "Cerrar",
+      oplFormModalCancelButton: "Cancelar",
+      oplFormModalSaveButton: "Guardar",
+      oplFormTitleLabel: "Título",
+      oplFormTitleRequired: "Por favor ingrese un título",
+      oplFormTitlePlaceholder: "Ingrese título de OPL",
+      oplFormObjectiveLabel: "Objetivo",
+      oplFormObjectiveRequired: "Por favor ingrese un objetivo",
+      oplFormObjectivePlaceholder: "Ingrese objetivo de OPL",
+      oplFormTypeLabel: "Tipo",
+      oplFormTypeRequired: "Por favor seleccione un tipo",
+      oplFormTypePlaceholder: "Seleccione tipo",
+      oplFormTypeOpl: "OPL",
+      oplFormTypeSop: "SOP",
+      oplFormCreatorLabel: "Creador",
+      oplFormCreatorPlaceholder: "Seleccione un creador (opcional)",
+      oplFormReviewerLabel: "Revisor",
+      oplFormReviewerPlaceholder: "Seleccione un revisor (opcional)",
+      oplFormNotAssigned: "No asignado",
+      oplFormUpdateButton: "Actualizar",
+      oplFormCreateButton: "Crear",
+      
+      // OplDetailsModal strings
+      oplDetailsModalTitle: "Detalles del OPL: {title}",
+      oplDetailsContentPreview: "Vista previa del contenido",
+      oplDetailsNoContent: "No hay detalles disponibles para este OPL.",
+      oplDetailsAddContent: "Agregar contenido",
+      oplDetailsTextType: "Texto",
+      oplDetailsImageType: "Imagen",
+      oplDetailsVideoType: "Video",
+      oplDetailsPdfType: "PDF",
+      oplDetailsAddText: "Agregar texto",
+      oplDetailsAddImage: "Agregar imagen",
+      oplDetailsAddVideo: "Agregar video",
+      oplDetailsAddPdf: "Agregar PDF",
+      oplDetailsViewTab: "Ver",
+      oplDetailsPlayVideo: "Reproducir video",
+      oplDetailsViewPdf: "Ver PDF",
+      oplDetailsPdfPreviewTitle: "Vista previa de PDF",
+      oplDetailsVideoPreviewTitle: "Vista previa de video",
+      oplDetailsClose: "Cerrar",
+      oplDetailsOpenInNewTab: "Abrir en una nueva pestaña",
+      
+      // OplDetailsList strings
+      oplDetailsListNoDetails: "No hay detalles disponibles para mostrar. Agregue contenido utilizando las otras pestañas.",
+      oplDetailsListOrderColumn: "Orden",
+      oplDetailsListTypeColumn: "Tipo",
+      oplDetailsListContentColumn: "Contenido",
+      oplDetailsListActionsColumn: "Acciones",
+      oplDetailsListTextType: "Texto",
+      oplDetailsListImageType: "Imagen",
+      oplDetailsListVideoType: "Video",
+      oplDetailsListPdfType: "PDF",
+      oplDetailsListViewContent: "Ver {type}",
+      oplDetailsListNoContent: "No hay contenido",
+      
+      oplPageManagementTitle: "Administración de OPL",
+      oplPageCreateButton: "Crear OPL",
+      oplPageEditModalTitle: "Editar OPL",
+      oplPageCreateModalTitle: "Crear OPL",
+      
+      oplErrorLoadingList: "Error al cargar la lista de OPL",
+      oplErrorLoadingUsers: "Error al cargar usuarios",
+      oplErrorLoadingDetails: "Error al cargar detalles de OPL",
+      oplSuccessUpdated: "OPL actualizado con éxito",
+      oplSuccessCreated: "OPL creado con éxito",
+      oplErrorSaving: "Error al guardar OPL",
+      oplSuccessTextAdded: "Detalle de texto agregado con éxito",
+      oplErrorAddingText: "Error al agregar detalle de texto",
+      oplErrorNoFileSelected: "No se seleccionó un archivo",
+      oplSuccessMediaAdded: "{type} agregado con éxito",
+      oplErrorAddingMedia: "Error al agregar {type}",
     },
   },
 };

@@ -47,4 +47,5 @@ export const handleUploadToFirebaseStorage = async (directory: string, file: Upl
 
 export const FIREBASE_COMPANY_DIRECTORY = "company"
 export const FIREBASE_SITE_DIRECTORY = "site"
+export const FIREBASE_OPL_DIRECTORY = "opl"
 export const FIREBASE_IMAGE_FILE_TYPE = "jpg"

@@ -816,6 +816,133 @@ class StringsBase {
   static obligatoryDescription = "obligatoryDescription";
   static searchbyDescriptionOrCode = "searchbyDescriptionOrCode";
 
+  // OplDetailsList strings
+  static oplDetailsListNoDetails = "oplDetailsListNoDetails";
+  static oplDetailsListOrderColumn = "oplDetailsListOrderColumn";
+  static oplDetailsListTypeColumn = "oplDetailsListTypeColumn";
+  static oplDetailsListContentColumn = "oplDetailsListContentColumn";
+  static oplDetailsListActionsColumn = "oplDetailsListActionsColumn";
+  static oplDetailsListTextType = "oplDetailsListTextType";
+  static oplDetailsListImageType = "oplDetailsListImageType";
+  static oplDetailsListVideoType = "oplDetailsListVideoType";
+  static oplDetailsListPdfType = "oplDetailsListPdfType";
+  static oplDetailsListViewContent = "oplDetailsListViewContent";
+  static oplDetailsListNoContent = "oplDetailsListNoContent";
+
+  // OplTable related strings
+  static oplPageTitle = "oplPageTitle";
+  static oplCreateSuccess = "oplCreateSuccess";
+  static oplUpdateSuccess = "oplUpdateSuccess";
+  static oplDeleteSuccess = "oplDeleteSuccess";
+  static oplLoadError = "oplLoadError";
+  static oplSaveError = "oplSaveError";
+  static oplDeleteError = "oplDeleteError";
+  static oplDetailsTitle = "oplDetailsTitle";
+  static oplDetailsLoadError = "oplDetailsLoadError";
+  static oplDetailsSaveSuccess = "oplDetailsSaveSuccess";
+  static oplDetailsSaveError = "oplDetailsSaveError";
+  static oplDetailsDeleteSuccess = "oplDetailsDeleteSuccess";
+  static oplDetailsDeleteError = "oplDetailsDeleteError";
+  static addFiles = "addFiles";
+  static oplViewModalTitle = "oplViewModalTitle";
+  static oplGeneralInfo = "oplGeneralInfo";
+  static oplTitle = "oplTitle";
+  static oplObjective = "oplObjective";
+  static oplCreatedBy = "oplCreatedBy";
+  static oplReviewedBy = "oplReviewedBy";
+  static oplCreationDate = "oplCreationDate";
+  static oplContentPreview = "oplContentPreview";
+  static oplNoDetails = "oplNoDetails";
+  static oplTextType = "oplTextType";
+  static oplImageType = "oplImageType";
+  static oplVideoType = "oplVideoType";
+  static oplPdfType = "oplPdfType";
+  static oplPlayVideo = "oplPlayVideo";
+  static oplViewPdf = "oplViewPdf";
+  static oplOpenInNewTab = "oplOpenInNewTab";
+  static oplPdfPreviewTitle = "oplPdfPreviewTitle";
+  static oplVideoPreviewTitle = "oplVideoPreviewTitle";
+  static oplClose = "oplClose";
+
+  // OplTable strings
+  static oplTableTitleColumn = "oplTableTitleColumn";
+  static oplTableObjectiveColumn = "oplTableObjectiveColumn";
+  static oplTableTypeColumn = "oplTableTypeColumn";
+  static oplTableActionsColumn = "oplTableActionsColumn";
+  static oplTableViewTooltip = "oplTableViewTooltip";
+  static oplTableEditTooltip = "oplTableEditTooltip";
+  static oplTableOplType = "oplTableOplType";
+  static oplTableSopType = "oplTableSopType";
+
+  // OplTextForm strings
+  static oplTextFormLabel = "oplTextFormLabel";
+  static oplTextFormPlaceholder = "oplTextFormPlaceholder";
+  static oplTextFormValidationMessage = "oplTextFormValidationMessage";
+  static oplTextFormSubmitButton = "oplTextFormSubmitButton";
+
+  // OplMediaUploader strings
+  static oplMediaImageTitle = "oplMediaImageTitle";
+  static oplMediaImageHint = "oplMediaImageHint";
+  static oplMediaImageButton = "oplMediaImageButton";
+  static oplMediaVideoTitle = "oplMediaVideoTitle";
+  static oplMediaVideoHint = "oplMediaVideoHint";
+  static oplMediaVideoButton = "oplMediaVideoButton";
+  static oplMediaPdfTitle = "oplMediaPdfTitle";
+  static oplMediaPdfHint = "oplMediaPdfHint";
+  static oplMediaPdfButton = "oplMediaPdfButton";
+  static oplMediaDefaultTitle = "oplMediaDefaultTitle";
+  static oplMediaDefaultHint = "oplMediaDefaultHint";
+  static oplMediaDefaultButton = "oplMediaDefaultButton";
+
+  // OplFormModal strings
+  static oplFormModalViewTitle = "oplFormModalViewTitle";
+  static oplFormModalEditTitle = "oplFormModalEditTitle";
+  static oplFormModalCreateTitle = "oplFormModalCreateTitle";
+  static oplFormModalCloseButton = "oplFormModalCloseButton";
+  static oplFormModalCancelButton = "oplFormModalCancelButton";
+  static oplFormModalSaveButton = "oplFormModalSaveButton";
+
+  // OplForm strings
+  static oplFormTitleLabel = "oplFormTitleLabel";
+  static oplFormTitleRequired = "oplFormTitleRequired";
+  static oplFormTitlePlaceholder = "oplFormTitlePlaceholder";
+  static oplFormObjectiveLabel = "oplFormObjectiveLabel";
+  static oplFormObjectiveRequired = "oplFormObjectiveRequired";
+  static oplFormObjectivePlaceholder = "oplFormObjectivePlaceholder";
+  static oplFormTypeLabel = "oplFormTypeLabel";
+  static oplFormTypeRequired = "oplFormTypeRequired";
+  static oplFormTypePlaceholder = "oplFormTypePlaceholder";
+  static oplFormTypeOpl = "oplFormTypeOpl";
+  static oplFormTypeSop = "oplFormTypeSop";
+  static oplFormCreatorLabel = "oplFormCreatorLabel";
+  static oplFormCreatorPlaceholder = "oplFormCreatorPlaceholder";
+  static oplFormReviewerLabel = "oplFormReviewerLabel";
+  static oplFormReviewerPlaceholder = "oplFormReviewerPlaceholder";
+  static oplFormNotAssigned = "oplFormNotAssigned";
+  static oplFormUpdateButton = "oplFormUpdateButton";
+  static oplFormCreateButton = "oplFormCreateButton";
+
+  // OplDetailsModal strings
+  static oplDetailsModalTitle = "oplDetailsModalTitle";
+  static oplDetailsContentPreview = "oplDetailsContentPreview";
+  static oplDetailsNoContent = "oplDetailsNoContent";
+  static oplDetailsAddContent = "oplDetailsAddContent";
+  static oplDetailsTextType = "oplDetailsTextType";
+  static oplDetailsImageType = "oplDetailsImageType";
+  static oplDetailsVideoType = "oplDetailsVideoType";
+  static oplDetailsPdfType = "oplDetailsPdfType";
+  static oplDetailsAddText = "oplDetailsAddText";
+  static oplDetailsAddImage = "oplDetailsAddImage";
+  static oplDetailsAddVideo = "oplDetailsAddVideo";
+  static oplDetailsAddPdf = "oplDetailsAddPdf";
+  static oplDetailsViewTab = "oplDetailsViewTab";
+  static oplDetailsPlayVideo = "oplDetailsPlayVideo";
+  static oplDetailsViewPdf = "oplDetailsViewPdf";
+  static oplDetailsPdfPreviewTitle = "oplDetailsPdfPreviewTitle";
+  static oplDetailsVideoPreviewTitle = "oplDetailsVideoPreviewTitle";
+  static oplDetailsClose = "oplDetailsClose";
+  static oplDetailsOpenInNewTab = "oplDetailsOpenInNewTab";
+
   // CILT Edit Modal strings
   static ciltMstrEditModalTitle = "ciltMstrEditModalTitle";
   static ciltMstrSaveChangesButton = "ciltMstrSaveChangesButton";
@@ -866,6 +993,24 @@ class StringsBase {
   static ciltMstrListActiveFilter = "ciltMstrListActiveFilter";
   static ciltMstrListSuspendedFilter = "ciltMstrListSuspendedFilter";
   static ciltMstrListCanceledFilter = "ciltMstrListCanceledFilter";
+  static ciltMstrCreateSequenceButton = "ciltMstrCreateSequenceButton";
+
+  // Opl page strings
+  static oplPageManagementTitle = "oplPageManagementTitle";
+  static oplPageCreateButton = "oplPageCreateButton";
+  static oplPageEditModalTitle = "oplPageEditModalTitle";
+  static oplPageCreateModalTitle = "oplPageCreateModalTitle";
+  static oplErrorLoadingList = "oplErrorLoadingList";
+  static oplErrorLoadingUsers = "oplErrorLoadingUsers";
+  static oplErrorLoadingDetails = "oplErrorLoadingDetails";
+  static oplSuccessUpdated = "oplSuccessUpdated";
+  static oplSuccessCreated = "oplSuccessCreated";
+  static oplErrorSaving = "oplErrorSaving";
+  static oplSuccessTextAdded = "oplSuccessTextAdded";
+  static oplErrorAddingText = "oplErrorAddingText";
+  static oplErrorNoFileSelected = "oplErrorNoFileSelected";
+  static oplSuccessMediaAdded = "oplSuccessMediaAdded";
+  static oplErrorAddingMedia = "oplErrorAddingMedia";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

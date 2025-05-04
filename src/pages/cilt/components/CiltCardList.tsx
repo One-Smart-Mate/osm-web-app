@@ -7,6 +7,7 @@ import { BsPencilSquare, BsEye, BsListTask } from 'react-icons/bs';
 import { getStatusAndText } from '../../../utils/Extensions';
 import CiltEditModal from './CiltEditModal';
 import CiltDetailsModal from './CiltDetailsModal';
+import CreateCiltSequenceModal from './CreateCiltSequenceModal';
 import type { TablePaginationConfig } from 'antd/es/table';
 import type { ColumnsType } from 'antd/es/table';
 import Strings from '../../../utils/localizations/Strings';
@@ -22,6 +23,8 @@ const CiltCardList: React.FC = () => {
   const [editingCilt, setEditingCilt] = useState<CiltMstr | null>(null);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [detailsCilt, setDetailsCilt] = useState<CiltMstr | null>(null);
+  const [isCreateSequenceModalVisible, setIsCreateSequenceModalVisible] = useState(false);
+  const [sequenceCilt, setSequenceCilt] = useState<CiltMstr | null>(null);
 
   const { data: ciltProcedures = [], isLoading, isError, error, refetch } = useGetCiltMstrBySiteQuery(siteId, {
     skip: !siteId,
@@ -56,6 +59,22 @@ const CiltCardList: React.FC = () => {
   const handleDetailsCancel = () => {
     setIsDetailsModalVisible(false);
     setDetailsCilt(null);
+  };
+  
+  const showCreateSequenceModal = (cilt: CiltMstr) => {
+    setSequenceCilt(cilt);
+    setIsCreateSequenceModalVisible(true);
+  };
+
+  const handleCreateSequenceCancel = () => {
+    setIsCreateSequenceModalVisible(false);
+    setSequenceCilt(null);
+  };
+
+  const handleCreateSequenceSuccess = () => {
+    setIsCreateSequenceModalVisible(false);
+    setSequenceCilt(null);
+    refetch();
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
@@ -143,7 +162,8 @@ const CiltCardList: React.FC = () => {
           <Button 
             type="text" 
             icon={<BsListTask />}
-            title={Strings.ciltMstrListSequencesAction}
+            onClick={() => showCreateSequenceModal(record)}
+            title={Strings.ciltMstrCreateSequenceButton}
           />
         </Space>
       ),
@@ -195,6 +215,14 @@ const CiltCardList: React.FC = () => {
         visible={isDetailsModalVisible}
         cilt={detailsCilt}
         onCancel={handleDetailsCancel}
+      />
+      
+      {/* Create Sequence Modal */}
+      <CreateCiltSequenceModal
+        visible={isCreateSequenceModalVisible}
+        cilt={sequenceCilt}
+        onCancel={handleCreateSequenceCancel}
+        onSuccess={handleCreateSequenceSuccess}
       />
     </>
   );

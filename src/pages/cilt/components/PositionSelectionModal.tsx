@@ -32,12 +32,23 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
     skip: !siteId || !visible,
   });
 
-  // Update filtered positions when positions data changes
+  // Update filtered positions when positions data changes or when the modal becomes visible
   useEffect(() => {
-    if (positions) {
-      setFilteredPositions(positions);
+    if (positions && positions.length > 0) {
+      // Solo actualizar si hay posiciones y el texto de búsqueda está vacío
+      // o si el componente acaba de montarse/hacerse visible
+      if (searchText === '') {
+        setFilteredPositions(positions);
+      } else {
+        // Si hay texto de búsqueda, aplicar el filtro
+        const filtered = positions.filter(
+          (position) =>
+            position.name?.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setFilteredPositions(filtered);
+      }
     }
-  }, [positions]);
+  }, [visible, positions]);
 
   // Handle search input change
   const handleSearch = (value: string) => {
