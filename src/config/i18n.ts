@@ -2,7 +2,6 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-//ENGLISH
 const resources = {
   en: {
     translation: {
@@ -14,7 +13,7 @@ const resources = {
 
       requiredLevelId: "Level id required",
       requiredLevelName: "Level Name required",
-      requiredRoute: "Required Route" ,
+      requiredRoute: "Required Route",
       requiredAreaId: "Required Area Id",
       requiredAreaName: "Required Area Name",
       tagsIssued: "Tags issued",
@@ -349,6 +348,7 @@ const resources = {
       actions: "Actions",
       delete: "Delete",
       confirm: "Confirm",
+      add: "Add",
 
       tagVersion: import.meta.env.VITE_AP_VERSION,
       redesign: import.meta.env.VITE_IS_REDESIGN,
@@ -399,7 +399,7 @@ const resources = {
       restrictedAccessMessage:
         "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.",
 
-      // Levels Tree
+      // Árbol de niveles
       close: "Close",
       createLevelBtn: "Create Level",
       updateLevelTree: "Update Level",
@@ -418,13 +418,13 @@ const resources = {
       detailsStatsCancelled: "Cancelled",
       levelOptions: "Level Options",
 
-      // Create Update preclassifier tooltips
+      // Tooltips de preclasificadores
       preclassifierCodeTooltip: "Enter the preclassifier code.",
       preclassifierDescriptionTooltip:
         "Provide a detailed description for the preclassifier. Maximum length: 100 characters.",
       preclassifierStatusTooltip: "Select the status of the preclassifier.",
 
-      // Register Priority Form Tooltips
+      // Tooltips del formulario de prioridades
       priorityCodeTooltip:
         "A unique alphanumeric code representing the priority (e.g., '7D' for seven days). Maximum 4 characters.",
       priorityDescriptionTooltip:
@@ -664,7 +664,6 @@ const resources = {
       sharePDF: "Share PDF",
       namePDF: "Tag details.pdf",
 
-      //Login Refactor
       logImgDesc: "Log In Image",
       enSub: "One Smart Mate",
 
@@ -677,7 +676,7 @@ const resources = {
       loadingPositions: "Loading positions...",
       positionFound: "position found",
       positionsFound: "positions found",
-      
+
       // System Health
       systemHealthTitle: "System Health Status",
       testingNotifications: "Testing notifications",
@@ -688,7 +687,7 @@ const resources = {
       testingEvidenceWrite: "Testing evidence write",
       healthStatusOk: "OK",
       healthStatusFailed: "FAILED",
-      
+
       // System Health additional strings
       sessionPerformance: "Your Session Performance",
       memoryUsage: "Memory Usage",
@@ -702,17 +701,20 @@ const resources = {
       noUsersAvailableForSite: "No users available for this site",
       positionName: "Position name",
       positionDescription: "Position description",
-      selectUsersForPosition: "Select users that will be assigned to this position",
+      selectUsersForPosition:
+        "Select users that will be assigned to this position",
       cancelPosition: "Cancel",
       updatePositionTitle: "Edit Position: {{name}}",
       selectStatus: "Select a status",
       positionNameMaxLength: "The name cannot exceed 45 characters",
-      positionDescriptionMaxLength: "The description cannot exceed 100 characters",
+      positionDescriptionMaxLength:
+        "The description cannot exceed 100 characters",
       noPositionData: "No position data found for update.",
       positionUpdatedSuccess: "The position has been updated successfully.",
-      positionUpdateError: "An error occurred while updating the position. Please try again.",
+      positionUpdateError:
+        "An error occurred while updating the position. Please try again.",
       pleaseSelectStatus: "Please select a status",
-      
+
       // Table locale strings
       accept: "Accept",
       reset: "Reset",
@@ -725,34 +727,40 @@ const resources = {
       sortDesc: "Click to sort descending",
       sortAsc: "Click to sort ascending",
       cancelSort: "Click to cancel sorting",
-      
+
       // Position table headers
       positionAreaHeader: "Area",
       positionNodeZoneHeader: "Node / Zone",
       positionNameHeader: "Name",
-      positionDescriptionHeader: "Description", 
+      positionDescriptionHeader: "Description",
       positionStatusHeader: "Status",
       positionActionsHeader: "Actions",
-      
+
       success: "Success",
       error: "Error",
-      "No position data found for update.": "No position data found for update.",
-      "The position has been updated successfully.": "The position has been updated successfully.",
-      "An error occurred while updating the position. Please try again.": "An error occurred while updating the position. Please try again.",
-      "The name cannot exceed 45 characters": "The name cannot exceed 45 characters",
-      "The description cannot exceed 100 characters": "The description cannot exceed 100 characters",
+      "No position data found for update.":
+        "No position data found for update.",
+      "The position has been updated successfully.":
+        "The position has been updated successfully.",
+      "An error occurred while updating the position. Please try again.":
+        "An error occurred while updating the position. Please try again.",
+      "The name cannot exceed 45 characters":
+        "The name cannot exceed 45 characters",
+      "The description cannot exceed 100 characters":
+        "The description cannot exceed 100 characters",
       "Please select a status": "Please select a status",
       "Select a status": "Select a status",
       "Edit Position: {{name}}": "Edit Position: {{name}}",
       createPositionHere: "Create position here",
-      
+
       // User positions
       loadingUserPositions: "Loading positions",
       noPositionsAvailable: "No positions available",
       userPositions: "Positions",
       confirmCloneLevel: "Confirm Clone Level",
       confirmCloneLevelMessage: "Are you sure you want to clone the level?. ",
-      levelSubLebelsWarning: "If you clone a level, all its sub-levels will also be cloned.",
+      levelSubLebelsWarning:
+        "If you clone a level, all its sub-levels will also be cloned.",
       defaultNotificationTitle: "Notification",
       defaultNotificationMessage: "You have received a new notification",
       notificationReceived: "Notification received",
@@ -770,7 +778,407 @@ const resources = {
       technicalSupport: "Technical Support",
       enterEmail: "Enter your email",
       enterPassword: "Enter your password",
-      permissionsError: "You do not have permission to access this application.",
+      permissionsError:
+        "You do not have permission to access this application.",
+
+      // CILT related strings
+      createCiltProcedure: "Create CILT procedure",
+      createCiltProcedureForPosition: "Create CILT procedure for",
+      ciltName: "CILT name",
+      registerCiltNameRequiredValidation: "Please enter the CILT name",
+      registerCiltNameMaxLengthValidation: "Name cannot exceed 100 characters",
+      registerCiltNamePlaceholer: "Enter CILT name",
+      ciltDescription: "CILT description",
+      registerCiltDescriptionRequiredValidation:
+        "Please enter the CILT description",
+      registerCiltDescriptionMaxLengthValidation:
+        "Description cannot exceed 500 characters",
+      registerCiltDescriptionPlaceholer: "Enter CILT description",
+      standardTime: "Standard time",
+      registerCiltStandardTimeRequiredValidation:
+        "Please enter the standard time",
+      registerCiltStandardTimePlaceholer: "Standard time",
+      learningTime: "Learning time",
+      registerCiltLearningTimeRequiredValidation:
+        "Please enter the learning time",
+      registerCiltLearningTimePlaceholer: "Learning time",
+      reviewer: "Reviewer",
+      registerCiltReviewerRequiredValidation: "Please enter the reviewer",
+      registerCiltReviewerPlaceholer: "Select a reviewer",
+      approver: "Approver",
+      registerCiltApproverRequiredValidation: "Please enter the approver",
+      registerCiltApproverPlaceholer: "Select an approver",
+      layoutImage: "Layout Image",
+      registerCiltLayoutImageRequiredValidation: "Please upload a layout image",
+      imageUploadError: "Only image files are allowed",
+      selectCreator: "Select a creator",
+      selectReviewer: "Select a reviewer",
+      selectApprover: "Select an approver",
+      ciltProceduresSB: "CILT Procedures",
+      ciltProceduresDescription:
+        "This page contains information about CILT procedures and their implementation.",
+      oplSB: "OPL",
+      oplDescription:
+        "This page contains information about One Point Lessons (OPL).",
+      ciltTypesSB: "CILT Types",
+      ciltTypesDescription:
+        "This page contains information about different types of CILT.",
+      ciltFrecuenciesSB: "CILT Frequencies",
+      ciltFrecuenciesDescription:
+        "This page contains information about CILT frequencies.",
+
+      //CILT TYPES IN ENGLISH
+      searchbyname: "Search by name",
+      addNewCiltType: "Add new type of CILT",
+      errorLoadingNewTypesCilt: "Error loading CILT types",
+      typeCiltUpdated: "Type Cilt Updated",
+      errorUpdatingCiltType: "Error updating CILT type",
+      ciltTypeAdded: "Cilt type added",
+      errorAddingCiltType: "Error adding CILT type",
+      noCiltTypes: "There are no CILT types to display.",
+      obligatoryName: "The name is obligatory",
+      editCiltType: "Edit Cilt Type",
+      addCiltType: "Add Cilt Type",
+
+      //CILT FREQUENCIES IN ENGLISH
+      frequencyCode: "Frequency Code",
+      addNewCiltFrequency: "Add New Cilt Frequency",
+      editCiltFrequency: "Edit Cilt Frequency",
+      addCiltFrequency: "Add Frequency",
+      ciltFrequencyAdded: "Frequency added successfully",
+      ciltFrequencyUpdated: "Frequency updated successfully",
+      errorAddingCiltFrequency: "Error adding frequency",
+      errorUpdatingCiltFrequency: "Error updating frequency",
+      errorLoadingCiltFrequencies: "Error loading frequencies",
+      noCiltFrequencies: "No frequencies available",
+      obligatoryCode: "Frequency code is required",
+      obligatoryDescription: "Description is required",
+      searchbyDescriptionOrCode: "Search by code or description",
+
+      // CILT Master strings
+      ciltMstrPageTitle: "CILT Procedures",
+      ciltMstrCreateSuccess: "CILT procedure created successfully",
+      ciltMstrSelectPositionTitle: "Select a position",
+      ciltMstrCreateButtonLabel: "Create CILT procedure",
+      ciltMstrCreateModalTitle: "Create CILT procedure",
+      ciltMstrPositionLabel: "Position",
+      // CILT Edit Modal strings
+      ciltMstrEditModalTitle: "Edit CILT",
+      ciltMstrSaveChangesButton: "Save Changes",
+      ciltMstrCancelButton: "Cancel",
+      ciltMstrUpdateError: "Error updating. Please try again.",
+      ciltMstrNameLabel: "CILT Name",
+      ciltMstrNameRequired: "Please enter the name!",
+      ciltMstrDescriptionLabel: "Description",
+      ciltMstrStandardTimeLabel: "Standard Time (min)",
+      ciltMstrInvalidNumberMessage: "Please enter a valid number",
+      ciltMstrLearningTimeLabel: "Learning Time",
+      ciltMstrStatusLabel: "Status",
+      ciltMstrStatusRequired: "Please select a status!",
+      ciltMstrStatusPlaceholder: "Select a status",
+      ciltMstrStatusActive: "Active",
+      ciltMstrStatusSuspended: "Suspended",
+      ciltMstrStatusCanceled: "Canceled",
+
+      // CILT Details Modal strings
+      ciltMstrDetailsModalTitle: "CILT Details",
+      ciltMstrCloseButton: "Close",
+      ciltMstrDetailsNameLabel: "Name",
+      ciltMstrDetailsDescriptionLabel: "Description",
+      ciltMstrCreatorLabel: "Creator",
+      ciltMstrReviewerLabel: "Reviewer",
+      ciltMstrApproverLabel: "Approved by",
+      ciltMstrDetailsStandardTimeLabel: "Standard Time (min)",
+      ciltMstrDetailsLearningTimeLabel: "Learning Time",
+      ciltMstrOrderLabel: "Order",
+      ciltMstrDetailsStatusLabel: "Status",
+      ciltMstrLastUsedLabel: "Last Used",
+      ciltMstrLayoutLabel: "Layout",
+      ciltMstrViewFullImage: "View full image",
+      ciltMstrNotAvailable: "Not available",
+      ciltMstrNA: "N/A",
+
+      // CILT Card List strings
+      ciltMstrListNameColumn: "Name",
+      ciltMstrListDescriptionColumn: "Description",
+      ciltMstrListCreatorColumn: "Creator",
+      ciltMstrListStandardTimeColumn: "Standard Time (min)",
+      ciltMstrListStatusColumn: "Status",
+      ciltMstrListCreationDateColumn: "Creation Date",
+      ciltMstrListActionsColumn: "Actions",
+      ciltMstrListEditAction: "Edit",
+      ciltMstrListDetailsAction: "Details",
+      ciltMstrListSequencesAction: "Sequences",
+      ciltMstrListActiveFilter: "Active",
+      ciltMstrListSuspendedFilter: "Suspended",
+      ciltMstrListCanceledFilter: "Canceled",
+      ciltMstrCreateSequenceButton: "Create Sequence",
+      addFiles: "Add Files",
+
+      // OPL related strings
+      oplViewModalTitle: "OPL Details",
+      oplGeneralInfo: "General Information",
+      oplTitle: "Title",
+      oplObjective: "Objective",
+      oplCreatedBy: "Created By",
+      oplReviewedBy: "Reviewed By",
+      oplCreationDate: "Creation Date",
+      oplContentPreview: "Content Preview",
+      oplNoDetails: "No details available for this OPL",
+      oplTextType: "Text",
+      oplImageType: "Image",
+      oplVideoType: "Video",
+      oplPdfType: "PDF",
+      oplPlayVideo: "Play Video",
+      oplViewPdf: "View PDF",
+      oplOpenInNewTab: "Open in New Tab",
+      oplPdfPreviewTitle: "PDF Preview",
+      oplVideoPreviewTitle: "Video Preview",
+      oplClose: "Close",
+
+      // OplTable strings
+      oplTableTitleColumn: "Title",
+      oplTableObjectiveColumn: "Objective",
+      oplTableTypeColumn: "Type",
+      oplTableActionsColumn: "Actions",
+      oplTableViewTooltip: "View OPL",
+      oplTableEditTooltip: "Edit OPL",
+      oplTableOplType: "OPL",
+      oplTableSopType: "SOP",
+      oplTableViewButtonText: "Details",
+      oplTableEditButtonText: "Edit",
+      // OplTextForm strings
+      oplTextFormLabel: "Text",
+      oplTextFormPlaceholder: "Enter text content",
+      oplTextFormValidationMessage: "Please enter text content",
+      oplTextFormSubmitButton: "Add Text",
+
+      // OplMediaUploader strings
+      oplMediaImageTitle: "Click or drag an image to this area to upload",
+      oplMediaImageHint: "Supports JPG, PNG, GIF, etc.",
+      oplMediaImageButton: "Upload Image",
+      oplMediaVideoTitle: "Click or drag a video to this area to upload",
+      oplMediaVideoHint: "Supports MP4, MOV, AVI, etc.",
+      oplMediaVideoButton: "Upload Video",
+      oplMediaPdfTitle: "Click or drag a PDF to this area to upload",
+      oplMediaPdfHint: "Supports PDF files only",
+      oplMediaPdfButton: "Upload PDF",
+      oplMediaDefaultTitle: "Click or drag a file to this area to upload",
+      oplMediaDefaultHint: "Supports various file formats",
+      oplMediaDefaultButton: "Upload File",
+
+      // OplFormModal strings
+      oplFormModalViewTitle: "View OPL",
+      oplFormModalEditTitle: "Edit OPL",
+      oplFormModalCreateTitle: "Create OPL",
+      oplFormModalCloseButton: "Close",
+      oplFormModalCancelButton: "Cancel",
+      oplFormModalSaveButton: "Save",
+      oplFormTitleLabel: "Title",
+      oplFormTitleRequired: "Please enter a title",
+      oplFormTitlePlaceholder: "Enter OPL title",
+      oplFormObjectiveLabel: "Objective",
+      oplFormObjectiveRequired: "Please enter an objective",
+      oplFormObjectivePlaceholder: "Enter OPL objective",
+      oplFormTypeLabel: "Type",
+      oplFormTypeRequired: "Please select a type",
+      oplFormTypePlaceholder: "Select type",
+      oplFormTypeOpl: "OPL",
+      oplFormTypeSop: "SOP",
+      oplFormCreatorLabel: "Creator",
+      oplFormCreatorPlaceholder: "Select a creator (optional)",
+      oplFormReviewerLabel: "Reviewer",
+      oplFormReviewerPlaceholder: "Select a reviewer (optional)",
+      oplFormNotAssigned: "Not assigned",
+      oplFormUpdateButton: "Update",
+      oplFormCreateButton: "Create",
+
+      // OplDetailsModal strings
+      oplDetailsModalTitle: "OPL Details: {title}",
+      oplDetailsContentPreview: "Content Preview",
+      oplDetailsNoContent: "No details to display.",
+      oplDetailsAddContent: "Add Content",
+      oplDetailsTextType: "Text",
+      oplDetailsImageType: "Image",
+      oplDetailsVideoType: "Video",
+      oplDetailsPdfType: "PDF",
+      oplDetailsAddText: "Add Text",
+      oplDetailsAddImage: "Add Image",
+      oplDetailsAddVideo: "Add Video",
+      oplDetailsAddPdf: "Add PDF",
+      oplDetailsViewTab: "View",
+      oplDetailsPlayVideo: "Play Video",
+      oplDetailsViewPdf: "View PDF",
+      oplDetailsPdfPreviewTitle: "PDF Preview",
+      oplDetailsVideoPreviewTitle: "Video Preview",
+      oplDetailsClose: "Close",
+      oplDetailsOpenInNewTab: "Open in New Tab",
+
+      // OplDetailsList strings
+      oplDetailsListNoDetails:
+        "No details to display. Add content using the other tabs.",
+      oplDetailsListOrderColumn: "Order",
+      oplDetailsListTypeColumn: "Type",
+      oplDetailsListContentColumn: "Content",
+      oplDetailsListActionsColumn: "Actions",
+      oplDetailsListTextType: "Text",
+      oplDetailsListImageType: "Image",
+      oplDetailsListVideoType: "Video",
+      oplDetailsListPdfType: "PDF",
+      oplDetailsListViewContent: "View {type}",
+      oplDetailsListNoContent: "No content",
+
+      oplPageManagementTitle: "OPL Management",
+      oplPageCreateButton: "Create OPL",
+      oplPageEditModalTitle: "Edit OPL",
+      oplPageCreateModalTitle: "Create OPL",
+
+      oplErrorLoadingList: "Error loading OPL list",
+      oplErrorLoadingUsers: "Error loading users",
+      oplErrorLoadingDetails: "Error loading OPL details",
+      oplSuccessUpdated: "OPL updated successfully",
+      oplSuccessCreated: "OPL created successfully",
+      oplErrorSaving: "Error saving the OPL",
+      oplSuccessTextAdded: "Text detail added successfully",
+      oplErrorAddingText: "Error adding text detail",
+      oplErrorNoFileSelected: "No file selected",
+      oplSuccessMediaAdded: "{type} detail added successfully",
+      oplErrorAddingMedia: "Error adding {type} detail",
+
+      // CreateCiltSequenceModal strings
+      createCiltSequenceModalTitle: "Create CILT Sequence",
+      createCiltSequenceModalSuccess: "Success",
+      createCiltSequenceModalSuccessDescription:
+        "CILT sequence created successfully",
+      createCiltSequenceModalError: "Error",
+      createCiltSequenceModalErrorDescription: "Error creating CILT sequence",
+      createCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+      createCiltSequenceModalErrorLoadingFrequencies:
+        "Error loading frequencies",
+      createCiltSequenceModalErrorNoFrequency:
+        "Please select at least one frequency",
+      createCiltSequenceModalBasicInfoTitle: "Basic Information",
+      createCiltSequenceModalDetailsTitle: "Details",
+      createCiltSequenceModalFrequenciesTitle: "Frequencies",
+      createCiltSequenceModalFrequenciesDescription:
+        "Select one or more frequencies for this sequence",
+      createCiltSequenceModalFrequenciesRequired:
+        "Please select at least one frequency",
+      createCiltSequenceModalDefaultSiteName: "Site",
+
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "CILT Type",
+      editCiltSequenceModalCiltTypeRequired: "CILT type is required",
+      editCiltSequenceModalCiltTypePlaceholder: "Select CILT type",
+      editCiltSequenceModalLevelLabel: "Level",
+      editCiltSequenceModalLevelRequired: "Level is required",
+      editCiltSequenceModalSelectLevel: "Select level",
+      editCiltSequenceModalReferenceOplLabel: "Reference OPL/SOP",
+      editCiltSequenceModalSelectReferenceOpl: "Select reference OPL/SOP",
+      editCiltSequenceModalRemediationOplLabel: "Remediation OPL/SOP",
+      editCiltSequenceModalSelectRemediationOpl: "Select remediation OPL/SOP",
+      editCiltSequenceModalSequenceListLabel: "Sequence List",
+      editCiltSequenceModalSequenceListRequired: "Sequence list is required",
+      editCiltSequenceModalSequenceListPlaceholder: "Enter sequence list",
+      editCiltSequenceModalColorLabel: "Sequence Color",
+      editCiltSequenceModalColorRequired: "Color is required",
+      editCiltSequenceModalStandardTimeLabel: "Standard Time (min)",
+      editCiltSequenceModalStandardTimeRequired: "Standard time is required",
+      editCiltSequenceModalStandardOkLabel: "Standard OK",
+      editCiltSequenceModalStandardOkRequired: "Standard OK is required",
+      editCiltSequenceModalStoppageReasonLabel: "Stoppage Reason",
+      editCiltSequenceModalQuantityPicturesCreateLabel:
+        "Quantity Pictures Create",
+      editCiltSequenceModalQuantityPicturesCreateRequired:
+        "Quantity Pictures Create is required",
+      editCiltSequenceModalQuantityPicturesCloseLabel:
+        "Quantity Pictures Close",
+      editCiltSequenceModalQuantityPicturesCloseRequired:
+        "Quantity Pictures Close is required",
+      editCiltSequenceModalToolsRequiredLabel: "Tools Required",
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalTitle: "Edit CILT Sequence",
+      editCiltSequenceModalSuccess: "Success",
+      editCiltSequenceModalSuccessDescription:
+        "CILT sequence updated successfully",
+      editCiltSequenceModalError: "Error",
+      editCiltSequenceModalErrorDescription: "Error updating CILT sequence",
+      editCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+      editCiltSequenceModalPositionLabel: "Position",
+      editCiltSequenceModalPositionPlaceholder: "Select position",
+      editCiltSequenceModalReferenceOplPlaceholder: "Select reference OPL/SOP",
+      editCiltSequenceModalRemediationOplPlaceholder:
+        "Select remediation OPL/SOP",
+      editCiltSequenceModalOrderLabel: "Order",
+      editCiltSequenceModalOrderRequired: "Order is required",
+      editCiltSequenceModalOrderPlaceholder: "Enter order",
+      editCiltSequenceModalColorPlaceholder: "Enter color code",
+      editCiltSequenceModalStandardTimePlaceholder: "Enter standard time",
+      editCiltSequenceModalToolsRequiredPlaceholder: "Enter tools required",
+      editCiltSequenceModalStandardOkPlaceholder: "Enter standard OK",
+
+      // CiltCardList strings
+      ciltCardListSequencesModalTitle: "Sequences of {ciltName}",
+      ciltCardListCloseButton: "Close",
+      ciltCardListCreateNewSequenceButton: "Create New Sequence",
+      ciltCardListSearchPlaceholder:
+        "Search sequences...",
+      ciltCardListTotalSequences: "Total: {count} sequences",
+      ciltCardListNoSequencesAssociated:
+        "No sequences associated with this CILT.",
+      ciltCardListNoSequencesMatchingSearch:
+        "No sequences match your search criteria.",
+      ciltCardListSequenceLabel: "Sequence {order}",
+      ciltCardListStandardTimeLabel: "Standard Time:",
+      ciltCardListToolsLabel: "Required Tools:",
+      ciltCardListCreatedLabel: "Created:",
+      ciltCardListViewDetailsButton: "View Details",
+      ciltCardListViewReferenceOplButton: "View Reference OPL",
+      ciltCardListViewRemediationOplButton: "View Remediation OPL",
+      ciltCardListEditSequenceButton: "Edit Sequence",
+      ciltCardListSequenceDetailsModalTitle: "Sequence Details",
+      ciltCardListPositionLabel: "Position:",
+      ciltCardListCiltTypeLabel: "CILT Type:",
+      ciltCardListColorLabel: "Color:",
+      ciltCardListRequiredToolsLabel: "Required Tools:",
+      ciltCardListStoppageReasonLabel: "Stoppage Reason:",
+      ciltCardListStandardOkLabel: "Standard OK:",
+      ciltCardListQuantityPicturesCreateLabel: "Pictures for Creation:",
+      ciltCardListQuantityPicturesCloseLabel: "Pictures for Closure:",
+      ciltCardListRelatedOplsTitle: "Related OPLs",
+      ciltCardListReferenceOplLabel: "Reference OPL:",
+      ciltCardListRemediationOplLabel: "Remediation OPL:",
+      ciltCardListViewReferenceOplLinkText: "View Reference OPL",
+      ciltCardListViewRemediationOplLinkText: "View Remediation OPL",
+      ciltCardListCreationDateLabel: "Creation Date:",
+      ciltCardListLastUpdateLabel: "Last Update:",
+      ciltCardListYesText: "Yes",
+      ciltCardListNoText: "No",
+      ciltCardListOplInfoMessage: "OPL Information",
+      ciltCardListNoSequencesMessage:
+        "No sequences associated with {ciltName}.",
+      ciltCardListNoOplAssociatedMessage:
+        "No OPL associated with this sequence.",
+      ciltCardListNoMultimediaMessage:
+        'No multimedia files available for OPL: {oplTitle}',
+      ciltCardListErrorLoadingSequences: "Error loading sequences",
+      ciltCardListErrorReloadingSequences: "Error reloading sequences",
+      ciltCardListErrorLoadingOplDetails: "Error loading OPL details",
+      ciltCardListCreateSequence: "Create Sequence",
+      ciltCardListViewSequences: "View Sequences",
+      ciltCardListObjectiveLabel: "Objective:",
+      ciltCardListMultimediaFilesTitle: "Multimedia Files",
+      ciltCardListImageLabel: "Image",
+      ciltCardListVideoLabel: "Video",
+      ciltCardListPlayVideoButton: "Play Video",
+      ciltCardListPdfLabel: "PDF",
+      ciltCardListViewPdfButton: "View PDF",
+      ciltCardListPdfPreviewModalTitle: "PDF Preview",
+      ciltCardListVideoPreviewModalTitle: "Video Preview",
+      ciltCardListVideoNotSupported: "Your browser does not support the video tag.",
+      searchBarDefaultPlaceholder: "Searching...",
+      ciltLevelTreeModalCreateSequenceHere: "Create Sequence Here",
+      ciltProceduresSearchPlaceholder: "Searching...",
     },
   },
   es: {
@@ -780,10 +1188,10 @@ const resources = {
       usersSelected: "Usuarios seleccionados",
       noUsersSelected: "No hay usuarios seleccionados",
       selectedUsers: "Usuarios seleccionados",
-      
+
       requiredLevelId: "Id de nivel requerido",
       requiredLevelName: "Nombre del nivel requerido",
-      requiredRoute: "Ruta de posición requerida" ,
+      requiredRoute: "Ruta de posición requerida",
       requiredAreaId: "Id de área requerido",
       requiredAreaName: "Nombre de área requerido",
       tagsIssued: "Tarjetas emitidas",
@@ -1125,6 +1533,7 @@ const resources = {
       actions: "Acciones",
       delete: "Eliminar",
       confirm: "Confirmar",
+      add: "Agregar",
 
       // Tipo de evidencia
       AUCR: "AUCR",
@@ -1208,9 +1617,9 @@ const resources = {
 
       // Tooltips de formularios basados en SiteEntity
       siteNameTooltip:
-        "Introduce el nombre del sitio. Longitud máxima: 100 caracteres.",
+        "Introduce el nombre del sitio . Longitud máxima: 100 caracteres.",
       siteRfcTooltip:
-        "Introduce el RFC para la empresa asociada al sitio. Debe tener exactamente 13 caracteres.",
+        "Introduce el  RFC para la empresa asociada al sitio. Debe tener exactamente 13 caracteres.",
       siteBusinessNameTooltip:
         "Introduce el nombre comercial legal del sitio, tal como está registrado oficialmente. Longitud máxima: 100 caracteres.",
       siteTypeTooltip:
@@ -1226,7 +1635,7 @@ const resources = {
       sitePositionTooltip:
         "Especifica el puesto o título del contacto (por ejemplo, Gerente, Supervisor). Longitud máxima: 100 caracteres.",
       sitePhoneTooltip:
-        "Proporciona el número de teléfono principal, incluyendo el código de área. Longitud máxima: 13 caracteres.",
+        "Proporciona el número de teléfono principal, incluyendo código de área. Longitud máxima: 13 caracteres.",
       siteExtensionTooltip:
         "Si aplica, especifica la extensión telefónica del contacto. Longitud máxima: 10 caracteres.",
       siteCellularTooltip:
@@ -1255,8 +1664,7 @@ const resources = {
       companyContactNameTooltip: "Nombre del contacto principal.",
       companyPositionTooltip: "Puesto del contacto.",
       companyPhoneTooltip: "Teléfono fijo de la empresa.",
-      companyExtensionTooltip:
-        "Extensión telefónica (si aplica).",
+      companyExtensionTooltip: "Extensión telefónica (si aplica).",
       companyCellularTooltip: "Teléfono móvil principal.",
       companyEmailTooltip: "Correo electrónico oficial de la empresa.",
       companyLogoTooltip: "Sube el logo de la empresa en formato de imagen.",
@@ -1296,32 +1704,32 @@ const resources = {
       quantityVideosCreateTooltip:
         "Especifique el número de videos requeridos en la etapa de creación.",
       videosDurationCreateTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de creación.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de creación.",
       quantityAudiosCreateTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de creación.",
       audiosDurationCreateTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de creación.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de creación.",
       quantityPicturesPsTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de solución provisional.",
       quantityVideosPsTooltip:
         "Especifique el número de videos requeridos en la etapa de solución provisional.",
       videosDurationPsTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de solución provisional.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de solución provisional.",
       quantityAudiosPsTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de solución provisional.",
       audiosDurationPsTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución provisional.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de solución provisional.",
 
       quantityPicturesCloseTooltip:
         "Ingrese el número de imágenes requeridas en la etapa de solución definitiva.",
       quantityVideosCloseTooltip:
         "Especifique el número de videos requeridos en la etapa de solución definitiva.",
       videosDurationCloseTooltip:
-        "Proporcione la duración total (en segundos) de los videos para la etapa de solución definitiva.",
+        "Proporcione la duración total (en segundos) de videos para la etapa de solución definitiva.",
       quantityAudiosCloseTooltip:
         "Especifique el número de archivos de audio requeridos en la etapa de solución definitiva.",
       audiosDurationCloseTooltip:
-        "Proporcione la duración total (en segundos) de los archivos de audio para la etapa de solución definitiva.",
+        "Proporcione la duración total (en segundos) de archivos de audio para la etapa de solución definitiva.",
       cardTypeStatusTooltip:
         "Seleccione el estado actual del tipo de Tarjeta. Esto determina si el tipo de Tarjeta está activo o inactivo en el sistema.",
       statusCardTypeTooltip: "Puede cambiar el estado del tipo de Tarjeta",
@@ -1333,7 +1741,7 @@ const resources = {
       notificationsSite: "Sitio",
       notificationsSelectSite: "Seleccione un sitio",
       notificationsRequiredSite: "Debe seleccionar un sitio.",
-      notificationsSelectUsers: "Seleccionar Usuarios",
+      notificationsSelectUsers: "Seleccione Usuarios",
       notificationsRequiredUsers: "Debe seleccionar al menos un usuario.",
       notificationsSave: "Guardar",
       notificationsCancel: "Cancelar",
@@ -1366,7 +1774,7 @@ const resources = {
       cardTypeTreeDescriptionPlaceholder: "Introduce la descripción",
       cardTypeTreeResponsiblePlaceholder: "Selecciona un responsable",
       cardTypeTreeStatusPlaceholder: "Selecciona un estado",
-      cardTypeTreeColorPlaceholder: "Selecciona un color",
+      cardTypeTreeColorPlaceholder: "Pick a color",
 
       // Placeholders for Quantity Fields
       cardTypeTreeQuantityPicturesPlaceholder:
@@ -1411,7 +1819,7 @@ const resources = {
       cardTypesLoadingData: "Cargando datos...",
       cardTypesUpdateCardType: "Editar Tipo de Tarjeta",
       cardTypesCreateCardType: "Crear Tipo de Tarjeta",
-      cardTypesClonePreclassifier: "Clonar Preclasificador",
+      cardTypesClonePreclassifier: "Clonar preclasificador",
       cardTypesErrorFetchingData: "Error al obtener datos",
       cardTypesNoCardTypeIdError:
         "No se encontró el ID del tipo de Tarjeta para crear un preclasificador.",
@@ -1443,7 +1851,7 @@ const resources = {
 
       logImgDesc: "Imagen del Log In",
       enSub: "One Smart Mate",
-      
+
       // Positions Page
       positions: "Posiciones",
       createPosition: "Crear Posición",
@@ -1453,7 +1861,7 @@ const resources = {
       loadingPositions: "Cargando posiciones...",
       positionFound: "posición encontrada",
       positionsFound: "posiciones encontradas",
-      
+
       // System Health
       systemHealthTitle: "Estado de Salud del Sistema",
       testingNotifications: "Probando notificaciones",
@@ -1464,7 +1872,7 @@ const resources = {
       testingEvidenceWrite: "Probando escritura de evidencias",
       healthStatusOk: "OK",
       healthStatusFailed: "FALLO",
-      
+
       // System Health additional strings
       sessionPerformance: "Rendimiento de tu Sesión",
       memoryUsage: "Uso de Memoria",
@@ -1478,17 +1886,20 @@ const resources = {
       noUsersAvailableForSite: "No hay usuarios disponibles para este sitio",
       positionName: "Nombre de la posición",
       positionDescription: "Descripción de la posición",
-      selectUsersForPosition: "Seleccione los usuarios que estarán asignados a esta posición",
+      selectUsersForPosition:
+        "Seleccione los usuarios que estarán asignados a esta posición",
       cancelPosition: "Cancelar",
       updatePositionTitle: "Editar Posición: {{name}}",
       selectStatus: "Seleccione un estado",
       positionNameMaxLength: "El nombre no puede exceder los 45 caracteres",
-      positionDescriptionMaxLength: "La descripción no puede exceder los 100 caracteres",
+      positionDescriptionMaxLength:
+        "La descripción no puede exceder los 100 caracteres",
       noPositionData: "No se encontraron datos de posición para actualizar.",
       positionUpdatedSuccess: "La posición ha sido actualizada exitosamente.",
-      positionUpdateError: "Ocurrió un error al actualizar la posición. Por favor intente de nuevo.",
+      positionUpdateError:
+        "Ocurrió un error al actualizar la posición. Por favor intente de nuevo.",
       pleaseSelectStatus: "Por favor seleccione un estado",
-      
+
       // Table locale strings
       accept: "Aceptar",
       reset: "Reiniciar",
@@ -1501,34 +1912,41 @@ const resources = {
       sortDesc: "Click para ordenar descendente",
       sortAsc: "Click para ordenar ascendente",
       cancelSort: "Click para cancelar ordenamiento",
-      
+
       // Position table headers
       positionAreaHeader: "Área",
       positionNodeZoneHeader: "Nodo / Zona",
       positionNameHeader: "Nombre",
-      positionDescriptionHeader: "Descripción", 
+      positionDescriptionHeader: "Descripción",
       positionStatusHeader: "Estado",
       positionActionsHeader: "Acciones",
-      
+
       success: "Éxito",
       error: "Error",
-      "No position data found for update.": "No se encontró información de posición para actualizar.",
-      "The position has been updated successfully.": "La posición se actualizó con éxito.",
-      "An error occurred while updating the position. Please try again.": "Ocurrió un error al actualizar la posición. Por favor, inténtalo de nuevo.",
-      "The name cannot exceed 45 characters": "El nombre no puede exceder los 45 caracteres",
-      "The description cannot exceed 100 characters": "La descripción no puede exceder los 100 caracteres",
+      "No position data found for update.":
+        "No se encontró información de posición para actualizar.",
+      "The position has been updated successfully.":
+        "La posición se actualizó con éxito.",
+      "An error occurred while updating the position. Please try again.":
+        "Ocurrió un error al actualizar la posición. Por favor, inténtalo de nuevo.",
+      "The name cannot exceed 45 characters":
+        "El nombre no puede exceder los 45 caracteres",
+      "The description cannot exceed 100 characters":
+        "La descripción no puede exceder los 100 caracteres",
       "Please select a status": "Por favor, selecciona un estado",
       "Select a status": "Selecciona un estado",
       "Edit Position: {{name}}": "Editar Posición: {{name}}",
       createPositionHere: "Crear posición aquí",
-      
+
       // User positions
       loadingUserPositions: "Cargando posiciones",
       noPositionsAvailable: "No hay posiciones disponibles",
       userPositions: "Posiciones",
       confirmCloneLevel: "Confirmar Clonación de Nivel",
-      confirmCloneLevelMessage: "¿Estás seguro de que deseas clonar el nivel?. ",
-      levelSubLebelsWarning: "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
+      confirmCloneLevelMessage:
+        "¿Estás seguro de que deseas clonar el nivel?. ",
+      levelSubLebelsWarning:
+        "Al clonar un nivel, todos sus sub-niveles también serán clonados.",
       defaultNotificationTitle: "Notificación",
       defaultNotificationMessage: "Has recibido una nueva notificación",
       notificationReceived: "Notificación recibida",
@@ -1537,7 +1955,8 @@ const resources = {
       expandAll: "Expandir todo",
       machinesOfArea: "Zonas del Area",
       assignPositions: "Asignar Posiciones",
-      uploadCardAndEvidenceWithDataNet: "Cargar tarjeta y evidencias con datos de red",
+      uploadCardAndEvidenceWithDataNet:
+        "Cargar tarjeta y evidencias con datos de red",
       databaseConnectionTest: "Prueba de conexión a base de datos",
       verificationOfServices: "Verificación de Servicios",
       catalogs: "Catálogos",
@@ -1548,7 +1967,420 @@ const resources = {
       redesign: import.meta.env.VITE_IS_REDESIGN,
       enterEmail: "Introduce tu correo electrónico",
       enterPassword: "Introduce tu contraseña",
-      permissionsError: 'No tienes permisos para acceder a esta aplicación.',
+      permissionsError: "No tienes permisos para acceder a esta aplicación.",
+
+      // CILT related strings
+      createCiltProcedure: "Crear procedimiento CILT",
+      createCiltProcedureForPosition: "Crear procedimiento CILT para posición",
+      ciltName: "Nombre del procedimiento CILT",
+      registerCiltNameRequiredValidation:
+        "Por favor, ingresa el nombre del procedimiento CILT",
+      registerCiltNameMaxLengthValidation:
+        "Nombre del procedimiento CILT no puede exceder 100 caracteres",
+      registerCiltNamePlaceholer: "Nombre del procedimiento CILT",
+      ciltDescription: "Descripción del procedimiento CILT",
+      registerCiltDescriptionRequiredValidation:
+        "Por favor, ingresa la descripción del procedimiento CILT",
+      registerCiltDescriptionMaxLengthValidation:
+        "Descripción del procedimiento CILT no puede exceder 500 caracteres",
+      registerCiltDescriptionPlaceholer: "Descripción del procedimiento CILT",
+      standardTime: "Tiempo estándar",
+      registerCiltStandardTimeRequiredValidation:
+        "Por favor, ingresa el tiempo estándar",
+      registerCiltStandardTimePlaceholer: "Tiempo estándar",
+      learningTime: "Tiempo de aprendizaje",
+      registerCiltLearningTimeRequiredValidation:
+        "Por favor, ingresa el tiempo de aprendizaje",
+      registerCiltLearningTimePlaceholer: "Tiempo de aprendizaje",
+      ciltCreator: "Creador",
+      registerCiltCreatorRequiredValidation: "Por favor, ingresa el creador",
+      reviewer: "Revisor",
+      registerCiltReviewerRequiredValidation: "Por favor, ingresa el revisor",
+      registerCiltReviewerPlaceholer: "Selecciona un revisor",
+      approver: "Aprobador",
+      registerCiltApproverRequiredValidation: "Por favor, ingresa el aprobador",
+      registerCiltApproverPlaceholer: "Selecciona un aprobador",
+      layoutImage: "Imagen de la plantilla",
+      registerCiltLayoutImageRequiredValidation:
+        "Por favor, ingresa la imagen de la plantilla",
+      imageUploadError: "Only image files are allowed",
+      selectCreator: "Selecciona un creador",
+      selectReviewer: "Selecciona un revisor",
+      selectApprover: "Selecciona un aprobador",
+      ciltProceduresSB: "Procedimientos CILT",
+      ciltProceduresDescription:
+        "Esta página contiene información sobre los procedimientos CILT y su implementación.",
+      oplSB: "OPL",
+      oplDescription:
+        "Esta página contiene información sobre One Point Lessons (OPL).",
+      ciltTypesSB: "Tipos de CILT",
+      ciltTypesDescription:
+        "Esta página contiene información sobre diferentes tipos de CILT.",
+      ciltFrecuenciesSB: "Frecuencias de CILT",
+      ciltFrecuenciesDescription:
+        "Esta página contiene información sobre frecuencias de CILT.",
+
+      //CILT TYPES IN ENGLISH
+      searchbyname: "Search by name",
+      addNewCiltType: "Add new type of CILT",
+      errorLoadingNewTypesCilt: "Error loading CILT types",
+      typeCiltUpdated: "Type Cilt Updated",
+      errorUpdatingCiltType: "Error updating CILT type",
+      ciltTypeAdded: "Cilt type added",
+      errorAddingCiltType: "Error adding CILT type",
+      noCiltTypes: "There are no CILT types to display.",
+      obligatoryName: "The name is obligatory",
+      editCiltType: "Edit Cilt Type",
+      addCiltType: "Add Cilt Type",
+
+      //CILT FREQUENCIES IN ENGLISH
+      frequencyCode: "Frequency Code",
+      addNewCiltFrequency: "Add New Cilt Frequency",
+      editCiltFrequency: "Edit Cilt Frequency",
+      addCiltFrequency: "Add Frequency",
+      ciltFrequencyAdded: "Frequency added successfully",
+      ciltFrequencyUpdated: "Frequency updated successfully",
+      errorAddingCiltFrequency: "Error adding frequency",
+      errorUpdatingCiltFrequency: "Error updating frequency",
+      errorLoadingCiltFrequencies: "Error loading frequencies",
+      noCiltFrequencies: "No frequencies available",
+      obligatoryCode: "Frequency code is required",
+      obligatoryDescription: "Description is required",
+      searchbyDescriptionOrCode: "Search by code or description",
+
+      // CILT Master strings
+      ciltMstrPageTitle: "Procedimientos CILT",
+      ciltMstrCreateSuccess: "Procedimiento CILT creado exitosamente",
+      ciltMstrSelectPositionTitle: "Selecciona una posición",
+      ciltMstrCreateButtonLabel: "Crear procedimiento CILT",
+      ciltMstrCreateModalTitle: "Crear procedimiento CILT",
+      ciltMstrPositionLabel: "Posición",
+      // CILT Edit Modal strings
+      ciltMstrEditModalTitle: "Editar CILT",
+      ciltMstrSaveChangesButton: "Guardar Cambios",
+      ciltMstrCancelButton: "Cancelar",
+      ciltMstrUpdateError: "Error al actualizar. Intente de nuevo.",
+      ciltMstrNameLabel: "Nombre CILT",
+      ciltMstrNameRequired: "Por favor ingrese el nombre!",
+      ciltMstrDescriptionLabel: "Descripción",
+      ciltMstrStandardTimeLabel: "Tiempo Estándar (min)",
+      ciltMstrInvalidNumberMessage: "Por favor ingrese un número válido",
+      ciltMstrLearningTimeLabel: "Tiempo Aprendizaje",
+      ciltMstrStatusLabel: "Estado",
+      ciltMstrStatusRequired: "Por favor seleccione un estado!",
+      ciltMstrStatusPlaceholder: "Seleccione un estado",
+      ciltMstrStatusActive: "Activo",
+      ciltMstrStatusSuspended: "Suspendido",
+      ciltMstrStatusCanceled: "Cancelado",
+
+      // CILT Details Modal strings
+      ciltMstrDetailsModalTitle: "Detalles del CILT",
+      ciltMstrCloseButton: "Cerrar",
+      ciltMstrDetailsNameLabel: "Nombre",
+      ciltMstrDetailsDescriptionLabel: "Descripción",
+      ciltMstrCreatorLabel: "Creador",
+      ciltMstrReviewerLabel: "Revisor",
+      ciltMstrApproverLabel: "Aprobado por",
+      ciltMstrDetailsStandardTimeLabel: "Tiempo Estándar (min)",
+      ciltMstrDetailsLearningTimeLabel: "Tiempo Aprendizaje",
+      ciltMstrOrderLabel: "Orden",
+      ciltMstrDetailsStatusLabel: "Estado",
+      ciltMstrLastUsedLabel: "Última vez utilizado",
+      ciltMstrLayoutLabel: "Diseño",
+      ciltMstrViewFullImage: "Ver imagen completa",
+      ciltMstrNotAvailable: "No disponible",
+      ciltMstrNA: "N/D",
+
+      // CILT Card List strings
+      ciltMstrListNameColumn: "Nombre",
+      ciltMstrListDescriptionColumn: "Descripción",
+      ciltMstrListCreatorColumn: "Creador",
+      ciltMstrListStandardTimeColumn: "Tiempo Estándar (min)",
+      ciltMstrListStatusColumn: "Estado",
+      ciltMstrListCreationDateColumn: "Fecha de Creación",
+      ciltMstrListActionsColumn: "Acciones",
+      ciltMstrListEditAction: "Editar",
+      ciltMstrListDetailsAction: "Detalles",
+      ciltMstrListSequencesAction: "Secuencias",
+      ciltMstrListActiveFilter: "Activo",
+      ciltMstrListSuspendedFilter: "Suspendido",
+      ciltMstrListCanceledFilter: "Cancelado",
+      ciltMstrCreateSequenceButton: "Crear Secuencia",
+      addFiles: "Agregar archivos",
+
+      // OPL related strings
+      oplViewModalTitle: "Detalles del OPL",
+      oplGeneralInfo: "Información general",
+      oplTitle: "Título",
+      oplObjective: "Objetivo",
+      oplCreatedBy: "Creado por",
+      oplReviewedBy: "Revisado por",
+      oplCreationDate: "Fecha de creación",
+      oplContentPreview: "Vista previa del contenido",
+      oplNoDetails: "No hay detalles disponibles para este OPL",
+      oplTextType: "Texto",
+      oplImageType: "Imagen",
+      oplVideoType: "Video",
+      oplPdfType: "PDF",
+      oplPlayVideo: "Reproducir video",
+      oplViewPdf: "Ver PDF",
+      oplOpenInNewTab: "Abrir en una nueva pestaña",
+      oplPdfPreviewTitle: "Vista previa de PDF",
+      oplVideoPreviewTitle: "Vista previa de video",
+      oplClose: "Cerrar",
+
+      // OplTable strings
+      oplTableTitleColumn: "Título",
+      oplTableObjectiveColumn: "Objetivo",
+      oplTableTypeColumn: "Tipo",
+      oplTableActionsColumn: "Acciones",
+      oplTableViewTooltip: "Ver OPL",
+      oplTableEditTooltip: "Editar OPL",
+      oplTableOplType: "OPL",
+      oplTableSopType: "SOP",
+      oplTableViewButtonText: "Detalles",
+      oplTableEditButtonText: "Editar",
+      // OplTextForm strings
+      oplTextFormLabel: "Texto",
+      oplTextFormPlaceholder: "Ingrese contenido de texto",
+      oplTextFormValidationMessage: "Por favor, ingrese contenido de texto",
+      oplTextFormSubmitButton: "Agregar texto",
+
+      // OplMediaUploader strings
+      oplMediaImageTitle:
+        "Haz clic o arrastra una imagen a esta área para subirla",
+      oplMediaImageHint: "Compatible con JPG, PNG, GIF, etc.",
+      oplMediaImageButton: "Subir imagen",
+      oplMediaVideoTitle:
+        "Haz clic o arrastra un video a esta área para subirlo",
+      oplMediaVideoHint: "Compatible con MP4, MOV, AVI, etc.",
+      oplMediaVideoButton: "Subir video",
+      oplMediaPdfTitle: "Haz clic o arrastra un PDF a esta área para subirlo",
+      oplMediaPdfHint: "Compatible con archivos PDF solo",
+      oplMediaPdfButton: "Subir PDF",
+      oplMediaDefaultTitle:
+        "Haz clic o arrastra un archivo a esta área para subirlo",
+      oplMediaDefaultHint: "Compatible con varios formatos de archivo",
+      oplMediaDefaultButton: "Subir archivo",
+
+      // OplFormModal strings
+      oplFormModalViewTitle: "Ver OPL",
+      oplFormModalEditTitle: "Editar OPL",
+      oplFormModalCreateTitle: "Crear OPL",
+      oplFormModalCloseButton: "Cerrar",
+      oplFormModalCancelButton: "Cancelar",
+      oplFormModalSaveButton: "Guardar",
+      oplFormTitleLabel: "Título",
+      oplFormTitleRequired: "Por favor ingrese un título",
+      oplFormTitlePlaceholder: "Ingrese título de OPL",
+      oplFormObjectiveLabel: "Objetivo",
+      oplFormObjectiveRequired: "Por favor ingrese un objetivo",
+      oplFormObjectivePlaceholder: "Ingrese objetivo de OPL",
+      oplFormTypeLabel: "Tipo",
+      oplFormTypeRequired: "Por favor seleccione un tipo",
+      oplFormTypePlaceholder: "Seleccione tipo",
+      oplFormTypeOpl: "OPL",
+      oplFormTypeSop: "SOP",
+      oplFormCreatorLabel: "Creador",
+      oplFormCreatorPlaceholder: "Seleccione un creador (opcional)",
+      oplFormReviewerLabel: "Revisor",
+      oplFormReviewerPlaceholder: "Seleccione un revisor (opcional)",
+      oplFormNotAssigned: "No asignado",
+      oplFormUpdateButton: "Actualizar",
+      oplFormCreateButton: "Crear",
+
+      // OplDetailsModal strings
+      oplDetailsModalTitle: "Detalles del OPL: {title}",
+      oplDetailsContentPreview: "Vista previa del contenido",
+      oplDetailsNoContent: "No hay detalles disponibles para este OPL.",
+      oplDetailsAddContent: "Agregar contenido",
+      oplDetailsTextType: "Texto",
+      oplDetailsImageType: "Imagen",
+      oplDetailsVideoType: "Video",
+      oplDetailsPdfType: "PDF",
+      oplDetailsAddText: "Agregar texto",
+      oplDetailsAddImage: "Agregar imagen",
+      oplDetailsAddVideo: "Agregar video",
+      oplDetailsAddPdf: "Agregar PDF",
+      oplDetailsViewTab: "Ver",
+      oplDetailsPlayVideo: "Reproducir video",
+      oplDetailsViewPdf: "Ver PDF",
+      oplDetailsPdfPreviewTitle: "Vista previa de PDF",
+      oplDetailsVideoPreviewTitle: "Vista previa de video",
+      oplDetailsClose: "Cerrar",
+      oplDetailsOpenInNewTab: "Abrir en una nueva pestaña",
+
+      // OplDetailsList strings
+      oplDetailsListNoDetails:
+        "No hay detalles disponibles para mostrar. Agregue contenido utilizando las otras pestañas.",
+      oplDetailsListOrderColumn: "Orden",
+      oplDetailsListTypeColumn: "Tipo",
+      oplDetailsListContentColumn: "Contenido",
+      oplDetailsListActionsColumn: "Acciones",
+      oplDetailsListTextType: "Texto",
+      oplDetailsListImageType: "Imagen",
+      oplDetailsListVideoType: "Video",
+      oplDetailsListPdfType: "PDF",
+      oplDetailsListViewContent: "Ver {type}",
+      oplDetailsListNoContent: "No hay contenido",
+
+      oplPageManagementTitle: "Administración de OPL",
+      oplPageCreateButton: "Crear OPL",
+      oplPageEditModalTitle: "Editar OPL",
+      oplPageCreateModalTitle: "Crear OPL",
+
+      oplErrorLoadingList: "Error al cargar la lista de OPL",
+      oplErrorLoadingUsers: "Error al cargar usuarios",
+      oplErrorLoadingDetails: "Error al cargar detalles de OPL",
+      oplSuccessUpdated: "OPL actualizado con éxito",
+      oplSuccessCreated: "OPL creado con éxito",
+      oplErrorSaving: "Error al guardar OPL",
+      oplSuccessTextAdded: "Detalle de texto agregado con éxito",
+      oplErrorAddingText: "Error al agregar detalle de texto",
+      oplErrorNoFileSelected: "No se seleccionó un archivo",
+      oplSuccessMediaAdded: "{type} agregado con éxito",
+      oplErrorAddingMedia: "Error al agregar {type}",
+
+      // CreateCiltSequenceModal strings
+      createCiltSequenceModalTitle: "Crear Secuencia CILT",
+      createCiltSequenceModalSuccess: "Éxito",
+      createCiltSequenceModalSuccessDescription:
+        "Secuencia CILT creada exitosamente",
+      createCiltSequenceModalError: "Error",
+      createCiltSequenceModalErrorDescription:
+        "Error al crear la secuencia CILT",
+      createCiltSequenceModalErrorLoadingTypes:
+        "Error al cargar los tipos de CILT",
+      createCiltSequenceModalErrorLoadingFrequencies:
+        "Error al cargar las frecuencias",
+      createCiltSequenceModalErrorNoFrequency:
+        "Por favor seleccione al menos una frecuencia",
+      createCiltSequenceModalBasicInfoTitle: "Información Básica",
+      createCiltSequenceModalDetailsTitle: "Detalles",
+      createCiltSequenceModalFrequenciesTitle: "Frecuencias",
+      createCiltSequenceModalFrequenciesDescription:
+        "Seleccione una o más frecuencias para esta secuencia",
+      createCiltSequenceModalFrequenciesRequired:
+        "Por favor seleccione al menos una frecuencia",
+      createCiltSequenceModalDefaultSiteName: "Sitio",
+
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "Tipo de CILT",
+      editCiltSequenceModalCiltTypeRequired: "El tipo de CILT es requerido",
+      editCiltSequenceModalCiltTypePlaceholder: "Seleccione tipo de CILT",
+      editCiltSequenceModalLevelLabel: "Nivel",
+      editCiltSequenceModalLevelRequired: "El nivel es requerido",
+      editCiltSequenceModalSelectLevel: "Seleccione nivel",
+      editCiltSequenceModalReferenceOplLabel: "OPL/SOP de Referencia",
+      editCiltSequenceModalSelectReferenceOpl:
+        "Seleccione OPL/SOP de referencia",
+      editCiltSequenceModalRemediationOplLabel: "OPL/SOP de Remediación",
+      editCiltSequenceModalSelectRemediationOpl:
+        "Seleccione OPL/SOP de remediación",
+      editCiltSequenceModalSequenceListLabel: "Lista de Secuencia",
+      editCiltSequenceModalSequenceListRequired:
+        "La lista de secuencia es requerida",
+      editCiltSequenceModalSequenceListPlaceholder:
+        "Ingrese lista de secuencia",
+      editCiltSequenceModalColorLabel: "Color de Secuencia",
+      editCiltSequenceModalColorRequired: "El color es requerido",
+      editCiltSequenceModalStandardTimeLabel: "Tiempo Estándar (min)",
+      editCiltSequenceModalStandardTimeRequired:
+        "El tiempo estándar es requerido",
+      editCiltSequenceModalStandardOkLabel: "Estándar OK",
+      editCiltSequenceModalStandardOkRequired: "El estándar OK es requerido",
+      editCiltSequenceModalStoppageReasonLabel: "Razón de Parada",
+      editCiltSequenceModalQuantityPicturesCreateLabel:
+        "Cantidad de Imágenes al Crear",
+      editCiltSequenceModalQuantityPicturesCreateRequired:
+        "La cantidad de imágenes al crear es requerida",
+      editCiltSequenceModalQuantityPicturesCloseLabel:
+        "Cantidad de Imágenes al Cerrar",
+      editCiltSequenceModalQuantityPicturesCloseRequired:
+        "La cantidad de imágenes al cerrar es requerida",
+      editCiltSequenceModalToolsRequiredLabel: "Herramientas Requeridas",
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalTitle: "Editar Secuencia CILT",
+      editCiltSequenceModalSuccess: "Éxito",
+      editCiltSequenceModalSuccessDescription:
+        "Secuencia CILT actualizada exitosamente",
+      editCiltSequenceModalError: "Error",
+      editCiltSequenceModalErrorDescription:
+        "Error al actualizar la secuencia CILT",
+      editCiltSequenceModalErrorLoadingTypes:
+        "Error al cargar los tipos de CILT",
+      editCiltSequenceModalPositionLabel: "Posición",
+      editCiltSequenceModalPositionPlaceholder: "Seleccione posición",
+      editCiltSequenceModalReferenceOplPlaceholder:
+        "Seleccione OPL/SOP de referencia",
+      editCiltSequenceModalRemediationOplPlaceholder:
+        "Seleccione OPL/SOP de remediación",
+      editCiltSequenceModalOrderLabel: "Orden",
+      editCiltSequenceModalOrderRequired: "El orden es requerido",
+      editCiltSequenceModalOrderPlaceholder: "Ingrese orden",
+      editCiltSequenceModalColorPlaceholder: "Ingrese código de color",
+      editCiltSequenceModalStandardTimePlaceholder: "Ingrese tiempo estándar",
+      editCiltSequenceModalToolsRequiredPlaceholder:
+        "Ingrese herramientas requeridas",
+      editCiltSequenceModalStandardOkPlaceholder: "Ingrese estándar OK",
+
+      // CiltCardList strings
+      ciltCardListSequencesModalTitle: "Secuencias de {ciltName}",
+      ciltCardListCloseButton: "Cerrar",
+      ciltCardListCreateNewSequenceButton: "Crear Nueva Secuencia",
+      ciltCardListSearchPlaceholder:
+        "Buscar secuencias...",
+      ciltCardListTotalSequences: "Total: {count} secuencias",
+      ciltCardListNoSequencesAssociated: "No hay secuencias asociadas a este CILT",
+      ciltCardListNoSequencesMatchingSearch: "No hay secuencias que coincidan con tu búsqueda",
+      ciltCardListSequenceLabel: "Secuencia {order}",
+      ciltCardListStandardTimeLabel: "Tiempo Estándar:",
+      ciltCardListToolsLabel: "Herramientas Requeridas:",
+      ciltCardListCreatedLabel: "Creado:",
+      ciltCardListViewDetailsButton: "Ver Detalles",
+      ciltCardListViewReferenceOplButton: "Ver OPL de Referencia",
+      ciltCardListViewRemediationOplButton: "Ver OPL de Remediación",
+      ciltCardListEditSequenceButton: "Editar Secuencia",
+      ciltCardListSequenceDetailsModalTitle: "Detalles de la Secuencia",
+      ciltCardListPositionLabel: "Posición:",
+      ciltCardListCiltTypeLabel: "Tipo de CILT:",
+      ciltCardListColorLabel: "Color:",
+      ciltCardListRequiredToolsLabel: "Herramientas Requeridas:",
+      ciltCardListStoppageReasonLabel: "Razón de Parada:",
+      ciltCardListStandardOkLabel: "Estándar OK:",
+      ciltCardListQuantityPicturesCreateLabel: "Imágenes para Creación:",
+      ciltCardListQuantityPicturesCloseLabel: "Imágenes para Cierre:",
+      ciltCardListRelatedOplsTitle: "OPLs Relacionados",
+      ciltCardListReferenceOplLabel: "OPL de Referencia:",
+      ciltCardListRemediationOplLabel: "OPL de Remediación:",
+      ciltCardListViewReferenceOplLinkText: "Ver OPL de Referencia",
+      ciltCardListViewRemediationOplLinkText: "Ver OPL de Remediación",
+      ciltCardListCreationDateLabel: "Fecha de Creación:",
+      ciltCardListLastUpdateLabel: "Última Actualización:",
+      ciltCardListYesText: "Sí",
+      ciltCardListNoText: "No",
+      ciltCardListOplInfoMessage: "Información de OPL",
+      ciltCardListNoSequencesMessage: "No hay secuencias asociadas con {ciltName}",
+      ciltCardListNoOplAssociatedMessage: "No hay OPL asociado con esta secuencia",
+      ciltCardListNoMultimediaMessage: "No hay archivos multimedia disponibles para el OPL: {oplTitle}",
+      ciltCardListErrorLoadingSequences: "Error al cargar secuencias",
+      ciltCardListErrorReloadingSequences: "Error al recargar secuencias",
+      ciltCardListErrorLoadingOplDetails: "Error al cargar detalles del OPL",
+      ciltCardListCreateSequence: "Crear Secuencia",
+      ciltCardListViewSequences: "Ver Secuencias",
+      ciltCardListObjectiveLabel: "Objetivo:",
+      ciltCardListMultimediaFilesTitle: "Archivos Multimedia",
+      ciltCardListImageLabel: "Imagen",
+      ciltCardListVideoLabel: "Video",
+      ciltCardListPlayVideoButton: "Reproducir Video",
+      ciltCardListPdfLabel: "PDF",
+      ciltCardListViewPdfButton: "Ver PDF",
+      ciltCardListPdfPreviewModalTitle: "Vista previa de PDF",
+      ciltCardListVideoPreviewModalTitle: "Vista previa de video",
+      ciltCardListVideoNotSupported: "Su navegador no admite la etiqueta de video.",
+      searchBarDefaultPlaceholder: "Buscar...",
+      ciltLevelTreeModalCreateSequenceHere: "Crear Secuencia Aquí",
+      ciltProceduresSearchPlaceholder: "Buscar...",
     },
   },
 };

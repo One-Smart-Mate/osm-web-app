@@ -76,7 +76,11 @@ const ROUTES_PATH = {
   companies: 'companies',
   cardDetail: 'card-detail',
   positions:'positions',
-  technicalSupport: 'technicalSupport'
+  technicalSupport: 'technicalSupport',
+  ciltProcedures: 'cilt-procedures',
+  opl: 'opl',
+  ciltTypes: 'cilt-types',
+  ciltFrecuencies: 'cilt-frecuencies'
 }
 
 const ROUTES_PARAMS = {

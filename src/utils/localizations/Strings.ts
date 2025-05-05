@@ -26,7 +26,7 @@ class StringsBase {
   static testingEvidenceWrite = "testingEvidenceWrite";
   static healthStatusOk = "healthStatusOk";
   static healthStatusFailed = "healthStatusFailed";
-  
+
   // System Health additional strings
   static sessionPerformance = "sessionPerformance";
   static memoryUsage = "memoryUsage";
@@ -35,6 +35,19 @@ class StringsBase {
   static pageLoadTime = "pageLoadTime";
   static domComplete = "domComplete";
   static networkLatency = "networkLatency";
+
+  // CILT related strings
+  static createCiltProcedure = "createCiltProcedure";
+  static createCiltProcedureForPosition = "createCiltProcedureForPosition";
+  static for = "for";
+
+  // CILT Master strings
+  static ciltMstrPageTitle = "ciltMstrPageTitle";
+  static ciltMstrCreateSuccess = "ciltMstrCreateSuccess";
+  static ciltMstrSelectPositionTitle = "ciltMstrSelectPositionTitle";
+  static ciltMstrCreateButtonLabel = "ciltMstrCreateButtonLabel";
+  static ciltMstrCreateModalTitle = "ciltMstrCreateModalTitle";
+  static ciltMstrPositionLabel = "ciltMstrPositionLabel";
 
   // Rooutes
   static companyParam = "companyParam";
@@ -245,6 +258,7 @@ class StringsBase {
   static createUserFor = "createUserFor";
   static importUsersFor = "importUsersFor";
   static createUser = "createUser";
+  
   static createSite = "createSite";
   static updateSite = "updateSite";
   static createPreclassifier = "createPreclassifier";
@@ -252,6 +266,7 @@ class StringsBase {
   static createLevel = "createLevel";
   static updateLevel = "updateLevel";
   static createNodefor = "createNodefor";
+  static select = "select";
 
   static cards = "cards";
   static tagDetailsOf = "tagDetailsOf";
@@ -513,7 +528,6 @@ class StringsBase {
   static yes = "yes";
   static no = "no";
   static detailsStatusCancelled = "detailsStatusCancelled";
-  static for = "for";
 
   static errorFetchingData = "errorFetchingData";
   static namePlaceholder = "namePlaceholder";
@@ -522,36 +536,48 @@ class StringsBase {
 
   // General Placeholders
   static cardTypeTreeNamePlaceholder = "cardTypeTreeNamePlaceholder";
-  static cardTypeTreeDescriptionPlaceholder = "cardTypeTreeDescriptionPlaceholder";
-  static cardTypeTreeResponsiblePlaceholder = "cardTypeTreeResponsiblePlaceholder";
+  static cardTypeTreeDescriptionPlaceholder =
+    "cardTypeTreeDescriptionPlaceholder";
+  static cardTypeTreeResponsiblePlaceholder =
+    "cardTypeTreeResponsiblePlaceholder";
   static cardTypeTreeStatusPlaceholder = "cardTypeTreeStatusPlaceholder";
   static cardTypeTreeColorPlaceholder = "cardTypeTreeColorPlaceholder";
 
   // Placeholders for Quantity Fields
-  static cardTypeTreeQuantityPicturesPlaceholder = "cardTypeTreeQuantityPicturesPlaceholder";
-  static cardTypeTreeQuantityVideosPlaceholder = "cardTypeTreeQuantityVideosPlaceholder";
-  static cardTypeTreeQuantityAudiosPlaceholder = "cardTypeTreeQuantityAudiosPlaceholder";
+  static cardTypeTreeQuantityPicturesPlaceholder =
+    "cardTypeTreeQuantityPicturesPlaceholder";
+  static cardTypeTreeQuantityVideosPlaceholder =
+    "cardTypeTreeQuantityVideosPlaceholder";
+  static cardTypeTreeQuantityAudiosPlaceholder =
+    "cardTypeTreeQuantityAudiosPlaceholder";
 
   // Titles or Section Labels
   static cardTypeTreeAtCreation = "cardTypeTreeAtCreation";
-  static cardTypeTreeAtProvisionalSolution = "cardTypeTreeAtProvisionalSolution";
+  static cardTypeTreeAtProvisionalSolution =
+    "cardTypeTreeAtProvisionalSolution";
   static cardTypeTreeAtDefinitiveSolution = "cardTypeTreeAtDefinitiveSolution";
 
   // Error Messages
   static cardTypeTreeRequiredCardTypeName = "cardTypeTreeRequiredCardTypeName";
   static cardTypeTreeRequiredDescription = "cardTypeTreeRequiredDescription";
-  static cardTypeTreeRequiredResponsableId = "cardTypeTreeRequiredResponsableId";
+  static cardTypeTreeRequiredResponsableId =
+    "cardTypeTreeRequiredResponsableId";
   static cardTypeTreeRequiredColor = "cardTypeTreeRequiredColor";
 
   // Notifications
-  static cardTypeTreeSuccessCardTypeUpdated = "cardTypeTreeSuccessCardTypeUpdated";
+  static cardTypeTreeSuccessCardTypeUpdated =
+    "cardTypeTreeSuccessCardTypeUpdated";
   static cardTypeTreeErrorFetchingData = "cardTypeTreeErrorFetchingData";
 
   /* Card Types and Preclassifier tree */
-  static cardTypesDrawerTypeCreateCardType = "cardTypesDrawerTypeCreateCardType";
-  static cardTypesDrawerTypeUpdateCardType = "cardTypesDrawerTypeUpdateCardType";
-  static cardTypesDrawerTypeCreatePreclassifier = "cardTypesDrawerTypeCreatePreclassifier";
-  static cardTypesDrawerTypeUpdatePreclassifier = "cardTypesDrawerTypeUpdatePreclassifier";
+  static cardTypesDrawerTypeCreateCardType =
+    "cardTypesDrawerTypeCreateCardType";
+  static cardTypesDrawerTypeUpdateCardType =
+    "cardTypesDrawerTypeUpdateCardType";
+  static cardTypesDrawerTypeCreatePreclassifier =
+    "cardTypesDrawerTypeCreatePreclassifier";
+  static cardTypesDrawerTypeUpdatePreclassifier =
+    "cardTypesDrawerTypeUpdatePreclassifier";
   static cardTypesCreate = "cardTypesCreate";
   static cardTypesCancel = "cardTypesCancel";
   static cardTypesEdit = "cardTypesEdit";
@@ -587,30 +613,30 @@ class StringsBase {
   static preclassifierDetailsDescription = "preclassifierDetailsDescription";
   static preclassifierDetailsStatus = "preclassifierDetailsStatus";
   static notSpecified = "notSpecified";
-  static false = "false"
+  static false = "false";
 
-  // PDF 
-  static tagDetails = "tagDetails"
-  static problemDetails= "problemDetails"
-  static sharePDF= "sharePDF"
-  static namePDF = "namePDF"
+  // PDF
+  static tagDetails = "tagDetails";
+  static problemDetails = "problemDetails";
+  static sharePDF = "sharePDF";
+  static namePDF = "namePDF";
 
-  // Login 
-  static logImgDesc = "logImgDesc"
-  static enSub = "enSub"
+  // Login
+  static logImgDesc = "logImgDesc";
+  static enSub = "enSub";
 
-  static selectRole = "selectRole"
+  static selectRole = "selectRole";
   static assignedTo = "assignedTo";
-  static assignUser = "assignUser"
+  static assignUser = "assignUser";
 
-  static notCardInfoFound = "notCardInfoFound"
+  static notCardInfoFound = "notCardInfoFound";
 
-  static commentsTag = "commentsTag"
-  static noCommentsTag = "noCommentsTag"
-  static associatedTags = "associatedTags"
+  static commentsTag = "commentsTag";
+  static noCommentsTag = "noCommentsTag";
+  static associatedTags = "associatedTags";
 
-  static tagsIssued = "tagsIssued"
-  static tagsEradicated = "tagsEradicated"
+  static tagsIssued = "tagsIssued";
+  static tagsEradicated = "tagsEradicated";
 
   static copy = "copy";
   static errorGettingLevelId = "errorGettingLevelId";
@@ -678,7 +704,7 @@ class StringsBase {
   static positionUpdateError = "positionUpdateError";
   static pleaseSelectStatus = "pleaseSelectStatus";
   static createPositionHere = "createPositionHere";
-  
+
   static selectUsers = "selectUsers";
   static selected = "selected";
   static usersSelected = "usersSelected";
@@ -695,12 +721,12 @@ class StringsBase {
   static notificationReceived = "notificationReceived";
   static expandAll = "expandAll";
   static collapseAll = "collapseAll";
-  
+
   static machinesOfArea = "machinesOfArea";
   static uploadCardAndEvidenceWithDataNet = "uploadCardAndEvidenceWithDataNet";
   static databaseConnectionTest = "databaseConnectionTest";
   static verificationOfServices = "verificationOfServices";
-  
+
   static catalogs = "catalogs";
   static accounts = "accounts";
   static dashboard = "dashboard";
@@ -709,6 +735,371 @@ class StringsBase {
   static enterPassword = "enterPassword";
   static permissionsError = "permissionsError";
 
+  // CILT MASTER CREATE
+  static ciltMasterCreateSuccess = "ciltMasterCreateSuccess";
+  static ciltMasterCreateError = "ciltMasterCreateError";
+  static ciltName = "ciltName";
+  static registerCiltNameRequiredValidation =
+    "registerCiltNameRequiredValidation";
+  static registerCiltNameMaxLengthValidation =
+    "registerCiltNameMaxLengthValidation";
+  static registerCiltNamePlaceholer = "registerCiltNamePlaceholer";
+  static ciltDescription = "ciltDescription";
+  static registerCiltDescriptionRequiredValidation =
+    "registerCiltDescriptionRequiredValidation";
+  static registerCiltDescriptionMaxLengthValidation =
+    "registerCiltDescriptionMaxLengthValidation";
+  static registerCiltDescriptionPlaceholer =
+    "registerCiltDescriptionPlaceholer";
+  static standardTime = "standardTime";
+  static registerCiltStandardTimeRequiredValidation =
+    "registerCiltStandardTimeRequiredValidation";
+  static registerCiltStandardTimePlaceholer =
+    "registerCiltStandardTimePlaceholer";
+  static learningTime = "learningTime";
+  static registerCiltLearningTimeRequiredValidation =
+    "registerCiltLearningTimeRequiredValidation";
+  static registerCiltLearningTimePlaceholer =
+    "registerCiltLearningTimePlaceholer";
+  static ciltCreator = "ciltCreator";
+  static registerCiltCreatorRequiredValidation =
+    "registerCiltCreatorRequiredValidation";
+  static reviewer = "reviewer";
+  static registerCiltReviewerRequiredValidation =
+    "registerCiltReviewerRequiredValidation";
+  static registerCiltReviewerPlaceholer = "registerCiltReviewerPlaceholer";
+  static approver = "approver";
+  static registerCiltApproverRequiredValidation =
+    "registerCiltApproverRequiredValidation";
+  static registerCiltApproverPlaceholer = "registerCiltApproverPlaceholer";
+  static layoutImage = "layoutImage";
+  static registerCiltLayoutImageRequiredValidation =
+    "registerCiltLayoutImageRequiredValidation";
+  static imageUploadError = "imageUploadError";
+  static selectCreator = "selectCreator";
+  static selectReviewer = "selectReviewer";
+  static selectApprover = "selectApprover";
+
+  static ciltProceduresSB = "ciltProceduresSB";
+  static ciltProceduresDescription = "ciltProceduresDescription";
+  static oplSB = "oplSB";
+  static oplDescription = "oplDescription";
+  static ciltTypesSB = "ciltTypesSB";
+  static ciltTypesDescription = "ciltTypesDescription";
+  static ciltFrecuenciesSB = "ciltFrecuenciesSB";
+  static ciltFrecuenciesDescription = "ciltFrecuenciesDescription";
+
+  //Cilt Types
+  static searchbyname = "searchbyname";
+  static addNewCiltType = "addNewCiltType";
+  static errorLoadingNewTypesCilt = "errorLoadingNewTypesCilt";
+  static typeCiltUpdated = "typeCiltUpdated";
+  static errorUpdatingCiltType = "errorUpdatingCiltType";
+  static ciltTypeAdded = "ciltTypeAdded";
+  static errorAddingCiltType = "errorAddingCiltType";
+  static noCiltTypes = "noCiltTypes";
+  static obligatoryName = "obligatoryName";
+  static add = "add";
+  static editCiltType = "editCiltType";
+  static addCiltType = "addCiltType";
+
+  //Cilt Frequency
+  static frequencyCode = "frequencyCode";
+  static addNewCiltFrequency = "addNewCiltFrequency";
+  static editCiltFrequency = "editCiltFrequency";
+  static addCiltFrequency = "addCiltFrequency";
+  static ciltFrequencyAdded = "ciltFrequencyAdded";
+  static ciltFrequencyUpdated = "ciltFrequencyUpdated";
+  static errorAddingCiltFrequency = "errorAddingCiltFrequency";
+  static errorUpdatingCiltFrequency = "errorUpdatingCiltFrequency";
+  static errorLoadingCiltFrequencies = "errorLoadingCiltFrequencies";
+  static noCiltFrequencies = "noCiltFrequencies";
+  static obligatoryCode = "obligatoryCode";
+  static obligatoryDescription = "obligatoryDescription";
+  static searchbyDescriptionOrCode = "searchbyDescriptionOrCode";
+
+  // OplDetailsList strings
+  static oplDetailsListNoDetails = "oplDetailsListNoDetails";
+  static oplDetailsListOrderColumn = "oplDetailsListOrderColumn";
+  static oplDetailsListTypeColumn = "oplDetailsListTypeColumn";
+  static oplDetailsListContentColumn = "oplDetailsListContentColumn";
+  static oplDetailsListActionsColumn = "oplDetailsListActionsColumn";
+  static oplDetailsListTextType = "oplDetailsListTextType";
+  static oplDetailsListImageType = "oplDetailsListImageType";
+  static oplDetailsListVideoType = "oplDetailsListVideoType";
+  static oplDetailsListPdfType = "oplDetailsListPdfType";
+  static oplDetailsListViewContent = "oplDetailsListViewContent";
+  static oplDetailsListNoContent = "oplDetailsListNoContent";
+
+  // OplTable related strings
+  static oplPageTitle = "oplPageTitle";
+  static oplCreateSuccess = "oplCreateSuccess";
+  static oplUpdateSuccess = "oplUpdateSuccess";
+  static oplDeleteSuccess = "oplDeleteSuccess";
+  static oplLoadError = "oplLoadError";
+  static oplSaveError = "oplSaveError";
+  static oplDeleteError = "oplDeleteError";
+  static oplDetailsTitle = "oplDetailsTitle";
+  static oplDetailsLoadError = "oplDetailsLoadError";
+  static oplDetailsSaveSuccess = "oplDetailsSaveSuccess";
+  static oplDetailsSaveError = "oplDetailsSaveError";
+  static oplDetailsDeleteSuccess = "oplDetailsDeleteSuccess";
+  static oplDetailsDeleteError = "oplDetailsDeleteError";
+  static addFiles = "addFiles";
+  static oplViewModalTitle = "oplViewModalTitle";
+  static oplGeneralInfo = "oplGeneralInfo";
+  static oplTitle = "oplTitle";
+  static oplObjective = "oplObjective";
+  static oplCreatedBy = "oplCreatedBy";
+  static oplReviewedBy = "oplReviewedBy";
+  static oplCreationDate = "oplCreationDate";
+  static oplContentPreview = "oplContentPreview";
+  static oplNoDetails = "oplNoDetails";
+  static oplTextType = "oplTextType";
+  static oplImageType = "oplImageType";
+  static oplVideoType = "oplVideoType";
+  static oplPdfType = "oplPdfType";
+  static oplPlayVideo = "oplPlayVideo";
+  static oplViewPdf = "oplViewPdf";
+  static oplOpenInNewTab = "oplOpenInNewTab";
+  static oplPdfPreviewTitle = "oplPdfPreviewTitle";
+  static oplVideoPreviewTitle = "oplVideoPreviewTitle";
+  static oplClose = "oplClose";
+
+  // OplTable strings
+  static oplTableTitleColumn = "oplTableTitleColumn";
+  static oplTableObjectiveColumn = "oplTableObjectiveColumn";
+  static oplTableTypeColumn = "oplTableTypeColumn";
+  static oplTableActionsColumn = "oplTableActionsColumn";
+  static oplTableViewTooltip = "oplTableViewTooltip";
+  static oplTableEditTooltip = "oplTableEditTooltip";
+  static oplTableOplType = "oplTableOplType";
+  static oplTableSopType = "oplTableSopType";
+
+  // OplTextForm strings
+  static oplTextFormLabel = "oplTextFormLabel";
+  static oplTextFormPlaceholder = "oplTextFormPlaceholder";
+  static oplTextFormValidationMessage = "oplTextFormValidationMessage";
+  static oplTextFormSubmitButton = "oplTextFormSubmitButton";
+
+  // OplMediaUploader strings
+  static oplMediaImageTitle = "oplMediaImageTitle";
+  static oplMediaImageHint = "oplMediaImageHint";
+  static oplMediaImageButton = "oplMediaImageButton";
+  static oplMediaVideoTitle = "oplMediaVideoTitle";
+  static oplMediaVideoHint = "oplMediaVideoHint";
+  static oplMediaVideoButton = "oplMediaVideoButton";
+  static oplMediaPdfTitle = "oplMediaPdfTitle";
+  static oplMediaPdfHint = "oplMediaPdfHint";
+  static oplMediaPdfButton = "oplMediaPdfButton";
+  static oplMediaDefaultTitle = "oplMediaDefaultTitle";
+  static oplMediaDefaultHint = "oplMediaDefaultHint";
+  static oplMediaDefaultButton = "oplMediaDefaultButton";
+
+  // OplFormModal strings
+  static oplFormModalViewTitle = "oplFormModalViewTitle";
+  static oplFormModalEditTitle = "oplFormModalEditTitle";
+  static oplFormModalCreateTitle = "oplFormModalCreateTitle";
+  static oplFormModalCloseButton = "oplFormModalCloseButton";
+  static oplFormModalCancelButton = "oplFormModalCancelButton";
+  static oplFormModalSaveButton = "oplFormModalSaveButton";
+
+  // OplForm strings
+  static oplFormTitleLabel = "oplFormTitleLabel";
+  static oplFormTitleRequired = "oplFormTitleRequired";
+  static oplFormTitlePlaceholder = "oplFormTitlePlaceholder";
+  static oplFormObjectiveLabel = "oplFormObjectiveLabel";
+  static oplFormObjectiveRequired = "oplFormObjectiveRequired";
+  static oplFormObjectivePlaceholder = "oplFormObjectivePlaceholder";
+  static oplFormTypeLabel = "oplFormTypeLabel";
+  static oplFormTypeRequired = "oplFormTypeRequired";
+  static oplFormTypePlaceholder = "oplFormTypePlaceholder";
+  static oplFormTypeOpl = "oplFormTypeOpl";
+  static oplFormTypeSop = "oplFormTypeSop";
+  static oplFormCreatorLabel = "oplFormCreatorLabel";
+  static oplFormCreatorPlaceholder = "oplFormCreatorPlaceholder";
+  static oplFormReviewerLabel = "oplFormReviewerLabel";
+  static oplFormReviewerPlaceholder = "oplFormReviewerPlaceholder";
+  static oplFormNotAssigned = "oplFormNotAssigned";
+  static oplFormUpdateButton = "oplFormUpdateButton";
+  static oplFormCreateButton = "oplFormCreateButton";
+
+  // OplDetailsModal strings
+  static oplDetailsModalTitle = "oplDetailsModalTitle";
+  static oplDetailsContentPreview = "oplDetailsContentPreview";
+  static oplDetailsNoContent = "oplDetailsNoContent";
+  static oplDetailsAddContent = "oplDetailsAddContent";
+  static oplDetailsTextType = "oplDetailsTextType";
+  static oplDetailsImageType = "oplDetailsImageType";
+  static oplDetailsVideoType = "oplDetailsVideoType";
+  static oplDetailsPdfType = "oplDetailsPdfType";
+  static oplDetailsAddText = "oplDetailsAddText";
+  static oplDetailsAddImage = "oplDetailsAddImage";
+  static oplDetailsAddVideo = "oplDetailsAddVideo";
+  static oplDetailsAddPdf = "oplDetailsAddPdf";
+  static oplDetailsViewTab = "oplDetailsViewTab";
+  static oplDetailsPlayVideo = "oplDetailsPlayVideo";
+  static oplDetailsViewPdf = "oplDetailsViewPdf";
+  static oplDetailsPdfPreviewTitle = "oplDetailsPdfPreviewTitle";
+  static oplDetailsVideoPreviewTitle = "oplDetailsVideoPreviewTitle";
+  static oplDetailsClose = "oplDetailsClose";
+  static oplDetailsOpenInNewTab = "oplDetailsOpenInNewTab";
+
+  // CILT Edit Modal strings
+  static ciltMstrEditModalTitle = "ciltMstrEditModalTitle";
+  static ciltMstrSaveChangesButton = "ciltMstrSaveChangesButton";
+  static ciltMstrCancelButton = "ciltMstrCancelButton";
+  static ciltMstrUpdateError = "ciltMstrUpdateError";
+  static ciltMstrNameLabel = "ciltMstrNameLabel";
+  static ciltMstrNameRequired = "ciltMstrNameRequired";
+  static ciltMstrDescriptionLabel = "ciltMstrDescriptionLabel";
+  static ciltMstrStandardTimeLabel = "ciltMstrStandardTimeLabel";
+  static ciltMstrInvalidNumberMessage = "ciltMstrInvalidNumberMessage";
+  static ciltMstrLearningTimeLabel = "ciltMstrLearningTimeLabel";
+  static ciltMstrStatusLabel = "ciltMstrStatusLabel";
+  static ciltMstrStatusRequired = "ciltMstrStatusRequired";
+  static ciltMstrStatusPlaceholder = "ciltMstrStatusPlaceholder";
+  static ciltMstrStatusActive = "ciltMstrStatusActive";
+  static ciltMstrStatusSuspended = "ciltMstrStatusSuspended";
+  static ciltMstrStatusCanceled = "ciltMstrStatusCanceled";
+
+  // CILT Details Modal strings
+  static ciltMstrDetailsModalTitle = "ciltMstrDetailsModalTitle";
+  static ciltMstrCloseButton = "ciltMstrCloseButton";
+  static ciltMstrDetailsNameLabel = "ciltMstrDetailsNameLabel";
+  static ciltMstrDetailsDescriptionLabel = "ciltMstrDetailsDescriptionLabel";
+  static ciltMstrCreatorLabel = "ciltMstrCreatorLabel";
+  static ciltMstrReviewerLabel = "ciltMstrReviewerLabel";
+  static ciltMstrApproverLabel = "ciltMstrApproverLabel";
+  static ciltMstrDetailsStandardTimeLabel = "ciltMstrDetailsStandardTimeLabel";
+  static ciltMstrDetailsLearningTimeLabel = "ciltMstrDetailsLearningTimeLabel";
+  static ciltMstrOrderLabel = "ciltMstrOrderLabel";
+  static ciltMstrDetailsStatusLabel = "ciltMstrDetailsStatusLabel";
+  static ciltMstrLastUsedLabel = "ciltMstrLastUsedLabel";
+  static ciltMstrLayoutLabel = "ciltMstrLayoutLabel";
+  static ciltMstrViewFullImage = "ciltMstrViewFullImage";
+  static ciltMstrNotAvailable = "ciltMstrNotAvailable";
+  static ciltMstrNA = "ciltMstrNA";
+
+  // CILT Card List strings
+  static ciltMstrListNameColumn = "ciltMstrListNameColumn";
+  static ciltMstrListDescriptionColumn = "ciltMstrListDescriptionColumn";
+  static ciltMstrListCreatorColumn = "ciltMstrListCreatorColumn";
+  static ciltMstrListStandardTimeColumn = "ciltMstrListStandardTimeColumn";
+  static ciltMstrListStatusColumn = "ciltMstrListStatusColumn";
+  static ciltMstrListCreationDateColumn = "ciltMstrListCreationDateColumn";
+  static ciltMstrListActionsColumn = "ciltMstrListActionsColumn";
+  static ciltMstrListEditAction = "ciltMstrListEditAction";
+  static ciltMstrListDetailsAction = "ciltMstrListDetailsAction";
+  static ciltMstrListSequencesAction = "ciltMstrListSequencesAction";
+  static ciltMstrListActiveFilter = "ciltMstrListActiveFilter";
+  static ciltMstrListSuspendedFilter = "ciltMstrListSuspendedFilter";
+  static ciltMstrListCanceledFilter = "ciltMstrListCanceledFilter";
+  static ciltMstrCreateSequenceButton = "ciltMstrCreateSequenceButton";
+
+  // Opl page strings
+  static oplPageManagementTitle = "oplPageManagementTitle";
+  static oplPageCreateButton = "oplPageCreateButton";
+  static oplPageEditModalTitle = "oplPageEditModalTitle";
+  static oplPageCreateModalTitle = "oplPageCreateModalTitle";
+  static oplErrorLoadingList = "oplErrorLoadingList";
+  static oplErrorLoadingUsers = "oplErrorLoadingUsers";
+  static oplErrorLoadingDetails = "oplErrorLoadingDetails";
+  static oplSuccessUpdated = "oplSuccessUpdated";
+  static oplSuccessCreated = "oplSuccessCreated";
+  static oplErrorSaving = "oplErrorSaving";
+  static oplSuccessTextAdded = "oplSuccessTextAdded";
+  static oplErrorAddingText = "oplErrorAddingText";
+  static oplErrorNoFileSelected = "oplErrorNoFileSelected";
+  static oplSuccessMediaAdded = "oplSuccessMediaAdded";
+  static oplErrorAddingMedia = "oplErrorAddingMedia";
+
+  // SearchBar strings
+  static oplSearchBarPlaceholder = "oplSearchBarPlaceholder";
+  static oplTableViewButtonText = "oplTableViewButtonText";
+  static oplTableEditButtonText = "oplTableEditButtonText";
+
+  // OplSelectionModal strings
+  static oplSelectionModalTitle = "oplSelectionModalTitle";
+  static oplSelectionModalTitleColumn = "oplSelectionModalTitleColumn";
+  static oplSelectionModalTypeColumn = "oplSelectionModalTypeColumn";
+  static oplSelectionModalActionsColumn = "oplSelectionModalActionsColumn";
+  static oplSelectionModalSelectButton = "oplSelectionModalSelectButton";
+  static oplSelectionModalMultimediaButton = "oplSelectionModalMultimediaButton";
+  static oplSelectionModalMultimediaTitle = "oplSelectionModalMultimediaTitle";
+  static oplSelectionModalNoContent = "oplSelectionModalNoContent";
+  static oplSelectionModalCreateTitle = "oplSelectionModalCreateTitle";
+  static oplSelectionModalSuccessDetail = "oplSelectionModalSuccessDetail";
+  static oplSelectionModalSuccessDescription = "oplSelectionModalSuccessDescription";
+  static oplSelectionModalErrorDetail = "oplSelectionModalErrorDetail";
+  static oplSelectionModalErrorDescription = "oplSelectionModalErrorDescription";
+  static oplSelectionModalImageTitle = "oplSelectionModalImageTitle";
+  static oplSelectionModalImageAlt = "oplSelectionModalImageAlt";
+  static oplSelectionModalSuccessOpl = "oplSelectionModalSuccessOpl";
+  static oplSelectionModalErrorOpl = "oplSelectionModalErrorOpl";
+
+  // EditCiltSequenceModal strings
+  static editCiltSequenceModalTitle = "editCiltSequenceModalTitle";
+  static editCiltSequenceModalSuccess = "editCiltSequenceModalSuccess";
+  static editCiltSequenceModalSuccessDescription = "editCiltSequenceModalSuccessDescription";
+  static editCiltSequenceModalError = "editCiltSequenceModalError";
+  static editCiltSequenceModalErrorDescription = "editCiltSequenceModalErrorDescription";
+  static editCiltSequenceModalErrorLoadingTypes = "editCiltSequenceModalErrorLoadingTypes";
+  static editCiltSequenceModalPositionLabel = "editCiltSequenceModalPositionLabel";
+  static editCiltSequenceModalPositionPlaceholder = "editCiltSequenceModalPositionPlaceholder";
+  static editCiltSequenceModalLevelLabel = "editCiltSequenceModalLevelLabel";
+  static editCiltSequenceModalLevelRequired = "editCiltSequenceModalLevelRequired";
+  static editCiltSequenceModalSelectLevel = "editCiltSequenceModalSelectLevel";
+  static editCiltSequenceModalReferenceOplLabel = "editCiltSequenceModalReferenceOplLabel";
+  static editCiltSequenceModalReferenceOplPlaceholder = "editCiltSequenceModalReferenceOplPlaceholder";
+  static editCiltSequenceModalRemediationOplLabel = "editCiltSequenceModalRemediationOplLabel";
+  static editCiltSequenceModalRemediationOplPlaceholder = "editCiltSequenceModalRemediationOplPlaceholder";
+  static editCiltSequenceModalCiltTypeLabel = "editCiltSequenceModalCiltTypeLabel";
+  static editCiltSequenceModalCiltTypeRequired = "editCiltSequenceModalCiltTypeRequired";
+  static editCiltSequenceModalCiltTypePlaceholder = "editCiltSequenceModalCiltTypePlaceholder";
+  static editCiltSequenceModalOrderLabel = "editCiltSequenceModalOrderLabel";
+  static editCiltSequenceModalOrderRequired = "editCiltSequenceModalOrderRequired";
+  static editCiltSequenceModalOrderPlaceholder = "editCiltSequenceModalOrderPlaceholder";
+  static editCiltSequenceModalColorLabel = "editCiltSequenceModalColorLabel";
+  static editCiltSequenceModalColorPlaceholder = "editCiltSequenceModalColorPlaceholder";
+  static editCiltSequenceModalStandardTimeLabel = "editCiltSequenceModalStandardTimeLabel";
+  static editCiltSequenceModalStandardTimeRequired = "editCiltSequenceModalStandardTimeRequired";
+  static editCiltSequenceModalStandardTimePlaceholder = "editCiltSequenceModalStandardTimePlaceholder";
+  static editCiltSequenceModalSequenceListLabel = "editCiltSequenceModalSequenceListLabel";
+  static editCiltSequenceModalSequenceListRequired = "editCiltSequenceModalSequenceListRequired";
+  static editCiltSequenceModalSequenceListPlaceholder = "editCiltSequenceModalSequenceListPlaceholder";
+  static editCiltSequenceModalToolsRequiredLabel = "editCiltSequenceModalToolsRequiredLabel";
+  static editCiltSequenceModalToolsRequiredPlaceholder = "editCiltSequenceModalToolsRequiredPlaceholder";
+  static editCiltSequenceModalStandardOkLabel = "editCiltSequenceModalStandardOkLabel";
+  static editCiltSequenceModalStandardOkPlaceholder = "editCiltSequenceModalStandardOkPlaceholder";
+  static editCiltSequenceModalStoppageReasonLabel = "editCiltSequenceModalStoppageReasonLabel";
+  static editCiltSequenceModalQuantityPicturesCreateLabel = "editCiltSequenceModalQuantityPicturesCreateLabel";
+  static editCiltSequenceModalQuantityPicturesCloseLabel = "editCiltSequenceModalQuantityPicturesCloseLabel";
+  static editCiltSequenceModalSelectReferenceOpl = "editCiltSequenceModalSelectReferenceOpl";
+  static editCiltSequenceModalSelectRemediationOpl = "editCiltSequenceModalSelectRemediationOpl";
+  static editCiltSequenceModalColorRequired = "editCiltSequenceModalColorRequired";
+  static editCiltSequenceModalStandardOkRequired = "editCiltSequenceModalStandardOkRequired";
+  static editCiltSequenceModalQuantityPicturesCreateRequired = "editCiltSequenceModalQuantityPicturesCreateRequired";
+  static editCiltSequenceModalQuantityPicturesCloseRequired = "editCiltSequenceModalQuantityPicturesCloseRequired";
+
+  // CreateCiltSequenceModal strings
+  static createCiltSequenceModalTitle = "createCiltSequenceModalTitle";
+  static createCiltSequenceModalSuccess = "createCiltSequenceModalSuccess";
+  static createCiltSequenceModalSuccessDescription = "createCiltSequenceModalSuccessDescription";
+  static createCiltSequenceModalError = "createCiltSequenceModalError";
+  static createCiltSequenceModalErrorDescription = "createCiltSequenceModalErrorDescription";
+  static createCiltSequenceModalErrorLoadingTypes = "createCiltSequenceModalErrorLoadingTypes";
+  static createCiltSequenceModalErrorLoadingFrequencies = "createCiltSequenceModalErrorLoadingFrequencies";
+  static createCiltSequenceModalErrorNoFrequency = "createCiltSequenceModalErrorNoFrequency";
+  static createCiltSequenceModalBasicInfoTitle = "createCiltSequenceModalBasicInfoTitle";
+  static createCiltSequenceModalDetailsTitle = "createCiltSequenceModalDetailsTitle";
+  static createCiltSequenceModalFrequenciesTitle = "createCiltSequenceModalFrequenciesTitle";
+  static createCiltSequenceModalFrequenciesDescription = "createCiltSequenceModalFrequenciesDescription";
+  static createCiltSequenceModalFrequenciesRequired = "createCiltSequenceModalFrequenciesRequired";
+  static createCiltSequenceModalDefaultSiteName = "createCiltSequenceModalDefaultSiteName";
+  static searchBarDefaultPlaceholder = "searchBarDefaultPlaceholder";
+  static ciltLevelTreeModalCreateSequenceHere = "ciltLevelTreeModalCreateSequenceHere";
+  static ciltProceduresSearchPlaceholder = "ciltProceduresSearchPlaceholder";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

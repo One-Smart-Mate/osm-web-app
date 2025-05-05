@@ -12,6 +12,7 @@ interface UserSelectionModalProps {
   loading: boolean;
   initialSelectedUserIds?: number[];
   title?: string;
+  singleSelection?: boolean;
 }
 
 const UserSelectionModal = ({
@@ -21,7 +22,8 @@ const UserSelectionModal = ({
   users,
   loading,
   initialSelectedUserIds = [],
-  title = Strings.assignedUsers
+  title = Strings.assignedUsers,
+  singleSelection = false
 }: UserSelectionModalProps) => {
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>(initialSelectedUserIds);
   const [searchText, setSearchText] = useState("");
@@ -49,7 +51,13 @@ const UserSelectionModal = ({
   // Handle user selection
   const handleUserSelection = (userId: number, checked: boolean) => {
     if (checked) {
-      setSelectedUserIds(prev => [...prev, userId]);
+      if (singleSelection) {
+        // For single selection, replace the array with just the selected ID
+        setSelectedUserIds([userId]);
+      } else {
+        // For multi-selection, add to the array
+        setSelectedUserIds(prev => [...prev, userId]);
+      }
     } else {
       setSelectedUserIds(prev => prev.filter(id => id !== userId));
     }

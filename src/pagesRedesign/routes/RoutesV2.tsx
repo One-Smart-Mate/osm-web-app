@@ -18,17 +18,39 @@ import Constants from "../../utils/Constants";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
-const CardTypesV2 = React.lazy(() => import("../../pages/cardtypes/CardTypesV2"));
+const CardTypesV2 = React.lazy(
+  () => import("../../pages/cardtypes/CardTypesV2")
+);
 const CompaniesV2 = React.lazy(() => import("../../pages/company/CompaniesV2"));
-const CardDetails = React.lazy(() => import("../../pages/carddetails/CardDetails"));
+const CardDetails = React.lazy(
+  () => import("../../pages/carddetails/CardDetails")
+);
 const SiteUsersV2 = React.lazy(() => import("../../pages/user/SiteUsersV2"));
 const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
-const SystemHealth = React.lazy(() => import("../../pages/systemhealth/SystemHealth"));
+const SystemHealth = React.lazy(
+  () => import("../../pages/systemhealth/SystemHealth")
+);
 const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
 const ChartsV2 = React.lazy(() => import("../../pages/charts/ChartsV2"));
-const PositionsPage = React.lazy(() => import("../../pages/positions/PositionsPage"));
-const PrioritiesV2 = React.lazy(() => import("../../pages/priority/PrioritiesV2"));
-const TechnicalSupport = React.lazy(() => import("../components/TechnicalSupport"));
+const PositionsPage = React.lazy(
+  () => import("../../pages/positions/PositionsPage")
+);
+const PrioritiesV2 = React.lazy(
+  () => import("../../pages/priority/PrioritiesV2")
+);
+const TechnicalSupport = React.lazy(
+  () => import("../components/TechnicalSupport")
+);
+const CiltProceduresPage = React.lazy(
+  () => import("../../pages/cilt/CiltProceduresPage")
+);
+const OplPage = React.lazy(() => import("../../pages/opl/OplPage"));
+const CiltTypesPage = React.lazy(
+  () => import("../../pages/ciltTypes/CiltTypesPage")
+);
+const CiltFrecuenciesPage = React.lazy(
+  () => import("../../pages/ciltFrecuencies/CiltFrecuenciesPage")
+);
 const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
 
 // Common routes
@@ -43,7 +65,7 @@ const prioritiesV2 = new RouteV2(
 const levelsV2 = new RouteV2(
   Strings.levelsSB,
   Constants.ROUTES_PATH.levels,
-  <LevelsV2  />,
+  <LevelsV2 />,
   <BsDiagram3 />,
   Strings.catalogs
 );
@@ -91,7 +113,7 @@ const technicalSupportRoute = new RouteV2(
 const positionsV2 = new RouteV2(
   Strings.positions,
   Constants.ROUTES_PATH.positions,
-  <PositionsPage  />,
+  <PositionsPage />,
   <BsPeople />,
   Strings.catalogs
 );
@@ -99,7 +121,39 @@ const positionsV2 = new RouteV2(
 const cardTypesV2 = new RouteV2(
   Strings.cardTypesSB,
   Constants.ROUTES_PATH.cardTypes,
-  <CardTypesV2  />,
+  <CardTypesV2 />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltProceduresV2 = new RouteV2(
+  Strings.ciltProceduresSB,
+  Constants.ROUTES_PATH.ciltProcedures,
+  <CiltProceduresPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const oplV2 = new RouteV2(
+  Strings.oplSB,
+  Constants.ROUTES_PATH.opl,
+  <OplPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltTypesV2 = new RouteV2(
+  Strings.ciltTypesSB,
+  Constants.ROUTES_PATH.ciltTypes,
+  <CiltTypesPage />,
+  <BsNodePlus />,
+  buildCatalogsSectionName()
+);
+
+const ciltFrecuenciesV2 = new RouteV2(
+  Strings.ciltFrecuenciesSB,
+  Constants.ROUTES_PATH.ciltFrecuencies,
+  <CiltFrecuenciesPage />,
   <BsNodePlus />,
   Strings.catalogs
 );
@@ -112,7 +166,6 @@ const companiesV2 = new RouteV2(
   Strings.catalogs
 );
 
-
 const systemHealthV2 = new RouteV2(
   Strings.systemHealthSB,
   "system-health",
@@ -120,7 +173,6 @@ const systemHealthV2 = new RouteV2(
   <MdHealthAndSafety />,
   Strings.technicalSupport
 );
-
 
 export const cardDetailRoute = new RouteV2(
   Strings.cardDetailsSB,
@@ -130,20 +182,23 @@ export const cardDetailRoute = new RouteV2(
   ""
 );
 
-
 const routesV2: RouteV2[] = [
-  technicalSupportRoute, 
-  cardDetailRoute, 
-  siteUsersV2, 
-  sitesV2, 
-  chartsV2, 
-  tagsV2, 
-  levelsV2, 
-  positionsV2, 
+  technicalSupportRoute,
+  cardDetailRoute,
+  siteUsersV2,
+  sitesV2,
+  chartsV2,
+  tagsV2,
+  levelsV2,
+  positionsV2,
   prioritiesV2,
   cardTypesV2,
   companiesV2,
-  systemHealthV2
+  systemHealthV2,
+  ciltProceduresV2,
+  oplV2,
+  ciltTypesV2,
+  ciltFrecuenciesV2,
 ];
 
 const localAdminRoutesSiderOptionsV2 = (): ItemType[] => {
@@ -231,6 +286,30 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: positionsV2.path,
       icon: positionsV2.icon,
       section: positionsV2.section,
+    }),
+    getItemV2({
+      label: ciltProceduresV2.label,
+      key: ciltProceduresV2.path,
+      icon: ciltProceduresV2.icon,
+      section: ciltProceduresV2.section,
+    }),
+    getItemV2({
+      label: oplV2.label,
+      key: oplV2.path,
+      icon: oplV2.icon,
+      section: oplV2.section,
+    }),
+    getItemV2({
+      label: ciltTypesV2.label,
+      key: ciltTypesV2.path,
+      icon: ciltTypesV2.icon,
+      section: ciltTypesV2.section,
+    }),
+    getItemV2({
+      label: ciltFrecuenciesV2.label,
+      key: ciltFrecuenciesV2.path,
+      icon: ciltFrecuenciesV2.icon,
+      section: ciltFrecuenciesV2.section,
     }),
   ];
   return items;
