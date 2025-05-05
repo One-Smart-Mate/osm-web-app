@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Table,
   Button,
   Space,
   message,
@@ -8,12 +7,16 @@ import {
   Form,
   Input,
   Switch,
+  List,
+  Card,
+  Typography
 } from "antd";
-import {EditOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import { useGetCiltTypesAllMutation, useCreateCiltTypeMutation, useUpdateCiltTypeMutation } from "../../../services/cilt/ciltTypesService";
 import AnatomyButton from "../../../components/AnatomyButton";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
+
+const { Text } = Typography;
 
 const CiltTypes = (): React.ReactElement => {
   const [getCiltTypesAll, { isLoading }] = useGetCiltTypesAllMutation();
@@ -125,38 +128,6 @@ const CiltTypes = (): React.ReactElement => {
     });
   };
 
-  const columns = [
-    {
-      title: Strings.name,
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: Strings.status,
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) =>
-        status === 'A' ? (
-          <span style={{ color: "green" }}>{Strings.active}</span>
-        ) : (
-          <span style={{ color: "red" }}>{Strings.inactive}</span>
-        ),
-    },
-    {
-      title: Strings.actions,
-      key: "actions",
-      render: (_: any, record: CiltType) => (
-        <Space>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal(record)}
-          />
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div className="cilt-types-container">
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
@@ -183,15 +154,58 @@ const CiltTypes = (): React.ReactElement => {
         />
       </div>
 
-      <Table
-        columns={columns}
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
         dataSource={filteredCiltTypes}
         loading={isLoading}
-        rowKey="id"
         locale={{
           emptyText: Strings.noCiltTypes,
         }}
-        bordered
+        style={{ overflow: 'hidden' }}
+        renderItem={(item: CiltType) => (
+          <List.Item>
+            <Card
+              headStyle={{ backgroundColor: '#1890ff', color: 'white', fontWeight: 'bold' }}
+              title={item.name}
+              style={{ 
+                height: '100%',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                border: '1px solid #e8e8e8',
+                transition: 'all 0.3s ease'
+              }}
+              className="cilt-type-card"
+              onMouseEnter={(e) => {
+                const target = e.currentTarget;
+                target.style.boxShadow = '0 3px 6px rgba(0,0,0,0.2)';
+                target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                const target = e.currentTarget;
+                target.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15)';
+                target.style.transform = 'translateY(0)';
+              }}
+            >
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Text strong>
+                  {Strings.status}: {' '}
+                  {item.status === 'A' ? (
+                    <span style={{ color: "green" }}>{Strings.active}</span>
+                  ) : (
+                    <span style={{ color: "red" }}>{Strings.inactive}</span>
+                  )}
+                </Text>
+              </Space>
+              <div style={{ marginTop: '16px', borderTop: '1px solid #f0f0f0', paddingTop: '12px' }}>
+                <Button
+                  type="primary"
+                  onClick={() => openEditModal(item)}
+                >
+                  {Strings.edit}
+                </Button>
+              </div>
+            </Card>
+          </List.Item>
+        )}
       />
 
       <Modal

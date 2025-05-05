@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Table,
   Button,
   Space,
   message,
@@ -8,8 +7,10 @@ import {
   Form,
   Input,
   Switch,
+  List,
+  Card,
+  Typography
 } from "antd";
-import { EditOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import {
   useGetCiltFrequenciesAllMutation,
@@ -18,6 +19,8 @@ import {
 } from "../../../services/cilt/ciltFrequenciesService";
 import AnatomyButton from "../../../components/AnatomyButton";
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
+
+const { Text } = Typography;
 
 const CiltFrequencies = (): React.ReactElement => {
   const [getCiltFrequenciesAll, { isLoading }] = useGetCiltFrequenciesAllMutation();
@@ -127,43 +130,6 @@ const CiltFrequencies = (): React.ReactElement => {
     });
   };
 
-  const columns = [
-    {
-      title: Strings.frequencyCode,
-      dataIndex: "frecuencyCode",
-      key: "frecuencyCode",
-    },
-    {
-      title: Strings.description,
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: Strings.status,
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) =>
-        status === "A" ? (
-          <span style={{ color: "green" }}>{Strings.active}</span>
-        ) : (
-          <span style={{ color: "red" }}>{Strings.inactive}</span>
-        ),
-    },
-    {
-      title: Strings.actions,
-      key: "actions",
-      render: (_: any, record: CiltFrequency) => (
-        <Space>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal(record)}
-          />
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div className="cilt-frequencies-container">
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
@@ -190,15 +156,60 @@ const CiltFrequencies = (): React.ReactElement => {
         />
       </div>
 
-      <Table
-        columns={columns}
+      <List
+        grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
         dataSource={filteredCiltFrequencies}
         loading={isLoading}
-        rowKey="id"
         locale={{
           emptyText: Strings.noCiltFrequencies,
         }}
-        bordered
+        style={{ overflow: 'hidden' }}
+        renderItem={(item: CiltFrequency) => (
+          <List.Item>
+            <Card
+              headStyle={{ backgroundColor: '#1890ff', color: 'white', fontWeight: 'bold' }}
+              title={item.frecuencyCode}
+              style={{ 
+                height: '100%',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                border: '1px solid #e8e8e8',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                const target = e.currentTarget;
+                target.style.boxShadow = '0 3px 6px rgba(0,0,0,0.2)';
+                target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                const target = e.currentTarget;
+                target.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15)';
+                target.style.transform = 'translateY(0)';
+              }}
+            >
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Text strong>{Strings.description}:</Text>
+                <Text>{item.description}</Text>
+                
+                <Text strong style={{ marginTop: '8px' }}>
+                  {Strings.status}: {' '}
+                  {item.status === 'A' ? (
+                    <span style={{ color: "green" }}>{Strings.active}</span>
+                  ) : (
+                    <span style={{ color: "red" }}>{Strings.inactive}</span>
+                  )}
+                </Text>
+              </Space>
+              <div style={{ marginTop: '16px', borderTop: '1px solid #f0f0f0', paddingTop: '12px' }}>
+                <Button
+                  type="primary"
+                  onClick={() => openEditModal(item)}
+                >
+                  {Strings.edit}
+                </Button>
+              </div>
+            </Card>
+          </List.Item>
+        )}
       />
 
       <Modal
