@@ -830,7 +830,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
                   </Button>
                 ) : (
                   <button
-                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${
+                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm ${
                       isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
                     }`}
                     onClick={toggleAllNodes}

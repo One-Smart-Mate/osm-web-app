@@ -5,7 +5,7 @@ import {
 } from "../../services/siteService";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Badge, Button, Card, List, Modal, Space, Typography } from "antd";
+import { Badge, Button, Card, List, Space, Typography } from "antd";
 import { Site } from "../../data/site/site";
 import Constants from "../../utils/Constants";
 import { useAppDispatch, useAppSelector } from "../../core/store";
@@ -33,6 +33,7 @@ import { navigateWithProps } from "../../pagesRedesign/routes/RoutesExtensions";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../../components/PaginatedList";
 import SiteForm, { SiteFormType } from "./components/SiteForm";
+import AnatomySingleCollapsable from "../components/AnatomySingleCollapsable";
 
 const SitesV2 = () => {
   const [getSites] = useGetCompanySitesMutation();
@@ -44,8 +45,6 @@ const SitesV2 = () => {
   const isSiteUpdated = useAppSelector(selectSiteUpdatedIndicator);
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
   const navigate = useNavigate();
-  const [modalActions, setModalActions] = useState(false);
-  const [selectedSite, setSelectedSite] = useState<Site | null>(null);
   const { isIhAdmin } = useCurrentUser();
   const companyName = location?.state?.companyName || Strings.empty;
   const navigateProps = navigateWithProps();
@@ -92,7 +91,7 @@ const SitesV2 = () => {
   const search = useCallback((item: Site, query: string): boolean => {
     const normalizedQuery = query.toLowerCase();
     const { name, address, contact } = item;
-  
+
     return (
       name.toLowerCase().includes(normalizedQuery) ||
       address.toLowerCase().includes(normalizedQuery) ||
@@ -109,6 +108,120 @@ const SitesV2 = () => {
 
   const handleOnSearch = (query: string) => {
     setSearchQuery(query);
+  };
+
+  const buildActions = (value: Site): [React.ReactNode | undefined] => {
+    if (isIhAdmin()) {
+      return [
+        <Space className="p-2" wrap>
+          <SiteForm
+            data={value}
+            onComplete={() => handleGetSites()}
+            companyName={companyName}
+            formType={SiteFormType.UPDATE}
+          />
+          <Button
+            type="default"
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.charts,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCharts}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.cards,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCards}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.users,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewUsers}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.priorities,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewPriorities}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.cardTypes,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCardTypes}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.levels,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewLevels}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigateProps({
+                path: Constants.ROUTES_PATH.positions,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewPositions}
+          </Button>
+        </Space>,
+      ];
+    } else {
+      return [
+        <Button
+          type="default"
+          onClick={() => {
+            navigateProps({
+              path: Constants.ROUTES_PATH.charts,
+              siteId: value.id,
+              siteName: value.name,
+            });
+          }}
+        >
+          {Strings.viewCharts}
+        </Button>,
+      ];
+    }
   };
 
   return (
@@ -149,78 +262,66 @@ const SitesV2 = () => {
                         src={value.logo}
                       />
                     }
-                    actions={[
-                      <SiteForm
-                        data={value}
-                        onComplete={() => handleGetSites()}
-                        companyName={companyName}
-                        formType={SiteFormType.UPDATE}
-                      />,
-                      isIhAdmin() && (
-                        <Button
-                          type="primary"
-                          onClick={() => {
-                            setSelectedSite(value);
-                            setModalActions(true);
-                          }}
-                        >
-                          {Strings.actions}
-                        </Button>
-                      ),
-                    ]}
+                    actions={buildActions(value)}
                   >
-                    <AnatomySection
-                      title={Strings.name}
-                      label={value.name}
-                      icon={<BsBuildingAdd />}
-                    />
-                    <AnatomySection
-                      title={Strings.rfc}
-                      label={value.rfc}
-                      icon={<BsFiles />}
-                    />
-                    <AnatomySection
-                      title={Strings.companyAddress}
-                      label={value.address}
-                      icon={<BsPinMap />}
-                    />
-                    <AnatomySection
-                      title={Strings.contact}
-                      label={value.contact}
-                      icon={<BsPerson />}
-                    />
-                    <AnatomySection
-                      title={Strings.position}
-                      label={value.position}
-                      icon={<BsDiagram3 />}
-                    />
-                    <AnatomySection
-                      title={Strings.phone}
-                      label={value.phone}
-                      icon={<BsTelephone />}
-                    />
-                    <AnatomySection
-                      title={Strings.extension}
-                      label={value.extension}
-                      icon={<BsTelephoneOutbound />}
-                    />
-                    <AnatomySection
-                      title={Strings.email}
-                      label={value.email}
-                      icon={<BsMailbox />}
-                    />
-                    <AnatomySection
-                      title={Strings.cellular}
-                      label={value.cellular}
-                      icon={<BsTelephone />}
-                    />
-                    <AnatomySection
-                      title={Strings.status}
-                      label={
-                        <Badge
-                          status={getStatusAndText(value.status).status}
-                          text={getStatusAndText(value.status).text}
-                        />
+                    <AnatomySingleCollapsable
+                      children={
+                        <>
+                          <AnatomySection
+                            title={Strings.name}
+                            label={value.name}
+                            icon={<BsBuildingAdd />}
+                          />
+                          <AnatomySection
+                            title={Strings.rfc}
+                            label={value.rfc}
+                            icon={<BsFiles />}
+                          />
+                          <AnatomySection
+                            title={Strings.companyAddress}
+                            label={value.address}
+                            icon={<BsPinMap />}
+                          />
+                          <AnatomySection
+                            title={Strings.contact}
+                            label={value.contact}
+                            icon={<BsPerson />}
+                          />
+                          <AnatomySection
+                            title={Strings.position}
+                            label={value.position}
+                            icon={<BsDiagram3 />}
+                          />
+                          <AnatomySection
+                            title={Strings.phone}
+                            label={value.phone}
+                            icon={<BsTelephone />}
+                          />
+                          <AnatomySection
+                            title={Strings.extension}
+                            label={value.extension}
+                            icon={<BsTelephoneOutbound />}
+                          />
+                          <AnatomySection
+                            title={Strings.email}
+                            label={value.email}
+                            icon={<BsMailbox />}
+                          />
+                          <AnatomySection
+                            title={Strings.cellular}
+                            label={value.cellular}
+                            icon={<BsTelephone />}
+                          />
+                          <AnatomySection
+                            title={Strings.status}
+                            label={
+                              <Badge
+                                status={getStatusAndText(value.status).status}
+                                text={getStatusAndText(value.status).text}
+                              />
+                            }
+                          />
+                        </>
                       }
                     />
                   </Card>
@@ -228,100 +329,6 @@ const SitesV2 = () => {
               )}
               loading={isLoading}
             />
-
-            <Modal
-              title={Strings.actions}
-              open={modalActions}
-              onOk={() => setModalActions(false)}
-              onCancel={() => setModalActions(false)}
-            >
-              <Space wrap>
-                <Button
-                  type="default"
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.charts,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewCharts}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.cards,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewCards}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.users,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewUsers}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.priorities,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewPriorities}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.cardTypes,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewCardTypes}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.levels,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewLevels}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    navigateProps({
-                      path: Constants.ROUTES_PATH.positions,
-                      siteId: selectedSite?.id,
-                      siteName: selectedSite?.name,
-                    });
-                  }}
-                >
-                  {Strings.viewPositions}
-                </Button>
-              </Space>
-            </Modal>
           </div>
         }
       />

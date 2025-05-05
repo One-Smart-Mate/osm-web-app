@@ -10,7 +10,7 @@ interface AnatomySectionProps {
 
 const AnatomySection = ({title, label, icon}: AnatomySectionProps): React.ReactElement => {
   return (
-    <div className="bg-gray-50 p-2 rounded flex items-center flex-wrap">
+    <div className="bg-gray-50 p-2 rounded-sm flex items-center flex-wrap">
       {icon && <div className="mr-2">{icon}</div>}
       <span className="text-gray-600 mr-2">{title}:</span>
       <span className="font-semibold">{label}</span>

@@ -6,7 +6,7 @@ import {
   Card,
 } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
 import { useAppSelector } from "../../core/store";
 import { selectCurrentUser } from "../../core/authReducer";
@@ -21,20 +21,12 @@ const { Header, Content } = Layout;
 
 const BaseLayoutRedesign: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
-  const location = useLocation();
-  const [selectedPath, setSelectedPath] = useState("");
   const [isCollapsed, setCollapsed] = useState(false);
   const { token: { colorBgContainer }} = theme.useToken();
   const [setAppToken] = useSetAppTokenMutation();
 
-
   const sidebarWidth = 250;
   const collapsedWidth = 80;
-
-  useEffect(() => {
-    setSelectedPath(location.pathname + location.search);
-    console.log(selectedPath)
-  }, [location]);
 
   useEffect(() => {
     if (user && user.userId) {

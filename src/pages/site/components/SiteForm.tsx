@@ -169,7 +169,7 @@ const SiteForm = ({
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == SiteFormType.CREATE ? "primary" : "default"}
+        type='primary'
       >
         {formType == SiteFormType.CREATE ? Strings.create : Strings.edit}
       </Button>

@@ -528,7 +528,7 @@ const LevelsV2 = () => {
               />
             )}
             {isCloning && (
-              <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-opacity-50 z-50">
+              <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-black/50 z-50">
                 <Spin size="large" tip={Strings.cloningLevelsMessage} />
               </div>
             )}

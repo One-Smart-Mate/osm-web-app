@@ -25,6 +25,7 @@ import ViewSitesButton from "./components/ViewSitesButton";
 import CompanyForm, { CompanyFormType } from "./components/CompanyForm";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import PaginatedList from "../../components/PaginatedList";
+import AnatomySingleCollapsable from "../components/AnatomySingleCollapsable";
 
 const CompaniesV2 = () => {
   const [getCompanies] = useGetCompaniesMutation();
@@ -122,60 +123,64 @@ const CompaniesV2 = () => {
                     />,
                   ]}
                 >
-                  <AnatomySection
-                    title={Strings.name}
-                    label={value.name}
-                    icon={<BsBuildingAdd />}
-                  />
-                  <AnatomySection
-                    title={Strings.rfc}
-                    label={value.rfc}
-                    icon={<BsFiles />}
-                  />
-                  <AnatomySection
-                    title={Strings.companyAddress}
-                    label={value.address}
-                    icon={<BsPinMap />}
-                  />
-                  <AnatomySection
-                    title={Strings.contact}
-                    label={value.contact}
-                    icon={<BsPerson />}
-                  />
-                  <AnatomySection
-                    title={Strings.position}
-                    label={value.position}
-                    icon={<BsDiagram3 />}
-                  />
-                  <AnatomySection
-                    title={Strings.phone}
-                    label={value.phone}
-                    icon={<BsTelephone />}
-                  />
-                  <AnatomySection
-                    title={Strings.extension}
-                    label={value.extension}
-                    icon={<BsTelephoneOutbound />}
-                  />
-                  <AnatomySection
-                    title={Strings.email}
-                    label={value.email}
-                    icon={<BsMailbox />}
-                  />
-                  <AnatomySection
-                    title={Strings.cellular}
-                    label={value.cellular}
-                    icon={<BsPhone />}
-                  />
-                  <AnatomySection
-                    title={Strings.status}
-                    label={
-                      <Badge
-                        status={getStatusAndText(value.status).status}
-                        text={getStatusAndText(value.status).text}
-                      />
-                    }
-                  />
+                  <AnatomySingleCollapsable children={
+                     <div>
+                     <AnatomySection
+                       title={Strings.name}
+                       label={value.name}
+                       icon={<BsBuildingAdd />}
+                     />
+                     <AnatomySection
+                       title={Strings.rfc}
+                       label={value.rfc}
+                       icon={<BsFiles />}
+                     />
+                     <AnatomySection
+                       title={Strings.companyAddress}
+                       label={value.address}
+                       icon={<BsPinMap />}
+                     />
+                     <AnatomySection
+                       title={Strings.contact}
+                       label={value.contact}
+                       icon={<BsPerson />}
+                     />
+                     <AnatomySection
+                       title={Strings.position}
+                       label={value.position}
+                       icon={<BsDiagram3 />}
+                     />
+                     <AnatomySection
+                       title={Strings.phone}
+                       label={value.phone}
+                       icon={<BsTelephone />}
+                     />
+                     <AnatomySection
+                       title={Strings.extension}
+                       label={value.extension}
+                       icon={<BsTelephoneOutbound />}
+                     />
+                     <AnatomySection
+                       title={Strings.email}
+                       label={value.email}
+                       icon={<BsMailbox />}
+                     />
+                     <AnatomySection
+                       title={Strings.cellular}
+                       label={value.cellular}
+                       icon={<BsPhone />}
+                     />
+                     <AnatomySection
+                       title={Strings.status}
+                       label={
+                         <Badge
+                           status={getStatusAndText(value.status).status}
+                           text={getStatusAndText(value.status).text}
+                         />
+                       }
+                     />
+                   </div>
+                  } />
                 </Card>
               </List.Item>
             )}

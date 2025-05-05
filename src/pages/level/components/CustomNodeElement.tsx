@@ -5,7 +5,7 @@ import Strings from "../../../utils/localizations/Strings";
 interface CustomNodeElementProps {
   nodeDatum: any;
   toggleNode: () => void;
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement> | React.RefObject<null>;
   setContextMenuVisible: (visible: boolean) => void;
   setContextMenuPos: (pos: { x: number; y: number }) => void;
   setSelectedNode: (node: any) => void;

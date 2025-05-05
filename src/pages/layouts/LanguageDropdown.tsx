@@ -20,7 +20,7 @@ const LanguageDropdown = () => {
     {
       key: "es",
       label: (
-        <div className="cursor-pointer flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-200">
+        <div className="cursor-pointer flex items-center gap-2 px-3 py-1 rounded-sm hover:bg-gray-200">
           <img
             src="https://flagcdn.com/w40/mx.png"
             alt="México"
@@ -34,7 +34,7 @@ const LanguageDropdown = () => {
     {
       key: "en",
       label: (
-        <div className="cursor-pointer flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-200">
+        <div className="cursor-pointer flex items-center gap-2 px-3 py-1 rounded-sm hover:bg-gray-200">
           <img
             src="https://flagcdn.com/w40/us.png"
             alt="English"

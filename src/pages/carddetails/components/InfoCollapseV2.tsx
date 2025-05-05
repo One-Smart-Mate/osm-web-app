@@ -151,30 +151,30 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
       <div className="px-2 mt-3">
         <div className="bg-white rounded-lg shadow p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4 border-b pb-4">
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Número de Tarjeta:</span>
               <span className="font-semibold">{card.siteCardId || Strings.NA}</span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Tipo de Tarjeta:</span>
               <span className="font-semibold" style={{ color: `#${card.cardTypeColor}` }}>
                 {card.cardTypeName}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center justify-between">
               <span className="text-gray-600 mr-2">Estado:</span>
               <span
-                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center"
+                className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center"
                 style={{ backgroundColor: primaryColor }}
               >
                 {cardStatus.text}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center justify-between">
               <span className="text-gray-600 mr-2">Prioridad:</span>
               <span
                 onClick={() => handleOnOpenModal(Strings.priority)}
-                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
                 style={{ backgroundColor: primaryColor }}
               >
                 {card.priorityCode
@@ -182,20 +182,20 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                   : Strings.NA}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Fecha de creación:</span>
               <span className="font-semibold">{formatDate(card.createdAt) || Strings.NA}</span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Fecha de vencimiento:</span>
               <span className="font-semibold">{card.cardDueDate || Strings.NA}</span>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4">
-            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center justify-between">
               <span className="text-gray-600 mr-2">Estado de la fecha:</span>
               <span
-                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center"
+                className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center"
                 style={{
                   backgroundColor:
                     cardStatus.dateStatus === Strings.expired ? "#e53e3e" : "#38a169",
@@ -204,11 +204,11 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                 {cardStatus.dateStatus}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Días desde la creación:</span>
               <span className="font-semibold">{getDaysSince(card.createdAt) || Strings.cero}</span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Tipo de problema:</span>
               <span className="font-semibold">
                 {card.preclassifierCode
@@ -216,28 +216,28 @@ const InfoCollapseV2 = ({ data, evidences, cardName }: CardProps) => {
                   : Strings.NA}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Ubicación:</span>
               <span className="font-semibold">{card.cardLocation || Strings.NA}</span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center justify-between">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center justify-between">
               <span className="text-gray-600 mr-2">Responsable:</span>
               <span
                 onClick={() => handleOnOpenModal(Strings.mechanic)}
-                className="inline-block text-white font-medium py-1 px-2 rounded min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
                 style={{ backgroundColor: primaryColor }}
               >
                 {card.mechanicName || Strings.NA}
               </span>
             </div>
-            <div className="bg-gray-50 p-2 rounded flex items-center">
+            <div className="bg-gray-50 p-2 rounded-sm flex items-center">
               <span className="text-gray-600 mr-2">Creado por:</span>
               <span className="font-semibold">{card.creatorName || Strings.NA}</span>
             </div>
           </div>
           <div className="border-t pt-4 flex flex-col sm:flex-row gap-3 items-center">
             <span className="text-gray-600 mr-2">Anomalía detectada:</span>
-            <div className="bg-gray-50 p-2 rounded flex-1 max-w-[350px]">
+            <div className="bg-gray-50 p-2 rounded-sm flex-1 max-w-[350px]">
               {card.commentsAtCardCreation || Strings.NA}
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
 } from "../routes/RoutesExtensions";
 import { Avatar, theme, Tooltip } from "antd";
 import Constants from "../../utils/Constants";
+import Strings from "../../utils/localizations/Strings";
 
 interface SideBarV2Props {
   collapsed: boolean;
@@ -197,7 +198,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
               bottom: 10,
             }}
           >
-            1.1.32-dev
+           {Strings.tagVersion}
           </div>
         )}
       </div>
