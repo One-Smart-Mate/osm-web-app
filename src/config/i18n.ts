@@ -1179,6 +1179,7 @@ const resources = {
       searchBarDefaultPlaceholder: "Searching...",
       ciltLevelTreeModalCreateSequenceHere: "Create Sequence Here",
       ciltProceduresSearchPlaceholder: "Searching...",
+      informationDetail: "Information"
     },
   },
   es: {
@@ -2381,6 +2382,7 @@ const resources = {
       searchBarDefaultPlaceholder: "Buscar...",
       ciltLevelTreeModalCreateSequenceHere: "Crear Secuencia Aquí",
       ciltProceduresSearchPlaceholder: "Buscar...",
+      informationDetail: "Información"
     },
   },
 };

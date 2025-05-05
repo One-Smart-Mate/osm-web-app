@@ -41,7 +41,7 @@ const ExportPdfButton: React.FC<ExportPdfButtonProps> = ({
       const canvas = await html2canvas(input, {
         useCORS: true,
         logging: false,
-        background: "#ffffff",
+        backgroundColor: "#ffffff",
       });
 
       const imgData = canvas.toDataURL("image/jpeg", 0.7);

@@ -33,7 +33,11 @@ const VideosCarousel = ({ data }: CardProps) => {
         {videos.map((video, index) => (
           <div key={video.id}>
             <video
-              ref={(el) => (videoRefs.current[index] = el)}
+              ref={(el) => {
+                if (el) {
+                  videoRefs.current[index] = el;
+                }
+              }}
               className="size-96"
               src={video.evidenceName}
               controls

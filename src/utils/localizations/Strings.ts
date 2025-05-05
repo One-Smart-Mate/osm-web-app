@@ -1100,6 +1100,8 @@ class StringsBase {
   static searchBarDefaultPlaceholder = "searchBarDefaultPlaceholder";
   static ciltLevelTreeModalCreateSequenceHere = "ciltLevelTreeModalCreateSequenceHere";
   static ciltProceduresSearchPlaceholder = "ciltProceduresSearchPlaceholder";
+
+  static informationDetail = "informationDetail";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

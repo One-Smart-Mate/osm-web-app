@@ -2,15 +2,15 @@ export class Route {
   label: string;
   path: string;
   fullPath: string;
-  element: JSX.Element;
-  icon: JSX.Element;
+  element: React.ReactElement;
+  icon: React.ReactElement;
 
   constructor(
     label: string,
     path: string,
     fullPath: string,
-    element: JSX.Element,
-    icon: JSX.Element,
+    element: React.ReactElement,
+    icon: React.ReactElement,
   ) {
     this.label = label;
     this.path = path;

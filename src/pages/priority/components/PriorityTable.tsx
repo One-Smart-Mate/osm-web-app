@@ -14,7 +14,7 @@ interface PrioritiesTableProps {
 }
 
 const PriorityTable = ({ data, isLoading }: PrioritiesTableProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(new HTMLDivElement());
   const tableHeight = useTableHeight(contentRef);
 
   const columns: ColumnsType<Priority> = useMemo(

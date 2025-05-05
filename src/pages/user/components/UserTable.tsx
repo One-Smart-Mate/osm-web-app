@@ -22,7 +22,7 @@ const UserTableComponent = ({
   isLoading,
   isSiteUserstable,
 }: PrioritiesTableProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(new HTMLDivElement());
   const tableHeight = useTableHeight(contentRef);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
   const [userPositions, setUserPositions] = useState<Record<string, UserPosition[]>>({});

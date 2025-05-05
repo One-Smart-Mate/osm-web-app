@@ -7,7 +7,7 @@ import { Evidences } from "../data/card/card";
 
 const EvidenceIndicator = (evidences: Evidences[]) => {
   const elements = useMemo(() => {
-    const elems: JSX.Element[] = [];
+    const elems: React.ReactElement[] = [];
     if (hasImages(evidences)) {
       elems.push(<AiOutlinePicture className="h-full size-5" key="images" />);
     }

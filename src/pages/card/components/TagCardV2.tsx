@@ -8,7 +8,7 @@ import {
 } from "../../../utils/Extensions";
 import { CardInterface, Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { GoDeviceCameraVideo } from "react-icons/go";
@@ -42,7 +42,7 @@ const TagCardV2 = ({ data }: CardProps) => {
 
   const evidenceIndicator = (evidences: Evidences[] = []) => {
     const elements = useMemo(() => {
-      const elems: JSX.Element[] = [];
+      const elems: React.ReactElement[] = [];
       if (hasImages(evidences)) {
         elems.push(<AiOutlinePicture key="images" />);
       }

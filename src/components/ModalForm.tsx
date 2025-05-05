@@ -18,7 +18,7 @@ const useResetFormOnCloseModal = ({
   form: FormInstance;
   open: boolean;
 }) => {
-  const prevOpenRef = useRef<boolean>();
+  const prevOpenRef = useRef<boolean>(false);
   useEffect(() => {
     prevOpenRef.current = open;
   }, [open]);

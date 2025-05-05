@@ -1,15 +1,17 @@
+import React from "react";
+
 export class RouteV2 {
     label: string;
     path: string;
-    element: JSX.Element;
-    icon: JSX.Element;
+    element: React.ReactElement;
+    icon: React.ReactElement;
     section: string;
 
     constructor(
       label: string,
       path: string,
-      element: JSX.Element,
-      icon: JSX.Element,
+      element: React.ReactElement,
+      icon: React.ReactElement,
       section: string
     ) {
       this.label = label;

@@ -14,7 +14,7 @@ const AnatomySingleCollapsable = ({
   const createCollapsableItems = (): CollapseProps["items"] => [
     {
       key: "1",
-      label: title ?? 'Strings.informationDetail',
+      label: title ?? Strings.informationDetail,
       children,
     },
   ];

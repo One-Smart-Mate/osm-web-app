@@ -15,7 +15,7 @@ interface CompaniesTableProps {
 }
 
 const CompanyTable = ({ data, isLoading }: CompaniesTableProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(new HTMLDivElement());
   const tableHeight = useTableHeight(contentRef);
   const uniqueExtensions = [...new Set(data.map((item) => item.extension))];
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);

@@ -46,7 +46,7 @@ const InformationPanel = ({ data, rol }: CardProps) => {
 
   const evidenceIndicator = (evidences: Evidences[] = []) => {
     const elements = useMemo(() => {
-      const elems: JSX.Element[] = [];
+      const elems: React.ReactElement[] = [];
       if (hasImages(evidences)) {
         elems.push(<AiOutlinePicture key="images" />);
       }

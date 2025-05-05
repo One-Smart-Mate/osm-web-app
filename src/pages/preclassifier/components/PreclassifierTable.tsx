@@ -14,7 +14,7 @@ interface TableProps {
 }
 
 const PreclassifierTable = ({ data, isLoading }: TableProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(new HTMLDivElement());
   const tableHeight = useTableHeight(contentRef);
 
   const columns: ColumnsType<Preclassifier> = useMemo(

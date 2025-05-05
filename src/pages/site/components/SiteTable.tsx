@@ -22,7 +22,7 @@ interface TableProps {
 }
 
 const SiteTable = ({ data, isLoading, rol }: TableProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(new HTMLDivElement());
   const tableHeight = useTableHeight(contentRef);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
 
