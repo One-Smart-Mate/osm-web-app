@@ -1051,7 +1051,8 @@ const resources = {
       createCiltSequenceModalSuccessDescription:
         "CILT sequence created successfully",
       createCiltSequenceModalError: "Error",
-      createCiltSequenceModalErrorDescription: "Error creating CILT sequence",
+      createCiltSequenceModalErrorDescription:
+        "Error creating CILT sequence",
       createCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
       createCiltSequenceModalErrorLoadingFrequencies:
         "Error loading frequencies",
@@ -1198,6 +1199,46 @@ const resources = {
       oplSelectionModalSuccessOpl: "OPL / SOP created successfully",
       oplSelectionModalErrorOpl: "Error creating OPL / SOP",
       oplSearchBarPlaceholder: "Search OPL / SOP",
+      
+      // CILT Table strings
+      createSequence: "Create Sequence",
+      viewSequences: "View Sequences",
+      information: "Information",
+      
+      // CILT Sequences strings
+      sequences: "Sequences",
+      sequence: "Sequence",
+      createNewSequence: "Create New Sequence",
+      searchByDescriptionOrderOrTime: "Search by description, order or time",
+      noSequencesForCilt: "No sequences associated with this CILT.",
+      noSequencesMatchSearch: "No sequences match your search.",
+      thisGroup: "This CILT",
+      noSequencesYet: "doesn't have sequences yet. You can create a new sequence using the \"Create New Sequence\" button.",
+      viewDetails: "View Details",
+      detailsOf: "Details of",
+      editSequence: "Edit Sequence",
+
+      // CILT Details and OPL strings
+      ciltType: "CILT Type",
+  
+      requiredTools: "Required Tools",
+      stoppageReason: "Stoppage Reason",
+      standardOk: "Standard OK",
+      quantityPicturesCreate: "Quantity of Pictures (Create)",
+      quantityPicturesClose: "Quantity of Pictures (Close)",
+      relatedOPLs: "Related OPLs",
+      referenceOPL: "Reference OPL",
+      viewReferenceOPL: "View Reference OPL",
+      remediationOPL: "Remediation OPL",
+      viewRemediationOPL: "View Remediation OPL",
+      tools: "Tools",
+      created: "Created",
+      noOplAssociated: "This sequence doesn't have an associated OPL yet.",
+      thisOpl: "This OPL",
+      noMediaFiles: "doesn't have associated multimedia files yet.",
+      browserNotSupportVideo: "Your browser doesn't support video playback.",
+      viewReferenceOpl: "View Reference OPL",
+      viewRemediationOpl: "View Remediation OPL",
     },
   },
   es: {
@@ -2403,7 +2444,7 @@ const resources = {
       informationDetail: "Información",
 
       oplSelectionModalTitle: "Seleccionar OPL / SOP",
-      oplSelectionModalTitleColumn: "Nombre OPL / SOP",
+      oplSelectionModalTitleColumn: "OPL / SOP Nombre",
       oplSelectionModalTypeColumn: "Tipo",
       oplSelectionModalActionsColumn: "Acciones",
       oplSelectionModalSelectButton: "Seleccionar OPL / SOP",
@@ -2419,6 +2460,45 @@ const resources = {
       oplSelectionModalSuccessOpl: "OPL / SOP creado exitosamente",
       oplSelectionModalErrorOpl: "Error al crear OPL / SOP",
       oplSearchBarPlaceholder: "Buscar OPL / SOP",
+      
+      // CILT Table strings
+      createSequence: "Crear Secuencia",
+      viewSequences: "Ver Secuencias",
+      information: "Información",
+      
+      // CILT Sequences strings
+      sequences: "Secuencias",
+      sequence: "Secuencia",
+      createNewSequence: "Crear Nueva Secuencia",
+      searchByDescriptionOrderOrTime: "Buscar por descripción, orden o tiempo",
+      noSequencesForCilt: "No hay secuencias asociadas a este CILT.",
+      noSequencesMatchSearch: "No hay secuencias que coincidan con tu búsqueda.",
+      thisGroup: "Este CILT",
+      noSequencesYet: "no cuenta aún con secuencias. Puedes crear una nueva secuencia usando el botón \"Crear Nueva Secuencia\".",
+      viewDetails: "Ver Detalles",
+      detailsOf: "Detalles de",
+      editSequence: "Editar Secuencia",
+
+      // CILT Details and OPL strings
+      ciltType: "Tipo de CILT",
+      requiredTools: "Herramientas Requeridas",
+      stoppageReason: "Razón de Parada",
+      standardOk: "Estándar OK",
+      quantityPicturesCreate: "Cantidad de Imágenes al Crear",
+      quantityPicturesClose: "Cantidad de Imágenes al Cerrar",
+      relatedOPLs: "OPLs Relacionados",
+      referenceOPL: "OPL de Referencia",
+      viewReferenceOPL: "Ver OPL de Referencia",
+      remediationOPL: "OPL de Remediación",
+      viewRemediationOPL: "Ver OPL de Remediación",
+      tools: "Herramientas",
+      created: "Creado",
+      noOplAssociated: "Esta secuencia no cuenta aún con un OPL asociado.",
+      thisOpl: "Este OPL",
+      noMediaFiles: "no cuenta aún con archivos multimedia asociados.",
+      browserNotSupportVideo: "Su navegador no admite la etiqueta de video.",
+      viewReferenceOpl: "Ver OPL de Referencia",
+      viewRemediationOpl: "Ver OPL de Remediación",
     },
   },
 };

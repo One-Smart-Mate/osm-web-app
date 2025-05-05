@@ -1,0 +1,241 @@
+import React, { useState } from "react";
+import { 
+  Modal, 
+  Button, 
+  Space, 
+  Spin, 
+  Card, 
+  Row, 
+  Col, 
+  Input,
+  Typography
+} from "antd";
+import { SearchOutlined, EditOutlined } from "@ant-design/icons";
+import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
+import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
+import Strings from "../../../utils/localizations/Strings";
+
+interface SequencesModalProps {
+  visible: boolean;
+  currentCilt: CiltMstr | null;
+  sequences: CiltSequence[];
+  loading: boolean;
+  onCancel: () => void;
+  onCreateSequence: (cilt: CiltMstr) => void;
+  onViewDetails: (sequence: CiltSequence) => void;
+  onViewOpl: (oplId: number | null) => void;
+  onEditSequence: (sequence: CiltSequence) => void;
+}
+
+const { Text } = Typography;
+
+const SequencesModal: React.FC<SequencesModalProps> = ({
+  visible,
+  currentCilt,
+  sequences,
+  loading,
+  onCancel,
+  onCreateSequence,
+  onViewDetails,
+  onViewOpl,
+  onEditSequence
+}) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>(sequences);
+
+  React.useEffect(() => {
+    setFilteredSequences(sequences);
+  }, [sequences]);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+
+    if (!value.trim()) {
+      setFilteredSequences(sequences);
+    } else {
+      const filtered = sequences.filter(
+        (sequence) =>
+          sequence.secuenceList?.toLowerCase().includes(value.toLowerCase()) ||
+          sequence.order?.toString().includes(value) ||
+          sequence.standardTime?.toString().includes(value) ||
+          sequence.toolsRequired?.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredSequences(filtered);
+    }
+  };
+
+  return (
+    <Modal
+      title={`${Strings.sequences} ${currentCilt?.ciltName || "CILT"}`}
+      open={visible}
+      onCancel={onCancel}
+      footer={[
+        <Button key="close" onClick={onCancel}>
+          {Strings.close}
+        </Button>,
+        <Button
+          key="create"
+          type="primary"
+          onClick={() => {
+            onCancel();
+            if (currentCilt) {
+              onCreateSequence(currentCilt);
+            }
+          }}
+          disabled={!currentCilt}
+        >
+          {Strings.createNewSequence}
+        </Button>,
+      ]}
+      width={800}
+    >
+      <div style={{ marginBottom: 16 }}>
+        <Row gutter={16} align="middle">
+          <Col span={16}>
+            <Input
+              placeholder={Strings.searchByDescriptionOrderOrTime}
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              prefix={<SearchOutlined />}
+              allowClear
+            />
+          </Col>
+          <Col span={8} style={{ textAlign: "right" }}>
+            <Text>Total: {filteredSequences.length} {Strings.sequences}</Text>
+          </Col>
+        </Row>
+      </div>
+
+      <Spin spinning={loading}>
+        {filteredSequences.length === 0 ? (
+          sequences.length === 0 ? (
+            <Text type="secondary">
+              {Strings.noSequencesForCilt}
+            </Text>
+          ) : (
+            <Text type="secondary">
+              {Strings.noSequencesMatchSearch}
+            </Text>
+          )
+        ) : (
+          <div
+            style={{ maxHeight: "60vh", overflowY: "auto", padding: "10px" }}
+          >
+            {filteredSequences.map((sequence) => (
+              <Card
+                key={sequence.id}
+                style={{
+                  marginBottom: 16,
+                  borderLeft: `4px solid ${
+                    sequence.secuenceColor &&
+                    sequence.secuenceColor.startsWith("#")
+                      ? sequence.secuenceColor
+                      : `#${sequence.secuenceColor || "1890ff"}`
+                  }`,
+                }}
+                hoverable
+              >
+                <Row gutter={[16, 16]}>
+                  <Col span={16}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <div
+                        style={{
+                          backgroundColor:
+                            sequence.secuenceColor &&
+                            sequence.secuenceColor.startsWith("#")
+                              ? sequence.secuenceColor
+                              : `#${sequence.secuenceColor || "f0f0f0"}`,
+                          width: "20px",
+                          height: "20px",
+                          borderRadius: "50%",
+                          marginRight: "10px",
+                          border: "1px solid #d9d9d9",
+                        }}
+                      />
+                      <Text strong>{Strings.sequence} {sequence.order}</Text>
+                    </div>
+
+                    <div style={{ marginBottom: 8 }}>
+                      <Text type="secondary">{Strings.standardTime}:</Text>{" "}
+                      <Text>{sequence.standardTime || "N/A"}</Text>
+                    </div>
+
+                    {sequence.toolsRequired && (
+                      <div style={{ marginBottom: 8 }}>
+                        <Text type="secondary">{Strings.tools}:</Text>{" "}
+                        <Text>{sequence.toolsRequired}</Text>
+                      </div>
+                    )}
+
+                    <div>
+                      <Text type="secondary">{Strings.created}:</Text>{" "}
+                      <Text>
+                        {sequence.createdAt
+                          ? new Date(sequence.createdAt).toLocaleDateString()
+                          : "N/A"}
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col
+                    span={8}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Space direction="vertical">
+                      <Button
+                        type="primary"
+                        onClick={() => onViewDetails(sequence)}
+                      >
+                        {Strings.viewDetails}
+                      </Button>
+
+                      <Button
+                        type="default"
+                        onClick={() =>
+                          onViewOpl(sequence.referenceOplSop)
+                        }
+                        disabled={!sequence.referenceOplSop}
+                      >
+                        {Strings.viewReferenceOpl}
+                      </Button>
+
+                      <Button
+                        type="default"
+                        onClick={() =>
+                          onViewOpl(sequence.remediationOplSop)
+                        }
+                        disabled={!sequence.remediationOplSop}
+                      >
+                        {Strings.viewRemediationOpl}
+                      </Button>
+
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => onEditSequence(sequence)}
+                      >
+                        {Strings.editSequence}
+                      </Button>
+                    </Space>
+                  </Col>
+                </Row>
+              </Card>
+            ))}
+          </div>
+        )}
+      </Spin>
+    </Modal>
+  );
+};
+
+export default SequencesModal;

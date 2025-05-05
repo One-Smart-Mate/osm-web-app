@@ -14,10 +14,12 @@ import {
   Card,
   ColorPicker,
 } from "antd";
+import { useLocation } from "react-router-dom";
 import { useCreateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
 import { useGetCiltFrequenciesAllMutation } from "../../../services/cilt/ciltFrequenciesService";
 import { useCreateCiltSequenceFrequencyMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
+import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
@@ -38,25 +40,21 @@ interface CreateCiltSequenceModalProps {
   onSuccess: () => void;
 }
 
-interface ExtendedCiltMstr extends CiltMstr {
-  siteName?: string;
-  areaId?: number;
-  areaName?: string;
-  positionName?: string;
-}
-
 const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   visible,
   cilt,
   onCancel,
   onSuccess,
 }) => {
+  const location = useLocation();
   const [form] = Form.useForm();
   const [createCiltSequence] = useCreateCiltSequenceMutation();
   const [getCiltTypesBySite] = useGetCiltTypesBySiteMutation();
   const [getCiltFrequenciesAll] = useGetCiltFrequenciesAllMutation();
   const [createCiltSequenceFrequency] =
     useCreateCiltSequenceFrequencyMutation();
+  const { data: positions } =
+    useGetPositionsBySiteIdQuery(location.state?.siteId || "");
 
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
   const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
@@ -77,7 +75,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   const [color, setColor] = useState<string>("#1677FF");
 
   useEffect(() => {
-    if (visible && cilt?.siteId) {
+    if (visible && location.state?.siteId) {
       fetchCiltTypes();
       fetchCiltFrequencies();
     }
@@ -89,7 +87,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       setSelectedRemediationOpl(null);
       setColor("#1677FF");
     }
-  }, [visible, form]);
+  }, [visible, form, location.state]);
 
   useEffect(() => {
     if (!visible) {
@@ -100,12 +98,22 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   }, [visible, form]);
 
+  // Set positionId when CILT changes
+  useEffect(() => {
+    if (cilt && visible) {
+      // Set the positionId from CILT automatically
+      form.setFieldsValue({
+        positionId: cilt.positionId || null
+      });
+    }
+  }, [cilt, form, visible]);
+
   const fetchCiltTypes = async () => {
-    if (!cilt?.siteId) return;
+    if (!location.state?.siteId) return;
 
     setLoading(true);
     try {
-      const response = await getCiltTypesBySite(String(cilt.siteId)).unwrap();
+      const response = await getCiltTypesBySite(String(location.state.siteId)).unwrap();
       setCiltTypes(response || []);
     } catch (error) {
       notification.error({
@@ -179,56 +187,93 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
       if (!values.frequencies || values.frequencies.length === 0) {
         notification.error({
-          message: Strings.createCiltSequenceModalError,
-          description: Strings.createCiltSequenceModalErrorNoFrequency,
+          message: "Error",
+          description: "Por favor selecciona al menos una frecuencia.",
         });
         return;
       }
 
+      // Find position data from the selected positionId (which comes from the CILT)
+      console.log("positions data:", positions);
+      console.log("CILT selected positionId:", cilt?.positionId);
+      
+      const selectedPosition = positions?.find(p => p.id === Number(cilt?.positionId));
+      console.log("selectedPosition:", selectedPosition);
+      
+      // Log CILT data
+      console.log("CILT data:", cilt);
+      
       const createPromises = values.frequencies.map(
         async (frequencyId: number) => {
+          // Create a combined data object with all possible sources
+          const combinedData = {
+            // From form values
+            ...values,
+            // Position and area data
+            siteId: Number(selectedPosition?.siteId || location.state?.siteId || 0),
+            siteName: selectedPosition?.siteName || location.state?.siteName || "",
+            areaId: Number(selectedPosition?.areaId || 0),
+            areaName: selectedPosition?.areaName || "",
+            positionId: Number(cilt?.positionId || 0),
+            positionName: selectedPosition?.name || "",
+            // CILT data
+            ciltMstrId: Number(cilt?.id || 0),
+            ciltMstrName: cilt?.ciltName || "",
+          };
+
+          console.log("Combined data for sequence:", combinedData);
+
           const sequenceData: CreateCiltSequenceDTO = {
-            siteId: values.siteId,
-            siteName: "",
-            areaId: values.areaId,
-            areaName: "",
-            positionId: values.positionId,
-            positionName: values.positionName || "",
-            ciltMstrId: values.ciltMstrId,
-            ciltMstrName: "",
-            levelId: values.levelId,
+            siteId: Number(combinedData.siteId),
+            siteName: combinedData.siteName,
+            areaId: Number(combinedData.areaId),
+            areaName: combinedData.areaName,
+            positionId: Number(combinedData.positionId),
+            positionName: combinedData.positionName,
+            ciltMstrId: Number(combinedData.ciltMstrId),
+            ciltMstrName: combinedData.ciltMstrName,
+            levelId: combinedData.levelId,
             levelName: selectedLevel?.name || "",
-            order: values.order || 1,
-            secuenceList: values.secuenceList,
-            secuenceColor: values.secuenceColor || getSelectedColor(color),
-            ciltTypeId: values.ciltTypeId,
+            order: combinedData.order || 1,
+            secuenceList: combinedData.secuenceList,
+            secuenceColor: combinedData.secuenceColor || getSelectedColor(color),
+            ciltTypeId: combinedData.ciltTypeId,
             ciltTypeName:
-              ciltTypes.find((type) => type.id === values.ciltTypeId)?.name ||
-              "",
+              ciltTypes.find((type) => type.id === combinedData.ciltTypeId)
+                ?.name || "",
             referenceOplSop: selectedReferenceOpl?.id,
+            standardTime: combinedData.standardTime,
+            standardOk: combinedData.standardOk,
             remediationOplSop: selectedRemediationOpl?.id,
-            toolsRequired: values.toolsRequired,
-            stoppageReason: values.stoppageReason ? 1 : 0,
-            standardOk: values.standardOk,
-            quantityPicturesCreate: values.quantityPicturesCreate,
-            quantityPicturesClose: values.quantityPicturesClose,
+            toolsRequired: combinedData.toolsRequired,
+            stoppageReason: combinedData.stoppageReason ? 1 : 0,
+            quantityPicturesCreate: combinedData.quantityPicturesCreate,
+            quantityPicturesClose: combinedData.quantityPicturesClose,
             createdAt: new Date().toISOString(),
           };
 
+          // Log payload for debugging
+          console.log("Creating sequence with data:", JSON.stringify(sequenceData, null, 2));
+
           const response = await createCiltSequence(sequenceData).unwrap();
+          console.log("Sequence creation response:", response);
 
           if (response && response.id) {
             const frequency = ciltFrequencies.find((f) => f.id === frequencyId);
 
             const sequenceFrequencyData: CreateCiltSequencesFrequenciesDTO = {
-              siteId: values.siteId,
-              positionId: values.positionId,
-              ciltId: values.ciltMstrId,
+              siteId: Number(combinedData.siteId),
+              positionId: Number(combinedData.positionId),
+              ciltId: Number(combinedData.ciltMstrId),
               secuencyId: response.id,
               frecuencyId: frequencyId,
               frecuencyCode: frequency?.frecuencyCode || "",
               status: "A",
             };
+            
+            // Log frequency association payload for debugging
+            console.log("Creating sequence frequency with data:", JSON.stringify(sequenceFrequencyData, null, 2));
+            
             await createCiltSequenceFrequency(sequenceFrequencyData).unwrap();
           }
 
@@ -272,6 +317,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             stoppageReason: false,
             quantityPicturesCreate: 0,
             quantityPicturesClose: 0,
+            positionId: cilt?.positionId,
           }}
         >
           <Row gutter={[16, 16]}>
@@ -489,39 +535,11 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
           <Row gutter={16}>
             <Col span={12}>
-              {/* Standard Time */}
-              <Form.Item
-                name="standardTime"
-                label={Strings.editCiltSequenceModalStandardTimeLabel}
-                rules={[
-                  {
-                    required: true,
-                    message: Strings.editCiltSequenceModalStandardTimeRequired,
-                  },
-                ]}
-              >
-                <InputNumber min={0} step={0.5} className="w-full" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              {/* Standard OK */}
-              <Form.Item
-                name="standardOk"
-                label={Strings.editCiltSequenceModalStandardOkLabel}
-                rules={[
-                  {
-                    required: true,
-                    message: Strings.editCiltSequenceModalStandardOkRequired,
-                  },
-                ]}
-              >
+              {/* Position */}
+              <Form.Item hidden name="positionId">
                 <Input />
               </Form.Item>
-            </Col>
-          </Row>
 
-          <Row gutter={16}>
-            <Col span={8}>
               {/* Stoppage Reason */}
               <Form.Item
                 name="stoppageReason"
@@ -531,7 +549,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                 <Switch />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               {/* Quantity Pictures Create */}
               <Form.Item
                 name="quantityPicturesCreate"
@@ -546,8 +564,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               >
                 <InputNumber min={0} className="w-full" />
               </Form.Item>
-            </Col>
-            <Col span={8}>
+
               {/* Quantity Pictures Close */}
               <Form.Item
                 name="quantityPicturesClose"
@@ -587,13 +604,13 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       </Spin>
 
       {/* Level Tree Modal */}
-      {cilt?.siteId && (
+      {location.state?.siteId && (
         <CiltLevelTreeModal
           isVisible={levelTreeModalVisible}
           onClose={() => setLevelTreeModalVisible(false)}
-          siteId={String(cilt.siteId)}
+          siteId={String(location.state.siteId)}
           siteName={
-            (cilt as ExtendedCiltMstr).siteName ||
+            location.state.siteName ||
             Strings.createCiltSequenceModalDefaultSiteName
           }
           onSelectLevel={handleLevelSelect}
