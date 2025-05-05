@@ -18,11 +18,6 @@ import Constants from "../../utils/Constants";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
-// Function to build the catalogs section name
-const buildCatalogsSectionName = () => {
-  return Strings.catalogs;
-};
-
 const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
@@ -128,7 +123,7 @@ const cardTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.cardTypes,
   <CardTypesV2 />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltProceduresV2 = new RouteV2(
@@ -136,7 +131,7 @@ const ciltProceduresV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltProcedures,
   <CiltProceduresPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const oplV2 = new RouteV2(
@@ -144,7 +139,7 @@ const oplV2 = new RouteV2(
   Constants.ROUTES_PATH.opl,
   <OplPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltTypesV2 = new RouteV2(
@@ -152,7 +147,7 @@ const ciltTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltTypes,
   <CiltTypesPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltFrecuenciesV2 = new RouteV2(
