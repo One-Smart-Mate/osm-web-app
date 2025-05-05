@@ -18,6 +18,11 @@ import Constants from "../../utils/Constants";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
+// Function to build the catalogs section name
+const buildCatalogsSectionName = () => {
+  return Strings.catalogs;
+};
+
 const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
