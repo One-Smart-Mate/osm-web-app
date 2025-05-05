@@ -1096,8 +1096,7 @@ class StringsBase {
   static createCiltSequenceModalFrequenciesTitle = "createCiltSequenceModalFrequenciesTitle";
   static createCiltSequenceModalFrequenciesDescription = "createCiltSequenceModalFrequenciesDescription";
   static createCiltSequenceModalFrequenciesRequired = "createCiltSequenceModalFrequenciesRequired";
-  
-  
+  static createCiltSequenceModalDefaultSiteName = "createCiltSequenceModalDefaultSiteName";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -61,8 +61,6 @@ const CiltProceduresPage = (): React.ReactElement => {
   return (
     <>
       <MainContainer
-        title=""
-        description=""
         content={<CiltProcedures onCreateClick={showPositionModal} />}
       />
 

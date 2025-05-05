@@ -595,8 +595,7 @@ const resources = {
       cardTypeTreeColorPlaceholder: "Pick a color",
 
       // Placeholders for Quantity Fields
-      cardTypeTreeQuantityPicturesPlaceholder:
-        "Enter the number of pictures",
+      cardTypeTreeQuantityPicturesPlaceholder: "Enter the number of pictures",
       cardTypeTreeQuantityVideosPlaceholder: "Enter the number of videos",
       cardTypeTreeQuantityAudiosPlaceholder: "Enter the number of audios",
 
@@ -606,15 +605,13 @@ const resources = {
       cardTypeTreeAtDefinitiveSolution: "At Definitive Solution",
 
       // Error Messages
-      cardTypeTreeRequiredCardTypeName:
-        "Card type name is required",
+      cardTypeTreeRequiredCardTypeName: "Card type name is required",
       cardTypeTreeRequiredDescription: "Description is required",
       cardTypeTreeRequiredResponsableId: "Responsible is required",
       cardTypeTreeRequiredColor: "Color is required",
 
       // Notifications
-      cardTypeTreeSuccessCardTypeUpdated:
-        "Card type successfully updated!",
+      cardTypeTreeSuccessCardTypeUpdated: "Card type successfully updated!",
       cardTypeTreeErrorFetchingData: "Error fetching data",
 
       /* Card Types and Preclassifier tree */
@@ -882,7 +879,7 @@ const resources = {
       ciltMstrStatusActive: "Active",
       ciltMstrStatusSuspended: "Suspended",
       ciltMstrStatusCanceled: "Canceled",
-      
+
       // CILT Details Modal strings
       ciltMstrDetailsModalTitle: "CILT Details",
       ciltMstrCloseButton: "Close",
@@ -900,7 +897,7 @@ const resources = {
       ciltMstrViewFullImage: "View full image",
       ciltMstrNotAvailable: "Not available",
       ciltMstrNA: "N/A",
-      
+
       // CILT Card List strings
       ciltMstrListNameColumn: "Name",
       ciltMstrListDescriptionColumn: "Description",
@@ -917,7 +914,7 @@ const resources = {
       ciltMstrListCanceledFilter: "Canceled",
       ciltMstrCreateSequenceButton: "Create Sequence",
       addFiles: "Add Files",
-      
+
       // OPL related strings
       oplViewModalTitle: "OPL Details",
       oplGeneralInfo: "General Information",
@@ -938,7 +935,7 @@ const resources = {
       oplPdfPreviewTitle: "PDF Preview",
       oplVideoPreviewTitle: "Video Preview",
       oplClose: "Close",
-      
+
       // OplTable strings
       oplTableTitleColumn: "Title",
       oplTableObjectiveColumn: "Objective",
@@ -948,13 +945,14 @@ const resources = {
       oplTableEditTooltip: "Edit OPL",
       oplTableOplType: "OPL",
       oplTableSopType: "SOP",
-      
+      oplTableViewButtonText: "Details",
+      oplTableEditButtonText: "Edit",
       // OplTextForm strings
       oplTextFormLabel: "Text",
       oplTextFormPlaceholder: "Enter text content",
       oplTextFormValidationMessage: "Please enter text content",
       oplTextFormSubmitButton: "Add Text",
-      
+
       // OplMediaUploader strings
       oplMediaImageTitle: "Click or drag an image to this area to upload",
       oplMediaImageHint: "Supports JPG, PNG, GIF, etc.",
@@ -968,7 +966,7 @@ const resources = {
       oplMediaDefaultTitle: "Click or drag a file to this area to upload",
       oplMediaDefaultHint: "Supports various file formats",
       oplMediaDefaultButton: "Upload File",
-      
+
       // OplFormModal strings
       oplFormModalViewTitle: "View OPL",
       oplFormModalEditTitle: "Edit OPL",
@@ -994,7 +992,7 @@ const resources = {
       oplFormNotAssigned: "Not assigned",
       oplFormUpdateButton: "Update",
       oplFormCreateButton: "Create",
-      
+
       // OplDetailsModal strings
       oplDetailsModalTitle: "OPL Details: {title}",
       oplDetailsContentPreview: "Content Preview",
@@ -1015,9 +1013,10 @@ const resources = {
       oplDetailsVideoPreviewTitle: "Video Preview",
       oplDetailsClose: "Close",
       oplDetailsOpenInNewTab: "Open in New Tab",
-      
+
       // OplDetailsList strings
-      oplDetailsListNoDetails: "No details to display. Add content using the other tabs.",
+      oplDetailsListNoDetails:
+        "No details to display. Add content using the other tabs.",
       oplDetailsListOrderColumn: "Order",
       oplDetailsListTypeColumn: "Type",
       oplDetailsListContentColumn: "Content",
@@ -1028,12 +1027,12 @@ const resources = {
       oplDetailsListPdfType: "PDF",
       oplDetailsListViewContent: "View {type}",
       oplDetailsListNoContent: "No content",
-      
+
       oplPageManagementTitle: "OPL Management",
       oplPageCreateButton: "Create OPL",
       oplPageEditModalTitle: "Edit OPL",
       oplPageCreateModalTitle: "Create OPL",
-      
+
       oplErrorLoadingList: "Error loading OPL list",
       oplErrorLoadingUsers: "Error loading users",
       oplErrorLoadingDetails: "Error loading OPL details",
@@ -1045,6 +1044,138 @@ const resources = {
       oplErrorNoFileSelected: "No file selected",
       oplSuccessMediaAdded: "{type} detail added successfully",
       oplErrorAddingMedia: "Error adding {type} detail",
+
+      // CreateCiltSequenceModal strings
+      createCiltSequenceModalTitle: "Create CILT Sequence",
+      createCiltSequenceModalSuccess: "Success",
+      createCiltSequenceModalSuccessDescription:
+        "CILT sequence created successfully",
+      createCiltSequenceModalError: "Error",
+      createCiltSequenceModalErrorDescription: "Error creating CILT sequence",
+      createCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+      createCiltSequenceModalErrorLoadingFrequencies:
+        "Error loading frequencies",
+      createCiltSequenceModalErrorNoFrequency:
+        "Please select at least one frequency",
+      createCiltSequenceModalBasicInfoTitle: "Basic Information",
+      createCiltSequenceModalDetailsTitle: "Details",
+      createCiltSequenceModalFrequenciesTitle: "Frequencies",
+      createCiltSequenceModalFrequenciesDescription:
+        "Select one or more frequencies for this sequence",
+      createCiltSequenceModalFrequenciesRequired:
+        "Please select at least one frequency",
+      createCiltSequenceModalDefaultSiteName: "Site",
+
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "CILT Type",
+      editCiltSequenceModalCiltTypeRequired: "CILT type is required",
+      editCiltSequenceModalCiltTypePlaceholder: "Select CILT type",
+      editCiltSequenceModalLevelLabel: "Level",
+      editCiltSequenceModalLevelRequired: "Level is required",
+      editCiltSequenceModalSelectLevel: "Select level",
+      editCiltSequenceModalReferenceOplLabel: "Reference OPL/SOP",
+      editCiltSequenceModalSelectReferenceOpl: "Select reference OPL/SOP",
+      editCiltSequenceModalRemediationOplLabel: "Remediation OPL/SOP",
+      editCiltSequenceModalSelectRemediationOpl: "Select remediation OPL/SOP",
+      editCiltSequenceModalSequenceListLabel: "Sequence List",
+      editCiltSequenceModalSequenceListRequired: "Sequence list is required",
+      editCiltSequenceModalSequenceListPlaceholder: "Enter sequence list",
+      editCiltSequenceModalColorLabel: "Sequence Color",
+      editCiltSequenceModalColorRequired: "Color is required",
+      editCiltSequenceModalStandardTimeLabel: "Standard Time (min)",
+      editCiltSequenceModalStandardTimeRequired: "Standard time is required",
+      editCiltSequenceModalStandardOkLabel: "Standard OK",
+      editCiltSequenceModalStandardOkRequired: "Standard OK is required",
+      editCiltSequenceModalStoppageReasonLabel: "Stoppage Reason",
+      editCiltSequenceModalQuantityPicturesCreateLabel:
+        "Quantity Pictures Create",
+      editCiltSequenceModalQuantityPicturesCreateRequired:
+        "Quantity Pictures Create is required",
+      editCiltSequenceModalQuantityPicturesCloseLabel:
+        "Quantity Pictures Close",
+      editCiltSequenceModalQuantityPicturesCloseRequired:
+        "Quantity Pictures Close is required",
+      editCiltSequenceModalToolsRequiredLabel: "Tools Required",
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalTitle: "Edit CILT Sequence",
+      editCiltSequenceModalSuccess: "Success",
+      editCiltSequenceModalSuccessDescription:
+        "CILT sequence updated successfully",
+      editCiltSequenceModalError: "Error",
+      editCiltSequenceModalErrorDescription: "Error updating CILT sequence",
+      editCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+      editCiltSequenceModalPositionLabel: "Position",
+      editCiltSequenceModalPositionPlaceholder: "Select position",
+      editCiltSequenceModalReferenceOplPlaceholder: "Select reference OPL/SOP",
+      editCiltSequenceModalRemediationOplPlaceholder:
+        "Select remediation OPL/SOP",
+      editCiltSequenceModalOrderLabel: "Order",
+      editCiltSequenceModalOrderRequired: "Order is required",
+      editCiltSequenceModalOrderPlaceholder: "Enter order",
+      editCiltSequenceModalColorPlaceholder: "Enter color code",
+      editCiltSequenceModalStandardTimePlaceholder: "Enter standard time",
+      editCiltSequenceModalToolsRequiredPlaceholder: "Enter tools required",
+      editCiltSequenceModalStandardOkPlaceholder: "Enter standard OK",
+
+      // CiltCardList strings
+      ciltCardListSequencesModalTitle: "Sequences of {ciltName}",
+      ciltCardListCloseButton: "Close",
+      ciltCardListCreateNewSequenceButton: "Create New Sequence",
+      ciltCardListSearchPlaceholder:
+        "Search sequences...",
+      ciltCardListTotalSequences: "Total: {count} sequences",
+      ciltCardListNoSequencesAssociated:
+        "No sequences associated with this CILT.",
+      ciltCardListNoSequencesMatchingSearch:
+        "No sequences match your search criteria.",
+      ciltCardListSequenceLabel: "Sequence {order}",
+      ciltCardListStandardTimeLabel: "Standard Time:",
+      ciltCardListToolsLabel: "Required Tools:",
+      ciltCardListCreatedLabel: "Created:",
+      ciltCardListViewDetailsButton: "View Details",
+      ciltCardListViewReferenceOplButton: "View Reference OPL",
+      ciltCardListViewRemediationOplButton: "View Remediation OPL",
+      ciltCardListEditSequenceButton: "Edit Sequence",
+      ciltCardListSequenceDetailsModalTitle: "Sequence Details",
+      ciltCardListPositionLabel: "Position:",
+      ciltCardListCiltTypeLabel: "CILT Type:",
+      ciltCardListColorLabel: "Color:",
+      ciltCardListRequiredToolsLabel: "Required Tools:",
+      ciltCardListStoppageReasonLabel: "Stoppage Reason:",
+      ciltCardListStandardOkLabel: "Standard OK:",
+      ciltCardListQuantityPicturesCreateLabel: "Pictures for Creation:",
+      ciltCardListQuantityPicturesCloseLabel: "Pictures for Closure:",
+      ciltCardListRelatedOplsTitle: "Related OPLs",
+      ciltCardListReferenceOplLabel: "Reference OPL:",
+      ciltCardListRemediationOplLabel: "Remediation OPL:",
+      ciltCardListViewReferenceOplLinkText: "View Reference OPL",
+      ciltCardListViewRemediationOplLinkText: "View Remediation OPL",
+      ciltCardListCreationDateLabel: "Creation Date:",
+      ciltCardListLastUpdateLabel: "Last Update:",
+      ciltCardListYesText: "Yes",
+      ciltCardListNoText: "No",
+      ciltCardListOplInfoMessage: "OPL Information",
+      ciltCardListNoSequencesMessage:
+        "No sequences associated with {ciltName}.",
+      ciltCardListNoOplAssociatedMessage:
+        "No OPL associated with this sequence.",
+      ciltCardListNoMultimediaMessage:
+        'No multimedia files available for OPL: {oplTitle}',
+      ciltCardListErrorLoadingSequences: "Error loading sequences",
+      ciltCardListErrorReloadingSequences: "Error reloading sequences",
+      ciltCardListErrorLoadingOplDetails: "Error loading OPL details",
+      ciltCardListCreateSequence: "Create Sequence",
+      ciltCardListViewSequences: "View Sequences",
+      ciltCardListObjectiveLabel: "Objective:",
+      ciltCardListMultimediaFilesTitle: "Multimedia Files",
+      ciltCardListImageLabel: "Image",
+      ciltCardListVideoLabel: "Video",
+      ciltCardListPlayVideoButton: "Play Video",
+      ciltCardListPdfLabel: "PDF",
+      ciltCardListViewPdfButton: "View PDF",
+      ciltCardListPdfPreviewModalTitle: "PDF Preview",
+      ciltCardListVideoPreviewModalTitle: "Video Preview",
+      ciltCardListVideoNotSupported: "Your browser does not support the video tag.",
     },
   },
   es: {
@@ -1530,8 +1661,7 @@ const resources = {
       companyContactNameTooltip: "Nombre del contacto principal.",
       companyPositionTooltip: "Puesto del contacto.",
       companyPhoneTooltip: "Teléfono fijo de la empresa.",
-      companyExtensionTooltip:
-        "Extensión telefónica (si aplica).",
+      companyExtensionTooltip: "Extensión telefónica (si aplica).",
       companyCellularTooltip: "Teléfono móvil principal.",
       companyEmailTooltip: "Correo electrónico oficial de la empresa.",
       companyLogoTooltip: "Sube el logo de la empresa en formato de imagen.",
@@ -1939,7 +2069,7 @@ const resources = {
       ciltMstrStatusActive: "Activo",
       ciltMstrStatusSuspended: "Suspendido",
       ciltMstrStatusCanceled: "Cancelado",
-      
+
       // CILT Details Modal strings
       ciltMstrDetailsModalTitle: "Detalles del CILT",
       ciltMstrCloseButton: "Cerrar",
@@ -1957,7 +2087,7 @@ const resources = {
       ciltMstrViewFullImage: "Ver imagen completa",
       ciltMstrNotAvailable: "No disponible",
       ciltMstrNA: "N/D",
-      
+
       // CILT Card List strings
       ciltMstrListNameColumn: "Nombre",
       ciltMstrListDescriptionColumn: "Descripción",
@@ -1974,7 +2104,7 @@ const resources = {
       ciltMstrListCanceledFilter: "Cancelado",
       ciltMstrCreateSequenceButton: "Crear Secuencia",
       addFiles: "Agregar archivos",
-      
+
       // OPL related strings
       oplViewModalTitle: "Detalles del OPL",
       oplGeneralInfo: "Información general",
@@ -1995,7 +2125,7 @@ const resources = {
       oplPdfPreviewTitle: "Vista previa de PDF",
       oplVideoPreviewTitle: "Vista previa de video",
       oplClose: "Cerrar",
-      
+
       // OplTable strings
       oplTableTitleColumn: "Título",
       oplTableObjectiveColumn: "Objetivo",
@@ -2005,27 +2135,31 @@ const resources = {
       oplTableEditTooltip: "Editar OPL",
       oplTableOplType: "OPL",
       oplTableSopType: "SOP",
-      
+      oplTableViewButtonText: "Detalles",
+      oplTableEditButtonText: "Editar",
       // OplTextForm strings
       oplTextFormLabel: "Texto",
       oplTextFormPlaceholder: "Ingrese contenido de texto",
       oplTextFormValidationMessage: "Por favor, ingrese contenido de texto",
       oplTextFormSubmitButton: "Agregar texto",
-      
+
       // OplMediaUploader strings
-      oplMediaImageTitle: "Haz clic o arrastra una imagen a esta área para subirla",
+      oplMediaImageTitle:
+        "Haz clic o arrastra una imagen a esta área para subirla",
       oplMediaImageHint: "Compatible con JPG, PNG, GIF, etc.",
       oplMediaImageButton: "Subir imagen",
-      oplMediaVideoTitle: "Haz clic o arrastra un video a esta área para subirlo",
+      oplMediaVideoTitle:
+        "Haz clic o arrastra un video a esta área para subirlo",
       oplMediaVideoHint: "Compatible con MP4, MOV, AVI, etc.",
       oplMediaVideoButton: "Subir video",
       oplMediaPdfTitle: "Haz clic o arrastra un PDF a esta área para subirlo",
       oplMediaPdfHint: "Compatible con archivos PDF solo",
       oplMediaPdfButton: "Subir PDF",
-      oplMediaDefaultTitle: "Haz clic o arrastra un archivo a esta área para subirlo",
+      oplMediaDefaultTitle:
+        "Haz clic o arrastra un archivo a esta área para subirlo",
       oplMediaDefaultHint: "Compatible con varios formatos de archivo",
       oplMediaDefaultButton: "Subir archivo",
-      
+
       // OplFormModal strings
       oplFormModalViewTitle: "Ver OPL",
       oplFormModalEditTitle: "Editar OPL",
@@ -2051,7 +2185,7 @@ const resources = {
       oplFormNotAssigned: "No asignado",
       oplFormUpdateButton: "Actualizar",
       oplFormCreateButton: "Crear",
-      
+
       // OplDetailsModal strings
       oplDetailsModalTitle: "Detalles del OPL: {title}",
       oplDetailsContentPreview: "Vista previa del contenido",
@@ -2072,9 +2206,10 @@ const resources = {
       oplDetailsVideoPreviewTitle: "Vista previa de video",
       oplDetailsClose: "Cerrar",
       oplDetailsOpenInNewTab: "Abrir en una nueva pestaña",
-      
+
       // OplDetailsList strings
-      oplDetailsListNoDetails: "No hay detalles disponibles para mostrar. Agregue contenido utilizando las otras pestañas.",
+      oplDetailsListNoDetails:
+        "No hay detalles disponibles para mostrar. Agregue contenido utilizando las otras pestañas.",
       oplDetailsListOrderColumn: "Orden",
       oplDetailsListTypeColumn: "Tipo",
       oplDetailsListContentColumn: "Contenido",
@@ -2085,12 +2220,12 @@ const resources = {
       oplDetailsListPdfType: "PDF",
       oplDetailsListViewContent: "Ver {type}",
       oplDetailsListNoContent: "No hay contenido",
-      
+
       oplPageManagementTitle: "Administración de OPL",
       oplPageCreateButton: "Crear OPL",
       oplPageEditModalTitle: "Editar OPL",
       oplPageCreateModalTitle: "Crear OPL",
-      
+
       oplErrorLoadingList: "Error al cargar la lista de OPL",
       oplErrorLoadingUsers: "Error al cargar usuarios",
       oplErrorLoadingDetails: "Error al cargar detalles de OPL",
@@ -2102,6 +2237,144 @@ const resources = {
       oplErrorNoFileSelected: "No se seleccionó un archivo",
       oplSuccessMediaAdded: "{type} agregado con éxito",
       oplErrorAddingMedia: "Error al agregar {type}",
+
+      // CreateCiltSequenceModal strings
+      createCiltSequenceModalTitle: "Crear Secuencia CILT",
+      createCiltSequenceModalSuccess: "Éxito",
+      createCiltSequenceModalSuccessDescription:
+        "Secuencia CILT creada exitosamente",
+      createCiltSequenceModalError: "Error",
+      createCiltSequenceModalErrorDescription:
+        "Error al crear la secuencia CILT",
+      createCiltSequenceModalErrorLoadingTypes:
+        "Error al cargar los tipos de CILT",
+      createCiltSequenceModalErrorLoadingFrequencies:
+        "Error al cargar las frecuencias",
+      createCiltSequenceModalErrorNoFrequency:
+        "Por favor seleccione al menos una frecuencia",
+      createCiltSequenceModalBasicInfoTitle: "Información Básica",
+      createCiltSequenceModalDetailsTitle: "Detalles",
+      createCiltSequenceModalFrequenciesTitle: "Frecuencias",
+      createCiltSequenceModalFrequenciesDescription:
+        "Seleccione una o más frecuencias para esta secuencia",
+      createCiltSequenceModalFrequenciesRequired:
+        "Por favor seleccione al menos una frecuencia",
+      createCiltSequenceModalDefaultSiteName: "Sitio",
+
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "Tipo de CILT",
+      editCiltSequenceModalCiltTypeRequired: "El tipo de CILT es requerido",
+      editCiltSequenceModalCiltTypePlaceholder: "Seleccione tipo de CILT",
+      editCiltSequenceModalLevelLabel: "Nivel",
+      editCiltSequenceModalLevelRequired: "El nivel es requerido",
+      editCiltSequenceModalSelectLevel: "Seleccione nivel",
+      editCiltSequenceModalReferenceOplLabel: "OPL/SOP de Referencia",
+      editCiltSequenceModalSelectReferenceOpl:
+        "Seleccione OPL/SOP de referencia",
+      editCiltSequenceModalRemediationOplLabel: "OPL/SOP de Remediación",
+      editCiltSequenceModalSelectRemediationOpl:
+        "Seleccione OPL/SOP de remediación",
+      editCiltSequenceModalSequenceListLabel: "Lista de Secuencia",
+      editCiltSequenceModalSequenceListRequired:
+        "La lista de secuencia es requerida",
+      editCiltSequenceModalSequenceListPlaceholder:
+        "Ingrese lista de secuencia",
+      editCiltSequenceModalColorLabel: "Color de Secuencia",
+      editCiltSequenceModalColorRequired: "El color es requerido",
+      editCiltSequenceModalStandardTimeLabel: "Tiempo Estándar (min)",
+      editCiltSequenceModalStandardTimeRequired:
+        "El tiempo estándar es requerido",
+      editCiltSequenceModalStandardOkLabel: "Estándar OK",
+      editCiltSequenceModalStandardOkRequired: "El estándar OK es requerido",
+      editCiltSequenceModalStoppageReasonLabel: "Razón de Parada",
+      editCiltSequenceModalQuantityPicturesCreateLabel:
+        "Cantidad de Imágenes al Crear",
+      editCiltSequenceModalQuantityPicturesCreateRequired:
+        "La cantidad de imágenes al crear es requerida",
+      editCiltSequenceModalQuantityPicturesCloseLabel:
+        "Cantidad de Imágenes al Cerrar",
+      editCiltSequenceModalQuantityPicturesCloseRequired:
+        "La cantidad de imágenes al cerrar es requerida",
+      editCiltSequenceModalToolsRequiredLabel: "Herramientas Requeridas",
+      // EditCiltSequenceModal strings
+      editCiltSequenceModalTitle: "Editar Secuencia CILT",
+      editCiltSequenceModalSuccess: "Éxito",
+      editCiltSequenceModalSuccessDescription:
+        "Secuencia CILT actualizada exitosamente",
+      editCiltSequenceModalError: "Error",
+      editCiltSequenceModalErrorDescription:
+        "Error al actualizar la secuencia CILT",
+      editCiltSequenceModalErrorLoadingTypes:
+        "Error al cargar los tipos de CILT",
+      editCiltSequenceModalPositionLabel: "Posición",
+      editCiltSequenceModalPositionPlaceholder: "Seleccione posición",
+      editCiltSequenceModalReferenceOplPlaceholder:
+        "Seleccione OPL/SOP de referencia",
+      editCiltSequenceModalRemediationOplPlaceholder:
+        "Seleccione OPL/SOP de remediación",
+      editCiltSequenceModalOrderLabel: "Orden",
+      editCiltSequenceModalOrderRequired: "El orden es requerido",
+      editCiltSequenceModalOrderPlaceholder: "Ingrese orden",
+      editCiltSequenceModalColorPlaceholder: "Ingrese código de color",
+      editCiltSequenceModalStandardTimePlaceholder: "Ingrese tiempo estándar",
+      editCiltSequenceModalToolsRequiredPlaceholder:
+        "Ingrese herramientas requeridas",
+      editCiltSequenceModalStandardOkPlaceholder: "Ingrese estándar OK",
+
+      // CiltCardList strings
+      ciltCardListSequencesModalTitle: "Secuencias de {ciltName}",
+      ciltCardListCloseButton: "Cerrar",
+      ciltCardListCreateNewSequenceButton: "Crear Nueva Secuencia",
+      ciltCardListSearchPlaceholder:
+        "Buscar secuencias...",
+      ciltCardListTotalSequences: "Total: {count} secuencias",
+      ciltCardListNoSequencesAssociated: "No hay secuencias asociadas a este CILT",
+      ciltCardListNoSequencesMatchingSearch: "No hay secuencias que coincidan con tu búsqueda",
+      ciltCardListSequenceLabel: "Secuencia {order}",
+      ciltCardListStandardTimeLabel: "Tiempo Estándar:",
+      ciltCardListToolsLabel: "Herramientas Requeridas:",
+      ciltCardListCreatedLabel: "Creado:",
+      ciltCardListViewDetailsButton: "Ver Detalles",
+      ciltCardListViewReferenceOplButton: "Ver OPL de Referencia",
+      ciltCardListViewRemediationOplButton: "Ver OPL de Remediación",
+      ciltCardListEditSequenceButton: "Editar Secuencia",
+      ciltCardListSequenceDetailsModalTitle: "Detalles de la Secuencia",
+      ciltCardListPositionLabel: "Posición:",
+      ciltCardListCiltTypeLabel: "Tipo de CILT:",
+      ciltCardListColorLabel: "Color:",
+      ciltCardListRequiredToolsLabel: "Herramientas Requeridas:",
+      ciltCardListStoppageReasonLabel: "Razón de Parada:",
+      ciltCardListStandardOkLabel: "Estándar OK:",
+      ciltCardListQuantityPicturesCreateLabel: "Imágenes para Creación:",
+      ciltCardListQuantityPicturesCloseLabel: "Imágenes para Cierre:",
+      ciltCardListRelatedOplsTitle: "OPLs Relacionados",
+      ciltCardListReferenceOplLabel: "OPL de Referencia:",
+      ciltCardListRemediationOplLabel: "OPL de Remediación:",
+      ciltCardListViewReferenceOplLinkText: "Ver OPL de Referencia",
+      ciltCardListViewRemediationOplLinkText: "Ver OPL de Remediación",
+      ciltCardListCreationDateLabel: "Fecha de Creación:",
+      ciltCardListLastUpdateLabel: "Última Actualización:",
+      ciltCardListYesText: "Sí",
+      ciltCardListNoText: "No",
+      ciltCardListOplInfoMessage: "Información de OPL",
+      ciltCardListNoSequencesMessage: "No hay secuencias asociadas con {ciltName}",
+      ciltCardListNoOplAssociatedMessage: "No hay OPL asociado con esta secuencia",
+      ciltCardListNoMultimediaMessage: "No hay archivos multimedia disponibles para el OPL: {oplTitle}",
+      ciltCardListErrorLoadingSequences: "Error al cargar secuencias",
+      ciltCardListErrorReloadingSequences: "Error al recargar secuencias",
+      ciltCardListErrorLoadingOplDetails: "Error al cargar detalles del OPL",
+      ciltCardListCreateSequence: "Crear Secuencia",
+      ciltCardListViewSequences: "Ver Secuencias",
+      ciltCardListObjectiveLabel: "Objetivo:",
+      ciltCardListMultimediaFilesTitle: "Archivos Multimedia",
+      ciltCardListImageLabel: "Imagen",
+      ciltCardListVideoLabel: "Video",
+      ciltCardListPlayVideoButton: "Reproducir Video",
+      ciltCardListPdfLabel: "PDF",
+      ciltCardListViewPdfButton: "Ver PDF",
+      ciltCardListPdfPreviewModalTitle: "Vista previa de PDF",
+      ciltCardListVideoPreviewModalTitle: "Vista previa de video",
+      ciltCardListVideoNotSupported: "Su navegador no admite la etiqueta de video.",
     },
   },
 };
