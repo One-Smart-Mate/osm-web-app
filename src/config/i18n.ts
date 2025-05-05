@@ -1176,6 +1176,9 @@ const resources = {
       ciltCardListPdfPreviewModalTitle: "PDF Preview",
       ciltCardListVideoPreviewModalTitle: "Video Preview",
       ciltCardListVideoNotSupported: "Your browser does not support the video tag.",
+      searchBarDefaultPlaceholder: "Searching...",
+      ciltLevelTreeModalCreateSequenceHere: "Create Sequence Here",
+      ciltProceduresSearchPlaceholder: "Searching...",
     },
   },
   es: {
@@ -2375,6 +2378,9 @@ const resources = {
       ciltCardListPdfPreviewModalTitle: "Vista previa de PDF",
       ciltCardListVideoPreviewModalTitle: "Vista previa de video",
       ciltCardListVideoNotSupported: "Su navegador no admite la etiqueta de video.",
+      searchBarDefaultPlaceholder: "Buscar...",
+      ciltLevelTreeModalCreateSequenceHere: "Crear Secuencia Aquí",
+      ciltProceduresSearchPlaceholder: "Buscar...",
     },
   },
 };

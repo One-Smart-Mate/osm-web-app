@@ -1097,6 +1097,9 @@ class StringsBase {
   static createCiltSequenceModalFrequenciesDescription = "createCiltSequenceModalFrequenciesDescription";
   static createCiltSequenceModalFrequenciesRequired = "createCiltSequenceModalFrequenciesRequired";
   static createCiltSequenceModalDefaultSiteName = "createCiltSequenceModalDefaultSiteName";
+  static searchBarDefaultPlaceholder = "searchBarDefaultPlaceholder";
+  static ciltLevelTreeModalCreateSequenceHere = "ciltLevelTreeModalCreateSequenceHere";
+  static ciltProceduresSearchPlaceholder = "ciltProceduresSearchPlaceholder";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
