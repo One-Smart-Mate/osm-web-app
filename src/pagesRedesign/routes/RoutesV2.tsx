@@ -123,7 +123,7 @@ const cardTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.cardTypes,
   <CardTypesV2 />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltProceduresV2 = new RouteV2(
@@ -131,7 +131,7 @@ const ciltProceduresV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltProcedures,
   <CiltProceduresPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const oplV2 = new RouteV2(
@@ -139,7 +139,7 @@ const oplV2 = new RouteV2(
   Constants.ROUTES_PATH.opl,
   <OplPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltTypesV2 = new RouteV2(
@@ -147,7 +147,7 @@ const ciltTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltTypes,
   <CiltTypesPage />,
   <BsNodePlus />,
-  buildCatalogsSectionName()
+  Strings.catalogs
 );
 
 const ciltFrecuenciesV2 = new RouteV2(

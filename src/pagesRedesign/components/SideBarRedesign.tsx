@@ -95,7 +95,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
           background: "#fff",
           boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
           transition: "width 0.2s ease",
-          overflow: "hidden",
+          overflow: "auto",
         }}
       >
         <div
@@ -115,7 +115,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
           )}
         </div>
 
-        <div style={{ marginTop: 20 }}>
+        <div style={{ marginTop: 20, paddingBottom: 40 }}>
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {!collapsed && (

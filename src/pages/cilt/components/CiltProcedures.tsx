@@ -37,7 +37,7 @@ const CiltProcedures: React.FC<CiltProceduresProps> = ({ onCreateClick }) => {
         </div>
 
         <Title level={3} style={{ flex: 2, margin: 0, textAlign: "center" }}>
-          {Strings.ciltMstrPageTitle}
+          {/* {Strings.ciltMstrPageTitle} */}
         </Title>
 
         <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
