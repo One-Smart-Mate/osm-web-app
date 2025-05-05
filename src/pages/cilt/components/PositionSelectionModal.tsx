@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, List, Input, Button, Space, Spin, Typography } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import { useGetPositionsBySiteIdQuery } from '../../../services/positionService';
-import { Position } from '../../../data/postiions/positions';
-import Strings from '../../../utils/localizations/Strings';
+import React, { useState, useEffect } from "react";
+import { Modal, List, Input, Button, Space, Spin, Typography } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
+import { Position } from "../../../data/postiions/positions";
+import Strings from "../../../utils/localizations/Strings";
 
 const { Text } = Typography;
 
@@ -18,46 +18,38 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
   visible,
   siteId,
   onCancel,
-  onPositionSelect
+  onPositionSelect,
 }) => {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [filteredPositions, setFilteredPositions] = useState<Position[]>([]);
 
-  // Fetch positions by site ID
   const {
     data: positions = [],
     isLoading,
-    error
+    error,
   } = useGetPositionsBySiteIdQuery(siteId, {
     skip: !siteId || !visible,
   });
 
-  // Update filtered positions when positions data changes or when the modal becomes visible
   useEffect(() => {
     if (positions && positions.length > 0) {
-      // Solo actualizar si hay posiciones y el texto de búsqueda está vacío
-      // o si el componente acaba de montarse/hacerse visible
-      if (searchText === '') {
+      if (searchText === "") {
         setFilteredPositions(positions);
       } else {
-        // Si hay texto de búsqueda, aplicar el filtro
-        const filtered = positions.filter(
-          (position) =>
-            position.name?.toLowerCase().includes(searchText.toLowerCase())
+        const filtered = positions.filter((position) =>
+          position.name?.toLowerCase().includes(searchText.toLowerCase())
         );
         setFilteredPositions(filtered);
       }
     }
   }, [visible, positions]);
 
-  // Handle search input change
   const handleSearch = (value: string) => {
     setSearchText(value);
     if (!positions) return;
 
-    const filtered = positions.filter(
-      (position) =>
-        position.name?.toLowerCase().includes(value.toLowerCase())
+    const filtered = positions.filter((position) =>
+      position.name?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredPositions(filtered);
   };
@@ -70,7 +62,7 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
       width={600}
       footer={null}
     >
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" style={{ width: "100%" }}>
         <Input
           placeholder={Strings.searchPositions}
           prefix={<SearchOutlined />}
@@ -78,9 +70,9 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
           onChange={(e) => handleSearch(e.target.value)}
           style={{ marginBottom: 16 }}
         />
-        
+
         {isLoading ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ textAlign: "center", padding: "20px" }}>
             <Spin tip={Strings.loading} />
           </div>
         ) : error ? (
@@ -92,12 +84,12 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
               <List.Item
                 key={position.id}
                 actions={[
-                  <Button 
-                    type="primary" 
+                  <Button
+                    type="primary"
                     onClick={() => onPositionSelect(position)}
                   >
                     {Strings.ciltMstrCreateButtonLabel}
-                  </Button>
+                  </Button>,
                 ]}
               >
                 <List.Item.Meta

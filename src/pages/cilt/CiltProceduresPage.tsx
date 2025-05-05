@@ -12,10 +12,12 @@ import CreateCiltModal from "./components/CreateCiltModal";
 const CiltProceduresPage = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
-  
+
   const [isPositionModalVisible, setIsPositionModalVisible] = useState(false);
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
+    null
+  );
   const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
 
@@ -58,15 +60,12 @@ const CiltProceduresPage = (): React.ReactElement => {
 
   return (
     <>
-      <MainContainer 
-        title={Strings.ciltMstrPageTitle}
+      <MainContainer
+        title=""
         description=""
-        content={<CiltProcedures />}
-        enableCreateButton={true}
-        onCreateButtonClick={showPositionModal}
+        content={<CiltProcedures onCreateClick={showPositionModal} />}
       />
 
-      {/* Position Selection Modal */}
       <PositionSelectionModal
         visible={isPositionModalVisible}
         siteId={siteId}

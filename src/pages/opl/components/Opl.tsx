@@ -28,6 +28,7 @@ import OplForm from "./OplForm";
 import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
 import Strings from "../../../utils/localizations/Strings";
+import SearchBar from "../../../components/common/SearchBar";
 
 const { Title } = Typography;
 
@@ -56,6 +57,8 @@ const Opl = (): React.ReactElement => {
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [getOplMstrAll] = useGetOplMstrAllMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
   const [updateOplMstr] = useUpdateOplMstrMutation();
@@ -74,7 +77,15 @@ const Opl = (): React.ReactElement => {
     setLoading(true);
     try {
       const response = await getOplMstrAll().unwrap();
-      setOplList(response);
+      
+      if (searchTerm) {
+        const filtered = response.filter(opl => 
+          opl.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setOplList(filtered);
+      } else {
+        setOplList(response);
+      }
     } catch (error) {
       console.error("Error fetching OPL list:", error);
       notification.error({
@@ -400,23 +411,41 @@ const Opl = (): React.ReactElement => {
     }
   };
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    fetchOpls();
+  };
+
   return (
-    <div style={{ padding: "24px" }}>
+    <div style={{ padding: "12px 24px" }}>
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: "16px",
+          gap: "16px"
         }}
       >
-        <Title level={3}>{Strings.oplPageManagementTitle}</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={showCreateModal}
-        >
-          {Strings.oplPageCreateButton}
-        </Button>
+        <div style={{ flex: 1, maxWidth: "300px" }}>
+          <SearchBar 
+            placeholder={Strings.oplSearchBarPlaceholder}
+            onSearch={handleSearch}
+          />
+        </div>
+        
+        <Title level={3} style={{ flex: 2, margin: 0, textAlign: "center" }}>
+          {Strings.oplPageManagementTitle}
+        </Title>
+        
+        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={showCreateModal}
+          >
+            {Strings.oplPageCreateButton}
+          </Button>
+        </div>
       </div>
 
       <Spin spinning={loading}>
@@ -469,7 +498,7 @@ const Opl = (): React.ReactElement => {
         onFileChange={handleFileChange}
         onPreview={handlePreview}
         onAddText={(values) => handleAddTextDetail(values)}
-        onAddMedia={(type) => handleAddMediaDetail(type)}
+        onAddMedia={(type) => handleAddMediaDetail(type as "imagen" | "video" | "pdf")}
       />
     </div>
   );

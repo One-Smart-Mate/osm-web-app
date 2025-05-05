@@ -24,12 +24,15 @@ const OplTable: React.FC<OplTableProps> = ({
       dataIndex: "title",
       key: "title",
       sorter: (a, b) => a.title.localeCompare(b.title),
+      ellipsis: true,
+      responsive: ['md'],
     },
     {
       title: Strings.oplTableObjectiveColumn,
       dataIndex: "objetive",
       key: "objetive",
       ellipsis: true,
+      responsive: ['lg'],
     },
     {
       title: Strings.oplTableTypeColumn,
@@ -48,26 +51,34 @@ const OplTable: React.FC<OplTableProps> = ({
         { text: Strings.oplTableSopType, value: "sop" },
       ],
       onFilter: (value, record) => record.oplType === value,
+      responsive: ['sm'],
     },
     {
       title: Strings.oplTableActionsColumn,
       key: "action",
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="small" wrap>
           <Button
-            icon={<EyeOutlined />}
+            type="default"
+            size="small"
             onClick={() => onView(record)}
-            title={Strings.oplTableViewTooltip}
-          />
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => onEdit(record)}
-            title={Strings.oplTableEditTooltip}
-          />
+            icon={<EyeOutlined />}
+          >
+            {Strings.oplTableViewButtonText}
+          </Button>
           <Button
             type="primary"
-            icon={<PlusOutlined />}
+            size="small"
+            onClick={() => onEdit(record)}
+            icon={<EditOutlined />}
+          >
+            {Strings.oplTableEditButtonText}
+          </Button>
+          <Button
+            type="default"
+            size="small"
             onClick={() => onDetails(record)}
+            icon={<PlusOutlined />}
           >
             {Strings.addFiles}
           </Button>
@@ -82,6 +93,8 @@ const OplTable: React.FC<OplTableProps> = ({
       dataSource={opls}
       rowKey="id"
       pagination={{ pageSize: 10 }}
+      scroll={{ x: 'max-content' }}
+      size="middle"
     />
   );
 };

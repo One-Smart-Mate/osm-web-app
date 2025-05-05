@@ -23,7 +23,7 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
   onPreview,
   onUpload,
 }) => {
-  // Configure file acceptance based on type
+  
   const getAcceptType = () => {
     switch (fileType) {
       case 'imagen':
@@ -37,7 +37,7 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
     }
   };
 
-  // Configure text based on type
+  
   const getUploadText = () => {
     switch (fileType) {
       case 'imagen':
@@ -90,7 +90,7 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
       <Button
         type="primary"
         onClick={onUpload}
-        disabled={fileList.length === 0}
+        disabled={fileList.length === 0} 
         loading={uploadLoading}
         style={{ marginTop: 16 }}
       >

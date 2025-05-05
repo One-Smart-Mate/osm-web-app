@@ -1,14 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, Select, InputNumber, Switch, ColorPicker, Spin, notification, Tree } from 'antd';
-import { useCreateCiltSequenceMutation } from '../../../services/cilt/ciltSequencesService';
-import { useGetCiltTypesBySiteMutation } from '../../../services/cilt/ciltTypesService';
-import { useGetlevelsMutation } from '../../../services/levelService';
-import { CiltMstr } from '../../../data/cilt/ciltMstr/ciltMstr';
-import { CiltType } from '../../../data/cilt/ciltTypes/ciltTypes';
-import { CreateCiltSequenceDTO } from '../../../data/cilt/ciltSequences/ciltSequences';
-import Strings from '../../../utils/localizations/Strings';
-import { DownOutlined } from '@ant-design/icons';
-import type { DataNode } from 'antd/es/tree';
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  Select,
+  InputNumber,
+  Switch,
+  Spin,
+  notification,
+  Row,
+  Col,
+  Card,
+  ColorPicker,
+} from "antd";
+import { useCreateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
+import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
+import { useGetCiltFrequenciesAllMutation } from "../../../services/cilt/ciltFrequenciesService";
+import { useCreateCiltSequenceFrequencyMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
+import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
+import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
+import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
+import { CreateCiltSequenceDTO } from "../../../data/cilt/ciltSequences/ciltSequences";
+import { CreateCiltSequencesFrequenciesDTO } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
+import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
+import Strings from "../../../utils/localizations/Strings";
+import CiltLevelTreeModal from "./CiltLevelTreeModal";
+import OplSelectionModal from "./OplSelectionModal";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -20,7 +38,6 @@ interface CreateCiltSequenceModalProps {
   onSuccess: () => void;
 }
 
-// Extendemos la interfaz CiltMstr para incluir las propiedades adicionales que necesitamos
 interface ExtendedCiltMstr extends CiltMstr {
   siteName?: string;
   areaId?: number;
@@ -32,37 +49,60 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   visible,
   cilt,
   onCancel,
-  onSuccess
+  onSuccess,
 }) => {
   const [form] = Form.useForm();
   const [createCiltSequence] = useCreateCiltSequenceMutation();
   const [getCiltTypesBySite] = useGetCiltTypesBySiteMutation();
-  const [getLevelsBySite] = useGetlevelsMutation();
-  
+  const [getCiltFrequenciesAll] = useGetCiltFrequenciesAllMutation();
+  const [createCiltSequenceFrequency] =
+    useCreateCiltSequenceFrequencyMutation();
+
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
-  const [treeData, setTreeData] = useState<DataNode[]>([]);
+  const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<{id: number, name: string} | null>(null);
-  const [color, setColor] = useState<string>('#1677FF');
+  const [levelTreeModalVisible, setLevelTreeModalVisible] = useState(false);
+  const [referenceOplModalVisible, setReferenceOplModalVisible] =
+    useState(false);
+  const [remediationOplModalVisible, setRemediationOplModalVisible] =
+    useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [selectedReferenceOpl, setSelectedReferenceOpl] =
+    useState<OplMstr | null>(null);
+  const [selectedRemediationOpl, setSelectedRemediationOpl] =
+    useState<OplMstr | null>(null);
+  const [color, setColor] = useState<string>("#1677FF");
 
   useEffect(() => {
     if (visible && cilt?.siteId) {
       fetchCiltTypes();
-      fetchLevels();
+      fetchCiltFrequencies();
     }
-  }, [visible, cilt]);
+
+    if (visible) {
+      form.resetFields();
+      setSelectedLevel(null);
+      setSelectedReferenceOpl(null);
+      setSelectedRemediationOpl(null);
+      setColor("#1677FF");
+    }
+  }, [visible, form]);
 
   useEffect(() => {
     if (!visible) {
       form.resetFields();
       setSelectedLevel(null);
-      setColor('#1677FF');
+      setSelectedReferenceOpl(null);
+      setSelectedRemediationOpl(null);
     }
   }, [visible, form]);
 
   const fetchCiltTypes = async () => {
     if (!cilt?.siteId) return;
-    
+
     setLoading(true);
     try {
       const response = await getCiltTypesBySite(String(cilt.siteId)).unwrap();
@@ -70,153 +110,145 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     } catch (error) {
       notification.error({
         message: Strings.error,
-        description: 'Error al cargar los tipos de CILT',
+        description: Strings.createCiltSequenceModalErrorLoadingTypes,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchLevels = async () => {
-    if (!cilt?.siteId) return;
-    
+  const fetchCiltFrequencies = async () => {
     setLoading(true);
     try {
-      const response = await getLevelsBySite(String(cilt.siteId)).unwrap();
-      
-      // Transform the levels data into a tree structure
-      const transformedData = transformToTreeData(response);
-      setTreeData(transformedData);
+      const response = await getCiltFrequenciesAll().unwrap();
+      setCiltFrequencies(response || []);
     } catch (error) {
       notification.error({
         message: Strings.error,
-        description: 'Error al cargar los niveles',
+        description: Strings.createCiltSequenceModalErrorLoadingFrequencies,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  // Function to transform level data into tree structure
-  const transformToTreeData = (levels: any[]): DataNode[] => {
-    // Map to store nodes by their ID for quick lookup
-    const nodesMap = new Map();
-    
-    // First pass: create all nodes
-    levels.forEach(level => {
-      nodesMap.set(level.id, {
-        key: level.id,
-        title: level.name,
-        children: [],
-        data: level // Store the original level data
+  const handleLevelSelect = (levelData: any) => {
+    if (levelData) {
+      setSelectedLevel({
+        id: Number(levelData.id),
+        name: levelData.name,
       });
-    });
-    
-    // Second pass: build the tree structure
-    const rootNodes: DataNode[] = [];
-    
-    levels.forEach(level => {
-      const node = nodesMap.get(level.id);
-      
-      if (level.parentId && nodesMap.has(level.parentId)) {
-        // This node has a parent, add it to the parent's children
-        const parentNode = nodesMap.get(level.parentId);
-        parentNode.children.push(node);
-      } else {
-        // This is a root node
-        rootNodes.push(node);
-      }
-    });
-    
-    return rootNodes;
+
+      form.setFieldsValue({
+        levelId: Number(levelData.id),
+        levelName: levelData.name,
+      });
+    }
+    setLevelTreeModalVisible(false);
   };
 
-  const handleLevelSelect = (selectedKeys: React.Key[], info: any) => {
-    if (selectedKeys.length > 0) {
-      const levelId = selectedKeys[0];
-      const levelName = info.node.title;
-      setSelectedLevel({ id: Number(levelId), name: String(levelName) });
-      
-      form.setFieldsValue({ levelId: Number(levelId) });
-    } else {
-      setSelectedLevel(null);
-      form.setFieldsValue({ levelId: null });
-    }
+  const handleReferenceOplSelect = (opl: OplMstr) => {
+    setSelectedReferenceOpl(opl);
+    form.setFieldsValue({
+      referenceOplSop: opl.id,
+      referenceOplName: opl.title,
+    });
+  };
+
+  const handleRemediationOplSelect = (opl: OplMstr) => {
+    setSelectedRemediationOpl(opl);
+    form.setFieldsValue({
+      remediationOplSop: opl.id,
+      remediationOplName: opl.title,
+    });
+  };
+
+  const getSelectedColor = (color: string | undefined): string => {
+    return color || "#1890ff";
   };
 
   const handleColorChange = (colorValue: any) => {
-    // Extract the hex color without the '#' prefix
-    const hexColor = colorValue.toHex().replace('#', '');
-    setColor('#' + hexColor);
+    const hexColor = colorValue.toHex().replace("#", "");
+    setColor("#" + hexColor);
     form.setFieldsValue({ secuenceColor: hexColor });
   };
 
   const handleSubmit = async (values: any) => {
-    if (!cilt) return;
-    
-    setLoading(true);
     try {
-      // Find the selected CILT type
-      const selectedCiltType = ciltTypes.find(type => type.id === values.ciltTypeId);
-      
-      // Tratar el cilt como ExtendedCiltMstr para acceder a las propiedades adicionales
-      const extendedCilt = cilt as unknown as ExtendedCiltMstr;
-      
-      // Crear valores predeterminados para las propiedades que pueden faltar
-      const siteName = extendedCilt.siteName || "Site";
-      const areaId = extendedCilt.areaId || 0;
-      const areaName = extendedCilt.areaName || "Area";
-      const positionName = extendedCilt.positionName || "Position";
-      
-      // Create the payload
-      const payload: CreateCiltSequenceDTO = {
-        siteId: cilt.siteId || 0,
-        siteName: siteName,
-        areaId: areaId,
-        areaName: areaName,
-        positionId: cilt.positionId || 0,
-        positionName: positionName,
-        ciltMstrId: cilt.id,
-        ciltMstrName: cilt.ciltName || "",
-        levelId: values.levelId,
-        levelName: selectedLevel?.name || '',
-        order: values.order || 1,
-        secuenceList: values.secuenceList,
-        secuenceColor: values.secuenceColor,
-        ciltTypeId: values.ciltTypeId,
-        ciltTypeName: selectedCiltType?.name || '',
-        referenceOplSop: undefined,
-        standardTime: values.standardTime,
-        standardOk: values.standardOk,
-        remediationOplSop: undefined,
-        toolsRequired: values.toolsRequired,
-        stoppageReason: values.stoppageReason ? 1 : 0,
-        quantityPicturesCreate: values.quantityPicturesCreate,
-        quantityPicturesClose: values.quantityPicturesClose,
-        createdAt: new Date().toISOString(),
-      };
-      
-      // Imprimir el payload para depuración
-      console.log('Payload enviado al backend:', payload);
-      
-      // Call the API
-      const response = await createCiltSequence(payload).unwrap();
-      
-      // Imprimir la respuesta para depuración
-      console.log('Respuesta del backend:', response);
-      
+      setLoading(true);
+
+      if (!values.frequencies || values.frequencies.length === 0) {
+        notification.error({
+          message: Strings.createCiltSequenceModalError,
+          description: Strings.createCiltSequenceModalErrorNoFrequency,
+        });
+        return;
+      }
+
+      const createPromises = values.frequencies.map(
+        async (frequencyId: number) => {
+          const sequenceData: CreateCiltSequenceDTO = {
+            siteId: values.siteId,
+            siteName: "",
+            areaId: values.areaId,
+            areaName: "",
+            positionId: values.positionId,
+            positionName: values.positionName || "",
+            ciltMstrId: values.ciltMstrId,
+            ciltMstrName: "",
+            levelId: values.levelId,
+            levelName: selectedLevel?.name || "",
+            order: values.order || 1,
+            secuenceList: values.secuenceList,
+            secuenceColor: values.secuenceColor || getSelectedColor(color),
+            ciltTypeId: values.ciltTypeId,
+            ciltTypeName:
+              ciltTypes.find((type) => type.id === values.ciltTypeId)?.name ||
+              "",
+            referenceOplSop: selectedReferenceOpl?.id,
+            remediationOplSop: selectedRemediationOpl?.id,
+            toolsRequired: values.toolsRequired,
+            stoppageReason: values.stoppageReason ? 1 : 0,
+            standardOk: values.standardOk,
+            quantityPicturesCreate: values.quantityPicturesCreate,
+            quantityPicturesClose: values.quantityPicturesClose,
+            createdAt: new Date().toISOString(),
+          };
+
+          const response = await createCiltSequence(sequenceData).unwrap();
+
+          if (response && response.id) {
+            const frequency = ciltFrequencies.find((f) => f.id === frequencyId);
+
+            const sequenceFrequencyData: CreateCiltSequencesFrequenciesDTO = {
+              siteId: values.siteId,
+              positionId: values.positionId,
+              ciltId: values.ciltMstrId,
+              secuencyId: response.id,
+              frecuencyId: frequencyId,
+              frecuencyCode: frequency?.frecuencyCode || "",
+              status: "A",
+            };
+            await createCiltSequenceFrequency(sequenceFrequencyData).unwrap();
+          }
+
+          return response;
+        }
+      );
+
+      await Promise.all(createPromises);
+
       notification.success({
-        message: 'Éxito',
-        description: 'Secuencia CILT creada correctamente',
+        message: Strings.createCiltSequenceModalSuccess,
+        description: Strings.createCiltSequenceModalSuccessDescription,
       });
-      
-      // Reset and close
-      form.resetFields();
+
       onSuccess();
     } catch (error) {
+      console.error("Error creating CILT sequences:", error);
       notification.error({
-        message: 'Error',
-        description: 'Error al crear la secuencia CILT',
+        message: Strings.createCiltSequenceModalError,
+        description: Strings.createCiltSequenceModalErrorDescription,
       });
     } finally {
       setLoading(false);
@@ -225,12 +257,11 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
   return (
     <Modal
-      title="Crear Secuencia CILT"
+      title={Strings.createCiltSequenceModalTitle}
       open={visible}
       onCancel={onCancel}
-      width={800}
       footer={null}
-      destroyOnClose
+      width={1000}
     >
       <Spin spinning={loading}>
         <Form
@@ -238,139 +269,349 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
           layout="vertical"
           onFinish={handleSubmit}
           initialValues={{
-            order: 1,
-            secuenceColor: color.replace('#', ''),
-            quantityPicturesCreate: 1,
-            quantityPicturesClose: 1,
             stoppageReason: false,
+            quantityPicturesCreate: 0,
+            quantityPicturesClose: 0,
           }}
         >
-          {/* Hidden field for levelId */}
-          <Form.Item name="levelId" hidden>
-            <Input />
-          </Form.Item>
-          
-          <Form.Item
-            label="Seleccionar Nivel"
-            required
-            help="Seleccione un nivel del árbol para asociar la secuencia"
-          >
-            <div style={{ maxHeight: '300px', overflow: 'auto', border: '1px solid #d9d9d9', padding: '8px', borderRadius: '2px' }}>
-              <Tree
-                showLine
-                switcherIcon={<DownOutlined />}
-                onSelect={handleLevelSelect}
-                treeData={treeData}
-              />
-            </div>
-            {selectedLevel && (
-              <div style={{ marginTop: '8px' }}>
-                Nivel seleccionado: <strong>{selectedLevel.name}</strong>
-              </div>
-            )}
-          </Form.Item>
-          
-          <Form.Item
-            name="order"
-            label="Orden"
-            rules={[{ required: true, message: 'Por favor ingrese el orden' }]}
-          >
-            <InputNumber min={1} style={{ width: '100%' }} />
-          </Form.Item>
-          
-          <Form.Item
-            name="secuenceList"
-            label="Lista de Secuencia"
-            rules={[{ required: true, message: 'Por favor ingrese la lista de secuencia' }]}
-          >
-            <TextArea rows={4} placeholder="Ingrese los pasos de la secuencia" />
-          </Form.Item>
-          
-          <Form.Item
-            name="secuenceColor"
-            label="Color de Secuencia"
-            rules={[{ required: true, message: 'Por favor seleccione un color' }]}
-          >
-            <div>
-              <ColorPicker
-                value={color}
-                onChange={handleColorChange}
-                showText
-              />
-            </div>
-          </Form.Item>
-          
-          <Form.Item
-            name="ciltTypeId"
-            label="Tipo de CILT"
-            rules={[{ required: true, message: 'Por favor seleccione un tipo de CILT' }]}
-          >
-            <Select placeholder="Seleccione un tipo de CILT">
-              {ciltTypes.map(type => (
-                <Option key={type.id} value={type.id}>{type.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          
-          <Form.Item
-            name="standardTime"
-            label="Tiempo Estándar (segundos)"
-            rules={[{ required: true, message: 'Por favor ingrese el tiempo estándar' }]}
-          >
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
-          
-          <Form.Item
-            name="standardOk"
-            label="Estándar OK"
-            rules={[{ required: true, message: 'Por favor ingrese el estándar OK' }]}
-          >
-            <Input placeholder="Ingrese el estándar esperado" />
-          </Form.Item>
-          
-          <Form.Item
-            name="toolsRequired"
-            label="Herramientas Requeridas"
-          >
-            <TextArea rows={3} placeholder="Ingrese las herramientas necesarias" />
-          </Form.Item>
-          
-          <Form.Item
-            name="stoppageReason"
-            label="¿Es motivo de paro?"
-            valuePropName="checked"
-          >
-            <Switch />
-          </Form.Item>
-          
-          <Form.Item
-            name="quantityPicturesCreate"
-            label="Cantidad de Imágenes al Inicio"
-            rules={[{ required: true, message: 'Por favor ingrese la cantidad de imágenes' }]}
-          >
-            <InputNumber min={0} max={10} style={{ width: '100%' }} />
-          </Form.Item>
-          
-          <Form.Item
-            name="quantityPicturesClose"
-            label="Cantidad de Imágenes al Cierre"
-            rules={[{ required: true, message: 'Por favor ingrese la cantidad de imágenes' }]}
-          >
-            <InputNumber min={0} max={10} style={{ width: '100%' }} />
-          </Form.Item>
-          
-          <Form.Item>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-              <Button onClick={onCancel}>
-                Cancelar
-              </Button>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Crear Secuencia
-              </Button>
-            </div>
-          </Form.Item>
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <Card
+                title={
+                  <div
+                    style={{
+                      color: "#1890ff",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {Strings.createCiltSequenceModalBasicInfoTitle}
+                  </div>
+                }
+                bordered={true}
+                style={{ height: "100%" }}
+              >
+                {/* CILT Type */}
+                <Form.Item
+                  name="ciltTypeId"
+                  label={Strings.editCiltSequenceModalCiltTypeLabel}
+                  rules={[
+                    {
+                      required: true,
+                      message: Strings.editCiltSequenceModalCiltTypeRequired,
+                    },
+                  ]}
+                >
+                  <Select
+                    placeholder={
+                      Strings.editCiltSequenceModalCiltTypePlaceholder
+                    }
+                    loading={loading}
+                    disabled={loading}
+                  >
+                    {ciltTypes.map((type) => (
+                      <Option key={type.id} value={type.id}>
+                        {type.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
+                {/* Level */}
+                <Form.Item
+                  name="levelId"
+                  label={Strings.editCiltSequenceModalLevelLabel}
+                  rules={[
+                    {
+                      required: true,
+                      message: Strings.editCiltSequenceModalLevelRequired,
+                    },
+                  ]}
+                >
+                  <Input
+                    readOnly
+                    placeholder={Strings.editCiltSequenceModalSelectLevel}
+                    value={selectedLevel?.name}
+                    addonAfter={
+                      <Button
+                        type="link"
+                        style={{ padding: 0 }}
+                        onClick={() => setLevelTreeModalVisible(true)}
+                      >
+                        {Strings.select}
+                      </Button>
+                    }
+                  />
+                </Form.Item>
+
+                {/* Frequencies */}
+                <Form.Item
+                  name="frequencies"
+                  label={Strings.createCiltSequenceModalFrequenciesTitle}
+                  help={Strings.createCiltSequenceModalFrequenciesDescription}
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        Strings.createCiltSequenceModalFrequenciesRequired,
+                    },
+                  ]}
+                >
+                  <Select
+                    mode="multiple"
+                    placeholder={
+                      Strings.createCiltSequenceModalFrequenciesRequired
+                    }
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                      const childText = option?.label?.toString() || "";
+                      return (
+                        childText.toLowerCase().indexOf(input.toLowerCase()) >=
+                        0
+                      );
+                    }}
+                    style={{ width: "100%" }}
+                    options={ciltFrequencies.map((frequency) => ({
+                      value: frequency.id,
+                      label: `${frequency.frecuencyCode} - ${frequency.description}`,
+                    }))}
+                  />
+                </Form.Item>
+
+                {/* Hidden Order field */}
+                <Form.Item name="order" hidden>
+                  <Input type="number" />
+                </Form.Item>
+              </Card>
+            </Col>
+
+            <Col span={12}>
+              <Card
+                title={
+                  <div
+                    style={{
+                      color: "#1890ff",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {Strings.createCiltSequenceModalDetailsTitle}
+                  </div>
+                }
+                bordered={true}
+                style={{ height: "100%" }}
+              >
+                {/* Reference OPL/SOP */}
+                <Form.Item
+                  name="referenceOplSop"
+                  label={Strings.editCiltSequenceModalReferenceOplLabel}
+                >
+                  <Input
+                    readOnly
+                    placeholder={
+                      Strings.editCiltSequenceModalSelectReferenceOpl
+                    }
+                    onClick={() => setReferenceOplModalVisible(true)}
+                    value={
+                      selectedReferenceOpl ? selectedReferenceOpl.title : ""
+                    }
+                    style={{ cursor: "pointer" }}
+                  />
+                </Form.Item>
+
+                {/* Remediation OPL/SOP */}
+                <Form.Item
+                  name="remediationOplSop"
+                  label={Strings.editCiltSequenceModalRemediationOplLabel}
+                >
+                  <Input
+                    readOnly
+                    placeholder={
+                      Strings.editCiltSequenceModalSelectRemediationOpl
+                    }
+                    onClick={() => setRemediationOplModalVisible(true)}
+                    value={
+                      selectedRemediationOpl ? selectedRemediationOpl.title : ""
+                    }
+                    style={{ cursor: "pointer" }}
+                  />
+                </Form.Item>
+
+                {/* Sequence List */}
+                <Form.Item
+                  name="secuenceList"
+                  label={Strings.editCiltSequenceModalSequenceListLabel}
+                  rules={[
+                    {
+                      required: true,
+                      message:
+                        Strings.editCiltSequenceModalSequenceListRequired,
+                    },
+                  ]}
+                >
+                  <TextArea
+                    placeholder={
+                      Strings.editCiltSequenceModalSequenceListPlaceholder
+                    }
+                    autoSize={{ minRows: 4, maxRows: 8 }}
+                  />
+                </Form.Item>
+
+                {/* Sequence Color */}
+                <Form.Item
+                  name="secuenceColor"
+                  label={Strings.editCiltSequenceModalColorLabel}
+                  rules={[
+                    {
+                      required: true,
+                      message: Strings.editCiltSequenceModalColorRequired,
+                    },
+                  ]}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <ColorPicker
+                      value={color}
+                      onChange={handleColorChange}
+                      showText
+                    />
+                  </div>
+                </Form.Item>
+              </Card>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              {/* Standard Time */}
+              <Form.Item
+                name="standardTime"
+                label={Strings.editCiltSequenceModalStandardTimeLabel}
+                rules={[
+                  {
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardTimeRequired,
+                  },
+                ]}
+              >
+                <InputNumber min={0} step={0.5} className="w-full" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              {/* Standard OK */}
+              <Form.Item
+                name="standardOk"
+                label={Strings.editCiltSequenceModalStandardOkLabel}
+                rules={[
+                  {
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardOkRequired,
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              {/* Stoppage Reason */}
+              <Form.Item
+                name="stoppageReason"
+                label={Strings.editCiltSequenceModalStoppageReasonLabel}
+                valuePropName="checked"
+              >
+                <Switch />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              {/* Quantity Pictures Create */}
+              <Form.Item
+                name="quantityPicturesCreate"
+                label={Strings.editCiltSequenceModalQuantityPicturesCreateLabel}
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      Strings.editCiltSequenceModalQuantityPicturesCreateRequired,
+                  },
+                ]}
+              >
+                <InputNumber min={0} className="w-full" />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              {/* Quantity Pictures Close */}
+              <Form.Item
+                name="quantityPicturesClose"
+                label={Strings.editCiltSequenceModalQuantityPicturesCloseLabel}
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      Strings.editCiltSequenceModalQuantityPicturesCloseRequired,
+                  },
+                ]}
+              >
+                <InputNumber min={0} className="w-full" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={24}>
+              {/* Tools Required */}
+              <Form.Item
+                name="toolsRequired"
+                label={Strings.editCiltSequenceModalToolsRequiredLabel}
+              >
+                <TextArea rows={3} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <div className="flex justify-end mt-4 space-x-2">
+            <Button onClick={onCancel}>{Strings.cancel}</Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {Strings.save}
+            </Button>
+          </div>
         </Form>
       </Spin>
+
+      {/* Level Tree Modal */}
+      {cilt?.siteId && (
+        <CiltLevelTreeModal
+          isVisible={levelTreeModalVisible}
+          onClose={() => setLevelTreeModalVisible(false)}
+          siteId={String(cilt.siteId)}
+          siteName={
+            (cilt as ExtendedCiltMstr).siteName ||
+            Strings.createCiltSequenceModalDefaultSiteName
+          }
+          onSelectLevel={handleLevelSelect}
+        />
+      )}
+
+      {/* OPL Selection Modals */}
+      <OplSelectionModal
+        isVisible={referenceOplModalVisible}
+        onClose={() => setReferenceOplModalVisible(false)}
+        onSelect={handleReferenceOplSelect}
+      />
+
+      <OplSelectionModal
+        isVisible={remediationOplModalVisible}
+        onClose={() => setRemediationOplModalVisible(false)}
+        onSelect={handleRemediationOplSelect}
+      />
     </Modal>
   );
 };
