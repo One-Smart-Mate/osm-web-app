@@ -48,6 +48,10 @@ class StringsBase {
   static ciltMstrCreateButtonLabel = "ciltMstrCreateButtonLabel";
   static ciltMstrCreateModalTitle = "ciltMstrCreateModalTitle";
   static ciltMstrPositionLabel = "ciltMstrPositionLabel";
+  static ciltMstrLastUpdated = "ciltMstrLastUpdated";
+
+  // Position user selection
+  static selectedUsersList = "selectedUsersList";
 
   // Rooutes
   static companyParam = "companyParam";
@@ -951,6 +955,7 @@ class StringsBase {
   static ciltMstrSaveChangesButton = "ciltMstrSaveChangesButton";
   static ciltMstrCancelButton = "ciltMstrCancelButton";
   static ciltMstrUpdateError = "ciltMstrUpdateError";
+  static ciltMstrUpdateSuccess = "ciltMstrUpdateSuccess";
   static ciltMstrNameLabel = "ciltMstrNameLabel";
   static ciltMstrNameRequired = "ciltMstrNameRequired";
   static ciltMstrDescriptionLabel = "ciltMstrDescriptionLabel";

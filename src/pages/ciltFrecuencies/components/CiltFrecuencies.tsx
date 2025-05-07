@@ -101,7 +101,7 @@ const CiltFrequencies = (): React.ReactElement => {
     form.validateFields().then((values) => {
       const payload = {
         ...values,
-        status: values.status ? "A" : "I",
+        status: isEditMode ? (values.status ? "A" : "I") : "A", // Siempre activo para nuevos registros
       };
 
       if (isEditMode && currentRecord) {
@@ -224,9 +224,12 @@ const CiltFrequencies = (): React.ReactElement => {
           <Form.Item
             label={Strings.frequencyCode}
             name="frecuencyCode"
-            rules={[{ required: true, message: Strings.obligatoryCode }]}
+            rules={[
+              { required: true, message: Strings.obligatoryCode },
+              { max: 3, message: "El código no puede exceder 3 caracteres" }
+            ]}
           >
-            <Input />
+            <Input maxLength={3} style={{ textTransform: 'uppercase' }} />
           </Form.Item>
 
           <Form.Item
@@ -237,9 +240,11 @@ const CiltFrequencies = (): React.ReactElement => {
             <Input />
           </Form.Item>
 
-          <Form.Item label={Strings.active} name="status" valuePropName="checked">
-            <Switch />
-          </Form.Item>
+          {isEditMode && (
+            <Form.Item label={Strings.active} name="status" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
     </div>

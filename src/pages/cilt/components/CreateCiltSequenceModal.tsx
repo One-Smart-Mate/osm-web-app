@@ -374,20 +374,21 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     },
                   ]}
                 >
-                  <Input
-                    readOnly
-                    placeholder={Strings.editCiltSequenceModalSelectLevel}
-                    value={selectedLevel?.name}
-                    addonAfter={
-                      <Button
-                        type="link"
-                        style={{ padding: 0 }}
-                        onClick={() => setLevelTreeModalVisible(true)}
-                      >
-                        {Strings.select}
-                      </Button>
-                    }
-                  />
+                  <div className="flex items-center">
+                    <Button
+                      type="primary"
+                      onClick={() => setLevelTreeModalVisible(true)}
+                      className="mr-2"
+                    >
+                      {Strings.select} {Strings.level}
+                    </Button>
+                    {selectedLevel && (
+                      <div className="border rounded p-2 flex-1">
+                        {selectedLevel.name}
+                      </div>
+                    )}
+                    <Input type="hidden" value={selectedLevel?.id} />
+                  </div>
                 </Form.Item>
 
                 {/* Frequencies */}
@@ -453,17 +454,21 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   name="referenceOplSop"
                   label={Strings.editCiltSequenceModalReferenceOplLabel}
                 >
-                  <Input
-                    readOnly
-                    placeholder={
-                      Strings.editCiltSequenceModalSelectReferenceOpl
-                    }
-                    onClick={() => setReferenceOplModalVisible(true)}
-                    value={
-                      selectedReferenceOpl ? selectedReferenceOpl.title : ""
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
+                  <div className="flex items-center">
+                    <Button
+                      type="primary"
+                      onClick={() => setReferenceOplModalVisible(true)}
+                      className="mr-2"
+                    >
+                      {Strings.select} OPL
+                    </Button>
+                    {selectedReferenceOpl && (
+                      <div className="border rounded p-2 flex-1">
+                        {selectedReferenceOpl.title}
+                      </div>
+                    )}
+                    <Input type="hidden" value={selectedReferenceOpl?.id} />
+                  </div>
                 </Form.Item>
 
                 {/* Remediation OPL/SOP */}
@@ -471,17 +476,21 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   name="remediationOplSop"
                   label={Strings.editCiltSequenceModalRemediationOplLabel}
                 >
-                  <Input
-                    readOnly
-                    placeholder={
-                      Strings.editCiltSequenceModalSelectRemediationOpl
-                    }
-                    onClick={() => setRemediationOplModalVisible(true)}
-                    value={
-                      selectedRemediationOpl ? selectedRemediationOpl.title : ""
-                    }
-                    style={{ cursor: "pointer" }}
-                  />
+                  <div className="flex items-center">
+                    <Button
+                      type="primary"
+                      onClick={() => setRemediationOplModalVisible(true)}
+                      className="mr-2"
+                    >
+                      {Strings.select} OPL
+                    </Button>
+                    {selectedRemediationOpl && (
+                      <div className="border rounded p-2 flex-1">
+                        {selectedRemediationOpl.title}
+                      </div>
+                    )}
+                    <Input type="hidden" value={selectedRemediationOpl?.id} />
+                  </div>
                 </Form.Item>
 
                 {/* Sequence List */}
