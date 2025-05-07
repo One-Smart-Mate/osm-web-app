@@ -326,15 +326,6 @@ const PositionsPage = () => {
                       >
                         PDF
                       </Button>,
-                      <Button
-                        type="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCreateCilt(item);
-                        }}
-                      >
-                        {Strings.createCiltProcedure}
-                      </Button>,
                     ]}
                   >
                     <AnatomySection
@@ -359,6 +350,18 @@ const PositionsPage = () => {
                       title={Strings.positionStatusHeader}
                       label={renderStatusTag(item.status)}
                     />
+                    <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                      <Button
+                        type="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCreateCilt(item);
+                        }}
+                        style={{ width: '100%' }}
+                      >
+                        {Strings.createCiltProcedure}
+                      </Button>
+                    </div>
                   </Card>
                 </List.Item>
               )}

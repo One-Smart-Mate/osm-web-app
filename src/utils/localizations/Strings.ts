@@ -1102,6 +1102,52 @@ class StringsBase {
   static ciltProceduresSearchPlaceholder = "ciltProceduresSearchPlaceholder";
 
   static informationDetail = "informationDetail";
+
+  // CILT Table strings
+  static createSequence = "createSequence";
+  static viewSequences = "viewSequences";
+  static information = "information";
+  
+  // CILT Sequences strings
+  static sequences = "sequences";
+  static sequence = "sequence";
+  static createNewSequence = "createNewSequence";
+  static searchByDescriptionOrderOrTime = "searchByDescriptionOrderOrTime";
+  static noSequencesForCilt = "noSequencesForCilt";
+  static noSequencesMatchSearch = "noSequencesMatchSearch";
+  static thisGroup = "thisGroup";
+  static noSequencesYet = "noSequencesYet";
+  static viewDetails = "viewDetails";
+  static detailsOf = "detailsOf";
+  static editSequence = "editSequence";
+
+  // CILT Details and OPL strings
+  static ciltType = "ciltType";
+  static requiredTools = "requiredTools";
+  static stoppageReason = "stoppageReason";
+  static standardOk = "standardOk";
+  static quantityPicturesCreate = "quantityPicturesCreate";
+  static quantityPicturesClose = "quantityPicturesClose";
+  static relatedOPLs = "relatedOPLs";
+  static referenceOPL = "referenceOPL";
+  static viewReferenceOPL = "viewReferenceOPL";
+  static remediationOPL = "remediationOPL";
+  static viewRemediationOPL = "viewRemediationOPL";
+  static tools = "tools";
+  static created = "created";
+  static noOplAssociated = "noOplAssociated";
+  static thisOpl = "thisOpl";
+  static noMediaFiles = "noMediaFiles";
+  static browserNotSupportVideo = "browserNotSupportVideo";
+  static viewReferenceOpl = "viewReferenceOpl";
+  static viewRemediationOpl = "viewRemediationOpl";
+  static createCiltSequenceModalErrorNoPosition = "createCiltSequenceModalErrorNoPosition";
+  static createCiltSequenceModalErrorNoLevel = "createCiltSequenceModalErrorNoLevel";
+  static createCiltSequenceModalPositionPlaceholder = "createCiltSecuenceModalPositionPlaceholder"
+  static areaId = "areaId"
+  static createCiltSequenceModalErrorNoArea = "createCiltSequenceModalErrorNoArea"
+  static createCiltSequenceModalErrorNoCiltType = "createCiltSequenceModalErrorNoCiltType"
+  static areaSelectPlaceholder = "areaSelectPlaceholder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
