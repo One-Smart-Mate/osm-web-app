@@ -131,7 +131,7 @@ const ciltProceduresV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltProcedures,
   <CiltProceduresPage />,
   <BsNodePlus />,
-  Strings.catalogs
+  Strings.cilt
 );
 
 const oplV2 = new RouteV2(
@@ -139,7 +139,7 @@ const oplV2 = new RouteV2(
   Constants.ROUTES_PATH.opl,
   <OplPage />,
   <BsNodePlus />,
-  Strings.catalogs
+  Strings.cilt
 );
 
 const ciltTypesV2 = new RouteV2(
@@ -147,7 +147,7 @@ const ciltTypesV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltTypes,
   <CiltTypesPage />,
   <BsNodePlus />,
-  Strings.catalogs
+  Strings.cilt
 );
 
 const ciltFrecuenciesV2 = new RouteV2(
@@ -155,7 +155,7 @@ const ciltFrecuenciesV2 = new RouteV2(
   Constants.ROUTES_PATH.ciltFrecuencies,
   <CiltFrecuenciesPage />,
   <BsNodePlus />,
-  Strings.catalogs
+  Strings.cilt
 );
 
 const companiesV2 = new RouteV2(
@@ -276,12 +276,6 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       section: siteUsersV2.section,
     }),
     getItemV2({
-      label: technicalSupportRoute.label,
-      key: technicalSupportRoute.path,
-      icon: technicalSupportRoute.icon,
-      section: technicalSupportRoute.section,
-    }),
-    getItemV2({
       label: positionsV2.label,
       key: positionsV2.path,
       icon: positionsV2.icon,
@@ -310,6 +304,12 @@ const localSisAdminRoutesSiderOptionsV2 = (): ItemType[] => {
       key: ciltFrecuenciesV2.path,
       icon: ciltFrecuenciesV2.icon,
       section: ciltFrecuenciesV2.section,
+    }),
+    getItemV2({
+      label: technicalSupportRoute.label,
+      key: technicalSupportRoute.path,
+      icon: technicalSupportRoute.icon,
+      section: technicalSupportRoute.section,
     }),
   ];
   return items;

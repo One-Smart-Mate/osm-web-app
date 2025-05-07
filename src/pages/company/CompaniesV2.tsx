@@ -92,6 +92,7 @@ const CompaniesV2 = () => {
         <>
           <PaginatedList
             dataSource={data}
+            className="no-scrollbar"
             renderItem={(value: Company, index: number) => (
               <List.Item key={index}>
                 <Card

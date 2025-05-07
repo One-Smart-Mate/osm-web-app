@@ -734,6 +734,7 @@ class StringsBase {
   static enterEmail = "enterEmail";
   static enterPassword = "enterPassword";
   static permissionsError = "permissionsError";
+  static cilt = "cilt";
 
   // CILT MASTER CREATE
   static ciltMasterCreateSuccess = "ciltMasterCreateSuccess";

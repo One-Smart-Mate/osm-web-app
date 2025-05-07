@@ -1239,6 +1239,7 @@ const resources = {
       browserNotSupportVideo: "Your browser doesn't support video playback.",
       viewReferenceOpl: "View Reference OPL",
       viewRemediationOpl: "View Remediation OPL",
+      cilt: "CILT",
     },
   },
   es: {
@@ -2499,6 +2500,7 @@ const resources = {
       browserNotSupportVideo: "Su navegador no admite la etiqueta de video.",
       viewReferenceOpl: "Ver OPL de Referencia",
       viewRemediationOpl: "Ver OPL de Remediación",
+      cilt: "CILT",
     },
   },
 };

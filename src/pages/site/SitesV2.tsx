@@ -244,6 +244,7 @@ const SitesV2 = () => {
         content={
           <div>
             <PaginatedList
+              className="no-scrollbar"
               dataSource={filteredData}
               renderItem={(value: Site, index: number) => (
                 <List.Item key={index}>
