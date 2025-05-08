@@ -1,12 +1,7 @@
 import { useState } from "react";
 import Strings from "../../../utils/localizations/Strings";
 import { Company } from "../../../data/company/company";
-import { Button } from "antd";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../../utils/Notifications";
+import { Button, App as AntApp } from "antd";
 import {
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
@@ -18,6 +13,7 @@ import {
 import ModalForm from "../../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import CompanyFormCard from "./CompanyFormCard";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 interface CompanyFormProps {
   formType: CompanyFormType;
@@ -36,6 +32,7 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [logo, setLogo] = useState<string>();
+  const {notification} = AntApp.useApp();
 
   const handleOnClickButton = () => {
     setModalOpen(true);
@@ -62,7 +59,7 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
     try {
       setIsLoading(true);
       if (logo == null || logo == undefined || logo == "") {
-        handleErrorNotification(Strings.requiredLogo);
+        AnatomyNotification.error(notification, Strings.requiredLogo);
         setIsLoading(false);
         return;
       }
@@ -82,11 +79,11 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
       ).unwrap();
       setModalOpen(false);
       onComplete?.();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
       setLogo("");
     } catch (error) {
       console.error("Error creating company:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +93,7 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
     try {
       setIsLoading(true);
       if (logo == null || logo == undefined || logo == "") {
-        handleErrorNotification(Strings.requiredLogo);
+        AnatomyNotification.error(notification, Strings.requiredLogo);
         setIsLoading(false);
         return;
       }
@@ -116,11 +113,13 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
       await updateCompany(companyToUpdate).unwrap();
       setModalOpen(false);
       onComplete?.();
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+            AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
+    
       setLogo("");
     } catch (error) {
       console.error("Error updating company:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
+
     } finally {
       setIsLoading(false);
     }

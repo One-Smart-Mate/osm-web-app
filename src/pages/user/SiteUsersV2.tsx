@@ -8,6 +8,7 @@ import {
   Tag,
   Tooltip,
   Typography,
+  App as AntApp
 } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import {
@@ -17,11 +18,6 @@ import {
 } from "../../services/userService";
 import { Role, UserCardInfo } from "../../data/user/user";
 import ModalForm from "../../components/ModalForm";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../utils/Notifications";
 import { CreateUser } from "../../data/user/user.request";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
@@ -41,6 +37,7 @@ import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../../components/PaginatedList";
 import { FormInstance } from "antd/lib";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 const SiteUsersV2 = () => {
   const [getUsersWithPositions] = useGetUsersWithPositionsMutation();
@@ -59,6 +56,7 @@ const SiteUsersV2 = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const siteName = location?.state?.siteName || Strings.empty;
   const siteId = location?.state.siteId || Strings.empty;
+  const {notification} = AntApp.useApp();
 
   const handleOnCancelButton = () => {
     if (!modalIsLoading) {
@@ -162,10 +160,11 @@ const SiteUsersV2 = () => {
       }
       setModalOpen(false);
       handleGetUsers();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+              AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+      
     } catch (error) {
       console.log("An error occurred:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
     } finally {
       setModalLoading(false);
     }

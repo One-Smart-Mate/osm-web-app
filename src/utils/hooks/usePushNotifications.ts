@@ -10,14 +10,21 @@ export const usePushNotifications = () => {
   });
 
   const addNotification = (newNotification: any) => {
-    console.log("addNotification: ", notifications);
-    const updatedNotifications = notifications;
-    updatedNotifications.push(newNotification.notification);
+    try {
+      console.log("addNotification: ", notifications);
+      const updatedNotifications = notifications;
+      updatedNotifications.push(newNotification.notification);
 
-    setNotifications(updatedNotifications);
+      setNotifications(updatedNotifications);
 
-    // Save the updated array to sessionStorage
-    sessionStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(updatedNotifications));
+      // Save the updated array to sessionStorage
+      sessionStorage.setItem(
+        NOTIFICATIONS_KEY,
+        JSON.stringify(updatedNotifications)
+      );
+    } catch(error) {
+      console.error(error);
+    }
   };
 
   const clearNotifications = () => {

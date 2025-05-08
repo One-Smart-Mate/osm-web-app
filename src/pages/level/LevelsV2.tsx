@@ -10,7 +10,7 @@ import {
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin, Modal, Button } from "antd";
+import { Form, Drawer, Spin, Modal, Button, App as AntApp } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -23,6 +23,7 @@ import LevelFormDrawer from "./components/LevelFormDrawer";
 import { useGetSiteMutation } from "../../services/siteService";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 
 const buildHierarchy = (data: Level[]) => {
@@ -59,6 +60,7 @@ const LevelsV2 = () => {
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
   const [getCardsByLevel] = useGetCardsByLevelMutation();
+  const { notification } = AntApp.useApp();
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
@@ -327,8 +329,10 @@ const LevelsV2 = () => {
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
     const newNodeData = await createLevel(payload).unwrap();
+    AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
     const parentId = Number(newNodeData.id);
     if (isNaN(parentId)) {
+      AnatomyNotification.error(notification, Strings.errorGettingLevelId);
       throw new Error(Strings.errorGettingLevelId);
     }
     if (node.children && node.children.length > 0) {
@@ -392,6 +396,7 @@ const LevelsV2 = () => {
           values.notify ? 1 : 0
         );
         await createLevel(newNode).unwrap();
+        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
       } else if (drawerType === "update") {
         const { superiorId, ...updateValues } = values;
         const updatePayload = {
@@ -400,6 +405,7 @@ const LevelsV2 = () => {
           responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
         };
         await updateLevel(updatePayload).unwrap();
+        AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
       }
 
       await handleGetLevels();
