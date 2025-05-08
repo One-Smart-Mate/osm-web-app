@@ -102,7 +102,7 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
       onCancel={onCancel}
       footer={null}
       width={600}
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="p-4">
         <Form

@@ -83,7 +83,7 @@ const ModalForm = ({
         onCancel={handleCancel}
         cancelText={Strings.cancel}
         confirmLoading={isLoading}
-        destroyOnClose
+        destroyOnHidden
       >
        {renderFormComponent()}
       </Modal>

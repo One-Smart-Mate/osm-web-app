@@ -39,7 +39,9 @@ const TagPDFDocument = ({
   );
 
   const { creation, provisionalSolution, definitiveSolution} = filterEvidences(evidences);
-
+  const imagesAtCreation = creation.filter((e) => e.evidenceType == Strings.IMCR);
+  const imagesAtProvisionalSolution = provisionalSolution.filter((e) => e.evidenceType == Strings.IMCR);
+  const imagesAtClose = definitiveSolution.filter((e) => e.evidenceType == Strings.IMCR);
 
   return (
     <Document>
@@ -377,7 +379,7 @@ const TagPDFDocument = ({
        </View>}
 
        <View style={styles.imageGrid}>
-         {creation.map((value, index) => (
+         {imagesAtCreation.map((value, index) => (
            <View key={index}>
              <Image style={styles.image} src={value.evidenceName} />
            </View>
@@ -392,7 +394,7 @@ const TagPDFDocument = ({
        </View>}
 
        <View style={styles.imageGrid}>
-         {provisionalSolution.map((value, index) => (
+         {imagesAtProvisionalSolution.map((value, index) => (
            <View key={index}>
              <Image style={styles.image} src={value.evidenceName} />
            </View>
@@ -407,7 +409,7 @@ const TagPDFDocument = ({
        </View>}
 
        <View style={styles.imageGrid}>
-         {definitiveSolution.map((value, index) => (
+         {imagesAtClose.map((value, index) => (
            <View key={index}>
              <Image style={styles.image} src={value.evidenceName} />
            </View>

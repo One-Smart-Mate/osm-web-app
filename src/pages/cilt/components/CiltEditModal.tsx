@@ -87,7 +87,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
       confirmLoading={isUpdating}
       okText={Strings.ciltMstrSaveChangesButton}
       cancelText={Strings.ciltMstrCancelButton}
-      destroyOnClose
+      destroyOnHidden
     >
       {updateError && <Alert message={updateError} type="error" showIcon closable onClose={() => setUpdateError(null)} style={{ marginBottom: 16 }} />}
       <Form form={form} layout="vertical" name="edit_cilt_form" initialValues={cilt ?? {}}>

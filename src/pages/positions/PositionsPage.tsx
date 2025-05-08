@@ -459,7 +459,7 @@ const PositionsPage = () => {
             onCancel={handleCiltFormCancel}
             footer={null}
             width={800}
-            destroyOnClose
+            destroyOnHidden
           >
             {selectedPosition && (
               <div className="p-4">
@@ -598,7 +598,7 @@ const PositionsPage = () => {
         onCancel={handleCiltFormCancel}
         footer={null}
         width={800}
-        destroyOnClose
+        destroyOnHidden
       >
         {selectedPosition && (
           <div className="p-4">

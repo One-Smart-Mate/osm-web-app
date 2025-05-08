@@ -49,7 +49,7 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
   return (
     <Drawer
       closable
-      destroyOnClose
+      destroyOnHidden
       title={
         <div className="text-sm font-medium text-black">
           <h1 className="text-lg font-semibold">{Strings.cards}</h1>

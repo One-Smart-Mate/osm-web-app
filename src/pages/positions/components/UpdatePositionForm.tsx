@@ -123,7 +123,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       open={isVisible}
       onCancel={onCancel}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
       width={600}
     >
       <Form

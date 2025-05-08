@@ -879,7 +879,7 @@ const CardTypesV2 = () => {
               width={isMobile ? "100%" : 400}
               onClose={handleDrawerClose}
               open={drawerVisible}
-              destroyOnClose
+              destroyOnHidden
               mask={false}
               className="pr-5"
             >
@@ -920,7 +920,7 @@ const CardTypesV2 = () => {
             width={isMobile ? "100%" : 400}
             onClose={() => setDetailsVisible(false)}
             open={detailsVisible}
-            destroyOnClose
+            destroyOnHidden
             mask={false}
           >
             {detailsNode && detailsNode.nodeType === "cardType" && (
