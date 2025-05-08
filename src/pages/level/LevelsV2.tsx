@@ -512,6 +512,10 @@ const LevelsV2 = () => {
                 data={treeData}
                 orientation="horizontal"
                 translate={translate}
+                // Add nodeSize to control the size of nodes
+                nodeSize={{ x: 200, y: 80 }} // Reduce y value to decrease vertical spacing
+                // Add separation to control the distance between nodes
+                separation={{ siblings: 1, nonSiblings: 1.2 }} // Reduce these values to decrease spacing
                 renderCustomNodeElement={(rd3tProps) => (
                   <CustomNodeElement
                     nodeDatum={rd3tProps.nodeDatum}
@@ -528,7 +532,7 @@ const LevelsV2 = () => {
               />
             )}
             {isCloning && (
-              <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-black/50 z-50">
+              <div className="absolute inset-0 flex justify-center items-center bg-black/50 z-50">
                 <Spin size="large" tip={Strings.cloningLevelsMessage} />
               </div>
             )}
