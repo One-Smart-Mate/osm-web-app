@@ -3,8 +3,8 @@ import { Drawer, List } from "antd";
 import PaginatedList from "./PaginatedList"; // Asegúrate de importar los componentes que usesmporta las constantes si las necesitas
 import { CardInterface } from "../data/card/card";
 import { UserRoles } from "../utils/Extensions";
-import InformationPanel from "../pages/card/components/Card";
 import Strings from "../utils/localizations/Strings";
+import TagCardV2 from "../pages/card/components/TagCardV2";
 
 interface CustomDrawerProps {
   open: boolean;
@@ -27,7 +27,6 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
   cardTypeName,
   dataSource,
   isLoading,
-  rol,
   text,
   label,
   text2,
@@ -81,7 +80,7 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
         dataSource={dataSource}
         renderItem={(item: CardInterface, index: number) => (
           <List.Item>
-            <InformationPanel key={index} data={item} rol={rol} />
+            <TagCardV2 data={item} key={index} />
           </List.Item>
         )}
         loading={isLoading}

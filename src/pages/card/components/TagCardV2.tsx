@@ -59,8 +59,8 @@ const TagCardV2 = ({ data }: CardProps) => {
   };
 
   const handleNavigation = () => {
-    navigatewithState(buildCardDetailRoute(data.siteId, data.id), {
-        cardId: data.id,
+    navigatewithState(buildCardDetailRoute(data.siteId, data.cardUUID), {
+        cardId: data.cardUUID,
         cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
       });
   };

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  useGetCardDetailsMutation,
-  useGetCardNotesMutation,
+  useGetCardDetailByUUIDMutation,
+  useGetCardNotesByUUIDMutation,
 } from "../../services/cardService";
 import  {
   CardDetailsInterface,
@@ -26,6 +26,7 @@ import TagInfoCard from "./components/TagInfoCard";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
 import TagPDFButton from "../components/TagPDFButton";
+import AnatomyNotification from "../components/AnatomyNotification";
 
 // Components
 const { Text } = Typography;
@@ -36,8 +37,8 @@ const CardDetails = () => {
   const [isLoading, setLoading] = useState(false);
   const [site, setSite] = useState<SiteUpdateForm>();
 
-  const [getCardDetails] = useGetCardDetailsMutation();
-  const [getNotes] = useGetCardNotesMutation();
+  const [getCardDetails] = useGetCardDetailByUUIDMutation();
+  const [getNotes] = useGetCardNotesByUUIDMutation();
   const [getSite] = useGetSiteMutation();
 
   const isCardUpdated = useAppSelector(selectCardUpdatedIndicator);
@@ -47,80 +48,91 @@ const CardDetails = () => {
   const { notification } = AntdApp.useApp();
   
 
-  const { cardId: paramCardId, siteId: paramSiteId } = useParams<{
-    siteId?: string;
-    cardId: string;
-  }>();
+  const { cardId: cardUUID, siteId: siteId } = useParams<{siteId?: string, cardId: string}>();
 
   const isExternal = location.pathname.includes("/external/");
 
-  const cardId = isExternal
-    ? paramCardId
-    : (location.state && (location.state as any).cardId) ||
-      paramCardId ||
-      Strings.empty;
-  const cardNameFromState = isExternal
-    ? Strings.empty
-    : location.state && (location.state as any).cardName;
+  const cardName = location.state?.cardName ?? Strings.empty;
 
   if (!isExternal && !location.state) {
     navigate(UnauthorizedRoute);
     return null;
   }
 
-
-  const cardName =
-    cardNameFromState || (data ? data.card.cardTypeName : Strings.empty);
-
-  const handleGetCards = async () => {
+  const handleGetData = async () => {
     setLoading(true);
+    await handleGetCard();
+    await handleGetSite();
+    handleGetNotes();
+    setLoading(false);
+  }
+
+  const handleGetSite = async (): Promise<boolean> => {
     try {
-      console.log(`[PARAMS] ${paramCardId} -- ${paramSiteId}`);
-      const [responseData, responseNotes, site] = await Promise.all([
-        getCardDetails(cardId).unwrap(),
-        getNotes(cardId).unwrap(),
-        getSite(paramSiteId ?? '').unwrap()
-      ]);
-      
-      const cardData = responseData.card;
-
-      const modifiedResponse: CardDetailsInterface = {
-        ...responseData,
-        card: cardData,
-        evidences: responseData?.evidences || [],
-      };
-
-      setData(modifiedResponse);
-      setNotes(responseNotes);
-      setSite(site);
-      console.log(`[CARD] ${Object.values(cardData)}`);
-      if (cardData && cardData.siteId && cardData.siteId !== "") {
-        dispatch(setSiteId(cardData.siteId));
+      if(!siteId) {
+        return Promise.reject(false);
       }
+      const site = await getSite(siteId).unwrap();
+      setSite(site);
+      return Promise.resolve(true);
     } catch (error) {
       console.error("Error getting card details:", error);
-      notification.error({
-        message: "Loading Error",
-        description:
-          "There was an error loading card details. Please try again.",
-        placement: "topRight",
-      });
-      throw error;
-    } finally {
-      setLoading(false);
+      AnatomyNotification.error(notification, error);
+      return Promise.resolve(false);
     }
-  };
+  }
+
+  const handleGetNotes = async (): Promise<boolean> => {
+    try {
+      if(!cardUUID) {
+        return Promise.reject(false);
+      }
+      const notes = await getNotes(cardUUID).unwrap();
+      setNotes(notes);
+      return Promise.resolve(true);
+    } catch (error) {
+      console.error("Error getting card details:", error);
+      AnatomyNotification.error(notification, error);
+      return Promise.resolve(false);
+    }
+  }
+
+  const handleGetCard = async (): Promise<boolean> => {
+    try {
+      if(!cardUUID) {
+        return Promise.reject(false);
+      }
+      const response = await getCardDetails(cardUUID).unwrap();
+      console.log(`[CARD] ${Object.values(response)}`);
+
+      const cardDetail: CardDetailsInterface = {
+        card: response,
+        evidences: response.evidences,
+        cardDefinitiveSolutionDate: response.cardDefinitiveSolutionDate
+      };
+
+      setData(cardDetail);
+      if (cardDetail.card && cardDetail.card.siteId && cardDetail.card.siteId !== "") {
+        dispatch(setSiteId(cardDetail.card.siteId));
+      }
+      return Promise.resolve(true);
+    } catch (error) {
+      console.error("Error getting card details:", error);
+      AnatomyNotification.error(notification, error);
+      return Promise.resolve(false);
+    }
+  }
 
   useEffect(() => {
     if (isCardUpdated) {
-      handleGetCards();
+      handleGetData();
       dispatch(resetCardUpdatedIndicator());
     }
   }, [isCardUpdated, dispatch]);
 
   useEffect(() => {
-    handleGetCards();
-  }, [cardId]);
+    handleGetData();
+  }, [cardUUID]);
 
 
   return (
@@ -141,7 +153,7 @@ const CardDetails = () => {
                 <TagInfoCard
                   data={data}
                   evidences={filterEvidences(data.evidences).creation}
-                  cardName={cardName}
+                  cardName={data.card.cardTypeName}
                 />
                 <ProvisionalSolutionCollapseV2
                   data={data}
