@@ -15,7 +15,6 @@ import {
 } from "antd";
 import {
   SearchOutlined,
-  EyeOutlined,
   FileImageOutlined,
   PlusOutlined,
   PictureOutlined,
@@ -367,7 +366,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           <Button
             type="primary"
             size="small"
-            icon={<EyeOutlined />}
             onClick={() => handleSelect(record)}
             style={{ cursor: "pointer" }}
           >

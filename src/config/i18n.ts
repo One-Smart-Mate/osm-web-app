@@ -817,6 +817,7 @@ const resources = {
       ciltProceduresSB: "CILT Procedures",
       ciltProceduresDescription:
         "This page contains information about CILT procedures and their implementation.",
+      seconds: "seconds",
       oplSB: "OPL",
       oplDescription:
         "This page contains information about One Point Lessons (OPL).",
@@ -2073,6 +2074,7 @@ const resources = {
       ciltProceduresSB: "Procedimientos CILT",
       ciltProceduresDescription:
         "Esta página contiene información sobre los procedimientos CILT y su implementación.",
+      seconds: "segundos",
       oplSB: "OPL",
       oplDescription:
         "Esta página contiene información sobre One Point Lessons (OPL).",

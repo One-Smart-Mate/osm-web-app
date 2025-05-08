@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Button,
   Space,
@@ -17,12 +18,15 @@ import {
   useCreateCiltFrequencyMutation,
   useUpdateCiltFrequencyMutation,
 } from "../../../services/cilt/ciltFrequenciesService";
-import AnatomyButton from "../../../components/AnatomyButton";
+
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
 
 const { Text } = Typography;
 
 const CiltFrequencies = (): React.ReactElement => {
+  const location = useLocation();
+  const siteId = location.state?.siteId || "";
+
   const [getCiltFrequenciesAll, { isLoading }] = useGetCiltFrequenciesAllMutation();
   const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
   const [filteredCiltFrequencies, setFilteredCiltFrequencies] = useState<CiltFrequency[]>([]);
@@ -101,7 +105,8 @@ const CiltFrequencies = (): React.ReactElement => {
     form.validateFields().then((values) => {
       const payload = {
         ...values,
-        status: isEditMode ? (values.status ? "A" : "I") : "A", // Siempre activo para nuevos registros
+        siteId: Number(siteId),
+        status: isEditMode ? (values.status ? "A" : "I") : "A", 
       };
 
       if (isEditMode && currentRecord) {
@@ -148,12 +153,13 @@ const CiltFrequencies = (): React.ReactElement => {
           />
         </div>
 
-        <AnatomyButton
-          title={Strings.addNewCiltFrequency}
+        <button
+          className="ant-btn ant-btn-primary"
           onClick={openAddModal}
-          type="default"
-          size="middle"
-        />
+          style={{ cursor: 'pointer', borderRadius: '2px' }}
+        >
+          {Strings.addNewCiltFrequency}
+        </button>
       </div>
 
       <List

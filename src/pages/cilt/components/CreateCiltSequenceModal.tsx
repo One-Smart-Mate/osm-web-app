@@ -98,10 +98,10 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   }, [visible, form]);
 
-  // Set positionId when CILT changes
+  
   useEffect(() => {
     if (cilt && visible) {
-      // Set the positionId from CILT automatically
+      
       form.setFieldsValue({
         positionId: cilt.positionId || null
       });
@@ -172,14 +172,28 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   };
 
   const getSelectedColor = (color: string | undefined): string => {
-    return color || "#1890ff";
+    
+    return (color || "#1890ff").replace("#", "");
   };
 
+  
+  const defaultColor = "#1890ff";
+  
   const handleColorChange = (colorValue: any) => {
+    
     const hexColor = colorValue.toHex().replace("#", "");
+    
     setColor("#" + hexColor);
+    
     form.setFieldsValue({ secuenceColor: hexColor });
   };
+
+  useEffect(() => {
+    if (visible) {
+      
+      form.setFieldsValue({ secuenceColor: defaultColor.replace("#", "") });
+    }
+  }, [visible, form]);
 
   const handleSubmit = async (values: any) => {
     try {
@@ -193,30 +207,30 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         return;
       }
 
-      // Find position data from the selected positionId (which comes from the CILT)
+      
       console.log("positions data:", positions);
       console.log("CILT selected positionId:", cilt?.positionId);
       
       const selectedPosition = positions?.find(p => p.id === Number(cilt?.positionId));
       console.log("selectedPosition:", selectedPosition);
       
-      // Log CILT data
+      
       console.log("CILT data:", cilt);
       
       const createPromises = values.frequencies.map(
         async (frequencyId: number) => {
-          // Create a combined data object with all possible sources
+          
           const combinedData = {
-            // From form values
+            
             ...values,
-            // Position and area data
+            
             siteId: Number(selectedPosition?.siteId || location.state?.siteId || 0),
             siteName: selectedPosition?.siteName || location.state?.siteName || "",
             areaId: Number(selectedPosition?.areaId || 0),
             areaName: selectedPosition?.areaName || "",
             positionId: Number(cilt?.positionId || 0),
             positionName: selectedPosition?.name || "",
-            // CILT data
+            
             ciltMstrId: Number(cilt?.id || 0),
             ciltMstrName: cilt?.ciltName || "",
           };
@@ -252,7 +266,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             createdAt: new Date().toISOString(),
           };
 
-          // Log payload for debugging
+          
           console.log("Creating sequence with data:", JSON.stringify(sequenceData, null, 2));
 
           const response = await createCiltSequence(sequenceData).unwrap();
@@ -271,7 +285,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               status: "A",
             };
             
-            // Log frequency association payload for debugging
+            
             console.log("Creating sequence frequency with data:", JSON.stringify(sequenceFrequencyData, null, 2));
             
             await createCiltSequenceFrequency(sequenceFrequencyData).unwrap();
@@ -523,6 +537,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       message: Strings.editCiltSequenceModalColorRequired,
                     },
                   ]}
+                  initialValue="#1890ff"
                 >
                   <div
                     style={{
@@ -535,6 +550,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       value={color}
                       onChange={handleColorChange}
                       showText
+                      defaultValue="#1890ff"
                     />
                   </div>
                 </Form.Item>
@@ -547,6 +563,40 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               {/* Position */}
               <Form.Item hidden name="positionId">
                 <Input />
+              </Form.Item>
+
+              {/* Standard Time */}
+              <Form.Item
+                name="standardTime"
+                label={Strings.editCiltSequenceModalStandardTimeLabel}
+                rules={[
+                  {
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardTimeRequired,
+                  },
+                ]}
+              >
+                <InputNumber
+                  min={1}
+                  style={{ width: '100%', height: '40px' }}
+                  placeholder={Strings.editCiltSequenceModalStandardTimePlaceholder}
+                />
+              </Form.Item>
+
+              {/* Standard OK */}
+              <Form.Item
+                name="standardOk"
+                label={Strings.editCiltSequenceModalStandardOkLabel}
+                rules={[
+                  {
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardOkRequired,
+                  },
+                ]}
+              >
+                <Input
+                  placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
+                />
               </Form.Item>
 
               {/* Stoppage Reason */}
