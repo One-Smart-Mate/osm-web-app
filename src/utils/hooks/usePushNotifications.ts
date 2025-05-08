@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const NOTIFICATIONS_KEY = "appNotifications";
+export const NOTIFICATIONS_KEY = "appNotifications";
 
 export const usePushNotifications = () => {
   const [notifications, setNotifications] = useState<any[]>(() => {
@@ -9,24 +9,6 @@ export const usePushNotifications = () => {
     return storedNotifications ? JSON.parse(storedNotifications) : [];
   });
 
-  const addNotification = (newNotification: any) => {
-    try {
-      console.log("addNotification: ", notifications);
-      const updatedNotifications = notifications;
-      updatedNotifications.push(newNotification.notification);
-
-      setNotifications(updatedNotifications);
-
-      // Save the updated array to sessionStorage
-      sessionStorage.setItem(
-        NOTIFICATIONS_KEY,
-        JSON.stringify(updatedNotifications)
-      );
-    } catch(error) {
-      console.error(error);
-    }
-  };
-
   const clearNotifications = () => {
     setNotifications([]);
     sessionStorage.removeItem(NOTIFICATIONS_KEY);
@@ -34,7 +16,6 @@ export const usePushNotifications = () => {
 
   return {
     notifications,
-    addNotification,
     clearNotifications,
   };
 };
