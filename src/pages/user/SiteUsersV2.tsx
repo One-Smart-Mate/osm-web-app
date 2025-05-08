@@ -203,6 +203,7 @@ const SiteUsersV2 = () => {
         <div>
           <div className="flex justify-end pb-2">{buildActions()}</div>
           <PaginatedList
+            className="no-scrollbar"
             dataSource={filteredData}
             renderItem={(value: UserCardInfo, index: number) => (
               <List.Item key={index}>

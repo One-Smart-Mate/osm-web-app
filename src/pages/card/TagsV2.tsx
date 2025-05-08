@@ -76,6 +76,7 @@ const TagsV2 = () => {
       content={
         <PaginatedList
           dataSource={filteredData}
+          className="no-scrollbar"
           renderItem={(item: CardInterface, index: number) => (
             <List.Item key={index}>
               <TagCardV2 data={item} />
