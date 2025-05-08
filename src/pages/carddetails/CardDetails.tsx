@@ -49,12 +49,9 @@ const CardDetails = () => {
   
 
   const { cardId: cardUUID, siteId: siteId } = useParams<{siteId?: string, cardId: string}>();
-
-  const isExternal = location.pathname.includes("/external/");
-
   const cardName = location.state?.cardName ?? Strings.empty;
 
-  if (!isExternal && !location.state) {
+  if (!location.state) {
     navigate(UnauthorizedRoute);
     return null;
   }
@@ -139,7 +136,7 @@ const CardDetails = () => {
     <MainContainer
       title={Strings.tagDetailsOf}
       description={cardName}
-      enableBackButton={!isExternal}
+      enableBackButton={true}
       isLoading={isLoading}
       content={
         <div>
