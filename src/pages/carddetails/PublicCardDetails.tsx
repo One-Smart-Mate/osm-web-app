@@ -11,12 +11,12 @@ import {
   Evidences,
 } from "../../data/card/card";
 import PageTitleTag from "../../components/PageTitleTag";
-import InfoCollapseV2 from "./components/InfoCollapseV2";
 import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
 import NoteCollapseV2 from "./components/NoteCollapseV2";
 import Strings from "../../utils/localizations/Strings";
 import { notification } from "antd";
+import TagInfoCard from "./components/TagInfoCard";
 
 const { Text } = Typography;
 
@@ -151,7 +151,7 @@ const PublicCardDetails = () => {
       </div>
 
       <div className="space-y-4 mt-10">
-        <InfoCollapseV2
+        <TagInfoCard
           data={data}
           evidences={filterEvidence(data.evidences).creation}
         />

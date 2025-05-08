@@ -133,6 +133,7 @@ const PrioritiesV2 = () => {
       content={
         <div>
          <PaginatedList
+              className="no-scrollbar"
               dataSource={data}
               renderItem={(value: Priority, index: number) => (
                 <List.Item key={index}>

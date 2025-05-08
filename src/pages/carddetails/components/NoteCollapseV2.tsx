@@ -1,4 +1,4 @@
-import { List } from "antd";
+import { Card, List } from "antd";
 import { Note } from "../../../data/note";
 import { formatDate } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
@@ -8,14 +8,14 @@ interface Props {
 }
 const NoteCollapseV2 = ({ data }: Props) => {
   return (
-    <div className="bg-gray-100 rounded-xl shadow-md w-full md:w-4/5 p-4">
+    <Card hoverable>
       <div className="flex gap-3 mb-4">
         {data.length === 0 && (
           <p className="text-base text-gray-700">{Strings.NA}</p>
         )}
       </div>
       <List
-        className="max-h-40 overflow-auto"
+        className="max-h-40 overflow-auto bg-gray-50"
         itemLayout="vertical"
         size="small"
         dataSource={data}
@@ -27,8 +27,8 @@ const NoteCollapseV2 = ({ data }: Props) => {
             {item.note}
           </List.Item>
         )}
-      />
-    </div>
+      />{" "}
+    </Card>
   );
 };
 
