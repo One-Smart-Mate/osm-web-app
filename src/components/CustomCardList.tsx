@@ -13,7 +13,6 @@ interface CustomCardListProps {
 const CustomCardList: React.FC<CustomCardListProps> = ({
   dataSource,
   isLoading,
-  rol,
 }) => {
   return (
     <div>
