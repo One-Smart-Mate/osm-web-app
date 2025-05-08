@@ -139,23 +139,6 @@ const SiteUsersV2 = () => {
     }
   };
 
-  const buildActions = () => {
-    if (isIhAdmin()) {
-      return (
-        <Button
-          onClick={() => handleOnOpenModal(Strings.empty)}
-          type="default"
-          className="w-full md:w-auto"
-        >
-          <UploadOutlined />
-          {Strings.importUsers}
-        </Button>
-      );
-    }
-  };
-
-
-
   const handleOnFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
@@ -175,7 +158,6 @@ const SiteUsersV2 = () => {
       } else {
         const { fileObj } = values;
         const file = fileObj.fileList[0].originFileObj;
-
         await importUsers({ file, siteId }).unwrap();
       }
       setModalOpen(false);
@@ -201,7 +183,16 @@ const SiteUsersV2 = () => {
       onCreateButtonClick={() => handleOnOpenModal(Strings.users)}
       content={
         <div>
-          <div className="flex justify-end pb-2">{buildActions()}</div>
+          <div className="flex justify-end pb-2">
+            <Button
+              onClick={() => handleOnOpenModal(Strings.empty)}
+              type="default"
+              className="w-full md:w-auto"
+            >
+              <UploadOutlined />
+              {Strings.importUsers}
+            </Button>
+          </div>
           <PaginatedList
             className="no-scrollbar"
             dataSource={filteredData}
@@ -209,7 +200,6 @@ const SiteUsersV2 = () => {
               <List.Item key={index}>
                 <Card
                   hoverable
-                  className="rounded-xl shadow-md"
                   title={
                     <Typography.Title level={5}>{value.name}</Typography.Title>
                   }

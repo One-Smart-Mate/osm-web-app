@@ -95,12 +95,11 @@ const TagCardV2 = ({ data }: CardProps) => {
           <Tag color="error">{Strings.expired}</Tag>
         </div>
       ) : (
-        <>
-          {Strings.dueDate}
-          <span className="text-black font-medium">
-            {data.cardDueDate || Strings.noDueDate}
-          </span>
-        </>
+        <AnatomySection
+          title={Strings.dueDate}
+          label={data.cardDueDate || Strings.noDueDate}
+          icon={<BsCalendar4 />}
+        />
       )}
 
       <AnatomySection
