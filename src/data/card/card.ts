@@ -1,3 +1,5 @@
+import Strings from "../../utils/localizations/Strings";
+
 export interface CardInterface {
   id: string;
   siteId: string;
@@ -45,3 +47,37 @@ export interface CardDetailsInterface {
   card: CardInterface;
   evidences: Evidences[];
 }
+
+  export const filterEvidences = (data: Evidences[]) => {
+    const creation: Evidences[] = [];
+    const provisionalSolution: Evidences[] = [];
+    const definitiveSolution: Evidences[] = [];
+
+    data.forEach((evidence) => {
+      switch (evidence.evidenceType) {
+        case Strings.AUCR:
+        case Strings.IMCR:
+        case Strings.VICR:
+          creation.push(evidence);
+          break;
+        case Strings.AUPS:
+        case Strings.IMPS:
+        case Strings.VIPS:
+          provisionalSolution.push(evidence);
+          break;
+        case Strings.AUCL:
+        case Strings.IMCL:
+        case Strings.VICL:
+          definitiveSolution.push(evidence);
+          break;
+        default:
+          break;
+      }
+    });
+
+    return {
+      creation,
+      provisionalSolution,
+      definitiveSolution,
+    };
+  };
