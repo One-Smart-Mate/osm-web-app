@@ -787,6 +787,7 @@ class StringsBase {
 
   static ciltProceduresSB = "ciltProceduresSB";
   static ciltProceduresDescription = "ciltProceduresDescription";
+  static seconds = "seconds";
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
   static ciltTypesSB = "ciltTypesSB";

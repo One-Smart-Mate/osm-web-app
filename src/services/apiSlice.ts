@@ -4,7 +4,7 @@ import User from "../data/user/user";
 
 export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ 
-    baseUrl: "http://localhost:3006", 
+    baseUrl: import.meta.env.VITE_API_SERVICE, 
     credentials: 'same-origin',
     prepareHeaders: (headers) => {
       let token="";

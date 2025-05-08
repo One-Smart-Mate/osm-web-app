@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Tabs, Card, Typography, Space, Image, Button } from "antd";
-import { FileTextOutlined, PictureOutlined, VideoCameraOutlined, FilePdfOutlined, PlusOutlined, EyeOutlined, PlayCircleOutlined, FileOutlined } from "@ant-design/icons";
+import { FileTextOutlined, PictureOutlined, VideoCameraOutlined, FilePdfOutlined, PlusOutlined, EyeOutlined, FileOutlined } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { OplDetail } from "../../../data/cilt/oplDetails/oplDetails";
 import OplTextForm from "./OplTextForm";
@@ -47,7 +47,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
   
   // State for video preview modal
   const [videoPreviewVisible, setVideoPreviewVisible] = useState(false);
-  const [currentVideoUrl, setCurrentVideoUrl] = useState("");
+  const [currentVideoUrl, ] = useState("");
 
   // Effect to debug details when they change
   useEffect(() => {
@@ -135,13 +135,20 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           title={<Space><PictureOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsImageType}</Text></Space>}
           bordered={true}
         >
-          <Image 
-            src={detail.mediaUrl} 
-            alt={Strings.oplDetailsImageType} 
-            style={{ maxWidth: '100%' }} 
-            fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-          />
-          <Text style={{ marginTop: 8, display: 'block', fontWeight: 'bold' }}>{getFileName(detail.mediaUrl)}</Text>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Image 
+              src={detail.mediaUrl} 
+              alt={Strings.oplDetailsImageType} 
+              style={{ 
+                width: '400px', 
+                height: '300px', 
+                objectFit: 'contain',
+                maxWidth: '100%' 
+              }} 
+              fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+            />
+          </div>
+          <Text style={{ marginTop: 8, display: 'block', fontWeight: 'bold', textAlign: 'center' }}>{getFileName(detail.mediaUrl)}</Text>
         </Card>
       );
     } else if (detail.type === "video" && detail.mediaUrl) {
@@ -156,19 +163,19 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           title={<Space><VideoCameraOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsVideoType}</Text></Space>}
           bordered={true}
         >
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Button 
-              type="primary" 
-              onClick={() => {
-                setCurrentVideoUrl(detail.mediaUrl || "");
-                setVideoPreviewVisible(true);
+          <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+            <video 
+              src={detail.mediaUrl} 
+              controls 
+              style={{ 
+                width: '400px', 
+                maxWidth: '100%', 
+                height: '300px', 
+                objectFit: 'contain' 
               }}
-              icon={<PlayCircleOutlined />}
-            >
-              {Strings.oplDetailsPlayVideo}
-            </Button>
-            <Text style={{ display: 'block', fontWeight: 'bold' }}>{getFileName(detail.mediaUrl)}</Text>
-          </Space>
+            />
+            <Text style={{ marginTop: 8, display: 'block', fontWeight: 'bold', textAlign: 'center' }}>{getFileName(detail.mediaUrl)}</Text>
+          </div>
         </Card>
       );
     } else if (detail.type === "pdf" && detail.mediaUrl) {
