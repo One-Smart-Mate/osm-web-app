@@ -23,9 +23,9 @@ import NoteCollapseV2 from "./components/NoteCollapseV2";
 import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import TagInfoCard from "./components/TagInfoCard";
-import PDFButton from "../components/PdfButton";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
+import TagPDFButton from "../components/TagPDFButton";
 
 // Components
 const { Text } = Typography;
@@ -132,7 +132,7 @@ const CardDetails = () => {
       content={
         <div>
           <div className="w-full sm:w-auto flex justify-start sm:justify-end ">
-            {data && <PDFButton site={site} data={data} />}
+            {data && <TagPDFButton site={site} data={data} />}
           </div>
 
           <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">

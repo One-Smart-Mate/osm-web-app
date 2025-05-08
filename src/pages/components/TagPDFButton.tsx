@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDFButton = ({ site, data }: TagPDFDocumentProps) => (
+const TagPDFButton = ({ site, data }: TagPDFDocumentProps) => (
   <PDFDownloadLink
     document={<TagPDFDocument data={data} site={site} />}
     fileName={`TAG_${data.card.siteCardId}.pdf`}
@@ -510,4 +510,4 @@ const PDFButton = ({ site, data }: TagPDFDocumentProps) => (
   </PDFDownloadLink>
 );
 
-export default PDFButton;
+export default TagPDFButton;
