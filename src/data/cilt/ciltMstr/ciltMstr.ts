@@ -11,7 +11,6 @@ export interface CiltMstr {
   approvedById: number | null;
   approvedByName: string | null;
   standardTime: number | null;
-  learnigTime: string | null;
   urlImgLayout: string | null;
   order: number | null;
   status: string | null;

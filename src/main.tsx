@@ -1,3 +1,6 @@
+// Import the compatibility package for React 19 and Ant Design v5
+import '@ant-design/v5-patch-for-react-19';
+
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";

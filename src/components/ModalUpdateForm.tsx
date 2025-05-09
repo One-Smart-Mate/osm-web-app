@@ -37,7 +37,7 @@ const ModalUpdateForm = ({
         onCancel={onCancel}
         cancelText={Strings.cancel}
         confirmLoading={isLoading}
-        destroyOnClose
+        destroyOnHidden
       >
         <FormComponent form={form} initialValues={{}} />
       </Modal>

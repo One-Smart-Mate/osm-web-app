@@ -59,7 +59,6 @@ const nodeStartBridgeCollapsed = "node_";
 const nodeEndBridgeCollapserd = "_collapsed";
 
 const osName = 'WEB' as 'WEB';
-const tagVersion = "1.0.0";
 
 const es = "ES";
 const en = "EN";
@@ -131,7 +130,6 @@ export default {
   optionUpdate,
   optionPosition,
   osName,
-  tagVersion,
   es,
   en,
   ROUTES_PATH,

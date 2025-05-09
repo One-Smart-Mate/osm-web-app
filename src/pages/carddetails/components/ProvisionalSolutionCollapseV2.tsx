@@ -23,6 +23,12 @@ interface CardProps {
 const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
   const { card } = data;
 
+  const showEvidences = (): boolean => {
+    return hasImages(evidences) ||
+          hasVideos(evidences) ||
+          hasAudios(evidences);
+  }
+
   return (
     <Card hoverable>
       <div className="grid grid-rows-5 gap-y-4 gap-x-8 sm:grid-rows-none sm:gap-4 sm:px-4">
@@ -60,9 +66,13 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
           label={card.commentsAtCardProvisionalSolution || Strings.NA}
         />
 
+<<<<<<< HEAD
         {hasImages(evidences) ||
           hasVideos(evidences) ||
           (hasAudios(evidences) && (
+=======
+        {showEvidences() && (
+>>>>>>> 07e2620026b4ec03b21b3e1d748d1ac26f93e53c
             <>
               <Divider
                 orientation="left"
@@ -72,6 +82,7 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
                 {Strings.evidencesAtProvisionalDivider}
               </Divider>
 
+<<<<<<< HEAD
               <div className="flex gap-3">
                 {evidences.length === 0 && (
                   <p className="text-base text-gray-700">{Strings.NA}</p>
@@ -91,6 +102,21 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
               </div>
             </>
           ))}
+=======
+              <div className="flex  gap-2 flex-wrap mt-2">
+                {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
+              </div>
+
+              <div className="flex gap-2 flex-wrap mt-2">
+                {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
+              </div>
+
+              <div className="flex gap-2 flex-wrap mt-2">
+                {hasAudios(evidences) && <AudioPlayer data={evidences} />}
+              </div>
+            </>
+          )}
+>>>>>>> 07e2620026b4ec03b21b3e1d748d1ac26f93e53c
       </div>
     </Card>
   );

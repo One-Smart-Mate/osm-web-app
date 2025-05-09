@@ -48,7 +48,7 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
           <Descriptions.Item label={Strings.ciltMstrReviewerLabel}>{cilt.reviewerName || Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrApproverLabel}>{cilt.approvedByName || Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrDetailsStandardTimeLabel}>{cilt.standardTime !== null ? cilt.standardTime : Strings.ciltMstrNA}</Descriptions.Item>
-          <Descriptions.Item label={Strings.ciltMstrDetailsLearningTimeLabel}>{cilt.learnigTime || Strings.ciltMstrNA}</Descriptions.Item>
+          {/* Campo learnigTime eliminado del flujo */}
           <Descriptions.Item label={Strings.ciltMstrOrderLabel}>{cilt.order !== null ? cilt.order : Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrDetailsStatusLabel}>
             {cilt.status ? (
@@ -58,6 +58,7 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
             )}
           </Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrLastUsedLabel}>{cilt.dateOfLastUsed ? new Date(cilt.dateOfLastUsed).toLocaleDateString() : Strings.ciltMstrNA}</Descriptions.Item>
+          <Descriptions.Item label={Strings.ciltMstrLastUpdated}>{cilt.updatedAt ? new Date(cilt.updatedAt).toLocaleString() : Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrLayoutLabel}>
             {cilt.urlImgLayout ? (
               <div>
