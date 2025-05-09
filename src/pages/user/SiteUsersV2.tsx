@@ -8,6 +8,7 @@ import {
   Tag,
   Tooltip,
   Typography,
+  App as AntApp
 } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import {
@@ -17,11 +18,6 @@ import {
 } from "../../services/userService";
 import { Role, UserCardInfo } from "../../data/user/user";
 import ModalForm from "../../components/ModalForm";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../utils/Notifications";
 import { CreateUser } from "../../data/user/user.request";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
@@ -33,7 +29,7 @@ import RegisterSiteUserForm from "./components/RegisterSiteUserForm";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
-import { BsDiagram2, BsMailbox, BsPersonLinesFill } from "react-icons/bs";
+import { BsClockHistory, BsDiagram2, BsMailbox, BsPersonLinesFill } from "react-icons/bs";
 import UpdateUserButton from "./components/UpdateUserButton";
 import AssignPositionsButton from "./components/AssignPositionsButton";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
@@ -41,6 +37,7 @@ import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../../components/PaginatedList";
 import { FormInstance } from "antd/lib";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 const SiteUsersV2 = () => {
   const [getUsersWithPositions] = useGetUsersWithPositionsMutation();
@@ -59,6 +56,7 @@ const SiteUsersV2 = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const siteName = location?.state?.siteName || Strings.empty;
   const siteId = location?.state.siteId || Strings.empty;
+  const {notification} = AntApp.useApp();
 
   const handleOnCancelButton = () => {
     if (!modalIsLoading) {
@@ -139,23 +137,6 @@ const SiteUsersV2 = () => {
     }
   };
 
-  const buildActions = () => {
-    if (isIhAdmin()) {
-      return (
-        <Button
-          onClick={() => handleOnOpenModal(Strings.empty)}
-          type="default"
-          className="w-full md:w-auto"
-        >
-          <UploadOutlined />
-          {Strings.importUsers}
-        </Button>
-      );
-    }
-  };
-
-
-
   const handleOnFormFinish = async (values: any) => {
     try {
       setModalLoading(true);
@@ -175,15 +156,15 @@ const SiteUsersV2 = () => {
       } else {
         const { fileObj } = values;
         const file = fileObj.fileList[0].originFileObj;
-
         await importUsers({ file, siteId }).unwrap();
       }
       setModalOpen(false);
       handleGetUsers();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+              AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+      
     } catch (error) {
       console.log("An error occurred:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
     } finally {
       setModalLoading(false);
     }
@@ -201,7 +182,16 @@ const SiteUsersV2 = () => {
       onCreateButtonClick={() => handleOnOpenModal(Strings.users)}
       content={
         <div>
-          <div className="flex justify-end pb-2">{buildActions()}</div>
+          <div className="flex justify-end pb-2">
+            <Button
+              onClick={() => handleOnOpenModal(Strings.empty)}
+              type="default"
+              className="w-full md:w-auto"
+            >
+              <UploadOutlined />
+              {Strings.importUsers}
+            </Button>
+          </div>
           <PaginatedList
             className="no-scrollbar"
             dataSource={filteredData}
@@ -209,7 +199,6 @@ const SiteUsersV2 = () => {
               <List.Item key={index}>
                 <Card
                   hoverable
-                  className="rounded-xl shadow-md"
                   title={
                     <Typography.Title level={5}>{value.name}</Typography.Title>
                   }
@@ -231,6 +220,18 @@ const SiteUsersV2 = () => {
                     title={Strings.email}
                     label={value.email}
                     icon={<BsMailbox />}
+                  />
+
+                  <AnatomySection
+                    title={Strings.lastLoginWeb}
+                    label={value.lastLoginWeb ?? Strings.NA}
+                    icon={<BsClockHistory />}
+                  />
+
+                  <AnatomySection
+                    title={Strings.lastLoginApp}
+                    label={value.lastLoginApp ?? Strings.NA}
+                    icon={<BsClockHistory />}
                   />
 
                   <AnatomySection

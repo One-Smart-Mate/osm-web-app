@@ -56,19 +56,28 @@ const MechanicsChart = ({
       startDate,
       endDate,
     }).unwrap();
+  
     const mechanicMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!mechanicMap[item.mechanic]) {
         mechanicMap[item.mechanic] = {
           mechanic: item.mechanic || Strings.noMechanic,
+          totalCards: 0, // Initialize totalCards for sorting
         };
       }
-      mechanicMap[item.mechanic][item.cardTypeName.toLowerCase()] = parseInt(
-        item.totalCards,
-        10
-      );
+      const cardTypeKey = item.cardTypeName.toLowerCase();
+      const totalCards = parseInt(item.totalCards, 10);
+      mechanicMap[item.mechanic][cardTypeKey] = totalCards;
+  
+      // Accumulate totalCards for sorting
+      mechanicMap[item.mechanic].totalCards += totalCards;
     });
-    const transformedData = Object.values(mechanicMap);
+  
+    // Transform and sort the data by totalCards in descending order
+    const transformedData = Object.values(mechanicMap).sort(
+      (a: any, b: any) => b.totalCards - a.totalCards
+    );
+  
     setTransformedData(transformedData);
   };
 

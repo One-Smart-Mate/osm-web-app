@@ -1,12 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Form, Spin } from "antd";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../../utils/Notifications";
+import { Form, Spin, App as AntApp } from "antd";
 import { useAppDispatch } from "../../../core/store";
 import {
   resetRowData,
@@ -19,6 +14,7 @@ import { UpdateCardTypeReq } from "../../../data/cardtypes/cardTypes.request";
 import { AggregationColor } from "antd/es/color-picker/color";
 import { useGetCardTypeMutation, useUpdateCardTypeMutation } from '../../../services/CardTypesService';
 import UpdateCardTypeFormOriginal from "./UpdateCardTypeFormOriginal";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 interface ButtonEditProps {
   id: string;
@@ -31,6 +27,7 @@ const UpdateCardType = ({ id }: ButtonEditProps) => {
   const dispatch = useAppDispatch();
   const [getCardType] = useGetCardTypeMutation();
   const [updateCardType] = useUpdateCardTypeMutation();
+  const { notification } = AntApp.useApp();
 
   const handleOnClickEditButton = async () => {
     setDataLoading(true);
@@ -80,10 +77,10 @@ const UpdateCardType = ({ id }: ButtonEditProps) => {
       await updateCardType(cardTypeToUpdate).unwrap();
       setModalOpen(false);
       dispatch(setCardTypeUpdatedIndicator());
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
     } catch (error) {
       console.log("Error during update:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
     } finally {
       setModalLoading(false);
     }

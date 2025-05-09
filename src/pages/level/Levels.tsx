@@ -556,7 +556,7 @@ const Levels = ({ role }: Props) => {
           width={drawerPlacement === "right" ? 400 : undefined}
           onClose={handleCloseDetails}
           open={detailsVisible}
-          destroyOnClose
+          destroyOnHidden
           closable={true}
           className="drawer-responsive"
         >

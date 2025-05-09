@@ -242,7 +242,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         onCancel={onCancel}
         footer={null}
         width={800}
-        destroyOnClose
+        destroyOnHidden
       >
         <Spin spinning={loading}>
           <Form

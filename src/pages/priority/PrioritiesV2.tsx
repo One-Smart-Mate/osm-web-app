@@ -4,16 +4,11 @@ import {
   useGetPrioritiesMutation,
 } from "../../services/priorityService";
 import { Priority } from "../../data/priority/priority";
-import { Badge, Card, Form, List, Typography } from "antd";
+import { Badge, Card, Form, List, Typography, App as AntApp } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
 import ModalForm from "../../components/ModalForm";
 import { CreatePriority } from "../../data/priority/priority.request";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../utils/Notifications";
 import RegisterPriorityForm from "./components/RegisterPriorityForm";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import {
@@ -29,6 +24,7 @@ import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import { BsCalendarCheck, BsClock, BsListNested } from "react-icons/bs";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 const PrioritiesV2 = () => {
   const [getPriorities] = useGetPrioritiesMutation();
@@ -44,6 +40,7 @@ const PrioritiesV2 = () => {
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
   const { isIhAdmin } = useCurrentUser();
+  const { notification } = AntApp.useApp();
 
   useEffect(() => {
     if (isPriorityUpdated) {
@@ -111,10 +108,10 @@ const PrioritiesV2 = () => {
       ).unwrap();
       setModalOpen(false);
       handleGetPriorities();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
     } catch (error) {
       console.log("Error occurred:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error);
     } finally {
       setModalLoading(false);
     }

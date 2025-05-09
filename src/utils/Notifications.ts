@@ -39,7 +39,7 @@ export enum NotificationSuccess {
   RESET_PASSWORD,
 }
 
-const getSuccessMessage = (type: NotificationSuccess): string => {
+export const getSuccessMessage = (type: NotificationSuccess): string => {
   if (type == NotificationSuccess.REGISTER) {
     return "Successfully registered";
   }

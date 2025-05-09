@@ -58,7 +58,7 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
       width={drawerPlacement === "right" ? 400 : undefined}
       onClose={handleDrawerClose}
       open={drawerVisible}
-      destroyOnClose
+      destroyOnHidden
       closable={true}
       className="drawer-responsive"
       mask={false}

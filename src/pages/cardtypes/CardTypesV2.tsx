@@ -8,11 +8,6 @@ import UpdateCardTypeForm from "./components/UpdateCardTypeForm";
 import RegisterPreclassifierForm2 from "./components/preclassifier/RegisterPreclassifierForm";
 import UpdatePreclassifierForm2 from "./components/preclassifier/UpdatePreclassifierForm";
 import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../utils/Notifications";
-import {
   useCreateCardTypeMutation,
   useGetCardTypesMutation,
   useUpdateCardTypeMutation,
@@ -35,6 +30,7 @@ import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -364,7 +360,8 @@ const CardTypesV2 = () => {
           Number(values.videosDurationPs || 0)
         );
         await createCardType(newCardType).unwrap();
-        handleSucccessNotification(NotificationSuccess.REGISTER);
+        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
+      
       } else if (
         drawerType === Strings.cardTypesDrawerTypeUpdateCardType &&
         selectedNode
@@ -394,7 +391,7 @@ const CardTypesV2 = () => {
           values.status || Strings.active.toUpperCase()
         );
         await updateCardType(updatedCardType).unwrap();
-        handleSucccessNotification(NotificationSuccess.UPDATE);
+        AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
       } else if (
         drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
       ) {
@@ -407,7 +404,7 @@ const CardTypesV2 = () => {
           Number(formData.cardTypeId)
         );
         await createPreclassifier(newPre).unwrap();
-        handleSucccessNotification(NotificationSuccess.REGISTER);
+        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
       } else if (
         drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier &&
         selectedNode
@@ -419,7 +416,11 @@ const CardTypesV2 = () => {
           status: values.status || Strings.activeStatus,
         };
         await updatePreclassifier(payload).unwrap();
-        handleSucccessNotification(NotificationSuccess.UPDATE);
+        AnatomyNotification.success(
+          notification,
+          AnatomyNotificationType.UPDATE
+        );
+
       }
 
       if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
@@ -440,7 +441,8 @@ const CardTypesV2 = () => {
       await handleLoadData(location.state.siteId);
     } catch (error) {
       console.error("Error in form submission:", error);
-      handleErrorNotification(error);
+            AnatomyNotification.error(notification, error);
+    
     } finally {
       setLoading(false);
     }
@@ -879,7 +881,7 @@ const CardTypesV2 = () => {
               width={isMobile ? "100%" : 400}
               onClose={handleDrawerClose}
               open={drawerVisible}
-              destroyOnClose
+              destroyOnHidden
               mask={false}
               className="pr-5"
             >
@@ -920,7 +922,7 @@ const CardTypesV2 = () => {
             width={isMobile ? "100%" : 400}
             onClose={() => setDetailsVisible(false)}
             open={detailsVisible}
-            destroyOnClose
+            destroyOnHidden
             mask={false}
           >
             {detailsNode && detailsNode.nodeType === "cardType" && (

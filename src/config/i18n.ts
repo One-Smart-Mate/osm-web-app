@@ -1243,6 +1243,8 @@ const resources = {
       cilt: "CILT",
       selectedUsersList: "Selected Users:",
       ciltMstrLastUpdated: "Last Updated:",
+      lastLoginWeb: "Last login web",
+      lastLoginApp: "Last login app"
     },
   },
   es: {
@@ -2508,6 +2510,8 @@ const resources = {
       cilt: "CILT",
       selectedUsersList: "Usuarios seleccionados:",
       ciltMstrLastUpdated: "Última actualización:",
+      lastLoginWeb: "Ultimo login web",
+      lastLoginApp: "Ultimo login app"
     },
   },
 };
