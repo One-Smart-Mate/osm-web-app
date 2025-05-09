@@ -1240,6 +1240,8 @@ const resources = {
       viewReferenceOpl: "View Reference OPL",
       viewRemediationOpl: "View Remediation OPL",
       cilt: "CILT",
+      lastLoginWeb: "Last login web",
+      lastLoginApp: "Last login app"
     },
   },
   es: {
@@ -2501,6 +2503,8 @@ const resources = {
       viewReferenceOpl: "Ver OPL de Referencia",
       viewRemediationOpl: "Ver OPL de Remediación",
       cilt: "CILT",
+      lastLoginWeb: "Ultimo login web",
+      lastLoginApp: "Ultimo login app"
     },
   },
 };

@@ -1149,6 +1149,8 @@ class StringsBase {
   static createCiltSequenceModalErrorNoArea = "createCiltSequenceModalErrorNoArea"
   static createCiltSequenceModalErrorNoCiltType = "createCiltSequenceModalErrorNoCiltType"
   static areaSelectPlaceholder = "areaSelectPlaceholder"
+  static lastLoginWeb = "lastLoginWeb"
+  static lastLoginApp = "lastLoginApp"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -29,7 +29,7 @@ import RegisterSiteUserForm from "./components/RegisterSiteUserForm";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { UploadOutlined } from "@ant-design/icons";
 import ImportUsersForm from "./components/ImportUsersForm";
-import { BsDiagram2, BsMailbox, BsPersonLinesFill } from "react-icons/bs";
+import { BsClockHistory, BsDiagram2, BsMailbox, BsPersonLinesFill } from "react-icons/bs";
 import UpdateUserButton from "./components/UpdateUserButton";
 import AssignPositionsButton from "./components/AssignPositionsButton";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
@@ -220,6 +220,18 @@ const SiteUsersV2 = () => {
                     title={Strings.email}
                     label={value.email}
                     icon={<BsMailbox />}
+                  />
+
+                  <AnatomySection
+                    title={Strings.lastLoginWeb}
+                    label={value.lastLoginWeb ?? Strings.NA}
+                    icon={<BsClockHistory />}
+                  />
+
+                  <AnatomySection
+                    title={Strings.lastLoginApp}
+                    label={value.lastLoginApp ?? Strings.NA}
+                    icon={<BsClockHistory />}
                   />
 
                   <AnatomySection
