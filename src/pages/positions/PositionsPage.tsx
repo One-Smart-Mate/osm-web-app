@@ -183,8 +183,19 @@ const PositionsPage = () => {
 
   // Component to render users assigned to a position
   const PositionUsers = ({ positionId }: { positionId: string }) => {
-    const { data: users = [], isLoading } =
-      useGetPositionUsersQuery(positionId);
+    const { data: users = [], isLoading, refetch } =
+      useGetPositionUsersQuery(positionId, {
+        // Refetch when component mounts or when positionId changes
+        refetchOnMountOrArgChange: true
+      });
+
+    // Effect to refetch data when the modal is opened
+    useEffect(() => {
+      if (openPopoverId === positionId) {
+        // Refetch the users data when the popover is opened
+        refetch();
+      }
+    }, [openPopoverId, positionId, refetch]);
 
     if (isLoading) {
       return <Spin size="small" />;
