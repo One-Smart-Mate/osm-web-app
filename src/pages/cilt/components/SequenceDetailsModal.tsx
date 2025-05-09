@@ -45,7 +45,11 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           <Col span={12}>
             <Text type="secondary">{Strings.standardTime}:</Text>
             <div>
-              <Text strong>{sequence.standardTime || "N/A"}</Text>
+              <Text strong>
+                {sequence.standardTime 
+                  ? `${sequence.standardTime} ${Strings.seconds}` 
+                  : "N/A"}
+              </Text>
             </div>
           </Col>
           <Col span={12}>

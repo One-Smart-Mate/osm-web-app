@@ -21,6 +21,7 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Responsible[]>([]);
   const [userModalVisible, setUserModalVisible] = useState(false);
 
   useEffect(() => {
@@ -48,6 +49,9 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
 
   const handleUserSelection = (userIds: number[]) => {
     setSelectedUserIds(userIds);
+    // Update the selected users list with their details
+    const selected = responsibles.filter(user => userIds.includes(Number(user.id)));
+    setSelectedUsers(selected);
   };
 
   const handleSubmit = async (values: any) => {
@@ -102,7 +106,7 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
       onCancel={onCancel}
       footer={null}
       width={600}
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="p-4">
         <Form
@@ -162,6 +166,18 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
                 
                 {selectedUserIds.length === 0 && (
                   <div className="text-gray-500">{Strings.noUsersSelected}</div>
+                )}
+                
+                {selectedUserIds.length > 0 && (
+                  <div className="mt-2">
+                    <div className="mt-1 p-2 border rounded-md max-h-32 overflow-y-auto">
+                      {selectedUsers.map(user => (
+                        <div key={user.id} className="py-1 border-b last:border-b-0">
+                          {user.name}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             )}

@@ -56,17 +56,25 @@ const DefinitiveUsersChart = ({
       startDate,
       endDate,
     }).unwrap();
+  
     const definitiveUserMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!definitiveUserMap[item.definitiveUser]) {
         definitiveUserMap[item.definitiveUser] = {
           definitiveUser: item.definitiveUser || Strings.noDefinitiveUser,
+          totalCards: 0,
         };
       }
-      definitiveUserMap[item.definitiveUser][item.cardTypeName.toLowerCase()] =
-        parseInt(item.totalCards, 10);
+      const cardTypeKey = item.cardTypeName.toLowerCase();
+      const totalCards = parseInt(item.totalCards, 10);
+      definitiveUserMap[item.definitiveUser][cardTypeKey] = totalCards;
+      definitiveUserMap[item.definitiveUser].totalCards += totalCards;
     });
-    const transformedData = Object.values(definitiveUserMap);
+  
+    const transformedData = Object.values(definitiveUserMap).sort(
+      (a: any, b: any) => b.totalCards - a.totalCards
+    );
+  
     setTransformedData(transformedData);
   };
 

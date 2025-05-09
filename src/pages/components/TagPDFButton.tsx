@@ -7,10 +7,11 @@ import {
   StyleSheet,
   Image,
   PDFDownloadLink,
+  Link
 } from "@react-pdf/renderer";
 import Strings from "../../utils/localizations/Strings";
 import moment from "moment";
-import  { CardDetailsInterface, filterEvidences } from "../../data/card/card";
+import  { CardDetailsInterface } from "../../data/card/card";
 import {
   formatDate,
   getCardStatusAndText,
@@ -38,8 +39,31 @@ const TagPDFDocument = ({
     card.cardCreationDate
   );
 
-  const { creation, provisionalSolution, definitiveSolution} = filterEvidences(evidences);
+  const imagesAtCreation = evidences.filter((e) => e.evidenceType == Strings.IMCR);
+  const videosAtCreation = evidences.filter((e) => e.evidenceType == Strings.VICR);
+  const audiosAtCreation = evidences.filter((e) => e.evidenceType == Strings.AUCR);
 
+
+  const imagesAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.IMPS);
+  const videosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.VIPS);
+  const audiosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.AUPS);
+
+  const imagesAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.IMCL);
+  const videosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.VICL);
+  const audiosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.AUCL);
+
+
+  const showEvidencesAtCreation = (): boolean => {
+    return imagesAtCreation.length> 0 || videosAtCreation.length > 0 || audiosAtCreation.length > 0;
+  }
+
+  const showEvidencesAtProvisionalSolution = (): boolean => {
+    return imagesAtProvisionalSolution.length> 0 || videosAtProvisionalSolution.length > 0 || audiosAtProvisionalSolution.length > 0;
+  }
+
+  const showEvidencesAtDefinitiveSolution = (): boolean => {
+    return imagesAtDefinitiveSolution.length> 0 || videosAtDefinitiveSolution.length > 0 || audiosAtDefinitiveSolution.length > 0;
+  }
 
   return (
     <Document>
@@ -174,7 +198,7 @@ const TagPDFDocument = ({
                   cardStatus.dateStatus === Strings.expired
                     ? "#ff4d4f"
                     : "#73d13d",
-                    fontWeight: "bold",
+                fontWeight: "bold",
               }}
             >
               {cardStatus.dateStatus}
@@ -368,53 +392,212 @@ const TagPDFDocument = ({
         </Text>
       </Page>
 
-      { creation.length > 0 || provisionalSolution.length > 0 || definitiveSolution.length >0 && <Page>
-       
-       {creation.length > 0 && <View style={styles.dividerContainer}>
-         <View style={styles.line} />
-         <Text style={styles.text}>{Strings.evidencesAtCreationDivider}</Text>
-         <View style={styles.line} />
-       </View>}
+      {showEvidencesAtCreation() && (
+        <Page style={styles.page}>
+          <View style={styles.dividerContainer}>
+            <View style={styles.line} />
+            <Text style={styles.text}>
+              {Strings.evidencesAtCreationDivider}
+            </Text>
+            <View style={styles.line} />
+          </View>
 
-       <View style={styles.imageGrid}>
-         {creation.map((value, index) => (
-           <View key={index}>
-             <Image style={styles.image} src={value.evidenceName} />
-           </View>
-         ))}
-       </View>
+          <View style={{ padding: 8 }}>
+            {imagesAtCreation.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.images}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {imagesAtCreation.map((value, index) => (
+                    <View key={index}>
+                      <Image style={styles.image} src={value.evidenceName} />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
 
+            {videosAtCreation.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.videos}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {videosAtCreation.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`VIDEO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
 
-      {provisionalSolution.length > 0 && <View style={styles.dividerContainer}>
-         <View style={styles.line} />
-         <Text style={styles.text}>{Strings.evidencesAtProvisionalDivider}</Text>
-         <View style={styles.line} />
-       </View>}
+            {audiosAtCreation.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.audios}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {audiosAtCreation.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`AUDIO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+        </Page>
+      )}
 
-       <View style={styles.imageGrid}>
-         {provisionalSolution.map((value, index) => (
-           <View key={index}>
-             <Image style={styles.image} src={value.evidenceName} />
-           </View>
-         ))}
-       </View>
+      {showEvidencesAtProvisionalSolution() && (
+        <Page style={styles.page}>
+          <View style={styles.dividerContainer}>
+            <View style={styles.line} />
+            <Text style={styles.text}>
+              {Strings.evidencesAtProvisionalDivider}
+            </Text>
+            <View style={styles.line} />
+          </View>
 
+          <View style={{ padding: 8 }}>
+            {imagesAtProvisionalSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.images}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {imagesAtProvisionalSolution.map((value, index) => (
+                    <View key={index}>
+                      <Image style={styles.image} src={value.evidenceName} />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
 
-      { definitiveSolution.length > 0 &&<View style={styles.dividerContainer}>
-         <View style={styles.line} />
-         <Text style={styles.text}>{Strings.evidencesAtDefinitiveDivider}</Text>
-         <View style={styles.line} />
-       </View>}
+            {videosAtProvisionalSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.videos}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {videosAtProvisionalSolution.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`VIDEO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
 
-       <View style={styles.imageGrid}>
-         {definitiveSolution.map((value, index) => (
-           <View key={index}>
-             <Image style={styles.image} src={value.evidenceName} />
-           </View>
-         ))}
-       </View>
+            {audiosAtProvisionalSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.audios}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {audiosAtProvisionalSolution.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`AUDIO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+        </Page>
+      )}
 
-     </Page>}
+      {showEvidencesAtDefinitiveSolution() && (
+        <Page style={styles.page}>
+          <View style={styles.dividerContainer}>
+            <View style={styles.line} />
+            <Text style={styles.text}>
+              {Strings.evidencesAtDefinitiveDivider}
+            </Text>
+            <View style={styles.line} />
+          </View>
+
+          <View style={{ padding: 8 }}>
+            {imagesAtDefinitiveSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.images}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {imagesAtDefinitiveSolution.map((value, index) => (
+                    <View key={index}>
+                      <Image style={styles.image} src={value.evidenceName} />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {videosAtDefinitiveSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.videos}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {videosAtDefinitiveSolution.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`VIDEO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {audiosAtDefinitiveSolution.length > 0 && (
+              <View>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.lineSmall} />
+                  <Text style={styles.textSmall}>{Strings.audios}</Text>
+                  <View style={styles.lineSmall} />
+                </View>
+                <View style={styles.imageGrid}>
+                  {audiosAtDefinitiveSolution.map((value, index) => (
+                    <View key={index}>
+                      <Link src={value.evidenceName}>{`AUDIO_${
+                        index + 1
+                      }`}</Link>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+        </Page>
+      )}
     </Document>
   );
 };
@@ -478,9 +661,19 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#8c8c8c",
   },
+  lineSmall: {
+    flex: 1,
+    height: 0.5,
+    backgroundColor: "#8c8c8c",
+  },
   text: {
     marginHorizontal: 8,
     fontSize: 16,
+    fontWeight: "semibold",
+  },
+  textSmall: {
+    marginHorizontal: 8,
+    fontSize: 12,
     fontWeight: "semibold",
   },
   headerContainer: {

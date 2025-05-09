@@ -32,6 +32,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
   const [users, setUsers] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUserDetails, setSelectedUserDetails] = useState<Responsible[]>([]);
   const [userModalVisible, setUserModalVisible] = useState(false);
 
   // Load site users when the form becomes visible
@@ -58,11 +59,15 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
     if (positionUsers.length > 0) {
       const userIds = positionUsers.map(user => user.id);
       setSelectedUsers(userIds);
+      setSelectedUserDetails(positionUsers);
     }
   }, [positionUsers]);
 
   const handleUserSelect = (userIds: number[]) => {
     setSelectedUsers(userIds.map(id => id.toString()));
+    // Update the selected users list with their details
+    const selected = users.filter(user => userIds.includes(Number(user.id)));
+    setSelectedUserDetails(selected);
   };
 
   const handleSubmit = async (values: any) => {
@@ -123,7 +128,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       open={isVisible}
       onCancel={onCancel}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
       width={600}
     >
       <Form
@@ -210,7 +215,14 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
               
               {selectedUsers.length > 0 ? (
                 <div className="mt-2">
-                  <Text strong>{Strings.selectedUsers}: {selectedUsers.length}</Text>
+                  <Text strong>{Strings.selectedUsers} ({selectedUsers.length})</Text>
+                  <div className="mt-1 p-2 border rounded-md max-h-32 overflow-y-auto">
+                    {selectedUserDetails.map(user => (
+                      <div key={user.id} className="py-1 border-b last:border-b-0">
+                        {user.name}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <Text type="secondary" className="block mt-2">{Strings.noUsersSelected}</Text>

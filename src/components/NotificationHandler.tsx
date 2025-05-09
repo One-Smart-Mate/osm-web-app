@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { notification } from "antd";
-import { onMessageListener, listenForBackgroundMessages } from "../config/firebaseMessaging";
-import { usePushNotifications } from "../utils/hooks/usePushNotifications";
+import { onMessageListener } from "../config/firebaseMessaging";
 
 const NotificationHandler: React.FC = () => {
-  const { addNotification } = usePushNotifications();
 
   useEffect(() => {
     console.log("[NotificationHandler] Initializing notification handler");
@@ -12,10 +10,6 @@ const NotificationHandler: React.FC = () => {
     // Function to display notifications
     const displayNotification = (payload: any) => {
       console.log("[NotificationHandler] Notification received:", payload);
-
-      // Add the notification to the array
-      addNotification(payload);
-
       // Extract title and body from notification
       const title = payload.notification?.title || "Default Title";
       const body = payload.notification?.body || "Default Message";
@@ -38,13 +32,10 @@ const NotificationHandler: React.FC = () => {
         console.error("[NotificationHandler] Error processing foreground notification:", error);
       });
 
-    // Listen for background notifications
-    listenForBackgroundMessages();
-
     return () => {
       console.log("[NotificationHandler] Cleaning up notification handler");
     };
-  }, [addNotification]);
+  });
 
   return null; // This component doesn't render anything visible
 };

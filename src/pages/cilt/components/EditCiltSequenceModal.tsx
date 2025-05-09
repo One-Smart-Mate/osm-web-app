@@ -242,7 +242,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         onCancel={onCancel}
         footer={null}
         width={800}
-        destroyOnClose
+        destroyOnHidden
       >
         <Spin spinning={loading}>
           <Form
@@ -314,7 +314,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                   label={Strings.editCiltSequenceModalLevelLabel}
                   required
                 >
-                  <Input.Group compact>
+                  <div className="flex items-center">
                     <Form.Item
                       name="levelId"
                       noStyle
@@ -325,7 +325,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                         },
                       ]}
                     >
-                      <Input style={{ display: "none" }} />
+                      <Input type="hidden" />
                     </Form.Item>
                     <Form.Item
                       name="levelName"
@@ -337,21 +337,22 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                         },
                       ]}
                     >
-                      <Input
-                        style={{ width: "calc(100% - 40px)" }}
-                        placeholder={Strings.editCiltSequenceModalSelectLevel}
-                        readOnly
-                        value={selectedLevel?.name}
-                      />
+                      <Input type="hidden" />
                     </Form.Item>
+                    
                     <Button
                       type="primary"
-                      style={{ width: "40px" }}
                       onClick={() => setLevelTreeModalVisible(true)}
+                      className="mr-2"
                     >
-                      {Strings.select}
+                      {Strings.select} {Strings.level}
                     </Button>
-                  </Input.Group>
+                    {(selectedLevel || form.getFieldValue('levelName')) && (
+                      <div className="border rounded p-2 flex-1">
+                        {selectedLevel ? selectedLevel.name : form.getFieldValue('levelName')}
+                      </div>
+                    )}
+                  </div>
                 </Form.Item>
               </Col>
             </Row>
@@ -464,27 +465,27 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalReferenceOplLabel}
                 >
-                  <Input.Group compact>
+                  <div className="flex items-center">
                     <Form.Item name="referenceOplSop" noStyle>
-                      <Input style={{ display: "none" }} />
+                      <Input type="hidden" />
                     </Form.Item>
                     <Form.Item name="referenceOplName" noStyle>
-                      <Input
-                        style={{ width: "calc(100% - 40px)" }}
-                        placeholder={
-                          Strings.editCiltSequenceModalReferenceOplPlaceholder
-                        }
-                        readOnly
-                      />
+                      <Input type="hidden" />
                     </Form.Item>
+                    
                     <Button
                       type="primary"
-                      style={{ width: "40px" }}
                       onClick={() => setReferenceOplModalVisible(true)}
+                      className="mr-2"
                     >
-                      {Strings.select}
+                      {Strings.select} OPL
                     </Button>
-                  </Input.Group>
+                    {form.getFieldValue('referenceOplName') && (
+                      <div className="border rounded p-2 flex-1">
+                        {form.getFieldValue('referenceOplName')}
+                      </div>
+                    )}
+                  </div>
                 </Form.Item>
               </Col>
 
@@ -492,27 +493,27 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalRemediationOplLabel}
                 >
-                  <Input.Group compact>
+                  <div className="flex items-center">
                     <Form.Item name="remediationOplSop" noStyle>
-                      <Input style={{ display: "none" }} />
+                      <Input type="hidden" />
                     </Form.Item>
                     <Form.Item name="remediationOplName" noStyle>
-                      <Input
-                        style={{ width: "calc(100% - 40px)" }}
-                        placeholder={
-                          Strings.editCiltSequenceModalRemediationOplPlaceholder
-                        }
-                        readOnly
-                      />
+                      <Input type="hidden" />
                     </Form.Item>
+                    
                     <Button
                       type="primary"
-                      style={{ width: "40px" }}
                       onClick={() => setRemediationOplModalVisible(true)}
+                      className="mr-2"
                     >
-                      {Strings.select}
+                      {Strings.select} OPL
                     </Button>
-                  </Input.Group>
+                    {form.getFieldValue('remediationOplName') && (
+                      <div className="border rounded p-2 flex-1">
+                        {form.getFieldValue('remediationOplName')}
+                      </div>
+                    )}
+                  </div>
                 </Form.Item>
               </Col>
             </Row>
