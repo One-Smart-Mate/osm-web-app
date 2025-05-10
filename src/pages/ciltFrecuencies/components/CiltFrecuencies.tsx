@@ -21,6 +21,11 @@ import {
 
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
 
+import AnatomyButton from "../../../components/AnatomyButton";
+import { FilterOutlined } from "@ant-design/icons";
+import { Checkbox, Popover } from "antd";
+
+
 const { Text } = Typography;
 
 const CiltFrequencies = (): React.ReactElement => {
@@ -42,6 +47,8 @@ const CiltFrequencies = (): React.ReactElement => {
   const [createCiltFrequency] = useCreateCiltFrequencyMutation();
   const [updateCiltFrequency] = useUpdateCiltFrequencyMutation();
 
+
+
   useEffect(() => {
     fetchCiltFrequencies();
   }, []);
@@ -53,11 +60,13 @@ const CiltFrequencies = (): React.ReactElement => {
   const fetchCiltFrequencies = async () => {
     try {
       const data = await getCiltFrequenciesAll().unwrap();
-      setCiltFrequencies(data);
+      const filteredBySite = data.filter(item => item.siteId === Number(siteId));
+      setCiltFrequencies(filteredBySite);
     } catch (error) {
       message.error(Strings.errorLoadingCiltFrequencies);
     }
   };
+
 
   const filterData = () => {
     let filtered = ciltFrequencies;
@@ -102,11 +111,18 @@ const CiltFrequencies = (): React.ReactElement => {
   };
 
   const handleModalOk = () => {
+
+    if (!siteId) {
+      message.error(Strings.errorNoSiteId);
+      return;
+    }
+
+
     form.validateFields().then((values) => {
       const payload = {
         ...values,
         siteId: Number(siteId),
-        status: isEditMode ? (values.status ? "A" : "I") : "A", 
+        status: isEditMode ? (values.status ? "A" : "I") : "A",
       };
 
       if (isEditMode && currentRecord) {
@@ -145,21 +161,41 @@ const CiltFrequencies = (): React.ReactElement => {
             onChange={(e) => setSearchText(e.target.value)}
             style={{ width: 300 }}
           />
-          <Switch
-            checked={statusFilter === true}
-            onChange={(checked) => setStatusFilter(checked ? true : false)}
-            checkedChildren={Strings.active}
-            unCheckedChildren={Strings.inactive}
-          />
+
+          <Popover
+            trigger="click"
+            content={
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <Checkbox
+                  checked={statusFilter === true}
+                  onChange={(e) => setStatusFilter(e.target.checked ? true : null)}
+                >
+                  {Strings.active}
+                </Checkbox>
+                <Checkbox
+                  checked={statusFilter === false}
+                  onChange={(e) => setStatusFilter(e.target.checked ? false : null)}
+                >
+                  {Strings.inactive}
+                </Checkbox>
+                <Button size="small" type="link" onClick={() => setStatusFilter(null)}>
+                  {Strings.clearFilters}
+                </Button>
+              </div>
+            }
+          >
+            <Button icon={<FilterOutlined />}>{Strings.filter}</Button>
+          </Popover>
+
         </div>
 
-        <button
-          className="ant-btn ant-btn-primary"
+        <AnatomyButton
+          title={Strings.create}
           onClick={openAddModal}
-          style={{ cursor: 'pointer', borderRadius: '2px' }}
-        >
-          {Strings.addNewCiltFrequency}
-        </button>
+          type="default"
+          size="middle"
+        />
+
       </div>
 
       <List
@@ -173,29 +209,18 @@ const CiltFrequencies = (): React.ReactElement => {
         renderItem={(item: CiltFrequency) => (
           <List.Item>
             <Card
-              headStyle={{ backgroundColor: '#1890ff', color: 'white', fontWeight: 'bold' }}
-              title={item.frecuencyCode}
-              style={{ 
-                height: '100%',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
-                border: '1px solid #e8e8e8',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.boxShadow = '0 3px 6px rgba(0,0,0,0.2)';
-                target.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15)';
-                target.style.transform = 'translateY(0)';
-              }}
+              hoverable
+              className="rounded-xl shadow-md"
+              title={
+                <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                  {item.frecuencyCode}
+                </Typography.Title>
+              }
             >
-              <Space direction="vertical" style={{ width: '100%' }}>
+              <Space direction="vertical" style={{ width: '100%' }} className="bg-gray-100 rounded-md p-3">
                 <Text strong>{Strings.description}:</Text>
                 <Text>{item.description}</Text>
-                
+
                 <Text strong style={{ marginTop: '8px' }}>
                   {Strings.status}: {' '}
                   {item.status === 'A' ? (

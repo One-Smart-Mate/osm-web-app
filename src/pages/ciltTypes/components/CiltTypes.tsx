@@ -15,6 +15,10 @@ import Strings from "../../../utils/localizations/Strings";
 import { useGetCiltTypesAllMutation, useCreateCiltTypeMutation, useUpdateCiltTypeMutation } from "../../../services/cilt/ciltTypesService";
 import AnatomyButton from "../../../components/AnatomyButton";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
+import { useLocation } from "react-router-dom";
+import { FilterOutlined } from "@ant-design/icons";
+import { Checkbox, Popover } from "antd";
+
 
 const { Text } = Typography;
 
@@ -34,6 +38,11 @@ const CiltTypes = (): React.ReactElement => {
   const [createCiltType] = useCreateCiltTypeMutation();
   const [updateCiltType] = useUpdateCiltTypeMutation();
 
+  const location = useLocation();
+  const siteId = location?.state?.siteId; 
+
+
+
   useEffect(() => {
     fetchCiltTypes();
   }, []);
@@ -45,16 +54,19 @@ const CiltTypes = (): React.ReactElement => {
   const fetchCiltTypes = async () => {
     try {
       const data = await getCiltTypesAll().unwrap();
-      setCiltTypes(data);
+      const filteredBySite = data.filter(item => item.siteId === Number(siteId));
+      setCiltTypes(filteredBySite);
     } catch (error) {
       message.error(Strings.errorLoadingNewTypesCilt);
     }
   };
 
+
+
   const filterData = () => {
     let filtered = ciltTypes;
 
-   
+
     if (searchText) {
       filtered = filtered.filter(
         (item) =>
@@ -76,16 +88,22 @@ const CiltTypes = (): React.ReactElement => {
   const openAddModal = () => {
     setIsEditMode(false);
     setCurrentRecord(null);
-    form.resetFields();
+    form.setFieldsValue({
+      name: '',
+      status: true,     
+      color: '#FFFFFF'  
+    });
     setIsModalVisible(true);
   };
+
 
   const openEditModal = (record: CiltType) => {
     setIsEditMode(true);
     setCurrentRecord(record);
     form.setFieldsValue({
       ...record,
-      status: record.status === 'A',   
+      status: record.status === 'A',
+      color: record.color ? `#${record.color}` : '#FFFFFF'
     });
     setIsModalVisible(true);
   };
@@ -96,11 +114,25 @@ const CiltTypes = (): React.ReactElement => {
   };
 
   const handleModalOk = () => {
+    if (!siteId) {
+      message.error(Strings.errorNoSiteId);
+      return;
+    }
+
     form.validateFields().then((values) => {
+      // Quitar '#' antes de enviar
+      if (values.color && values.color.startsWith('#')) {
+        values.color = values.color.slice(1);
+      }
+
       const payload = {
         ...values,
-        status: values.status ? 'A' : 'I',  
+        status: values.status ? 'A' : 'I',
+        siteId: Number(siteId),
       };
+
+
+      console.log('Payload:', payload);
 
       if (isEditMode && currentRecord) {
         updateCiltType({ id: currentRecord.id, ...payload })
@@ -133,21 +165,40 @@ const CiltTypes = (): React.ReactElement => {
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
         <div style={{ display: "flex", gap: 16 }}>
           <Input
-            placeholder={Strings.searchbyname}
+            placeholder={Strings.searchByName}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             style={{ width: 300 }}
           />
-          <Switch
-            checked={statusFilter === true}
-            onChange={(checked) => setStatusFilter(checked ? true : false)}
-            checkedChildren={Strings.active}
-            unCheckedChildren={Strings.inactive}
-          />
+          <Popover
+            trigger="click"
+            content={
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <Checkbox
+                  checked={statusFilter === true}
+                  onChange={(e) => setStatusFilter(e.target.checked ? true : null)}
+                >
+                  {Strings.active}
+                </Checkbox>
+                <Checkbox
+                  checked={statusFilter === false}
+                  onChange={(e) => setStatusFilter(e.target.checked ? false : null)}
+                >
+                  {Strings.inactive}
+                </Checkbox>
+                <Button size="small" type="link" onClick={() => setStatusFilter(null)}>
+                  {Strings.clearFilters}
+                </Button>
+              </div>
+            }
+          >
+            <Button icon={<FilterOutlined />}>{Strings.filter}</Button>
+          </Popover>
+
         </div>
 
         <AnatomyButton
-          title={Strings.addNewCiltType}
+          title={Strings.create}
           onClick={openAddModal}
           type="default"
           size="middle"
@@ -158,48 +209,51 @@ const CiltTypes = (): React.ReactElement => {
         grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 4 }}
         dataSource={filteredCiltTypes}
         loading={isLoading}
-        locale={{
-          emptyText: Strings.noCiltTypes,
-        }}
+        locale={{ emptyText: Strings.noCiltTypes }}
         style={{ overflow: 'hidden' }}
         renderItem={(item: CiltType) => (
           <List.Item>
             <Card
-              headStyle={{ backgroundColor: '#1890ff', color: 'white', fontWeight: 'bold' }}
-              title={item.name}
-              style={{ 
-                height: '100%',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
-                border: '1px solid #e8e8e8',
-                transition: 'all 0.3s ease'
-              }}
-              className="cilt-type-card"
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.boxShadow = '0 3px 6px rgba(0,0,0,0.2)';
-                target.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.boxShadow = '0 1px 2px rgba(0,0,0,0.15)';
-                target.style.transform = 'translateY(0)';
-              }}
+              hoverable
+              className="rounded-xl shadow-md"
+              title={
+                <Typography.Title level={5} style={{ marginBottom: 0 }}>
+                  {item.name}
+                </Typography.Title>
+              }
             >
-              <Space direction="vertical" style={{ width: '100%' }}>
+              <Space direction="vertical" style={{ width: '100%' }} className="bg-gray-100 rounded-md p-3">
                 <Text strong>
-                  {Strings.status}: {' '}
+                  {Strings.status}:{' '}
                   {item.status === 'A' ? (
                     <span style={{ color: "green" }}>{Strings.active}</span>
                   ) : (
                     <span style={{ color: "red" }}>{Strings.inactive}</span>
                   )}
                 </Text>
+
+                {item.color && (
+                  <div style={{ marginTop: '8px' }}>
+                    <Text strong>{Strings.color}:</Text>{' '}
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        width: '16px',
+                        height: '16px',
+                        backgroundColor: `#${item.color}`,
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        verticalAlign: 'middle',
+                        marginRight: '8px',
+                      }}
+                    />
+                    <span>#{item.color}</span>
+                  </div>
+                )}
               </Space>
+
               <div style={{ marginTop: '16px', borderTop: '1px solid #f0f0f0', paddingTop: '12px' }}>
-                <Button
-                  type="primary"
-                  onClick={() => openEditModal(item)}
-                >
+                <Button type="primary" onClick={() => openEditModal(item)}>
                   {Strings.edit}
                 </Button>
               </div>
@@ -228,8 +282,15 @@ const CiltTypes = (): React.ReactElement => {
           <Form.Item label={Strings.active} name="status" valuePropName="checked">
             <Switch />
           </Form.Item>
+
+          
+          <Form.Item label={Strings.color} name="color">
+            <Input type="color" />
+          </Form.Item>
+
         </Form>
       </Modal>
+
     </div>
   );
 };
