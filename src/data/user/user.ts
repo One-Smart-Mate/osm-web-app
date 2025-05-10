@@ -96,6 +96,8 @@ export class UserCardInfo {
   id: string;
   name: string;
   email: string;
+  lastLoginWeb?: string;
+  lastLoginApp?: string;
   roles: Role[];
   sites: Site[];
   positions: Position[];
@@ -105,7 +107,9 @@ export class UserCardInfo {
     email: string,
     roles: Role[] = [],
     sites: Site[] = [],
-    positions: Position[] = []
+    positions: Position[] = [],
+    lastLoginWeb?: string,
+  lastLoginApp?: string
   ) {
     this.id = id;
     this.name = name;
@@ -113,5 +117,7 @@ export class UserCardInfo {
     this.roles = roles;
     this.sites = sites;
     this.positions = positions;
+    this.lastLoginApp = lastLoginApp;
+    this.lastLoginWeb = lastLoginWeb;
   }
 }

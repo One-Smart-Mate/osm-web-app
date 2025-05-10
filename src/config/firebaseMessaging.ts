@@ -1,6 +1,8 @@
 // firebaseMessaging.ts
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { app } from "./firebase";
+import { NOTIFICATIONS_KEY } from "../utils/hooks/usePushNotifications";
+import { isArray } from "lodash";
 
 const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
@@ -46,7 +48,8 @@ export const requestPermissionAndGetToken = async (): Promise<string | null> => 
 export const onMessageListener = () =>
   new Promise((resolve) => {
     onMessage(messaging, (payload) => {
-      sessionStorage.setItem('appNotifications', JSON.stringify(payload));
+      console.log('[Main App] Foreground message received:', payload);
+      handleSavePushNotification(payload);
       resolve(payload);
     });
   });
@@ -56,9 +59,29 @@ export const onMessageListener = () =>
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'BACKGROUND_MESSAGE') {
           const payload = event.data.payload;
+          handleSavePushNotification(payload);
           console.log('[Main App] Background message received:', payload);
-          sessionStorage.setItem('appNotifications', JSON.stringify(payload));
         }
       });
     }
   };
+
+
+  const handleSavePushNotification = (payload: any) => {
+    const storedNotifications = sessionStorage.getItem(NOTIFICATIONS_KEY);
+    const localNotifications =  storedNotifications ? JSON.parse(storedNotifications) : [];
+    if(isArray(localNotifications)) {
+      localNotifications.push({
+        title: payload?.data?.notification_title ?? payload?.notification?.title,
+        body: payload?.data?.notification_description ?? payload?.notification?.body
+      });
+      sessionStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(localNotifications));
+    }  else {
+      const newArray = [];
+      newArray.push({
+        title: payload?.data?.notification_title ?? payload?.notification?.title,
+        body: payload?.data?.notification_description ?? payload?.notification?.body
+      });
+      sessionStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(localNotifications));
+    }
+  }

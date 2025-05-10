@@ -26,7 +26,7 @@ const CreateCiltModal: React.FC<CreateCiltModalProps> = ({
       onCancel={onCancel}
       footer={null}
       width={800}
-      destroyOnClose
+      destroyOnHidden
     >
       {position && (
         <div className="mb-4">

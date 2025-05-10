@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Button,
   Space,
@@ -17,12 +18,15 @@ import {
   useCreateCiltFrequencyMutation,
   useUpdateCiltFrequencyMutation,
 } from "../../../services/cilt/ciltFrequenciesService";
-import AnatomyButton from "../../../components/AnatomyButton";
+
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
 
 const { Text } = Typography;
 
 const CiltFrequencies = (): React.ReactElement => {
+  const location = useLocation();
+  const siteId = location.state?.siteId || "";
+
   const [getCiltFrequenciesAll, { isLoading }] = useGetCiltFrequenciesAllMutation();
   const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
   const [filteredCiltFrequencies, setFilteredCiltFrequencies] = useState<CiltFrequency[]>([]);
@@ -101,7 +105,8 @@ const CiltFrequencies = (): React.ReactElement => {
     form.validateFields().then((values) => {
       const payload = {
         ...values,
-        status: values.status ? "A" : "I",
+        siteId: Number(siteId),
+        status: isEditMode ? (values.status ? "A" : "I") : "A", 
       };
 
       if (isEditMode && currentRecord) {
@@ -148,12 +153,13 @@ const CiltFrequencies = (): React.ReactElement => {
           />
         </div>
 
-        <AnatomyButton
-          title={Strings.addNewCiltFrequency}
+        <button
+          className="ant-btn ant-btn-primary"
           onClick={openAddModal}
-          type="default"
-          size="middle"
-        />
+          style={{ cursor: 'pointer', borderRadius: '2px' }}
+        >
+          {Strings.addNewCiltFrequency}
+        </button>
       </div>
 
       <List
@@ -224,9 +230,12 @@ const CiltFrequencies = (): React.ReactElement => {
           <Form.Item
             label={Strings.frequencyCode}
             name="frecuencyCode"
-            rules={[{ required: true, message: Strings.obligatoryCode }]}
+            rules={[
+              { required: true, message: Strings.obligatoryCode },
+              { max: 3, message: "El código no puede exceder 3 caracteres" }
+            ]}
           >
-            <Input />
+            <Input maxLength={3} style={{ textTransform: 'uppercase' }} />
           </Form.Item>
 
           <Form.Item
@@ -237,9 +246,11 @@ const CiltFrequencies = (): React.ReactElement => {
             <Input />
           </Form.Item>
 
-          <Form.Item label={Strings.active} name="status" valuePropName="checked">
-            <Switch />
-          </Form.Item>
+          {isEditMode && (
+            <Form.Item label={Strings.active} name="status" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          )}
         </Form>
       </Modal>
     </div>

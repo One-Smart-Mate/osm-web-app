@@ -55,31 +55,36 @@ const MachinesChart = ({
 
   const handleGetData = async () => {
 
-    if(areaId === undefined) {
-      return; 
+    if (areaId === undefined) {
+      return;
     }
+  
     const response = await getMachines({
       siteId,
       startDate,
       endDate,
       areaId,
     }).unwrap();
-
+  
     const nodeMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!nodeMap[item.nodeName]) {
         nodeMap[item.nodeName] = {
           nodeName: item.nodeName,
           location: item.location,
+          totalCards: 0,
         };
       }
-      nodeMap[item.nodeName][item.cardTypeName.toLowerCase()] = parseInt(
-        item.totalCards,
-        10
-      );
+      const cardTypeKey = item.cardTypeName.toLowerCase();
+      const totalCards = parseInt(item.totalCards, 10);
+      nodeMap[item.nodeName][cardTypeKey] = totalCards;
+        nodeMap[item.nodeName].totalCards += totalCards;
     });
-    const transformedData = Object.values(nodeMap);
-    
+  
+    const transformedData = Object.values(nodeMap).sort(
+      (a: any, b: any) => b.totalCards - a.totalCards
+    );
+  
     setTransformedData(transformedData);
   };
   useEffect(() => {

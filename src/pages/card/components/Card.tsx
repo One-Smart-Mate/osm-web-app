@@ -79,8 +79,8 @@ const InformationPanel = ({ data, rol }: CardProps) => {
 
   const handleNavigation = () => {
     if (isRedesign()) {
-      navigatewithState(buildCardDetailRoute(data.siteId, data.id), {
-        cardId: data.id,
+      navigatewithState(buildCardDetailRoute(data.siteId, data.cardUUID), {
+        cardId: data.cardUUID,
         cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
       });
     } else {

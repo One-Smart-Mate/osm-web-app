@@ -1,11 +1,6 @@
 import { useState } from "react";
 import Strings from "../../../utils/localizations/Strings";
-import { Button } from "antd";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../../utils/Notifications";
+import { Button, App as AntApp } from "antd";
 import ModalForm from "../../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import { Site } from "../../../data/user/user";
@@ -19,6 +14,7 @@ import { SiteUpdateForm } from "../../../data/site/site";
 import { CreateSite, UpdateSiteReq } from "../../../data/site/site.request";
 import Constants from "../../../utils/Constants";
 import { useLocation } from "react-router-dom";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 interface SiteFormProps {
   formType: SiteFormType;
@@ -46,6 +42,7 @@ const SiteForm = ({
   const [getSite] = useGetSiteMutation();
   const [currentSite, setCurrentSite] = useState<SiteUpdateForm>();
   const location = useLocation();
+  const {notification} = AntApp.useApp();
 
   const handleOnClickButton = async () => {
     if (formType == SiteFormType.UPDATE) {
@@ -79,7 +76,7 @@ const SiteForm = ({
     try {
       setIsLoading(true);
       if (logo == null || logo == undefined || logo == "") {
-        handleErrorNotification(Strings.requiredLogo);
+        AnatomyNotification.error(notification, Strings.requiredLogo)
         setIsLoading(false);
         return;
       }
@@ -111,11 +108,11 @@ const SiteForm = ({
       await registerSite(request).unwrap();
       setModalOpen(false);
       onComplete?.();
-      handleSucccessNotification(NotificationSuccess.REGISTER);
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
       setLogo("");
     } catch (error) {
       console.error("Error creating company:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error)
     } finally {
       setIsLoading(false);
     }
@@ -125,7 +122,7 @@ const SiteForm = ({
     try {
       setIsLoading(true);
       if (logo == null || logo == undefined || logo == "") {
-        handleErrorNotification(Strings.requiredLogo);
+        AnatomyNotification.error(notification, Strings.requiredLogo)
         setIsLoading(false);
         return;
       }
@@ -155,11 +152,11 @@ const SiteForm = ({
       await updateSite(request).unwrap();
       setModalOpen(false);
       onComplete?.();
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
       setLogo("");
     } catch (error) {
       console.error("Error updating company:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification, error)
     } finally {
       setIsLoading(false);
     }

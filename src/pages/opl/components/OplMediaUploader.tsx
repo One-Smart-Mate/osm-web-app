@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Upload, Button } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
@@ -8,7 +8,7 @@ const { Dragger } = Upload;
 
 interface OplMediaUploaderProps {
   fileList: UploadFile[];
-  fileType: 'imagen' | 'video' | 'pdf';
+  fileType: 'imagen' | 'video' | 'pdf' | 'text';
   uploadLoading: boolean;
   onFileChange: UploadProps['onChange'];
   onPreview: (file: UploadFile) => void;
@@ -23,6 +23,12 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
   onPreview,
   onUpload,
 }) => {
+  // Auto-upload files when they are selected for non-text types
+  useEffect(() => {
+    if (fileType !== 'text' && fileList.length > 0 && !uploadLoading) {
+      onUpload();
+    }
+  }, [fileList, fileType, uploadLoading, onUpload]);
   
   const getAcceptType = () => {
     switch (fileType) {
@@ -32,6 +38,8 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
         return "video/*";
       case 'pdf':
         return ".pdf";
+      case 'text':
+        return "text/*";
       default:
         return "";
     }
@@ -79,7 +87,7 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
         onChange={onFileChange}
         onPreview={onPreview}
         beforeUpload={() => false}
-        style={{ marginBottom: 16 }}
+        style={{ marginBottom: fileType === 'text' ? 16 : 0 }}
       >
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
@@ -87,15 +95,17 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
         <p className="ant-upload-text">{uploadText.title}</p>
         <p className="ant-upload-hint">{uploadText.hint}</p>
       </Dragger>
-      <Button
-        type="primary"
-        onClick={onUpload}
-        disabled={fileList.length === 0} 
-        loading={uploadLoading}
-        style={{ marginTop: 16 }}
-      >
-        {uploadText.button}
-      </Button>
+      {fileType === 'text' && (
+        <Button
+          type="primary"
+          onClick={onUpload}
+          disabled={fileList.length === 0} 
+          loading={uploadLoading}
+          style={{ marginTop: 16 }}
+        >
+          {uploadText.button}
+        </Button>
+      )}
     </div>
   );
 };

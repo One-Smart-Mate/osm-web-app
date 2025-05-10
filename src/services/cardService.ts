@@ -29,8 +29,17 @@ export const cardService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CardDetailsInterface }) =>
         response.data,
     }),
+    getCardDetailByUUID: builder.mutation<CardInterface, string>({
+      query: (uuid) => `/card/uuid/${uuid}`,
+      transformResponse: (response: { data: CardInterface }) =>
+        response.data,
+    }),
     getCardNotes: builder.mutation<Note[], string>({
       query: (cardId) => `/card/notes/${cardId}`,
+      transformResponse: (response: { data: Note[] }) => response.data,
+    }),
+    getCardNotesByUUID: builder.mutation<Note[], string>({
+      query: (uuid) => `/card/notes/uuid/${uuid}`,
       transformResponse: (response: { data: Note[] }) => response.data,
     }),
     updateCardPriority: builder.mutation<void, UpdateCardPriority>({
@@ -101,4 +110,6 @@ export const {
   useUpdateCardPriorityMutation,
   useUpdateCardMechanicMutation,
   useSearchCardsQuery,
+  useGetCardDetailByUUIDMutation,
+  useGetCardNotesByUUIDMutation
 } = cardService;

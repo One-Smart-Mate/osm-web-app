@@ -59,8 +59,8 @@ const TagCardV2 = ({ data }: CardProps) => {
   };
 
   const handleNavigation = () => {
-    navigatewithState(buildCardDetailRoute(data.siteId, data.id), {
-        cardId: data.id,
+    navigatewithState(buildCardDetailRoute(data.siteId, data.cardUUID), {
+        cardId: data.cardUUID,
         cardName: `${data.cardTypeMethodologyName} ${data.siteCardId}`,
       });
   };
@@ -95,12 +95,11 @@ const TagCardV2 = ({ data }: CardProps) => {
           <Tag color="error">{Strings.expired}</Tag>
         </div>
       ) : (
-        <>
-          {Strings.dueDate}
-          <span className="text-black font-medium">
-            {data.cardDueDate || Strings.noDueDate}
-          </span>
-        </>
+        <AnatomySection
+          title={Strings.dueDate}
+          label={data.cardDueDate || Strings.noDueDate}
+          icon={<BsCalendar4 />}
+        />
       )}
 
       <AnatomySection

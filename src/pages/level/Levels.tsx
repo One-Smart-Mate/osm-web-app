@@ -525,7 +525,7 @@ const Levels = ({ role }: Props) => {
               />
             )}
             {isCloning && (
-              <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-black/50 z-50">
+              <div className="absolute inset-0 flex justify-center items-center bg-black/50 z-50">
                 <Spin size="large" tip={Strings.cloningLevelsMessage} />
               </div>
             )}
@@ -556,7 +556,7 @@ const Levels = ({ role }: Props) => {
           width={drawerPlacement === "right" ? 400 : undefined}
           onClose={handleCloseDetails}
           open={detailsVisible}
-          destroyOnClose
+          destroyOnHidden
           closable={true}
           className="drawer-responsive"
         >

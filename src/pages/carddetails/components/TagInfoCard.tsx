@@ -147,6 +147,11 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
     }
   };
 
+  const showEvidencesSection = (): boolean => {
+    return hasImages(evidences) || hasVideos(evidences) || hasAudios(evidences)
+  }
+
+
   return (
     <>
       <div className="p-2">
@@ -281,7 +286,7 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
             justify={true}
           />
         </Card>
-        {hasImages(evidences) || hasVideos(evidences) || hasAudios(evidences) && (
+        {showEvidencesSection() && (
             <>
               <Divider
                 orientation="left"
@@ -290,12 +295,15 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
               >
                 {Strings.evidencesAtCreationDivider}
               </Divider>
-              <div className="flex flex-wrap justify-center gap-2 mt-2">
-                {evidences.length === 0 && (
-                  <p className="text-gray-600 text-sm">{Strings.NA}</p>
-                )}
+              <div className="flex flex-wrap  gap-2 mt-2">
                 {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
+              </div>
+
+              <div className="flex flex-wrap  gap-2 mt-2">
                 {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
+              </div>
+
+              <div className="flex flex-wrap  gap-2 mt-2">
                 {hasAudios(evidences) && <AudioPlayer data={evidences} />}
               </div>
             </>

@@ -54,19 +54,25 @@ const CreatorsChart = ({
       startDate,
       endDate,
     }).unwrap();
+  
     const creatorMap: { [key: string]: any } = {};
     response.forEach((item: any) => {
       if (!creatorMap[item.creator]) {
         creatorMap[item.creator] = {
           creator: item.creator,
+          totalCards: 0,
         };
       }
-      creatorMap[item.creator][item.cardTypeName.toLowerCase()] = parseInt(
-        item.totalCards,
-        10
-      );
+      const cardTypeKey = item.cardTypeName.toLowerCase();
+      const totalCards = parseInt(item.totalCards, 10);
+      creatorMap[item.creator][cardTypeKey] = totalCards;
+      creatorMap[item.creator].totalCards += totalCards;
     });
-    const transformedData = Object.values(creatorMap);
+  
+    const transformedData = Object.values(creatorMap).sort(
+      (a: any, b: any) => b.totalCards - a.totalCards
+    );
+  
     setTransformedData(transformedData);
   };
 

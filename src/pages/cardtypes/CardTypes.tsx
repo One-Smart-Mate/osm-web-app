@@ -882,7 +882,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
               width={isMobile ? "100%" : 400}
               onClose={handleDrawerClose}
               open={drawerVisible}
-              destroyOnClose
+              destroyOnHidden
               mask={false}
               className="pr-5"
             >
@@ -923,7 +923,7 @@ const CardTypesTree = ({ rol }: CardTypesTreeProps) => {
             width={isMobile ? "100%" : 400}
             onClose={() => setDetailsVisible(false)}
             open={detailsVisible}
-            destroyOnClose
+            destroyOnHidden
             mask={false}
           >
             {detailsNode && detailsNode.nodeType === "cardType" && (

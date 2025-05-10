@@ -65,7 +65,12 @@ const PreclassifiersChart = ({
       startDate,
       endDate,
     }).unwrap();
-    setPreclassifiers(response);
+  
+    const sortedData = [...response].sort(
+      (a: Preclassifier, b: Preclassifier) => b.totalCards - a.totalCards
+    );
+  
+    setPreclassifiers(sortedData);
   };
 
   useEffect(() => {

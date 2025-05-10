@@ -12,15 +12,14 @@ import {
   Card,
   Typography,
   Space,
+  Tabs,
 } from "antd";
 import {
   SearchOutlined,
-  EyeOutlined,
   FileImageOutlined,
   PlusOutlined,
   PictureOutlined,
   VideoCameraOutlined,
-  PlayCircleOutlined,
   FilePdfOutlined,
   FileOutlined,
   FileTextOutlined,
@@ -39,9 +38,9 @@ import { Responsible } from "../../../data/user/user";
 import type { UploadFile } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import OplForm from "../../opl/components/OplForm";
-import OplDetailsModal from "../../opl/components/OplDetailsModal";
-import { storage } from "../../../config/firebase";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import OplMediaUploader from "../../opl/components/OplMediaUploader";
+import OplTextForm from "../../opl/components/OplTextForm";
+import { handleUploadToFirebaseStorage, FIREBASE_OPL_DIRECTORY } from "../../../config/firebaseUpload";
 import Strings from "../../../utils/localizations/Strings";
 
 interface OplSelectionModalProps {
@@ -173,14 +172,16 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
 
       const createPayload = {
         title: values.title,
-        objetive: values.objetive,
-        creatorId: values.creatorId ? Number(values.creatorId) : undefined,
-        creatorName: creator?.name || undefined,
-        reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined,
-        reviewerName: reviewer?.name || undefined,
-        oplType: values.oplType || "opl",
+        objetive: values.objetive || "", // Provide empty string as default
+        creatorId: values.creatorId ? Number(values.creatorId) : undefined, // Must use undefined to match the DTO type
+        creatorName: creator?.name || "", // Provide empty string as default
+        reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined, // Must use undefined to match the DTO type
+        reviewerName: reviewer?.name || "", // Provide empty string as default
+        oplType: values.oplType || "opl", // Default to 'opl'
         createdAt: new Date().toISOString(),
       };
+      
+      console.log("Creating OPL with payload:", createPayload);
 
       const response = await createOplMstr(createPayload).unwrap();
 
@@ -221,6 +222,17 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     fileList = fileList.slice(-1);
 
     setFileList(fileList);
+    
+    // If file is selected and it's not a text file, trigger upload automatically
+    if (fileList.length > 0 && activeDetailTab !== "2") {
+      const fileType = activeDetailTab === "3" ? "imagen" : 
+                      activeDetailTab === "4" ? "video" : 
+                      activeDetailTab === "5" ? "pdf" : "";
+      
+      if (fileType && !uploadLoading) {
+        handleAddMedia(fileType as "imagen" | "video" | "pdf");
+      }
+    }
   };
 
   const handlePreview = (file: any) => {
@@ -243,67 +255,102 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   ) => {
     try {
       setUploadLoading(true);
-
-      let mediaUrl = "";
-
-      if (type !== "texto" && fileList.length > 0) {
-        const file = fileList[0].originFileObj;
-        if (file) {
-          const storageRef = ref(
-            storage,
-            `oplDetails/${currentOpl?.id}/${Date.now()}_${file.name}`
-          );
-
-          const uploadTask = uploadBytesResumable(storageRef, file);
-
-          await new Promise<void>((resolve, reject) => {
-            uploadTask.on(
-              "state_changed",
-              (snapshot) => {
-                const progress =
-                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log("Upload is " + progress + "% done");
-              },
-              (error) => {
-                console.error("Error al subir archivo:", error);
-                reject(error);
-              },
-              async () => {
-                const downloadURL = await getDownloadURL(
-                  uploadTask.snapshot.ref
-                );
-                mediaUrl = downloadURL;
-                resolve();
-              }
-            );
-          });
-        }
-      }
-
+      
       if (!currentOpl?.id) {
         throw new Error("No se ha seleccionado un OPL");
       }
-      const detailData: CreateOplDetailsDTO = {
-        oplId: Number(currentOpl.id),
-        type,
-        text: type === "texto" ? values.text : "",
-        mediaUrl,
-        order: currentOplDetails.length + 1,
-      };
-
-      const response = await createOplDetail(detailData).unwrap();
-
-      if (response) {
-        notification.success({
-          message: Strings.oplSelectionModalSuccessDetail,
-          description: Strings.oplSelectionModalSuccessDescription,
-        });
-
-        detailForm.resetFields();
-        setFileList([]);
-        setActiveDetailTab("list");
-        if (currentOpl) {
-          fetchOplDetails(currentOpl.id);
+      
+      // Manejar texto y media de manera separada
+      if (type === "texto") {
+        // Para detalles de texto
+        const newDetail: CreateOplDetailsDTO = {
+          oplId: Number(currentOpl.id),
+          order: currentOplDetails.length + 1,
+          type: "texto",
+          text: values.text || "",
+          mediaUrl: "",
+        };
+        
+        console.log("Creating text detail:", newDetail);
+        const response = await createOplDetail(newDetail).unwrap();
+        
+        if (response) {
+          notification.success({
+            message: Strings.oplSelectionModalSuccessDetail,
+            description: Strings.oplSelectionModalSuccessDescription,
+          });
+          
+          detailForm.resetFields();
+          setActiveDetailTab("1"); // Volver a la lista
+          await fetchOplDetails(currentOpl.id);
+        }
+      } else {
+        // Para detalles de media (imagen, video, pdf)
+        if (fileList.length === 0) {
+          notification.error({
+            message: "Error",
+            description: "No se ha seleccionado ningún archivo",
+          });
+          setUploadLoading(false);
+          return;
+        }
+        
+        const file = fileList[0];
+        if (!file || !file.originFileObj) {
+          notification.error({
+            message: "Error",
+            description: "El archivo seleccionado no es válido",
+          });
+          setUploadLoading(false);
+          return;
+        }
+        
+        // Determinar la extensión del archivo
+        let fileExtension = "jpg";
+        if (type === "video") {
+          fileExtension = "mp4";
+        } else if (type === "pdf") {
+          fileExtension = "pdf";
+        } else if (type === "imagen") {
+          fileExtension = file.name.split(".").pop() || "jpg";
+        }
+        
+        // Preparar el archivo para la carga
+        const uploadFile = {
+          name: file.name,
+          originFileObj: file.originFileObj as File,
+        };
+        
+        // Subir el archivo a Firebase
+        console.log("Uploading file to Firebase...");
+        const url = await handleUploadToFirebaseStorage(
+          `${FIREBASE_OPL_DIRECTORY}/${currentOpl.id}`,
+          uploadFile,
+          fileExtension
+        );
+        console.log("File uploaded successfully, URL:", url);
+        
+        // Crear el detalle con la URL del archivo
+        const newDetail: CreateOplDetailsDTO = {
+          oplId: Number(currentOpl.id),
+          order: currentOplDetails.length + 1,
+          type,
+          text: "",
+          mediaUrl: url,
+        };
+        
+        console.log("Creating media detail:", newDetail);
+        const response = await createOplDetail(newDetail).unwrap();
+        
+        if (response) {
+          notification.success({
+            message: Strings.oplSelectionModalSuccessDetail,
+            description: Strings.oplSelectionModalSuccessDescription,
+          });
+          
+          setFileList([]);
+          setActiveDetailTab("1"); // Volver a la lista
+          await fetchOplDetails(currentOpl.id);
         }
       }
     } catch (error) {
@@ -367,7 +414,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           <Button
             type="primary"
             size="small"
-            icon={<EyeOutlined />}
             onClick={() => handleSelect(record)}
             style={{ cursor: "pointer" }}
           >
@@ -412,14 +458,26 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Image
-              src={detail.mediaUrl || ""}
-              alt={Strings.oplSelectionModalImageAlt}
-              style={{ maxWidth: "100%" }}
-              fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-            />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Image
+                src={detail.mediaUrl || ""}
+                alt={Strings.oplSelectionModalImageAlt}
+                style={{
+                  width: "400px",
+                  height: "300px",
+                  objectFit: "contain",
+                  maxWidth: "100%",
+                }}
+                fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+              />
+            </div>
             <Typography.Text
-              style={{ marginTop: 8, display: "block", fontWeight: "bold" }}
+              style={{
+                marginTop: 8,
+                display: "block",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
             >
               {getFileName(detail.mediaUrl)}
             </Typography.Text>
@@ -432,6 +490,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
               marginBottom: "16px",
               border: "1px solid #e8e8e8",
               borderRadius: "8px",
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
             }}
             title={
               <Space>
@@ -443,20 +502,21 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  detail.mediaUrl && window.open(detail.mediaUrl, "_blank")
-                }
-                icon={<PlayCircleOutlined />}
-              >
-                Reproducir Video
-              </Button>
-              <Typography.Text style={{ display: "block", fontWeight: "bold" }}>
+            <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+              <video
+                src={detail.mediaUrl || ""}
+                controls
+                style={{
+                  width: '400px',
+                  maxWidth: '100%',
+                  height: '300px',
+                  objectFit: 'contain'
+                }}
+              />
+              <Typography.Text style={{ marginTop: 8, display: "block", fontWeight: "bold", textAlign: "center" }}>
                 {getFileName(detail.mediaUrl)}
               </Typography.Text>
-            </Space>
+            </div>
           </Card>
         );
       case "pdf":
@@ -466,6 +526,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
               marginBottom: "16px",
               border: "1px solid #e8e8e8",
               borderRadius: "8px",
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
             }}
             title={
               <Space>
@@ -477,20 +538,23 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Space direction="vertical" style={{ width: "100%" }}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  detail.mediaUrl && window.open(detail.mediaUrl, "_blank")
-                }
-                icon={<FileOutlined />}
-              >
-                Ver PDF
-              </Button>
-              <Typography.Text style={{ display: "block", fontWeight: "bold" }}>
-                {getFileName(detail.mediaUrl)}
-              </Typography.Text>
-            </Space>
+            <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ width: '400px', maxWidth: '100%', textAlign: 'center' }}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    detail.mediaUrl && window.open(detail.mediaUrl, "_blank")
+                  }
+                  icon={<FileOutlined />}
+                  style={{ marginBottom: '8px' }}
+                >
+                  Ver PDF
+                </Button>
+                <Typography.Text style={{ display: "block", fontWeight: "bold", textAlign: "center" }}>
+                  {getFileName(detail.mediaUrl)}
+                </Typography.Text>
+              </div>
+            </div>
           </Card>
         );
       case "texto":
@@ -500,6 +564,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
               marginBottom: "16px",
               border: "1px solid #e8e8e8",
               borderRadius: "8px",
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
             }}
             title={
               <Space>
@@ -511,7 +576,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Typography.Paragraph>{detail.text}</Typography.Paragraph>
+            <Typography.Paragraph style={{ maxWidth: '400px', margin: '0 auto' }}>
+              {detail.text}
+            </Typography.Paragraph>
           </Card>
         );
       default:
@@ -519,11 +586,54 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     }
   };
 
-  // Función para obtener el nombre del archivo de una URL
+  // Función mejorada para obtener el nombre del archivo de una URL
   const getFileName = (url: string | null | undefined): string => {
     if (!url) return "Sin archivo";
-    const parts = url.split("/");
-    return parts[parts.length - 1];
+    
+    try {
+      // Decode URL components
+      const decodedUrl = decodeURIComponent(url);
+      
+      // Extract filename from URL
+      const parts = decodedUrl.split('/');
+      let fullName = parts[parts.length - 1];
+      
+      // Remove query parameters if any
+      fullName = fullName.split('?')[0];
+      
+      // Remove any additional parameters after underscore
+      if (fullName.includes('_')) {
+        const nameParts = fullName.split('_');
+        // If it's a UUID pattern after underscore, remove it
+        if (nameParts.length > 1 && nameParts[1].match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)) {
+          fullName = nameParts[0];
+        }
+      }
+      
+      // If the filename still has a path pattern like "images/opl/filename.ext", extract just the filename
+      if (fullName.includes('/')) {
+        const pathParts = fullName.split('/');
+        fullName = pathParts[pathParts.length - 1];
+      }
+      
+      // If filename still has encoded characters like %20, try to decode again
+      if (fullName.includes('%')) {
+        try {
+          fullName = decodeURIComponent(fullName);
+        } catch (e) {
+          // If decoding fails, keep the current name
+        }
+      }
+      
+      return fullName;
+    } catch (e) {
+      // If any error occurs during processing, try a simpler approach
+      const parts = url.split('/');
+      const fileName = parts[parts.length - 1].split('?')[0];
+      
+      // Return just the last part of the path
+      return fileName;
+    }
   };
 
   return (
@@ -591,9 +701,13 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
                     marginBottom: "20px",
                     padding: "10px",
                     border: "1px solid #f0f0f0",
+                    display: "flex",
+                    justifyContent: "center"
                   }}
                 >
-                  {renderMediaContent(detail)}
+                  <div style={{ width: '100%', maxWidth: '600px' }}>
+                    {renderMediaContent(detail)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -619,21 +733,111 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         </Spin>
       </Modal>
 
-      <OplDetailsModal
-        visible={detailsModalVisible}
-        currentOpl={currentOpl}
-        currentDetails={currentOplDetails}
-        activeTab={activeDetailTab}
-        fileList={fileList}
-        uploadLoading={uploadLoading}
-        detailForm={detailForm}
+      <Modal
+        title={`Detalles del OPL: ${currentOpl?.title || ''}`}
+        open={detailsModalVisible}
         onCancel={handleDetailsCancel}
-        onTabChange={handleTabChange}
-        onFileChange={handleFileChange}
-        onPreview={handlePreview}
-        onAddText={handleAddText}
-        onAddMedia={handleAddMedia}
-      />
+        footer={null}
+        width={800}
+      >
+        <Tabs
+          activeKey={activeDetailTab}
+          onChange={handleTabChange}
+          items={[
+            {
+              key: "1",
+              label: "Lista de contenido",
+              children: (
+                <div style={{ padding: '0 16px' }}>
+                  <Typography.Title level={5} style={{ marginBottom: 24 }}>{Strings.oplDetailsContentPreview}</Typography.Title>
+                  {currentOplDetails.length === 0 ? (
+                    <Card>
+                      <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                        <Typography.Paragraph>{Strings.oplDetailsNoContent}</Typography.Paragraph>
+                        <Button 
+                          type="primary" 
+                          icon={<PlusOutlined />}
+                          onClick={() => handleTabChange("2")}
+                        >
+                          {Strings.oplDetailsAddContent}
+                        </Button>
+                      </div>
+                    </Card>
+                  ) : (
+                    <div>
+                      {currentOplDetails.map((detail) => (
+                        <div key={detail.id} style={{ marginBottom: '20px' }}>
+                          {renderMediaContent(detail)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ),
+            },
+            {
+              key: "2",
+              label: "Agregar texto",
+              children: (
+                <Card title={<Typography.Text strong style={{ color: '#000' }}>{Strings.oplDetailsAddText}</Typography.Text>} bordered={false}>
+                  <OplTextForm 
+                    form={detailForm} 
+                    onSubmit={(values: any) => handleAddText(values)} 
+                  />
+                </Card>
+              ),
+            },
+            {
+              key: "3",
+              label: "Agregar imagen",
+              children: (
+                <Card title={<Typography.Text strong style={{ color: '#000' }}>{Strings.oplDetailsAddImage}</Typography.Text>} bordered={false}>
+                  <OplMediaUploader
+                    fileList={fileList}
+                    fileType="imagen"
+                    uploadLoading={uploadLoading}
+                    onFileChange={handleFileChange}
+                    onPreview={handlePreview}
+                    onUpload={() => handleAddMedia("imagen")}
+                  />
+                </Card>
+              ),
+            },
+            {
+              key: "4",
+              label: "Agregar video",
+              children: (
+                <Card title={<Typography.Text strong style={{ color: '#000' }}>{Strings.oplDetailsAddVideo}</Typography.Text>} bordered={false}>
+                  <OplMediaUploader
+                    fileList={fileList}
+                    fileType="video"
+                    uploadLoading={uploadLoading}
+                    onFileChange={handleFileChange}
+                    onPreview={handlePreview}
+                    onUpload={() => handleAddMedia("video")}
+                  />
+                </Card>
+              ),
+            },
+            {
+              key: "5",
+              label: "Agregar PDF",
+              children: (
+                <Card title={<Typography.Text strong style={{ color: '#000' }}>{Strings.oplDetailsAddPdf}</Typography.Text>} bordered={false}>
+                  <OplMediaUploader
+                    fileList={fileList}
+                    fileType="pdf"
+                    uploadLoading={uploadLoading}
+                    onFileChange={handleFileChange}
+                    onPreview={handlePreview}
+                    onUpload={() => handleAddMedia("pdf")}
+                  />
+                </Card>
+              ),
+            },
+          ]}
+        />
+      </Modal>
     </>
   );
 };

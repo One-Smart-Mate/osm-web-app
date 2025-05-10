@@ -193,7 +193,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
       standardTime: Number(values.standardTime) || 0,
-      learnigTime: values.learnigTime || "",
+      learnigTime: undefined, // Campo eliminado del flujo
       urlImgLayout: firebaseUrl, // Use the stored Firebase URL
       order: 1, // Default order
       status: "A", // Default status is Active
@@ -284,19 +284,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           />
         </Form.Item>
 
-        <Form.Item
-          name="learnigTime"
-          label={Strings.learningTime}
-          className="flex-1"
-          rules={[
-            { required: true, message: Strings.registerCiltLearningTimeRequiredValidation }
-          ]}
-        >
-          <Input 
-            size="large" 
-            placeholder={Strings.registerCiltLearningTimePlaceholer} 
-          />
-        </Form.Item>
+        {/* Campo learnigTime eliminado del flujo */}
       </div>
 
       <div className="flex flex-row gap-4">

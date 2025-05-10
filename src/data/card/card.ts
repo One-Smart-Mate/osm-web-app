@@ -30,6 +30,7 @@ export interface CardInterface {
   userAppProvisionalSolutionName: string;
   userAppDefinitiveSolutionName: string;
   cardLocation: string;
+  cardUUID: string;
 }
 
 export interface Evidences {

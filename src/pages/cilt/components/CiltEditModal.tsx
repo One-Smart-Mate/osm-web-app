@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, InputNumber, Alert, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, InputNumber, Alert, Select, Upload, Spin, notification, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import type { UploadFile, UploadFileStatus, UploadProps } from 'antd/es/upload/interface';
+import { handleUploadToFirebaseStorage } from '../../../config/firebaseUpload';
 import { CiltMstr, UpdateCiltMstrDTO } from '../../../data/cilt/ciltMstr/ciltMstr';
 import { useUpdateCiltMstrMutation } from '../../../services/cilt/ciltMstrService';
 import Constants from '../../../utils/Constants';
 import Strings from '../../../utils/localizations/Strings';
 
 const { Option } = Select;
+const { Text } = Typography;
 
 interface CiltEditModalProps {
   visible: boolean;
@@ -23,6 +27,78 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [form] = Form.useForm();
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateCiltMstr, { isLoading: isUpdating }] = useUpdateCiltMstrMutation();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [firebaseUrl, setFirebaseUrl] = useState<string | undefined>(undefined);
+
+  // Functions for image upload
+  const getBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as File);
+    }
+
+    // Open the image in a new tab
+    if (file.url) {
+      window.open(file.url);
+    } else if (file.preview) {
+      window.open(file.preview as string);
+    }
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const customUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      setUploading(true);
+      // Upload the file to Firebase storage
+      const url = await handleUploadToFirebaseStorage(
+        "cilt", 
+        {
+          name: file.name,
+          originFileObj: file
+        },
+        "jpg"
+      );
+      
+      // Store the Firebase URL directly in state for later use
+      setFirebaseUrl(url);
+      
+      // Update the file list with the uploaded file
+      const newFile: UploadFile = {
+        uid: file.uid,
+        name: file.name,
+        status: "done" as UploadFileStatus,
+        url: url,
+      };
+      setFileList([newFile]);
+      
+      onSuccess("Upload successful");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      onError("Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Upload button
+  const uploadButton = (
+    <div>
+      {uploading ? <Spin /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
 
   const handleOk = async () => {
     try {
@@ -30,6 +106,9 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
       if (cilt) {
         const dateOfLastUsed = cilt.dateOfLastUsed || new Date().toISOString();
         const updatedAt = new Date().toISOString();
+
+        // Use the new uploaded image URL if available, otherwise keep the existing one
+        const imageUrl = firebaseUrl || cilt.urlImgLayout || undefined;
 
         const updatedData = new UpdateCiltMstrDTO(
           cilt.id,
@@ -46,12 +125,19 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           cilt.approvedById ?? undefined,
           cilt.approvedByName ?? undefined,
           values.standardTime,
-          values.learnigTime,
-          cilt.urlImgLayout ?? undefined,
+          undefined, // Removing learnigTime from the flow as requested
+          imageUrl,
           cilt.order ?? undefined,
           values.status
         );
         await updateCiltMstr(updatedData).unwrap();
+        
+        // Show success notification
+        notification.success({
+          message: Strings.success,
+          description: Strings.ciltMstrUpdateSuccess || 'CILT actualizado correctamente',
+        });
+        
         onSuccess();
       }
     } catch (err: any) {
@@ -62,19 +148,49 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
 
   const handleCancel = () => {
     setUpdateError(null);
+    setFileList([]);
+    setFirebaseUrl(undefined);
     onCancel();
   };
 
+  // Text to display when no image is assigned
+  const NO_IMAGE_TEXT = "No image assigned";
+
+  // Format date for display
+  const formatDate = (dateString?: string): string => {
+    if (!dateString) return "--";
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   // Reset form with cilt values when modal becomes visible
-  React.useEffect(() => {
+  useEffect(() => {
     if (visible && cilt) {
       form.setFieldsValue({
         ciltName: cilt.ciltName,
         ciltDescription: cilt.ciltDescription,
         standardTime: cilt.standardTime,
-        learnigTime: cilt.learnigTime,
         status: cilt.status,
       });
+      
+      // If there's an existing image, add it to the fileList
+      if (cilt.urlImgLayout) {
+        const existingFile: UploadFile = {
+          uid: '-1',
+          name: 'Current Image',
+          status: 'done',
+          url: cilt.urlImgLayout,
+        };
+        setFileList([existingFile]);
+      } else {
+        // No image available
+        setFileList([]);
+      }
     }
   }, [visible, cilt, form]);
 
@@ -87,7 +203,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
       confirmLoading={isUpdating}
       okText={Strings.ciltMstrSaveChangesButton}
       cancelText={Strings.ciltMstrCancelButton}
-      destroyOnClose
+      destroyOnHidden
     >
       {updateError && <Alert message={updateError} type="error" showIcon closable onClose={() => setUpdateError(null)} style={{ marginBottom: 16 }} />}
       <Form form={form} layout="vertical" name="edit_cilt_form" initialValues={cilt ?? {}}>
@@ -100,15 +216,52 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         <Form.Item name="standardTime" label={Strings.ciltMstrStandardTimeLabel} rules={[{ type: 'number', message: Strings.ciltMstrInvalidNumberMessage }]}>
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
-        <Form.Item name="learnigTime" label={Strings.ciltMstrLearningTimeLabel}>
-          <Input />
-        </Form.Item>
+        {/* Campo learnigTime eliminado del flujo */}
         <Form.Item name="status" label={Strings.ciltMstrStatusLabel} rules={[{ required: true, message: Strings.ciltMstrStatusRequired }]}>
           <Select placeholder={Strings.ciltMstrStatusPlaceholder}>
             <Option value={Constants.STATUS_ACTIVE}>{Strings.ciltMstrStatusActive}</Option>
             <Option value={Constants.STATUS_SUSPENDED}>{Strings.ciltMstrStatusSuspended}</Option>
             <Option value={Constants.STATUS_CANCELED}>{Strings.ciltMstrStatusCanceled}</Option>
           </Select>
+        </Form.Item>
+        
+        {/* Last updated date - read-only information field */}
+        {cilt?.updatedAt && (
+          <div className="mb-4">
+            <Text type="secondary">{Strings.ciltMstrLastUpdated}</Text>
+            <div className="mt-1 p-2 bg-gray-50 border rounded">
+              <Text>{formatDate(cilt.updatedAt)}</Text>
+            </div>
+          </div>
+        )}
+        
+        <Form.Item
+          name="urlImgLayout"
+          label={Strings.layoutImage}
+        >
+          {fileList.length === 0 && (
+            <div className="mb-2 text-gray-500">{NO_IMAGE_TEXT}</div>
+          )}
+          <Upload
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={handleChange}
+            customRequest={customUpload}
+            beforeUpload={(file) => {
+              const isImage = file.type.startsWith('image/');
+              if (!isImage) {
+                notification.error({
+                  message: Strings.error,
+                  description: Strings.imageUploadError,
+                });
+              }
+              return isImage || Upload.LIST_IGNORE;
+            }}
+            maxCount={1}
+          >
+            {fileList.length >= 1 ? null : uploadButton}
+          </Upload>
         </Form.Item>
       </Form>
     </Modal>

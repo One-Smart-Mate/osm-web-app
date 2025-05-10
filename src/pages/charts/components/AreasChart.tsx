@@ -61,23 +61,26 @@ const AreasChart = ({
           areaMap[item.area] = {
             area: item.area,
             areaId: item.areaId,
+            totalCards: 0,
           };
         }
-        areaMap[item.area][item.cardTypeName.toLowerCase()] = parseInt(
-          item.totalCards,
-          10
-        );
+        const cardTypeKey = item.cardTypeName.toLowerCase();
+        const totalCards = parseInt(item.totalCards, 10);
+        areaMap[item.area][cardTypeKey] = totalCards;
+        areaMap[item.area].totalCards += totalCards;
       });
+        const transformedData = Object.values(areaMap).sort(
+        (a: any, b: any) => b.totalCards - a.totalCards
+      );
   
-      const transformedData = Object.values(areaMap);
       setTransformedData(transformedData);
   
       if (transformedData.length > 0 && areaId == null) {
         const defaultAreaId = transformedData[0].areaId;
         setAreaId(defaultAreaId);
-        
+  
         onAreaSelect?.(defaultAreaId, transformedData[0].area);
-      }      
+      }
     } catch (error) {
       console.error(error);
     }

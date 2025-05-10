@@ -50,6 +50,7 @@ const defaultCard: CardInterface = {
   userAppProvisionalSolutionName: "",
   userAppDefinitiveSolutionName: "",
   cardLocation: "",
+  cardUUID: ""
 };
 
 const PublicCardDetails = () => {

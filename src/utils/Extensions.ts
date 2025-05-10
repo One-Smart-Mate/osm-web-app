@@ -170,13 +170,13 @@ export const getDaysBetween = (date1: string, date2: string): number => {
 };
 
 export const RESPONSIVE_LIST = {
-  gutter: 20,
+  gutter: 16,
   xs: 1,
-  sm: 2,
+  sm: 1,
   md: 2,
   lg: 2,
   xl: 3,
-  xxl: 5,
+  xxl: 4,
 };
 
 export const RESPONSIVE_AVATAR = {

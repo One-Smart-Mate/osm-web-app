@@ -26,7 +26,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
           <Avatar size={50} className="mr-2">
             {getFirstNameLetter()}
           </Avatar>
-          <div className="flex flex-col flex-wrap mr-2">
+          <div className="flex flex-col flex-wrap mr-2 ml-2">
             <Typography.Text>{user?.name}</Typography.Text>
             <div>
               <div className="flex flex-wrap flex-row max-w-[200px] gap-2">

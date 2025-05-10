@@ -153,7 +153,7 @@ const BaseLayout: React.FC = () => {
             userId: Number(user.userId),
             appToken: token,
             osName: Constants.osName,
-            osVersion: Constants.tagVersion,
+            osVersion: Strings.tagVersion,
           })
           .unwrap()
           .then(() => {

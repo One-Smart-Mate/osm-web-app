@@ -1,12 +1,7 @@
 import { useState } from "react";
 import CustomButton from "../../../components/CustomButtons";
 import Strings from "../../../utils/localizations/Strings";
-import { Button, Form, Spin } from "antd";
-import {
-  NotificationSuccess,
-  handleErrorNotification,
-  handleSucccessNotification,
-} from "../../../utils/Notifications";
+import { Button, Form, Spin, App as AntApp } from "antd";
 import { useAppDispatch } from "../../../core/store";
 import {
   resetRowData,
@@ -21,6 +16,7 @@ import {
 import { UpdatePriorityReq } from "../../../data/priority/priority.request";
 import UpdatePriorityForm from "./UpdatePriorityForm";
 import { isRedesign } from "../../../utils/Extensions";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 interface ButtonEditProps {
   priorityId: string;
@@ -33,6 +29,7 @@ const UpdatePriority = ({ priorityId }: ButtonEditProps) => {
   const dispatch = useAppDispatch();
   const [getPriority] = useGetPriorityMutation();
   const [UpdatePriority] = useUpdatePriorityMutation();
+  const {notification} = AntApp.useApp();
 
   const handleOnClickEditButton = async () => {
     setDataLoading(true);
@@ -62,10 +59,10 @@ const UpdatePriority = ({ priorityId }: ButtonEditProps) => {
       await UpdatePriority(priorityToUpdate).unwrap();
       setModalOpen(false);
       dispatch(setPriorityUpdatedIndicator());
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      AnatomyNotification.success(notification,AnatomyNotificationType.UPDATE)
     } catch (error) {
       console.log("Error during update:", error);
-      handleErrorNotification(error);
+      AnatomyNotification.error(notification,error)
     } finally {
       setModalLoading(false);
     }
