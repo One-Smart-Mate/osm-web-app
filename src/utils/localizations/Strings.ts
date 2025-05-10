@@ -791,12 +791,14 @@ class StringsBase {
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
   static ciltTypesSB = "ciltTypesSB";
+  static ciltTypesOf = "ciltTypesOf";
   static ciltTypesDescription = "ciltTypesDescription";
   static ciltFrecuenciesSB = "ciltFrecuenciesSB";
+  static ciltFrecuenciesOf = "ciltFrecuenciesOf";
   static ciltFrecuenciesDescription = "ciltFrecuenciesDescription";
 
   //Cilt Types
-  static searchbyname = "searchbyname";
+  static searchByName = "searchByName";
   static addNewCiltType = "addNewCiltType";
   static errorLoadingNewTypesCilt = "errorLoadingNewTypesCilt";
   static typeCiltUpdated = "typeCiltUpdated";
@@ -808,6 +810,9 @@ class StringsBase {
   static add = "add";
   static editCiltType = "editCiltType";
   static addCiltType = "addCiltType";
+  static errorNoSiteId = "errorNoSiteId";
+  static clearFilters = "clearFilters";
+
 
   //Cilt Frequency
   static frequencyCode = "frequencyCode";
