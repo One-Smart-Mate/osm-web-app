@@ -704,7 +704,7 @@ const resources = {
       selectUsersForPosition:
         "Select users that will be assigned to this position",
       cancelPosition: "Cancel",
-      updatePositionTitle: "Edit Position: {{name}}",
+      updatePositionTitle: "Edit Position",
       selectStatus: "Select a status",
       positionNameMaxLength: "The name cannot exceed 45 characters",
       positionDescriptionMaxLength:
@@ -738,19 +738,6 @@ const resources = {
 
       success: "Success",
       error: "Error",
-      "No position data found for update.":
-        "No position data found for update.",
-      "The position has been updated successfully.":
-        "The position has been updated successfully.",
-      "An error occurred while updating the position. Please try again.":
-        "An error occurred while updating the position. Please try again.",
-      "The name cannot exceed 45 characters":
-        "The name cannot exceed 45 characters",
-      "The description cannot exceed 100 characters":
-        "The description cannot exceed 100 characters",
-      "Please select a status": "Please select a status",
-      "Select a status": "Select a status",
-      "Edit Position: {{name}}": "Edit Position: {{name}}",
       createPositionHere: "Create position here",
 
       // User positions
@@ -871,7 +858,7 @@ const resources = {
       ciltMstrNameLabel: "CILT Name",
       ciltMstrNameRequired: "Please enter the name!",
       ciltMstrDescriptionLabel: "Description",
-      ciltMstrStandardTimeLabel: "Standard Time (seconds)",
+      ciltMstrStandardTimeLabel: "Standard Time in seconds",
       ciltMstrInvalidNumberMessage: "Please enter a valid number",
       ciltMstrLearningTimeLabel: "Learning Time",
       ciltMstrStatusLabel: "Status",
@@ -889,7 +876,7 @@ const resources = {
       ciltMstrCreatorLabel: "Creator",
       ciltMstrReviewerLabel: "Reviewer",
       ciltMstrApproverLabel: "Approved by",
-      ciltMstrDetailsStandardTimeLabel: "Standard Time (seconds)",
+      ciltMstrDetailsStandardTimeLabel: "Standard Time in seconds",
       ciltMstrDetailsLearningTimeLabel: "Learning Time",
       ciltMstrOrderLabel: "Order",
       ciltMstrDetailsStatusLabel: "Status",
@@ -903,7 +890,7 @@ const resources = {
       ciltMstrListNameColumn: "Name",
       ciltMstrListDescriptionColumn: "Description",
       ciltMstrListCreatorColumn: "Creator",
-      ciltMstrListStandardTimeColumn: "Standard Time (seconds)",
+      ciltMstrListStandardTimeColumn: "Standard Time in seconds",
       ciltMstrListStatusColumn: "Status",
       ciltMstrListCreationDateColumn: "Creation Date",
       ciltMstrListActionsColumn: "Actions",
@@ -1244,7 +1231,10 @@ const resources = {
       selectedUsersList: "Selected Users:",
       ciltMstrLastUpdated: "Last Updated:",
       lastLoginWeb: "Last login web",
-      lastLoginApp: "Last login app"
+      lastLoginApp: "Last login app",
+      imageLoadSuccess: "Image uploaded successfully",
+      imageLoadError: "Error uploading image",
+      warningImageUpload: "Warning: image not uploaded correctly"
     },
   },
   es: {
@@ -1955,7 +1945,7 @@ const resources = {
       selectUsersForPosition:
         "Seleccione los usuarios que estarán asignados a esta posición",
       cancelPosition: "Cancelar",
-      updatePositionTitle: "Editar Posición: {{name}}",
+      updatePositionTitle: "Editar Posición",
       selectStatus: "Seleccione un estado",
       positionNameMaxLength: "El nombre no puede exceder los 45 caracteres",
       positionDescriptionMaxLength:
@@ -2001,7 +1991,6 @@ const resources = {
         "La descripción no puede exceder los 100 caracteres",
       "Please select a status": "Por favor, selecciona un estado",
       "Select a status": "Selecciona un estado",
-      "Edit Position: {{name}}": "Editar Posición: {{name}}",
       createPositionHere: "Crear posición aquí",
 
       // User positions
@@ -2131,7 +2120,7 @@ const resources = {
       ciltMstrNameLabel: "Nombre CILT",
       ciltMstrNameRequired: "Por favor ingrese el nombre!",
       ciltMstrDescriptionLabel: "Descripción",
-      ciltMstrStandardTimeLabel: "Tiempo Estándar (segundos)",
+      ciltMstrStandardTimeLabel: "Tiempo Estándar en segundos",
       ciltMstrInvalidNumberMessage: "Por favor ingrese un número válido",
       ciltMstrLearningTimeLabel: "Tiempo Aprendizaje",
       ciltMstrStatusLabel: "Estado",
@@ -2149,7 +2138,7 @@ const resources = {
       ciltMstrCreatorLabel: "Creador",
       ciltMstrReviewerLabel: "Revisor",
       ciltMstrApproverLabel: "Aprobado por",
-      ciltMstrDetailsStandardTimeLabel: "Tiempo Estándar (segundos)",
+      ciltMstrDetailsStandardTimeLabel: "Tiempo Estándar en segundos",
       ciltMstrDetailsLearningTimeLabel: "Tiempo Aprendizaje",
       ciltMstrOrderLabel: "Orden",
       ciltMstrDetailsStatusLabel: "Estado",
@@ -2163,7 +2152,7 @@ const resources = {
       ciltMstrListNameColumn: "Nombre",
       ciltMstrListDescriptionColumn: "Descripción",
       ciltMstrListCreatorColumn: "Creador",
-      ciltMstrListStandardTimeColumn: "Tiempo Estándar (segundos)",
+      ciltMstrListStandardTimeColumn: "Tiempo Estándar en segundos",
       ciltMstrListStatusColumn: "Estado",
       ciltMstrListCreationDateColumn: "Fecha de Creación",
       ciltMstrListActionsColumn: "Acciones",
@@ -2352,7 +2341,7 @@ const resources = {
         "Ingrese lista de secuencia",
       editCiltSequenceModalColorLabel: "Color de Secuencia",
       editCiltSequenceModalColorRequired: "El color es requerido",
-      editCiltSequenceModalStandardTimeLabel: "Tiempo Estándar (segundos)",
+      editCiltSequenceModalStandardTimeLabel: "Tiempo Estándar en segundos",
       editCiltSequenceModalStandardTimeRequired:
         "El tiempo estándar es requerido",
       editCiltSequenceModalStandardOkLabel: "Estándar OK",
@@ -2511,7 +2500,10 @@ const resources = {
       selectedUsersList: "Usuarios seleccionados:",
       ciltMstrLastUpdated: "Última actualización:",
       lastLoginWeb: "Ultimo login web",
-      lastLoginApp: "Ultimo login app"
+      lastLoginApp: "Ultimo login app",
+      imageLoadSuccess: "Imagen cargada exitosamente",
+      imageLoadError: "Error al cargar imagen",
+      warningImageUpload: "Advertencia: la imagen no se cargó correctamente"
     },
   },
 };

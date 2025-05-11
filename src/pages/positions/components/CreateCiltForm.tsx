@@ -173,8 +173,8 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
     // Use the stored Firebase URL
     if (!firebaseUrl) {
       notification.error({
-        message: "Error",
-        description: "Please upload a layout image",
+        message: Strings.error,
+        description: Strings.registerCiltLayoutImageRequiredValidation,
         duration: 4,
       });
       return;
@@ -205,12 +205,15 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       // Make the API call to create the CILT procedure
       await createCiltMstr(ciltPayload).unwrap();
       
-      // Show success notification
+      // Show only one success notification with appropriate message
       notification.success({
         message: Strings.success,
         description: Strings.ciltMasterCreateSuccess,
         duration: 4,
       });
+      
+      // The cache invalidation is now handled by the RTK Query tags
+      // so we don't need to manually invalidate the cache here
       
       if (onSuccess) {
         onSuccess();
@@ -269,7 +272,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       <div className="flex flex-row gap-4">
         <Form.Item
           name="standardTime"
-          label={Strings.standardTime}
+          label={Strings.ciltMstrStandardTimeLabel}
           className="flex-1"
           rules={[
             { required: true, message: Strings.registerCiltStandardTimeRequiredValidation }

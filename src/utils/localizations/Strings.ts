@@ -1157,6 +1157,9 @@ class StringsBase {
   static areaSelectPlaceholder = "areaSelectPlaceholder"
   static lastLoginWeb = "lastLoginWeb"
   static lastLoginApp = "lastLoginApp"
+  static imageLoadSuccess = "imageLoadSuccess"
+  static imageLoadError = "imageLoadError"
+  static warningImageUpload = "warningImageUpload"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
