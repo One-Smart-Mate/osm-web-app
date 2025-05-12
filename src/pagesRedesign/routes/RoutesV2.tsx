@@ -18,6 +18,7 @@ import Constants from "../../utils/Constants";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
+
 const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
@@ -51,7 +52,7 @@ const CiltTypesPage = React.lazy(
 const CiltFrecuenciesPage = React.lazy(
   () => import("../../pages/ciltFrecuencies/CiltFrecuenciesPage")
 );
-const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
+const TagsPage = React.lazy(() => import("../../pages/tags/TagsPage"));
 
 // Common routes
 const prioritiesV2 = new RouteV2(
@@ -73,7 +74,7 @@ const levelsV2 = new RouteV2(
 const tagsV2 = new RouteV2(
   Strings.cardsSB,
   Constants.ROUTES_PATH.cards,
-  <TagsV2 />,
+  <TagsPage />,
   <BsCardChecklist />,
   Strings.dashboard
 );

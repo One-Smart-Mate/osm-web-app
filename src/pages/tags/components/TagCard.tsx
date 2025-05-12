@@ -27,11 +27,11 @@ import {
   BsPinMap,
 } from "react-icons/bs";
 
-interface CardProps {
+interface TagCardProps {
   data: CardInterface;
 }
 
-const TagCardV2 = ({ data }: CardProps) => {
+const TagCard = ({ data }: TagCardProps) => {
   const { status, text, dateStatus } = getCardStatusAndText(
     data.status,
     data.cardDueDate,
@@ -145,4 +145,4 @@ const TagCardV2 = ({ data }: CardProps) => {
   );
 };
 
-export default TagCardV2;
+export default TagCard;

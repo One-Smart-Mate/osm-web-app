@@ -13,11 +13,9 @@ import Preclassifiers from "../preclassifier/Preclassifiers";
 import Users from "../user/Users";
 import { MdLowPriority, MdOutlineManageAccounts } from "react-icons/md";
 import Levels from "../level/Levels";
-import Cards from "../card/Tags";
 import CardDetails from "../carddetails/CardDetails";
 import SiteUsers from "../user/SiteUsers";
 import { PiMapPinAreaLight } from "react-icons/pi";
-import { TbCards } from "react-icons/tb";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
 import PositionsPage from "../positions/PositionsPage";
@@ -97,13 +95,6 @@ const adminLevels = new Route(
   <></>,
 );
 
-const adminCards = new Route(
-  Strings.cardsSB,
-  "cards",
-  Routes.AdminPrefix + Routes.Cards,
-  <Cards rol={UserRoles.IHSISADMIN} />,
-  <></>,
-);
 
 export const adminCardDetails = new Route(
   Strings.cardDetailsSB,
@@ -163,7 +154,6 @@ const adminRoutes: Route[] = [
   adminCardTypes,
   adminPreclassifiers,
   adminLevels,
-  adminCards,
   adminCardDetails,
   adminSiteUsers,
   adminPositions,
@@ -212,13 +202,6 @@ const sysAdminCardTypes = new Route(
   <BiCategory />,
 );
 
-const sysAdminCards = new Route(
-  Strings.cardsSB,
-  "cards",
-  Routes.SysadminPrefix + Routes.Site + Routes.Cards,
-  <Cards rol={UserRoles.LOCALSYSADMIN} />,
-  <TbCards />,
-);
 
 export const sysAdminCardDetails = new Route(
   Strings.cardDetailsSB,
@@ -242,7 +225,6 @@ const sysAdminRoutes: Route[] = [
   sysAdminPriorities,
   sysAdminLevels,
   sysAdminCardTypes,
-  sysAdminCards,
   sysAdminPreclassifiers,
   sysAdminCardDetails,
 ];
@@ -258,11 +240,7 @@ const sysAdminRoutesSiderOptions = (user: User): ItemType[] => {
             sysAdminSiteUsers.fullPath.replace(Strings.siteParam, site.id),
             sysAdminSiteUsers.icon
           ),
-          getItem(
-            sysAdminCards.label,
-            sysAdminCards.fullPath.replace(Strings.siteParam, site.id),
-            sysAdminCards.icon
-          ),
+
           getItem(
             sysAdminLevels.label,
             sysAdminLevels.fullPath.replace(Strings.siteParam, site.id),
@@ -303,17 +281,9 @@ export const localAdminCardDetails = new Route(
   <></>
 );
 
-const localAdminCards = new Route(
-  Strings.cardsSB,
-  "cards",
-  Routes.LocalAdminPrefix + Routes.Site + Routes.Cards,
-  <Cards rol={UserRoles.LOCALADMIN} />,
-  <TbCards />
-);
 
 
 const localAdminRoutes: Route[] = [
-  localAdminCards,
   localAdminCardDetails,
   localAdminSites,
 ];
@@ -324,11 +294,7 @@ const localAdminRoutesSiderOptions = (user: User): ItemType[] => {
       getItem(Strings.viewSites, localAdminSites.fullPath),
       ...user.sites.map((site) =>
         getItem(site.name, `${site.id} ${site.name}`, null, [
-          getItem(
-            localAdminCards.label,
-            localAdminCards.fullPath.replace(Strings.siteParam, site.id),
-            localAdminCards.icon
-          ),
+         
         ]),
       ),
     ]),

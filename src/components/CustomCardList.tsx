@@ -3,7 +3,7 @@ import { List } from "antd";
 import PaginatedList from "./PaginatedList";
 import { CardInterface } from "../data/card/card";
 import { UserRoles } from "../utils/Extensions";
-import TagCardV2 from "../pages/card/components/TagCardV2";
+import TagCardV2 from "../pages/tags/components/TagCard";
 
 interface CustomCardListProps {
   dataSource: CardInterface[];
@@ -21,7 +21,7 @@ const CustomCardList: React.FC<CustomCardListProps> = ({
         dataSource={dataSource}
         renderItem={(item: CardInterface, index: number) => (
           <List.Item key={index}>
-            <TagCardV2 data={item} key={index} />
+            <TagCardV2 data={item}/>
           </List.Item>
         )}
         loading={isLoading}

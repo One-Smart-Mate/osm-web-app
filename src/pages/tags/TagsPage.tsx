@@ -7,12 +7,12 @@ import PaginatedList from "../../components/PaginatedList";
 import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import TagCardV2 from "./components/TagCardV2";
+import TagCard from "./components/TagCard";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useDebounce } from "use-debounce";
 import { handleErrorNotification } from "../../utils/Notifications";
 
-const TagsV2 = () => {
+const TagsPage = () => {
   const [getCards] = useGetCardsMutation();
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
@@ -79,7 +79,7 @@ const TagsV2 = () => {
           className="no-scrollbar"
           renderItem={(item: CardInterface, index: number) => (
             <List.Item key={index}>
-              <TagCardV2 data={item} />
+              <TagCard data={item} />
             </List.Item>
           )}
           loading={isLoading}
@@ -89,4 +89,4 @@ const TagsV2 = () => {
   );
 };
 
-export default TagsV2;
+export default TagsPage;
