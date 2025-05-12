@@ -31,7 +31,7 @@ const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
 const SystemHealth = React.lazy(
   () => import("../../pages/systemhealth/SystemHealth")
 );
-const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
+const SitesPage = React.lazy(() => import("../../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../../pages/charts/ChartsPage"));
 const PositionsPage = React.lazy(
   () => import("../../pages/positions/PositionsPage")
@@ -90,7 +90,7 @@ const chartsV2 = new RouteV2(
 const sitesV2 = new RouteV2(
   Strings.sitesSB,
   Constants.ROUTES_PATH.sites,
-  <SitesV2 />,
+  <SitesPage />,
   <BsBuildingAdd />,
   Strings.catalogs
 );

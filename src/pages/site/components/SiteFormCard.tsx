@@ -10,6 +10,7 @@ import {
   Image,
   DatePicker,
   Select,
+  App as AntApp
 } from "antd";
 import {
   BsBuilding,
@@ -42,6 +43,7 @@ import { Currency } from "../../../data/currency/currency";
 import { SiteUpdateForm } from "../../../data/site/site";
 import moment from "moment";
 import Constants from "../../../utils/Constants";
+import AnatomyNotification from "../../components/AnatomyNotification";
 
 interface SiteFormCardProps {
   form: FormInstance;
@@ -69,9 +71,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState(Strings.empty);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
   const [getCurrencies] = useGetCurrenciesMutation();
   const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const { notification } = AntApp.useApp();
 
   useEffect(() => {
     console.log(JSON.stringify(initialValues));
@@ -130,7 +132,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
   const customUpload = async (options: any) => {
     const { file, onError, onSuccess } = options;
     try {
-        console.log('Aquo!')
       const siteName = form.getFieldValue("name");
       let fileName: string =
         siteName != null && siteName != "" && siteName != undefined
@@ -151,6 +152,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
       }
       onSuccess(uploadedUrl, file);
     } catch (error) {
+      AnatomyNotification.error(notification, error);
       onError(error);
     }
   };
