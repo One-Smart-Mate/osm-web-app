@@ -332,6 +332,21 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         </div>
 
         <div className="flex flex-wrap flex-row">
+
+        <Form.Item
+            name="phone"
+            rules={[{ required: true, message: Strings.requiredPhone }]}
+            className="flex-1 mr-2"
+          >
+            <InputNumber
+              size="large"
+              maxLength={13}
+              addonBefore={<BsTelephone />}
+              placeholder={Strings.phone}
+            />
+          </Form.Item>
+          <AnatomyTooltip title={Strings.companyPhoneTooltip} />
+
           <Form.Item name="extension">
             <InputNumber
               size="large"
@@ -341,20 +356,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             />
           </Form.Item>
           <AnatomyTooltip title={Strings.companyExtensionTooltip} />
-
-          <Form.Item
-            name="phone"
-            rules={[{ required: true, message: Strings.requiredPhone }]}
-            className="flex-1 mr-2"
-          >
-            <InputNumber
-              size="large"
-              maxLength={10}
-              addonBefore={<BsTelephone />}
-              placeholder={Strings.phone}
-            />
-          </Form.Item>
-          <AnatomyTooltip title={Strings.companyPhoneTooltip} />
 
           <Form.Item
             name="cellular"

@@ -111,8 +111,9 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
               <div>
                 {payload?.map((item, index) => (
                   <div
-                    className="bg-card-fields md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
+                    className="md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
                     key={index}
+                    style={{backgroundColor: `#${item.payload.color ?? '000'}`}}
                   >
                     <p>
                       {Strings.cardName} {item.payload.methodology}

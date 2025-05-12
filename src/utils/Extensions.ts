@@ -50,6 +50,18 @@ export const validateEmail = (
   }
 };
 
+export const validateEmailPromise = (_: RuleObject, value: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!value || value.trim() === "") {
+      reject(Strings.requiredEmail); // Reject with an error message
+    } else if (!/^\S+@\S+\.\S+$/.test(value.trim())) {
+      reject(Strings.requiredValidEmailAddress); // Reject with an invalid email message
+    } else {
+      resolve(); // Resolve if the email is valid
+    }
+  });
+};
+
 export const getInitRoute = (user: User): string => {
   const isihSisAdmin = user.roles?.some(
     (role) => role === Constants.ihSisAdmin
