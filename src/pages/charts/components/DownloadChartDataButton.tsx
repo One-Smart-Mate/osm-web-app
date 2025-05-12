@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { useLazyDownloadReportQuery } from "../../../services/exportService";
 import { handleErrorNotification } from "../../../utils/Notifications";
-import CustomButton from "../../../components/CustomButtons";
-import { MdOutlineFileDownload } from "react-icons/md";
 import Strings from "../../../utils/localizations/Strings";
 import { Button, notification } from "antd";
-import { isRedesign } from "../../../utils/Extensions";
 
-interface Props {
+interface DownloadChartDataButtonProps {
   siteId: string;
 }
 
-const DownloadCarDataExceButton = ({ siteId }: Props) => {
+const DownloadChartDataButton = ({ siteId }: DownloadChartDataButtonProps) => {
   const [downloadReport, { isFetching }] = useLazyDownloadReportQuery();
   const [loading, setLoading] = useState(false);
 
@@ -41,21 +38,10 @@ const DownloadCarDataExceButton = ({ siteId }: Props) => {
   };
 
   return (
-    isRedesign() ? <Button
-  
-    onClick={handleDownload}
-    loading={loading || isFetching}
-    >
-    {Strings.downloadData}
-    </Button> : <CustomButton
-    type="action"
-    onClick={handleDownload}
-    loading={loading || isFetching}
-  >
-    <MdOutlineFileDownload />
-    {Strings.downloadData}
-  </CustomButton>
+    <Button onClick={handleDownload} loading={loading || isFetching}>
+      {Strings.downloadData}
+    </Button>
   );
 };
 
-export default DownloadCarDataExceButton;
+export default DownloadChartDataButton;

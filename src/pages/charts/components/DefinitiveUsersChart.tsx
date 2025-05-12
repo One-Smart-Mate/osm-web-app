@@ -14,14 +14,12 @@ import { useGetDefinitiveUsersChartDataMutation } from "../../../services/chartS
 import Strings from "../../../utils/localizations/Strings";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
-import { UserRoles } from "../../../utils/Extensions";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
 
-export interface ChartProps {
+export interface DefinitiveUsersChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
-  rol: UserRoles;
   methodologies: Methodology[];
 }
 
@@ -30,8 +28,7 @@ const DefinitiveUsersChart = ({
   startDate,
   endDate,
   methodologies,
-  rol,
-}: ChartProps) => {
+}: DefinitiveUsersChartProps) => {
   const [getDefinitiveUsers] = useGetDefinitiveUsersChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -141,7 +138,6 @@ const DefinitiveUsersChart = ({
         label={Strings.definitiveUser}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         text={selectedDefinitiveUserName}
         cardTypeName={selectedCardTypeName}
       />

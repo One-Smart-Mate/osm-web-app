@@ -15,13 +15,11 @@ import Strings from "../../../utils/localizations/Strings";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface MechanicsChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
-  rol: UserRoles;
   methodologies: Methodology[];
 }
 
@@ -30,8 +28,7 @@ const MechanicsChart = ({
   startDate,
   endDate,
   methodologies,
-  rol,
-}: ChartProps) => {
+}: MechanicsChartProps) => {
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -140,7 +137,6 @@ const MechanicsChart = ({
         label={Strings.mechanic}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         text={selectedMechanicName}
         cardTypeName={selectedCardTypeName}
       />

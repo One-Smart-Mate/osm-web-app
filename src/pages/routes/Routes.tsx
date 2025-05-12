@@ -3,7 +3,7 @@ import { MenuProps } from "antd";
 import { Route } from "./models/Route";
 import User from "../../data/user/user";
 import { UserRoles, getUserRol } from "../../utils/Extensions";
-import { BsBarChartLine, BsBuildings } from "react-icons/bs";
+import { BsBuildings } from "react-icons/bs";
 import Routes from "../../utils/Routes";
 import Company from "../company/Companies";
 import Priorities from "../priority/Priorities";
@@ -15,7 +15,6 @@ import { MdLowPriority, MdOutlineManageAccounts } from "react-icons/md";
 import Levels from "../level/Levels";
 import Cards from "../card/Tags";
 import CardDetails from "../carddetails/CardDetails";
-import Charts from "../charts/Charts";
 import SiteUsers from "../user/SiteUsers";
 import { PiMapPinAreaLight } from "react-icons/pi";
 import { TbCards } from "react-icons/tb";
@@ -114,13 +113,6 @@ export const adminCardDetails = new Route(
   <></>,
 );
 
-const adminCharts = new Route(
-  Strings.chartsSB,
-  "charts",
-  Routes.AdminPrefix + Routes.Charts,
-  <Charts rol={UserRoles.IHSISADMIN} />,
-  <></>,
-);
 
 const adminPositions = new Route(
   Strings.positionsSB,
@@ -173,20 +165,12 @@ const adminRoutes: Route[] = [
   adminLevels,
   adminCards,
   adminCardDetails,
-  adminCharts,
   adminSiteUsers,
   adminPositions,
   adminNotifications,
   adminSystemHealth,
 ];
 
-const sysAdminCharts = new Route(
-  Strings.chartsSB,
-  "charts",
-  Routes.SysadminPrefix + Routes.Site + Routes.Charts,
-  <Charts rol={UserRoles.LOCALSYSADMIN} />,
-  <BsBarChartLine />,
-);
 
 const sysAdminSites = new Route(
   Strings.sitesSB,
@@ -253,7 +237,6 @@ export const sysAdminPreclassifiers = new Route(
 );
 
 const sysAdminRoutes: Route[] = [
-  sysAdminCharts,
   sysAdminSites,
   sysAdminSiteUsers,
   sysAdminPriorities,
@@ -274,11 +257,6 @@ const sysAdminRoutesSiderOptions = (user: User): ItemType[] => {
             sysAdminSiteUsers.label,
             sysAdminSiteUsers.fullPath.replace(Strings.siteParam, site.id),
             sysAdminSiteUsers.icon
-          ),
-          getItem(
-            sysAdminCharts.label,
-            sysAdminCharts.fullPath.replace(Strings.siteParam, site.id),
-            sysAdminCharts.icon
           ),
           getItem(
             sysAdminCards.label,
@@ -333,16 +311,8 @@ const localAdminCards = new Route(
   <TbCards />
 );
 
-const localAdminCharts = new Route(
-  Strings.chartsSB,
-  "charts",
-  Routes.LocalAdminPrefix + Routes.Site + Routes.Charts,
-  <Charts rol={UserRoles.LOCALADMIN} />,
-  <BsBarChartLine />
-);
 
 const localAdminRoutes: Route[] = [
-  localAdminCharts,
   localAdminCards,
   localAdminCardDetails,
   localAdminSites,
@@ -354,11 +324,6 @@ const localAdminRoutesSiderOptions = (user: User): ItemType[] => {
       getItem(Strings.viewSites, localAdminSites.fullPath),
       ...user.sites.map((site) =>
         getItem(site.name, `${site.id} ${site.name}`, null, [
-          getItem(
-            localAdminCharts.label,
-            localAdminCharts.fullPath.replace(Strings.siteParam, site.id),
-            localAdminCharts.icon
-          ),
           getItem(
             localAdminCards.label,
             localAdminCards.fullPath.replace(Strings.siteParam, site.id),

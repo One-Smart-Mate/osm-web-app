@@ -12,15 +12,14 @@ import {
 } from "recharts";
 import { Methodology } from "../../../data/charts/charts";
 import { CardTypesCatalog } from "../../../data/cardtypes/cardTypes";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface MethodologiesChartProps {
   siteId: string; 
   methodologies: Methodology[];
   methodologiesCatalog: CardTypesCatalog[];
 }
 
-const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
+const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) => {
   const [open, setOpen] = useState(false);
   const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
@@ -38,14 +37,12 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
   const handleOnClick = (data: any) => {
     const cardTypeName = data.payload.methodology;
     const params = { siteId, cardTypeName };
-    console.log("Search Params:", params);
     setSearchParams(params);
     setSelectedTotalCards(data.payload.totalCards);
     setCardTypeName(cardTypeName);
     setOpen(true);
   };
   
-
   
   const renderCustomizedLabel = ({
     cx,
@@ -137,7 +134,7 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
         text={selectedCardTypeName}
-        cardTypeName={selectedCardTypeName} rol={UserRoles.IHSISADMIN}      />
+        cardTypeName={selectedCardTypeName} />
     </>
   );
 };

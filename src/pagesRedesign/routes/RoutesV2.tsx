@@ -31,7 +31,7 @@ const SystemHealth = React.lazy(
   () => import("../../pages/systemhealth/SystemHealth")
 );
 const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
-const ChartsV2 = React.lazy(() => import("../../pages/charts/ChartsV2"));
+const ChartsPage = React.lazy(() => import("../../pages/charts/ChartsPage"));
 const PositionsPage = React.lazy(
   () => import("../../pages/positions/PositionsPage")
 );
@@ -81,7 +81,7 @@ const tagsV2 = new RouteV2(
 const chartsV2 = new RouteV2(
   Strings.chartsSB,
   Constants.ROUTES_PATH.charts,
-  <ChartsV2 />,
+  <ChartsPage />,
   <BsBarChartLine />,
   Strings.dashboard
 );
