@@ -120,14 +120,13 @@ const CiltTypes = (): React.ReactElement => {
     }
 
     form.validateFields().then((values) => {
-      // Quitar '#' antes de enviar
       if (values.color && values.color.startsWith('#')) {
         values.color = values.color.slice(1);
       }
 
       const payload = {
         ...values,
-        status: values.status ? 'A' : 'I',
+        status: values.status ? Strings.activeValue : Strings.inactiveValue,
         siteId: Number(siteId),
       };
 
