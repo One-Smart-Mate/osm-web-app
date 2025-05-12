@@ -7,9 +7,14 @@ import {
 
 export const ciltFrequenciesService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /cilt-frequencies/all
+    // GET /cilt-frequencies/alla
     getCiltFrequenciesAll: builder.mutation<CiltFrequency[], void>({
       query: () => `/cilt-frequencies/all`,
+      transformResponse: (response: { data: CiltFrequency[] }) => response.data,
+    }),
+
+    getCiltTypesBySite: builder.mutation<CiltFrequency[], string>({
+      query: (siteId) => `/cilt-types/site/${siteId}`,
       transformResponse: (response: { data: CiltFrequency[] }) => response.data,
     }),
 
@@ -44,6 +49,7 @@ export const ciltFrequenciesService = apiSlice.injectEndpoints({
 
 export const {
   useGetCiltFrequenciesAllMutation,
+   useGetCiltTypesBySiteMutation,
   useGetCiltFrequencyByIdMutation,
   useCreateCiltFrequencyMutation,
   useUpdateCiltFrequencyMutation,

@@ -822,14 +822,16 @@ const resources = {
       oplDescription:
         "This page contains information about One Point Lessons (OPL).",
       ciltTypesSB: "CILT Types",
+      ciltTypesOf: "CILT Types of",
       ciltTypesDescription:
         "This page contains information about different types of CILT.",
       ciltFrecuenciesSB: "CILT Frequencies",
+      ciltFrecuenciesOf: "CILT Frequencies of",
       ciltFrecuenciesDescription:
         "This page contains information about CILT frequencies.",
 
       //CILT TYPES IN ENGLISH
-      searchbyname: "Search by name",
+      searchByName: "Search by name",
       addNewCiltType: "Add new type of CILT",
       errorLoadingNewTypesCilt: "Error loading CILT types",
       typeCiltUpdated: "Type Cilt Updated",
@@ -840,6 +842,8 @@ const resources = {
       obligatoryName: "The name is obligatory",
       editCiltType: "Edit Cilt Type",
       addCiltType: "Add Cilt Type",
+      errorNoSiteId: "A site Id is obligatory",
+      clearFilters: "Clear filters",
 
       //CILT FREQUENCIES IN ENGLISH
       frequencyCode: "Frequency Code",
@@ -2081,39 +2085,41 @@ const resources = {
       oplDescription:
         "Esta página contiene información sobre One Point Lessons (OPL).",
       ciltTypesSB: "Tipos de CILT",
+      ciltTypesOf: "Tipos de CILT de",
       ciltTypesDescription:
         "Esta página contiene información sobre diferentes tipos de CILT.",
       ciltFrecuenciesSB: "Frecuencias de CILT",
+      ciltFrecuenciesOf: "Frecuencias de CILT de",
       ciltFrecuenciesDescription:
         "Esta página contiene información sobre frecuencias de CILT.",
 
-      //CILT TYPES IN ENGLISH
-      searchbyname: "Search by name",
-      addNewCiltType: "Add new type of CILT",
-      errorLoadingNewTypesCilt: "Error loading CILT types",
-      typeCiltUpdated: "Type Cilt Updated",
-      errorUpdatingCiltType: "Error updating CILT type",
-      ciltTypeAdded: "Cilt type added",
-      errorAddingCiltType: "Error adding CILT type",
-      noCiltTypes: "There are no CILT types to display.",
-      obligatoryName: "The name is obligatory",
-      editCiltType: "Edit Cilt Type",
-      addCiltType: "Add Cilt Type",
-
-      //CILT FREQUENCIES IN ENGLISH
-      frequencyCode: "Frequency Code",
-      addNewCiltFrequency: "Add New Cilt Frequency",
-      editCiltFrequency: "Edit Cilt Frequency",
-      addCiltFrequency: "Add Frequency",
-      ciltFrequencyAdded: "Frequency added successfully",
-      ciltFrequencyUpdated: "Frequency updated successfully",
-      errorAddingCiltFrequency: "Error adding frequency",
-      errorUpdatingCiltFrequency: "Error updating frequency",
-      errorLoadingCiltFrequencies: "Error loading frequencies",
-      noCiltFrequencies: "No frequencies available",
-      obligatoryCode: "Frequency code is required",
-      obligatoryDescription: "Description is required",
-      searchbyDescriptionOrCode: "Search by code or description",
+  
+        searchByName: "Buscar por nombre",
+        addNewCiltType: "Agregar nuevo tipo de CILT",
+        errorLoadingNewTypesCilt: "Error al cargar los tipos de CILT",
+        typeCiltUpdated: "Tipo de CILT actualizado",
+        errorUpdatingCiltType: "Error al actualizar el tipo de CILT",
+        ciltTypeAdded: "Tipo de CILT agregado",
+        errorAddingCiltType: "Error al agregar el tipo de CILT",
+        noCiltTypes: "No hay tipos de CILT para mostrar.",
+        obligatoryName: "El nombre es obligatorio",
+        editCiltType: "Editar tipo de CILT",
+        addCiltType: "Agregar tipo de CILT",
+        
+        frequencyCode: "Código de frecuencia",
+        addNewCiltFrequency: "Agregar nueva frecuencia de CILT",
+        editCiltFrequency: "Editar frecuencia de CILT",
+        addCiltFrequency: "Agregar frecuencia",
+        ciltFrequencyAdded: "Frecuencia agregada exitosamente",
+        ciltFrequencyUpdated: "Frecuencia actualizada exitosamente",
+        errorAddingCiltFrequency: "Error al agregar la frecuencia",
+        errorUpdatingCiltFrequency: "Error al actualizar la frecuencia",
+        errorLoadingCiltFrequencies: "Error al cargar las frecuencias",
+        noCiltFrequencies: "No hay frecuencias disponibles",
+        obligatoryCode: "El código de frecuencia es obligatorio",
+        obligatoryDescription: "La descripción es obligatoria",
+        searchbyDescriptionOrCode: "Buscar por código o descripción",
+        
 
       // CILT Master strings
       ciltMstrPageTitle: "Procedimientos CILT",
@@ -2510,8 +2516,15 @@ const resources = {
       cilt: "CILT",
       selectedUsersList: "Usuarios seleccionados:",
       ciltMstrLastUpdated: "Última actualización:",
+
+      
       lastLoginWeb: "Ultimo login web",
-      lastLoginApp: "Ultimo login app"
+      lastLoginApp: "Ultimo login app",
+      
+      errorNoSiteId: "El id del site es obligatorio",
+      clearFilters: "Limpiar filtros",
+
+      
     },
   },
 };
