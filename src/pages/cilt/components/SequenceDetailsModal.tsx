@@ -1,7 +1,10 @@
 import React from "react";
-import { Modal, Card, Row, Col, Typography, Divider, Button } from "antd";
+import { Modal, Card, Row, Col, Typography, Divider } from "antd";
 import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
+import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
+import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
+import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
 
 interface SequenceDetailsModalProps {
   visible: boolean;
@@ -16,15 +19,32 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
   visible,
   sequence,
   onCancel,
-  onViewOpl,
 }) => {
   if (!sequence) return null;
+
+  // fetch all frequencies for this CILT master then filter by this sequence
+  const [getSeqFreqs, { data: allSeqFreqs = [] }] = useGetCiltSequenceFrequenciesByCiltMutation();
+  React.useEffect(() => {
+    if (sequence.ciltMstrId) getSeqFreqs(String(sequence.ciltMstrId));
+  }, [sequence.ciltMstrId]);
+  const sequenceFreqs: CiltSequenceFrequency[] = (allSeqFreqs || []).filter(f => f.secuencyId === sequence.id);
+
+  // fetch OPL master details
+  const [getRefOpl, { data: referenceOpl }] = useGetOplMstrByIdMutation();
+  const [getRemOpl, { data: remediationOpl }] = useGetOplMstrByIdMutation();
+  React.useEffect(() => {
+    if (sequence.referenceOplSop) getRefOpl(String(sequence.referenceOplSop));
+  }, [sequence.referenceOplSop]);
+  React.useEffect(() => {
+    if (sequence.remediationOplSop) getRemOpl(String(sequence.remediationOplSop));
+  }, [sequence.remediationOplSop]);
 
   return (
     <Modal
       title={`${Strings.detailsOf} ${Strings.sequence}`}
       open={visible}
       onCancel={onCancel}
+      zIndex={900}
       footer={null}
       width={700}
     >
@@ -46,8 +66,8 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.standardTime}:</Text>
             <div>
               <Text strong>
-                {sequence.standardTime 
-                  ? `${sequence.standardTime} ${Strings.seconds}` 
+                {sequence.standardTime
+                  ? `${sequence.standardTime} ${Strings.seconds}`
                   : "N/A"}
               </Text>
             </div>
@@ -84,7 +104,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Text type="secondary">{Strings.requiredTools}:</Text>
-            <div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
               <Text>{sequence.toolsRequired || "N/A"}</Text>
             </div>
           </Col>
@@ -120,6 +140,28 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
 
         <Row gutter={[16, 16]}>
           <Col span={24}>
+            <Text type="secondary">{Strings.editCiltSequenceModalSequenceListLabel}:</Text>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              <Text>{sequence.secuenceList || "N/A"}</Text>
+            </div>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>
+            <div>
+              <Text>{sequenceFreqs.length > 0 ? sequenceFreqs.map(f => f.frecuencyCode).join(", ") : "N/A"}</Text>
+            </div>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
             <Text strong>{Strings.relatedOPLs}</Text>
           </Col>
 
@@ -127,14 +169,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.referenceOPL}:</Text>
             <div>
               {sequence.referenceOplSop ? (
-                <Button
-                  type="link"
-                  onClick={() =>
-                    onViewOpl(sequence.referenceOplSop)
-                  }
-                >
-                  {Strings.viewReferenceOPL}
-                </Button>
+                <Text>{referenceOpl?.title || 'Loading...'}</Text>
               ) : (
                 <Text>N/A</Text>
               )}
@@ -145,14 +180,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.remediationOPL}:</Text>
             <div>
               {sequence.remediationOplSop ? (
-                <Button
-                  type="link"
-                  onClick={() =>
-                    onViewOpl(sequence.remediationOplSop)
-                  }
-                >
-                  {Strings.viewRemediationOPL}
-                </Button>
+                <Text>{remediationOpl?.title || 'Loading...'}</Text>
               ) : (
                 <Text>N/A</Text>
               )}

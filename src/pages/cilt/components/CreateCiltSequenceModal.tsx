@@ -98,12 +98,10 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   }, [visible, form]);
 
-  
   useEffect(() => {
     if (cilt && visible) {
-      
       form.setFieldsValue({
-        positionId: cilt.positionId || null
+        positionId: cilt.positionId || null,
       });
     }
   }, [cilt, form, visible]);
@@ -172,25 +170,19 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   };
 
   const getSelectedColor = (color: string | undefined): string => {
-    
     return (color || "#1890ff").replace("#", "");
   };
 
-  
   const defaultColor = "#1890ff";
-  
+
   const handleColorChange = (colorValue: any) => {
-    
     const hexColor = colorValue.toHex().replace("#", "");
-    
     setColor("#" + hexColor);
-    
     form.setFieldsValue({ secuenceColor: hexColor });
   };
 
   useEffect(() => {
     if (visible) {
-      
       form.setFieldsValue({ secuenceColor: defaultColor.replace("#", "") });
     }
   }, [visible, form]);
@@ -207,30 +199,21 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         return;
       }
 
-      
       console.log("positions data:", positions);
       console.log("CILT selected positionId:", cilt?.positionId);
-      
       const selectedPosition = positions?.find(p => p.id === Number(cilt?.positionId));
       console.log("selectedPosition:", selectedPosition);
-      
-      
       console.log("CILT data:", cilt);
-      
       const createPromises = values.frequencies.map(
         async (frequencyId: number) => {
-          
           const combinedData = {
-            
             ...values,
-            
             siteId: Number(selectedPosition?.siteId || location.state?.siteId || 0),
             siteName: selectedPosition?.siteName || location.state?.siteName || "",
             areaId: Number(selectedPosition?.areaId || 0),
             areaName: selectedPosition?.areaName || "",
             positionId: Number(cilt?.positionId || 0),
             positionName: selectedPosition?.name || "",
-            
             ciltMstrId: Number(cilt?.id || 0),
             ciltMstrName: cilt?.ciltName || "",
           };
@@ -266,7 +249,6 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             createdAt: new Date().toISOString(),
           };
 
-          
           console.log("Creating sequence with data:", JSON.stringify(sequenceData, null, 2));
 
           const response = await createCiltSequence(sequenceData).unwrap();
@@ -284,10 +266,8 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               frecuencyCode: frequency?.frecuencyCode || "",
               status: "A",
             };
-            
-            
+
             console.log("Creating sequence frequency with data:", JSON.stringify(sequenceFrequencyData, null, 2));
-            
             await createCiltSequenceFrequency(sequenceFrequencyData).unwrap();
           }
 
@@ -302,6 +282,13 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         description: Strings.createCiltSequenceModalSuccessDescription,
       });
 
+      // Reset form and selections after successful submit
+      form.resetFields();
+      setSelectedLevel(null);
+      setSelectedReferenceOpl(null);
+      setSelectedRemediationOpl(null);
+      setColor("#1677FF");
+
       onSuccess();
     } catch (error) {
       console.error("Error creating CILT sequences:", error);
@@ -314,11 +301,21 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   };
 
+  // Custom cancel handler: reset form and states
+  const handleCancel = () => {
+    form.resetFields();
+    setSelectedLevel(null);
+    setSelectedReferenceOpl(null);
+    setSelectedRemediationOpl(null);
+    setColor("#1677FF");
+    onCancel();
+  };
+
   return (
     <Modal
       title={Strings.createCiltSequenceModalTitle}
       open={visible}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       footer={null}
       width={1000}
     >
@@ -394,7 +391,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       onClick={() => setLevelTreeModalVisible(true)}
                       className="mr-2"
                     >
-                      {Strings.select} {Strings.level}
+                      {Strings.selectRole} {Strings.level}
                     </Button>
                     {selectedLevel && (
                       <div className="border rounded p-2 flex-1">
@@ -474,7 +471,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       onClick={() => setReferenceOplModalVisible(true)}
                       className="mr-2"
                     >
-                      {Strings.select} OPL
+                      {Strings.oplSelectionModalSelectButton}
                     </Button>
                     {selectedReferenceOpl && (
                       <div className="border rounded p-2 flex-1">
@@ -496,7 +493,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       onClick={() => setRemediationOplModalVisible(true)}
                       className="mr-2"
                     >
-                      {Strings.select} OPL
+                      {Strings.oplSelectionModalSelectButton}
                     </Button>
                     {selectedRemediationOpl && (
                       <div className="border rounded p-2 flex-1">
@@ -647,14 +644,15 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               <Form.Item
                 name="toolsRequired"
                 label={Strings.editCiltSequenceModalToolsRequiredLabel}
+                getValueFromEvent={e => e.target.value}
               >
-                <TextArea rows={3} />
+                <TextArea autoSize={{ minRows: 3, maxRows: 6 }} />
               </Form.Item>
             </Col>
           </Row>
 
           <div className="flex justify-end mt-4 space-x-2">
-            <Button onClick={onCancel}>{Strings.cancel}</Button>
+            <Button onClick={handleCancel}>{Strings.cancel}</Button>
             <Button type="primary" htmlType="submit" loading={loading}>
               {Strings.save}
             </Button>

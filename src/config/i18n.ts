@@ -1066,9 +1066,9 @@ const resources = {
       editCiltSequenceModalSelectReferenceOpl: "Select reference OPL/SOP",
       editCiltSequenceModalRemediationOplLabel: "Remediation OPL/SOP",
       editCiltSequenceModalSelectRemediationOpl: "Select remediation OPL/SOP",
-      editCiltSequenceModalSequenceListLabel: "Sequence List",
-      editCiltSequenceModalSequenceListRequired: "Sequence list is required",
-      editCiltSequenceModalSequenceListPlaceholder: "Enter sequence list",
+      editCiltSequenceModalSequenceListLabel: "Instructions",
+      editCiltSequenceModalSequenceListRequired: "Instructions is required",
+      editCiltSequenceModalSequenceListPlaceholder: "Enter instructions",
       editCiltSequenceModalColorLabel: "Sequence Color",
       editCiltSequenceModalColorRequired: "Color is required",
       editCiltSequenceModalStandardTimeLabel: "Standard Time (seconds)",
@@ -1234,7 +1234,8 @@ const resources = {
       lastLoginApp: "Last login app",
       imageLoadSuccess: "Image uploaded successfully",
       imageLoadError: "Error uploading image",
-      warningImageUpload: "Warning: image not uploaded correctly"
+      warningImageUpload: "Warning: image not uploaded correctly",
+      scheduleSecuence: "Schedule Sequence"
     },
   },
   es: {
@@ -2334,11 +2335,11 @@ const resources = {
       editCiltSequenceModalRemediationOplLabel: "OPL/SOP de Remediación",
       editCiltSequenceModalSelectRemediationOpl:
         "Seleccione OPL/SOP de remediación",
-      editCiltSequenceModalSequenceListLabel: "Lista de Secuencia",
+      editCiltSequenceModalSequenceListLabel: "Instrucciones",
       editCiltSequenceModalSequenceListRequired:
-        "La lista de secuencia es requerida",
+        "Las instrucciones son requeridas",
       editCiltSequenceModalSequenceListPlaceholder:
-        "Ingrese lista de secuencia",
+        "Ingrese instrucciones",
       editCiltSequenceModalColorLabel: "Color de Secuencia",
       editCiltSequenceModalColorRequired: "El color es requerido",
       editCiltSequenceModalStandardTimeLabel: "Tiempo Estándar en segundos",
@@ -2503,7 +2504,8 @@ const resources = {
       lastLoginApp: "Ultimo login app",
       imageLoadSuccess: "Imagen cargada exitosamente",
       imageLoadError: "Error al cargar imagen",
-      warningImageUpload: "Advertencia: la imagen no se cargó correctamente"
+      warningImageUpload: "Advertencia: la imagen no se cargó correctamente",
+      scheduleSequence: "Calendarizar"
     },
   },
 };

@@ -14,6 +14,8 @@ import { SearchOutlined, EditOutlined } from "@ant-design/icons";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
+import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
+import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
 
 interface SequencesModalProps {
   visible: boolean;
@@ -42,6 +44,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>(sequences);
+  // fetch all sequence-frequency associations for this CILT
+  const [getSeqFreqs, { data: allSeqFreqs = [] }] = useGetCiltSequenceFrequenciesByCiltMutation();
+  React.useEffect(() => { if (currentCilt?.id) getSeqFreqs(String(currentCilt.id)); }, [currentCilt?.id]);
 
   React.useEffect(() => {
     setFilteredSequences(sequences);
@@ -69,6 +74,7 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
       title={`${Strings.sequences} ${currentCilt?.ciltName || "CILT"}`}
       open={visible}
       onCancel={onCancel}
+      zIndex={900}
       footer={[
         <Button key="close" onClick={onCancel}>
           {Strings.close}
@@ -166,6 +172,12 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                       <Text>{sequence.standardTime || "N/A"}</Text>
                     </div>
 
+                    {/* Frequencies */}
+                    <div style={{ marginBottom: 8 }}>
+                      <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>{" "}
+                      <Text>{allSeqFreqs.filter((f: CiltSequenceFrequency) => f.secuencyId === sequence.id).map(f => f.frecuencyCode).join(", ") || "N/A"}</Text>
+                    </div>
+
                     {sequence.toolsRequired && (
                       <div style={{ marginBottom: 8 }}>
                         <Text type="secondary">{Strings.tools}:</Text>{" "}
@@ -217,6 +229,12 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                         disabled={!sequence.remediationOplSop}
                       >
                         {Strings.viewRemediationOpl}
+                      </Button>
+
+                      <Button
+                        type="default"
+                      >
+                        {Strings.scheduleSequence}
                       </Button>
 
                       <Button
