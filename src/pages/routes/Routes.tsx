@@ -4,11 +4,10 @@ import { Route } from "./models/Route";
 import User from "../../data/user/user";
 import { UserRoles, getUserRol } from "../../utils/Extensions";
 import Routes from "../../utils/Routes";
-import Priorities from "../priority/Priorities";
 import CardTypess from "../cardtypes/CardTypes";
 import Preclassifiers from "../preclassifier/Preclassifiers";
 import Users from "../user/Users";
-import { MdLowPriority, MdOutlineManageAccounts } from "react-icons/md";
+import { MdOutlineManageAccounts } from "react-icons/md";
 import Levels from "../level/Levels";
 import CardDetails from "../carddetails/CardDetails";
 import SiteUsers from "../user/SiteUsers";
@@ -27,15 +26,6 @@ const adminNotifications = new Route(
   Routes.AdminPrefix + "/notifications",
   <Notifications />,
   <AiOutlineBell />
-);
-
-
-const adminPriorities = new Route(
-  Strings.prioritiesSB,
-  "priorities",
-  Routes.AdminPrefix + Routes.Priorities,
-  <Priorities />,
-  <></>
 );
 
 const adminUsers = new Route(
@@ -132,7 +122,6 @@ const adminRoutesSiderOptions = (user: User): ItemType[] => {
 
 const adminRoutes: Route[] = [
   adminUsers,
-  adminPriorities,
   adminCardTypes,
   adminPreclassifiers,
   adminLevels,
@@ -153,13 +142,6 @@ const sysAdminSiteUsers = new Route(
   <MdOutlineManageAccounts />,
 );
 
-const sysAdminPriorities = new Route(
-  Strings.prioritiesSB,
-  "priorities",
-  Routes.SysadminPrefix + Routes.Site + Routes.Priorities,
-  <Priorities />,
-  <MdLowPriority />,
-);
 
 const sysAdminLevels = new Route(
   Strings.levelsSB,
@@ -196,7 +178,6 @@ export const sysAdminPreclassifiers = new Route(
 
 const sysAdminRoutes: Route[] = [
   sysAdminSiteUsers,
-  sysAdminPriorities,
   sysAdminLevels,
   sysAdminCardTypes,
   sysAdminPreclassifiers,

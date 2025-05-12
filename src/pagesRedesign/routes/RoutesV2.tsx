@@ -36,8 +36,8 @@ const ChartsPage = React.lazy(() => import("../../pages/charts/ChartsPage"));
 const PositionsPage = React.lazy(
   () => import("../../pages/positions/PositionsPage")
 );
-const PrioritiesV2 = React.lazy(
-  () => import("../../pages/priority/PrioritiesV2")
+const PrioritiesPage = React.lazy(
+  () => import("../../pages/priority/PrioritiesPage")
 );
 const TechnicalSupport = React.lazy(
   () => import("../components/TechnicalSupport")
@@ -58,7 +58,7 @@ const TagsPage = React.lazy(() => import("../../pages/tags/TagsPage"));
 const prioritiesV2 = new RouteV2(
   Strings.prioritiesSB,
   Constants.ROUTES_PATH.priorities,
-  <PrioritiesV2 />,
+  <PrioritiesPage />,
   <BsCalendarCheck />,
   Strings.catalogs
 );
