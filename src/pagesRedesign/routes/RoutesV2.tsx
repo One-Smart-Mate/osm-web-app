@@ -22,7 +22,7 @@ import React from "react";
 const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
-const CompaniesV2 = React.lazy(() => import("../../pages/company/CompaniesV2"));
+const CompaniesPage = React.lazy(() => import("../../pages/company/CompaniesPage"));
 const CardDetails = React.lazy(
   () => import("../../pages/carddetails/CardDetails")
 );
@@ -162,7 +162,7 @@ const ciltFrecuenciesV2 = new RouteV2(
 const companiesV2 = new RouteV2(
   Strings.companiesSB,
   Constants.ROUTES_PATH.companies,
-  <CompaniesV2 />,
+  <CompaniesPage />,
   <BsBuildingAdd />,
   Strings.catalogs
 );

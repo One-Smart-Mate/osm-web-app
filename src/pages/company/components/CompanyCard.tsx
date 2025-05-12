@@ -1,98 +1,135 @@
-import { Card, Dropdown, MenuProps, Tag, theme } from "antd";
+import React from "react";
 import { Company } from "../../../data/company/company";
-import { getStatusAndText } from "../../../utils/Extensions";
-import { SlOptionsVertical } from "react-icons/sl";
+import { Badge, Button, Card, Typography } from "antd";
+import CompanyForm, { CompanyFormType } from "./CompanyForm";
+import AnatomySingleCollapsable from "../../components/AnatomySingleCollapsable";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import Strings from "../../../utils/localizations/Strings";
-import UpdateCompany from "./UpdateCompany";
-import ViewSitesButton from "./ViewSitesButton";
+import {
+  BsBuildingAdd,
+  BsDiagram3,
+  BsFiles,
+  BsMailbox,
+  BsPerson,
+  BsPhone,
+  BsPinMap,
+  BsTelephone,
+  BsTelephoneOutbound,
+} from "react-icons/bs";
+import { getStatusAndText } from "../../../utils/Extensions";
+import Constants from "../../../utils/Constants";
+import { navigateWithProps } from "../../../pagesRedesign/routes/RoutesExtensions";
 
 interface CompanyCardProps {
-  data: Company;
+  company: Company;
+  onComplete?: () => void;
 }
 
-const CompanyCard = ({ data }: CompanyCardProps) => {
-  const { status, text } = getStatusAndText(data.status);
-  const {
-    token: { colorBgContainer, colorPrimary },
-  } = theme.useToken();
-
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: (
-        <ViewSitesButton companyId={data.id} companyName={data.name} companyAddress={data.address} companyPhone={data.phone} companyLogo={data.logo}  />
-      ),
-    },
-    {
-      key: "5",
-      label: <UpdateCompany data={data} />,
-    },
-  ];
-
-  const titleCard = (
-    <div className="flex flex-row justify-center items-center">
-      <img className="size-9 border-white border" src={data.logo} alt="logo" />
-      <div className="ml-2 max-w-xs">
-        <p className="break-words text-wrap text-sm md:text-base text-white">
-          {data.name}
-        </p>
-      </div>
-      <div className="absolute left-1">
-        <Dropdown menu={{ items }} arrow>
-          <SlOptionsVertical
-            color={colorPrimary}
-            size={20}
-            onClick={(e) => e.preventDefault()}
-          />
-        </Dropdown>
-      </div>
-    </div>
-  );
+const CompanyCard = ({
+  company,
+  onComplete,
+}: CompanyCardProps): React.ReactElement => {
+  const navigate = navigateWithProps();
 
   return (
     <Card
-      styles={{ body: { backgroundColor: colorBgContainer } }}
-      key={data.id}
-      type="inner"
-      title={titleCard}
-      className="h-max shadow-xl overflow-hidden text-sm md:text-base relative"
+      hoverable
+      className="rounded-xl shadow-md"
+      title={<Typography.Title level={5}>{company.name}</Typography.Title>}
+      cover={
+        <img
+          alt={company.name}
+          style={{ width: "auto", height: 200 }}
+          src={company.logo}
+        />
+      }
+      actions={[
+        <Button
+          type="primary"
+          onClick={() =>
+            navigate({
+              path: Constants.ROUTES_PATH.sites,
+              companyId: company.id,
+              companyName: company.name,
+              companyAddress: company.address,
+              companyPhone: company.phone,
+              companyLogo: company.logo,
+            })
+          }
+        >
+          {Strings.viewSites}
+        </Button>,
+        <CompanyForm
+          onComplete={() => {
+            if (onComplete) {
+              onComplete();
+            }
+          }}
+          formType={CompanyFormType.UPDATE}
+          data={company}
+        />,
+      ]}
     >
-      <div className="absolute right-0 top-11">
-        {" "}
-        <Tag color={status}>{text}</Tag>
-      </div>
-      <div className="">
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.rfc}: </h1>
-          <p>{data.rfc}</p>
-        </div>
-        <div className="flex  flex-row">
-          <h1 className="font-semibold mr-1">{Strings.companyAddress}: </h1>
-          <p>{data.address}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.contact}: </h1>
-          <p>{data.contact}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.position}: </h1>
-          <p>{data.position}</p>
-        </div>
-        <div className="flex flex-row flex-wrap">
-          <h1 className="font-semibold mr-1">{Strings.phone}: </h1>
-          <p>{data.phone}</p>
-          <h1 className="font-semibold  ml-2 mr-1">{Strings.extension}: </h1>
-          <p>{data.extension}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.cellular}: </h1>
-          <p>{data.cellular}</p>
-        </div>
-        <div className="flex flex-row flex-wrap">
-          <h1 className="font-semibold mr-1">{Strings.email}: </h1>
-          <p>{data.email}</p>
-        </div>
-      </div>
+      <AnatomySingleCollapsable
+        children={
+          <div>
+            <AnatomySection
+              title={Strings.name}
+              label={company.name}
+              icon={<BsBuildingAdd />}
+            />
+            <AnatomySection
+              title={Strings.rfc}
+              label={company.rfc}
+              icon={<BsFiles />}
+            />
+            <AnatomySection
+              title={Strings.companyAddress}
+              label={company.address}
+              icon={<BsPinMap />}
+            />
+            <AnatomySection
+              title={Strings.contact}
+              label={company.contact}
+              icon={<BsPerson />}
+            />
+            <AnatomySection
+              title={Strings.position}
+              label={company.position}
+              icon={<BsDiagram3 />}
+            />
+            <AnatomySection
+              title={Strings.phone}
+              label={company.phone}
+              icon={<BsTelephone />}
+            />
+            <AnatomySection
+              title={Strings.extension}
+              label={company.extension}
+              icon={<BsTelephoneOutbound />}
+            />
+            <AnatomySection
+              title={Strings.email}
+              label={company.email}
+              icon={<BsMailbox />}
+            />
+            <AnatomySection
+              title={Strings.cellular}
+              label={company.cellular}
+              icon={<BsPhone />}
+            />
+            <AnatomySection
+              title={Strings.status}
+              label={
+                <Badge
+                  status={getStatusAndText(company.status).status}
+                  text={getStatusAndText(company.status).text}
+                />
+              }
+            />
+          </div>
+        }
+      />
     </Card>
   );
 };

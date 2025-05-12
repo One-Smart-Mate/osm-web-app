@@ -3,9 +3,7 @@ import { MenuProps } from "antd";
 import { Route } from "./models/Route";
 import User from "../../data/user/user";
 import { UserRoles, getUserRol } from "../../utils/Extensions";
-import { BsBuildings } from "react-icons/bs";
 import Routes from "../../utils/Routes";
-import Company from "../company/Companies";
 import Priorities from "../priority/Priorities";
 import CardTypess from "../cardtypes/CardTypes";
 import Preclassifiers from "../preclassifier/Preclassifiers";
@@ -31,13 +29,7 @@ const adminNotifications = new Route(
   <AiOutlineBell />
 );
 
-const adminCompanies = new Route(
-  Strings.companiesSB,
-  "companies",
-  Routes.AdminPrefix + Routes.AdminDirectionHome,
-  <Company />,
-  <BsBuildings />
-);
+
 const adminPriorities = new Route(
   Strings.prioritiesSB,
   "priorities",
@@ -116,7 +108,6 @@ const adminSystemHealth = new Route(
 
 const adminRoutesSiderOptions = (user: User): ItemType[] => {
   const items: MenuProps["items"] = [
-    getItem(adminCompanies.label, adminCompanies.fullPath, adminCompanies.icon),
     getItem(adminUsers.label, adminUsers.fullPath, adminUsers.icon),
     getItem(
       adminNotifications.label,
@@ -140,7 +131,6 @@ const adminRoutesSiderOptions = (user: User): ItemType[] => {
 };
 
 const adminRoutes: Route[] = [
-  adminCompanies,
   adminUsers,
   adminPriorities,
   adminCardTypes,
