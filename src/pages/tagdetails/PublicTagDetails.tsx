@@ -10,7 +10,7 @@ import {
   CardInterface,
   Evidences,
 } from "../../data/card/card";
-import PageTitleTag from "../../components/PageTitleTag";
+import PageTitle from "../components/PageTitle";
 import ProvisionalSolutionTagCard from "./components/ProvisionalSolutionTagCard";
 import DefinitiveSolutionTagCard from "./components/DefinitiveSolutionTagCard";
 import NoteTagCard from "./components/NoteTagCard";
@@ -148,7 +148,7 @@ const PublicTagDetails = () => {
   return (
     <div className="px-8 md:px-16 py-4">
       <div className="my-10 flex flex-col items-center">
-        <PageTitleTag mainText={Strings.tagDetailsOf} subText={cardName} />
+        <PageTitle mainText={Strings.tagDetailsOf} subText={cardName} />
       </div>
 
       <div className="space-y-4 mt-10">

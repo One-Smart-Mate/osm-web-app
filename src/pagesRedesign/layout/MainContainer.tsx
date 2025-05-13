@@ -1,5 +1,5 @@
 import React from "react";
-import PageTitleTag from "../../components/PageTitleTag";
+import PageTitle from "../../pages/components/PageTitle";
 import { Button, Input, Space } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
@@ -27,7 +27,7 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
         
         {/* Header Section */}
         <div className="flex flex-col gap-2 items-center m-3">
-        <PageTitleTag mainText={title} subText={description} />
+        <PageTitle mainText={title} subText={description} />
           <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
             <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
               {enableSearch && (

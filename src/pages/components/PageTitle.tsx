@@ -7,7 +7,7 @@ interface Props {
   mainText: string;
   subText?: string;
 }
-const PageTitleTag: React.FC<Props> = ({ mainText, subText }) => {
+const PageTitle: React.FC<Props> = ({ mainText, subText }) => {
   const { token } = useToken();  // The token is obtained in PageTitleCards
 
 
@@ -24,4 +24,4 @@ const PageTitleTag: React.FC<Props> = ({ mainText, subText }) => {
   );
 };
 
-export default PageTitleTag;
+export default PageTitle;
