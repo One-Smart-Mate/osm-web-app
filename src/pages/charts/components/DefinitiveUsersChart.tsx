@@ -14,7 +14,7 @@ import { useGetDefinitiveUsersChartDataMutation } from "../../../services/chartS
 import Strings from "../../../utils/localizations/Strings";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
-import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import DrawerTagList from "../../components/DrawerTagList";
 
 export interface DefinitiveUsersChartProps {
   siteId: string;
@@ -131,7 +131,7 @@ const DefinitiveUsersChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <CustomDrawerCardList
+      <DrawerTagList
         open={open}
         dataSource={searchData}
         isLoading={isFetching}

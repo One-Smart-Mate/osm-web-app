@@ -16,7 +16,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { Methodology } from "../../../data/charts/charts";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
-import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import DrawerTagList from "../../components/DrawerTagList";
 
 export interface MachinesChartProps {
   siteId: string;
@@ -134,7 +134,7 @@ const MachinesChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <CustomDrawerCardList
+      <DrawerTagList
         open={open}
         dataSource={searchData}
         isLoading={isFetching}

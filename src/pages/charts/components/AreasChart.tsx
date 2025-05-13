@@ -14,7 +14,7 @@ import { useGetAreasChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomLegend from "../../../components/CustomLegend";
-import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import DrawerTagList from "../../components/DrawerTagList";
 
 export interface AreasChartProps {
   siteId: string;
@@ -141,7 +141,7 @@ const AreasChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <CustomDrawerCardList
+      <DrawerTagList
         open={open}
         dataSource={searchData}
         isLoading={isFetching}

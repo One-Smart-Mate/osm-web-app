@@ -1,16 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { List } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetCardsMutation } from "../../services/cardService";
-import PaginatedList from "../../components/PaginatedList";
 import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import TagCard from "./components/TagCard";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useDebounce } from "use-debounce";
 import { handleErrorNotification } from "../../utils/Notifications";
+import TagList from "../components/TagList";
 
 const TagsPage = () => {
   const [getCards] = useGetCardsMutation();
@@ -74,16 +72,7 @@ const TagsPage = () => {
       isLoading={isLoading}
       onSearchChange={handleOnSearch}
       content={
-        <PaginatedList
-          dataSource={filteredData}
-          className="no-scrollbar"
-          renderItem={(item: CardInterface, index: number) => (
-            <List.Item key={index}>
-              <TagCard data={item} />
-            </List.Item>
-          )}
-          loading={isLoading}
-        />
+        <TagList data={filteredData} isLoading={isLoading} isResponsive={true} />
       }
     />
   );

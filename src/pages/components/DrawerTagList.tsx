@@ -1,11 +1,9 @@
 import React from "react";
-import { Drawer, List } from "antd";
-import PaginatedList from "./PaginatedList";
-import { CardInterface } from "../data/card/card";
-import Strings from "../utils/localizations/Strings";
-import TagCardV2 from "../pages/tags/components/TagCard";
+import { Drawer } from "antd";
+import Strings from "../../utils/localizations/Strings";
+import TagList from "./TagList";
 
-interface CustomDrawerProps {
+interface DrawerTagListProps {
   open: boolean;
   onClose: () => void;
   totalCards: string;
@@ -18,7 +16,7 @@ interface CustomDrawerProps {
   subText?: string;
 }
 
-const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
+const DrawerTagList: React.FC<DrawerTagListProps> = ({
   open,
   onClose,
   totalCards,
@@ -73,18 +71,9 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
       onClose={onClose}
       loading={isLoading}
     >
-      <PaginatedList
-        responsive={false}
-        dataSource={dataSource}
-        renderItem={(item: CardInterface, index: number) => (
-          <List.Item  key={index} >
-            <TagCardV2 data={item}/>
-          </List.Item>
-        )}
-        loading={isLoading}
-      />
+      <TagList data={dataSource} isResponsive={false} isLoading={isLoading} />
     </Drawer>
   );
 };
 
-export default CustomDrawerCardList;
+export default DrawerTagList;

@@ -6,7 +6,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { Level } from "../../../data/level/level";
 import MainContainer from "../../../pagesRedesign/layout/MainContainer";
 import AnatomyNotification from "../../components/AnatomyNotification";
-import TagList from "../../../components/CustomCardList";
+import TagList from "../../components/TagList";
 
 const { Title } = Typography;
 

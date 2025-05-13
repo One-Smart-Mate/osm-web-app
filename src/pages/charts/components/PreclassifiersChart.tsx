@@ -13,7 +13,7 @@ import {
 import { useGetPreclassifiersChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
 import { useSearchCardsQuery } from "../../../services/cardService";
-import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import DrawerTagList from "../../components/DrawerTagList";
 
 export interface PreclassifiersChartProps {
   siteId: string;
@@ -101,7 +101,7 @@ const PreclassifiersChart = ({
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-      <CustomDrawerCardList
+      <DrawerTagList
         open={open}
         dataSource={searchData}
         isLoading={isFetching}

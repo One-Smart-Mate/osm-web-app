@@ -14,7 +14,7 @@ import { useGetCreatorsChartDataMutation } from "../../../services/chartService"
 import Strings from "../../../utils/localizations/Strings";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
-import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
+import DrawerTagList from "../../components/DrawerTagList";
 
 export interface CreatorsChartProps {
   siteId: string;
@@ -122,7 +122,7 @@ const CreatorsChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <CustomDrawerCardList
+      <DrawerTagList
         open={open}
         dataSource={searchData}
         isLoading={isFetching}
