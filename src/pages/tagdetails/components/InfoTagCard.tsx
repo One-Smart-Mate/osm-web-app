@@ -30,23 +30,23 @@ import {
 import { setCardUpdatedIndicator } from "../../../core/genericReducer";
 import UpdateMechanicForm from "./UpdateMechanicForm";
 import { Divider } from "antd";
-import ImagesDisplayV2 from "./ImagesDisplayV2";
+import ImagesPreviewGroup from "./ImagesPreviewGroup";
 import { theme } from "antd";
-import VideoPlayerV2 from "./VideoPlayerV2";
-import AudioPlayer from "./AudioPlayer";
+import VideoPreviewGroup from "./VideoPreviewGroup";
+import AudioPlayerPreviewGroup from "./AudioPlayerPreviewGroup";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 
 const { useToken } = theme;
 
-interface TagInfoCardProps {
+interface InfoTagCardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
   cardName?: any;
 }
 
-const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
+const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
   const location = useLocation();
   const isPublicRoute = location.pathname.includes(
     Constants.externalProviderRouteVal
@@ -307,15 +307,15 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
                 {Strings.evidencesAtCreationDivider}
               </Divider>
               <div className="flex flex-wrap  gap-2 mt-2">
-                {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
+                {hasImages(evidences) && <ImagesPreviewGroup data={evidences} />}
               </div>
 
               <div className="flex flex-wrap  gap-2 mt-2">
-                {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
+                {hasVideos(evidences) && <VideoPreviewGroup data={evidences} />}
               </div>
 
               <div className="flex flex-wrap  gap-2 mt-2">
-                {hasAudios(evidences) && <AudioPlayer data={evidences} />}
+                {hasAudios(evidences) && <AudioPlayerPreviewGroup data={evidences} />}
               </div>
             </>
           )}
@@ -338,4 +338,4 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
   );
 };
 
-export default TagInfoCard;
+export default InfoTagCard;

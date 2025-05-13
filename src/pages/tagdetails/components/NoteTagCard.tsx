@@ -6,7 +6,7 @@ import Strings from "../../../utils/localizations/Strings";
 interface Props {
   data: Note[];
 }
-const NoteCollapseV2 = ({ data }: Props) => {
+const NoteTagCard = ({ data }: Props) => {
   return (
     <Card hoverable>
       <div className="flex gap-3 mb-4">
@@ -32,4 +32,4 @@ const NoteCollapseV2 = ({ data }: Props) => {
   );
 };
 
-export default NoteCollapseV2;
+export default NoteTagCard;

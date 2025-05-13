@@ -11,12 +11,12 @@ import {
   Evidences,
 } from "../../data/card/card";
 import PageTitleTag from "../../components/PageTitleTag";
-import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
-import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
-import NoteCollapseV2 from "./components/NoteCollapseV2";
+import ProvisionalSolutionTagCard from "./components/ProvisionalSolutionTagCard";
+import DefinitiveSolutionTagCard from "./components/DefinitiveSolutionTagCard";
+import NoteTagCard from "./components/NoteTagCard";
 import Strings from "../../utils/localizations/Strings";
 import { notification } from "antd";
-import TagInfoCard from "./components/TagInfoCard";
+import InfoTagCard from "./components/InfoTagCard";
 
 const { Text } = Typography;
 
@@ -53,7 +53,7 @@ const defaultCard: CardInterface = {
   cardUUID: ""
 };
 
-const PublicCardDetails = () => {
+const PublicTagDetails = () => {
   const { cardId } = useParams<{ cardId: string }>();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -152,17 +152,17 @@ const PublicCardDetails = () => {
       </div>
 
       <div className="space-y-4 mt-10">
-        <TagInfoCard
+        <InfoTagCard
           data={data}
           evidences={filterEvidence(data.evidences).creation}
         />
 
-        <ProvisionalSolutionCollapseV2
+        <ProvisionalSolutionTagCard
           data={data}
           evidences={filterEvidence(data.evidences).provisionalSolution}
         />
 
-        <DefinitiveSolutionCollapseV2
+        <DefinitiveSolutionTagCard
           data={data}
           evidences={filterEvidence(data.evidences).definitiveSolution}
         />
@@ -172,11 +172,11 @@ const PublicCardDetails = () => {
         </Divider>
 
         <div>
-          <NoteCollapseV2 data={notes} />
+          <NoteTagCard data={notes} />
         </div>
       </div>
     </div>
   );
 };
 
-export default PublicCardDetails;
+export default PublicTagDetails;

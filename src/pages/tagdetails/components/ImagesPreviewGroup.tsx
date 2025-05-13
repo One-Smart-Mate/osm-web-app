@@ -9,7 +9,7 @@ interface CardProps {
   data: Evidences[];
 }
 
-const ImagesDisplayV2 = ({ data }: CardProps) => {
+const ImagesPreviewGroup = ({ data }: CardProps) => {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   // Sort and filter images by name in ascending alphabetical order
@@ -20,8 +20,6 @@ const ImagesDisplayV2 = ({ data }: CardProps) => {
       const nameB = b.evidenceName.toLowerCase();
       return nameA.localeCompare(nameB); // Ascending alphabetical order
     });
-
-  console.log("Imágenes ordenadas:", images);
 
   const handleImageError = (id: string) => {
     setImageErrors((prevErrors) => {
@@ -70,4 +68,4 @@ const ImagesDisplayV2 = ({ data }: CardProps) => {
   );
 };
 
-export default ImagesDisplayV2;
+export default ImagesPreviewGroup;

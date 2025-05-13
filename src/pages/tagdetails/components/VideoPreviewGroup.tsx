@@ -6,11 +6,11 @@ import Strings from "../../../utils/localizations/Strings";
 import { Evidences } from "../../../data/card/card";
 import { isVideoURL } from "../../../utils/Extensions";
 
-interface CardProps {
+interface VideoPreviewGroupProps {
   data: Evidences[];
 }
 
-const VideoPlayerV2 = ({ data }: CardProps) => {
+const VideoPreviewGroup = ({ data }: VideoPreviewGroupProps) => {
   // Filter and sort the videos
   const videos = data
     .filter((evidence) => isVideoURL(evidence.evidenceName))
@@ -108,11 +108,11 @@ const VideoPlayerV2 = ({ data }: CardProps) => {
       </div>
       {currentVideoIndex !== null && (
         <Modal
-          visible={true}
+          open={true}
           footer={null}
           onCancel={handleCloseModal}
           width="80%"
-          bodyStyle={{ padding: 0 }}
+          style={{ padding: 0 }}
         >
           <div className="relative flex items-center">
             {currentVideoIndex > 0 && (
@@ -148,4 +148,4 @@ const VideoPlayerV2 = ({ data }: CardProps) => {
   );
 };
 
-export default VideoPlayerV2;
+export default VideoPreviewGroup;

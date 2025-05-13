@@ -18,11 +18,11 @@ import {
 } from "../../core/genericReducer";
 import { Note } from "../../data/note";
 import { Divider, Typography, App as AntdApp  } from "antd";
-import ProvisionalSolutionCollapseV2 from "./components/ProvisionalSolutionCollapseV2";
-import NoteCollapseV2 from "./components/NoteCollapseV2";
-import DefinitiveSolutionCollapseV2 from "./components/DefinitiveSolutionCollapseV2";
+import ProvisionalSolutionTagCard from "./components/ProvisionalSolutionTagCard";
+import NoteTagCard from "./components/NoteTagCard";
+import DefinitiveSolutionTagCard from "./components/DefinitiveSolutionTagCard";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import TagInfoCard from "./components/TagInfoCard";
+import InfoTagCard from "./components/InfoTagCard";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
 import TagPDFButton from "../components/TagPDFButton";
@@ -31,7 +31,7 @@ import AnatomyNotification from "../components/AnatomyNotification";
 // Components
 const { Text } = Typography;
 
-const CardDetails = () => {
+const TagDetailsPage = () => {
   const [data, setData] = useState<CardDetailsInterface | null>(null);
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -147,16 +147,16 @@ const CardDetails = () => {
           <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">
             {data && (
               <>
-                <TagInfoCard
+                <InfoTagCard
                   data={data}
                   evidences={filterEvidences(data.evidences).creation}
                   cardName={data.card.cardTypeName}
                 />
-                <ProvisionalSolutionCollapseV2
+                <ProvisionalSolutionTagCard
                   data={data}
                   evidences={filterEvidences(data.evidences).provisionalSolution}
                 />
-                <DefinitiveSolutionCollapseV2
+                <DefinitiveSolutionTagCard
                   data={data}
                   evidences={filterEvidences(data.evidences).definitiveSolution}
                 />
@@ -175,7 +175,7 @@ const CardDetails = () => {
               </Text>
             </Divider>
 
-            <NoteCollapseV2 data={notes} />
+            <NoteTagCard data={notes} />
           </div>
         </div>
       }
@@ -183,4 +183,4 @@ const CardDetails = () => {
   );
 };
 
-export default CardDetails;
+export default TagDetailsPage;

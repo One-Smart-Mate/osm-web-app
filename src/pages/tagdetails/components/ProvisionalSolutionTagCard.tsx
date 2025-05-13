@@ -8,19 +8,19 @@ import {
   hasVideos,
 } from "../../../utils/Extensions";
 import { Card, Divider, Typography } from "antd";
-import ImagesDisplayV2 from "./ImagesDisplayV2";
-import AudioPlayer from "./AudioPlayer";
-import VideoPlayerV2 from "./VideoPlayerV2";
+import ImagesPreviewGroup from "./ImagesPreviewGroup";
+import AudioPlayerPreviewGroup from "./AudioPlayerPreviewGroup";
+import VideoPreviewGroup from "./VideoPreviewGroup";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 
 const { Text } = Typography;
 
-interface CardProps {
+interface ProvisionalSolutionTagCardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
 }
 
-const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
+const ProvisionalSolutionTagCard = ({ data, evidences }: ProvisionalSolutionTagCardProps) => {
   const { card } = data;
 
   const showEvidences = (): boolean => {
@@ -77,15 +77,15 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
               </Divider>
 
               <div className="flex  gap-2 flex-wrap mt-2">
-                {hasImages(evidences) && <ImagesDisplayV2 data={evidences} />}
+                {hasImages(evidences) && <ImagesPreviewGroup data={evidences} />}
               </div>
 
               <div className="flex gap-2 flex-wrap mt-2">
-                {hasVideos(evidences) && <VideoPlayerV2 data={evidences} />}
+                {hasVideos(evidences) && <VideoPreviewGroup data={evidences} />}
               </div>
 
               <div className="flex gap-2 flex-wrap mt-2">
-                {hasAudios(evidences) && <AudioPlayer data={evidences} />}
+                {hasAudios(evidences) && <AudioPlayerPreviewGroup data={evidences} />}
               </div>
             </>
           )}
@@ -94,4 +94,4 @@ const ProvisionalSolutionCollapseV2 = ({ data, evidences }: CardProps) => {
   );
 };
 
-export default ProvisionalSolutionCollapseV2;
+export default ProvisionalSolutionTagCard;

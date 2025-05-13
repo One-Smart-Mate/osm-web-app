@@ -7,7 +7,6 @@ import Routes from "../../utils/Routes";
 import CardTypess from "../cardtypes/CardTypes";
 import Preclassifiers from "../preclassifier/Preclassifiers";
 import Levels from "../level/Levels";
-import CardDetails from "../carddetails/CardDetails";
 import { PiMapPinAreaLight } from "react-icons/pi";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
@@ -51,14 +50,6 @@ const adminLevels = new Route(
   <></>,
 );
 
-
-export const adminCardDetails = new Route(
-  Strings.cardDetailsSB,
-  "carddetails",
-  Routes.AdminPrefix + Routes.Site + Routes.CardDetails,
-  <CardDetails />,
-  <></>,
-);
 
 
 const adminPositions = new Route(
@@ -104,7 +95,6 @@ const adminRoutes: Route[] = [
   adminCardTypes,
   adminPreclassifiers,
   adminLevels,
-  adminCardDetails,
   adminPositions,
   adminNotifications,
   adminSystemHealth,
@@ -128,13 +118,6 @@ const sysAdminCardTypes = new Route(
 );
 
 
-export const sysAdminCardDetails = new Route(
-  Strings.cardDetailsSB,
-  "carddetails",
-  Routes.SysadminPrefix + Routes.Site + Routes.CardDetails,
-  <CardDetails />,
-  <></>
-);
 
 export const sysAdminPreclassifiers = new Route(
   Strings.preclassifiersSB,
@@ -148,24 +131,8 @@ const sysAdminRoutes: Route[] = [
   sysAdminLevels,
   sysAdminCardTypes,
   sysAdminPreclassifiers,
-  sysAdminCardDetails,
 ];
 
-
-
-export const localAdminCardDetails = new Route(
-  Strings.cardDetailsSB,
-  "carddetails",
-  Routes.LocalAdminPrefix + Routes.Site + Routes.CardDetails,
-  <CardDetails />,
-  <></>
-);
-
-
-
-const localAdminRoutes: Route[] = [
-  localAdminCardDetails,
-];
 
 
 const getUserSiderOptions = (user: User): ItemType[] => {
@@ -198,7 +165,6 @@ export {
   adminRoutes,
   getUserSiderOptions,
   sysAdminRoutes,
-  localAdminRoutes,
 };
 
 function getItem(

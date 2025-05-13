@@ -5,11 +5,11 @@ import { Evidences } from "../../../data/card/card";
 import { isAudioURL } from "../../../utils/Extensions";
 import { useRef } from "react";
 
-interface CardProps {
+interface AudioPlayerPreviewGroupProps {
   data: Evidences[] | [];
 }
 
-const AudioPlayer = ({ data }: CardProps) => {
+const AudioPlayerPreviewGroup = ({ data }: AudioPlayerPreviewGroupProps) => {
   if (!data || data.length === 0) {
     return (
       <Card
@@ -58,4 +58,4 @@ const AudioPlayer = ({ data }: CardProps) => {
   );
 };
 
-export default AudioPlayer;
+export default AudioPlayerPreviewGroup;

@@ -23,8 +23,8 @@ const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
 const CompaniesPage = React.lazy(() => import("../../pages/company/CompaniesPage"));
-const CardDetails = React.lazy(
-  () => import("../../pages/carddetails/CardDetails")
+const TagDetailsPage = React.lazy(
+  () => import("../../pages/tagdetails/TagDetailsPage")
 );
 const UsersPage = React.lazy(() => import("../../pages/user/UsersPage"));
 const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
@@ -178,7 +178,7 @@ const systemHealthV2 = new RouteV2(
 export const cardDetailRoute = new RouteV2(
   Strings.cardDetailsSB,
   `${Constants.ROUTES_PATH.cardDetail}/${Constants.ROUTES_PARAMS.siteId}/${Constants.ROUTES_PARAMS.cardId}`,
-  <CardDetails />,
+  <TagDetailsPage />,
   <></>,
   ""
 );
