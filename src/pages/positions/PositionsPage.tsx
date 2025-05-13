@@ -341,7 +341,7 @@ const PositionsPage = () => {
                   >
                     <AnatomySection
                       title={Strings.positionNodeZoneHeader}
-                      label={item.levelName}
+                      label={item.route || item.levelName}
                       icon={<BsDiagram2 />}
                     />
 

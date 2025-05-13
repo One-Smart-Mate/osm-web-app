@@ -906,6 +906,7 @@ class StringsBase {
   static oplMediaDefaultTitle = "oplMediaDefaultTitle";
   static oplMediaDefaultHint = "oplMediaDefaultHint";
   static oplMediaDefaultButton = "oplMediaDefaultButton";
+  static oplErrorInvalidFileType = "oplErrorInvalidFileType";
 
   // OplFormModal strings
   static oplFormModalViewTitle = "oplFormModalViewTitle";
@@ -1162,6 +1163,10 @@ class StringsBase {
   static areaSelectPlaceholder = "areaSelectPlaceholder"
   static lastLoginWeb = "lastLoginWeb"
   static lastLoginApp = "lastLoginApp"
+  static imageLoadSuccess = "imageLoadSuccess"
+  static imageLoadError = "imageLoadError"
+  static warningImageUpload = "warningImageUpload"
+  static scheduleSequence = "scheduleSequence"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

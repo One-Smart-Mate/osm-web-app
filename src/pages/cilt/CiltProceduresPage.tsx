@@ -3,7 +3,7 @@ import { Form, message } from "antd";
 import { useLocation } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import CiltProcedures from "./components/CiltProcedures";
+import CiltCardList from "./components/CiltCardList";
 import PositionSelectionModal from "./components/PositionSelectionModal";
 import { Position } from "../../data/postiions/positions";
 import { useGetSiteMutation } from "../../services/siteService";
@@ -15,15 +15,18 @@ const CiltProceduresPage = (): React.ReactElement => {
 
   const [isPositionModalVisible, setIsPositionModalVisible] = useState(false);
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
-    null
-  );
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
   const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (siteId) {
-      getSite(siteId);
+      setIsLoading(true);
+      getSite(siteId)
+        .unwrap()
+        .finally(() => setIsLoading(false));
     }
   }, [siteId, getSite]);
 
@@ -58,12 +61,21 @@ const CiltProceduresPage = (): React.ReactElement => {
     message.success(Strings.ciltMstrCreateSuccess);
   };
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+
   return (
     <>
       <MainContainer
         title={Strings.ciltProceduresSB}
         description={Strings.empty}
-        content={<CiltProcedures onCreateClick={showPositionModal} />}
+        content={<CiltCardList searchTerm={searchTerm} />}
+        enableSearch={true}
+        enableCreateButton={true}
+        onCreateButtonClick={showPositionModal}
+        onSearchChange={handleSearch}
+        isLoading={isLoading}
       />
 
       <PositionSelectionModal
