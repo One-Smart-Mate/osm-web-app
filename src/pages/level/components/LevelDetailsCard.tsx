@@ -4,7 +4,7 @@ import { useGetlevelMutation } from "../../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../../services/cardService";
 import Strings from "../../../utils/localizations/Strings";
 import { Level } from "../../../data/level/level";
-import MainContainer from "../../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../../layouts/MainContainer";
 import AnatomyNotification from "../../components/AnatomyNotification";
 import TagList from "../../components/TagList";
 

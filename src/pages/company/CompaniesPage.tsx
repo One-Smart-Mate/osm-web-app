@@ -9,7 +9,7 @@ import {
   selectCompanyUpdatedIndicator,
 } from "../../core/genericReducer";
 import CompanyForm, { CompanyFormType } from "./components/CompanyForm";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import PaginatedList from "../components/PaginatedList";
 import CompanyCard from "./components/CompanyCard";
 

@@ -11,7 +11,7 @@ import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import React, { useEffect } from "react";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { routes } from "./routes/Routes";
-const BaseLayoutRedesign = React.lazy(() => import("./pagesRedesign/layout/BaseLayoutRedesign"));
+const BaseLayout = React.lazy(() => import("./pages/layouts/BaseLayout"));
 function App() {
   useEffect(() => {
     listenForBackgroundMessages();
@@ -52,7 +52,7 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route
               path={Constants.ROUTES_PATH.dashboard}
-              element={<BaseLayoutRedesign />}
+              element={<BaseLayout />}
             >
               {routes.map((value, index) => (
                 <Route key={index} path={value.path} element={value.element} />

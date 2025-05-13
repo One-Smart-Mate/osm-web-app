@@ -32,7 +32,7 @@ import { Responsible } from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import Constants from "../../utils/Constants";
 import { isRedesign } from "../../utils/Extensions";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../components/PaginatedList";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";

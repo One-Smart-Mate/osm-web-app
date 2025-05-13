@@ -1,6 +1,6 @@
 import React from "react";
 import Strings from "../../utils/localizations/Strings";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import CiltTypes from "./components/CiltTypes";
 import { useLocation  } from "react-router-dom";
 

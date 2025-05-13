@@ -19,7 +19,7 @@ import {
 } from "../../services/userService";
 import { useNavigate } from "react-router-dom";
 import Routes from "../../utils/Routes";
-import LanguageDropdown from "../layouts/LanguageDropdown";
+import LanguageDropdown from "../components/LanguageDropdown";
 import { BsEnvelope } from "react-icons/bs";
 
 const ResetPassword = () => {

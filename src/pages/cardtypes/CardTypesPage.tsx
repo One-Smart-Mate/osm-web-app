@@ -28,7 +28,7 @@ import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.requ
 import { isRedesign } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import Opl from "./components/Opl";
 
 const OplPage = (): React.ReactElement => {

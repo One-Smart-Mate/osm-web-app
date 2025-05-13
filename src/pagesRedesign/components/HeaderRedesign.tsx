@@ -2,7 +2,7 @@ import React from 'react';
 import NotificationDropdown from './NotificationDropdown';
 import UserProfileDropdown from './UserProfileDropdown';
 import User from '../../data/user/user';
-import LanguageDropdown from '../../pages/layouts/LanguageDropdown';
+import LanguageDropdown from '../../pages/components/LanguageDropdown';
 
 
 interface HeaderProps {

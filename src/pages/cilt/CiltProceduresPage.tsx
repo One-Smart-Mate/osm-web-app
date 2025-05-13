@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, message } from "antd";
 import { useLocation } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import CiltCardList from "./components/CiltCardList";
 import PositionSelectionModal from "./components/PositionSelectionModal";
 import { Position } from "../../data/postiions/positions";
