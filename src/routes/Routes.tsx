@@ -18,8 +18,8 @@ import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
 
 
-const CardTypesV2 = React.lazy(
-  () => import("../pages/cardtypes/CardTypesV2")
+const CardTypesPage = React.lazy(
+  () => import("../pages/cardtypes/CardTypesPage")
 );
 const CompaniesPage = React.lazy(() => import("../pages/company/CompaniesPage"));
 const TagDetailsPage = React.lazy(
@@ -111,7 +111,7 @@ const positionsRoute = new Route(
 const cardTypesRoute = new Route(
   Strings.cardTypesSB,
   Constants.ROUTES_PATH.cardTypes,
-  <CardTypesV2 />,
+  <CardTypesPage />,
   <BsNodePlus />,
   Strings.catalogs
 );

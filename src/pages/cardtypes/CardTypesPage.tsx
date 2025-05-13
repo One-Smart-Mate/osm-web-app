@@ -100,7 +100,7 @@ const buildHierarchy = (
 };
 
 
-const CardTypesV2 = () => {
+const CardTypesPage = () => {
   const [getCardTypes] = useGetCardTypesMutation();
   const [createCardType] = useCreateCardTypeMutation();
   const [updateCardType] = useUpdateCardTypeMutation();
@@ -593,8 +593,8 @@ const CardTypesV2 = () => {
       {
         key: "createCT",
         label: (
-          <button
-            className="w-28 bg-green-700 text-white p-2 rounded-md text-xs"
+          <Button
+            type="primary"
             onClick={(e) => {
               e.stopPropagation();
               setRootMenuVisible(false);
@@ -602,7 +602,7 @@ const CardTypesV2 = () => {
             }}
           >
             {Strings.cardTypesCreate}
-          </button>
+          </Button>
         ),
       },
     ];
@@ -938,4 +938,4 @@ const CardTypesV2 = () => {
   );
 };
 
-export default CardTypesV2;
+export default CardTypesPage;
