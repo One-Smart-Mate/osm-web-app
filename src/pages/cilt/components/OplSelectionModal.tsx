@@ -799,6 +799,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
                     onFileChange={handleFileChange}
                     onPreview={handlePreview}
                     onUpload={() => handleAddMedia("imagen")}
+                    onCancel={() => setFileList([])}
                   />
                 </Card>
               ),
@@ -815,6 +816,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
                     onFileChange={handleFileChange}
                     onPreview={handlePreview}
                     onUpload={() => handleAddMedia("video")}
+                    onCancel={() => setFileList([])}
                   />
                 </Card>
               ),
@@ -831,6 +833,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
                     onFileChange={handleFileChange}
                     onPreview={handlePreview}
                     onUpload={() => handleAddMedia("pdf")}
+                    onCancel={() => setFileList([])}
                   />
                 </Card>
               ),

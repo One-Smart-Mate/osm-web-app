@@ -14,6 +14,13 @@ export const ciltMstrService = apiSlice.injectEndpoints({
     getCiltMstrBySite: builder.query<CiltMstr[], string>({
       query: (siteId) => `/cilt-mstr/site/${siteId}`,
       transformResponse: (response: { data: CiltMstr[] }) => response.data,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'CiltMstr' as const, id: id.toString() })),
+              { type: 'CiltMstr' as const, id: 'LIST' },
+            ]
+          : [{ type: 'CiltMstr' as const, id: 'LIST' }],
     }),
     getCiltMstrByPosition: builder.mutation<CiltMstr[], string>({
       query: (positionId) => `/cilt-mstr/position/${positionId}`,
@@ -30,6 +37,7 @@ export const ciltMstrService = apiSlice.injectEndpoints({
         body: { ...newCilt },
       }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
+      invalidatesTags: [{ type: 'CiltMstr', id: 'LIST' }],
     }),
     updateCiltMstr: builder.mutation<CiltMstr, UpdateCiltMstrDTO>({
       query: (cilt) => ({
@@ -38,6 +46,9 @@ export const ciltMstrService = apiSlice.injectEndpoints({
         body: { ...cilt },
       }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
+      invalidatesTags: (_result) => [
+        { type: 'CiltMstr', id: 'LIST' },
+      ],
     }),
   }),
 });

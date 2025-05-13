@@ -29,6 +29,7 @@ import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
 import Strings from "../../../utils/localizations/Strings";
 import SearchBar from "../../../components/common/SearchBar";
+import { fileValidationCache } from "./OplMediaUploader";
 
 const { Title } = Typography;
 
@@ -289,10 +290,14 @@ const Opl = (): React.ReactElement => {
       }
     } catch (error) {
       console.error("Error fetching OPL details:", error);
-      notification.error({
-        message: "Error",
-        description: Strings.oplErrorLoadingDetails,
-      });
+      // Solo mostrar error si es un problema real de red o servidor, no cuando simplemente no hay detalles
+      // Verificar si el error tiene una propiedad status y si es diferente de 404
+      if (error && typeof error === 'object' && 'status' in error && error.status !== 404) {
+        notification.error({
+          message: "Error",
+          description: Strings.oplErrorLoadingDetails,
+        });
+      }
       setCurrentDetails([]);
     }
   };
@@ -354,6 +359,18 @@ const Opl = (): React.ReactElement => {
           message: "Error",
           description: Strings.oplErrorNoFileSelected,
         });
+        setUploadLoading(false);
+        return;
+      }
+      
+      // Verificar si el archivo ya fue validado en el componente OplMediaUploader
+      // usando el caché de validación
+      if (fileValidationCache.has(file.uid) && !fileValidationCache.get(file.uid)) {
+        notification.error({
+          message: "Error",
+          description: Strings.oplErrorInvalidFileType.replace("{type}", type),
+        });
+        setUploadLoading(false);
         return;
       }
 
