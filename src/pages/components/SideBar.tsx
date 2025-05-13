@@ -7,12 +7,12 @@ import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { buildRoute, getUserSiderOptions, navigateWithState } from "../../routes/RoutesExtensions";
 
-interface SideBarV2Props {
+interface SideBarProps {
   collapsed: boolean;
   toggleCollapse: () => void;
 }
 
-const SideBarRedesign: React.FC<SideBarV2Props> = ({
+const SideBar: React.FC<SideBarProps> = ({
   collapsed,
   toggleCollapse,
 }) => {
@@ -202,4 +202,4 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
   );
 };
 
-export default SideBarRedesign;
+export default SideBar;

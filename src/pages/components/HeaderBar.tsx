@@ -2,16 +2,16 @@ import React from 'react';
 import NotificationDropdown from './NotificationDropdown';
 import UserProfileDropdown from './UserProfileDropdown';
 import User from '../../data/user/user';
-import LanguageDropdown from '../../pages/components/LanguageDropdown';
+import LanguageDropdown from './LanguageDropdown';
 
 
-interface HeaderProps {
+interface HeaderBarProps {
   user: User;
   sidebarWidth: number;
   isSidebarCollapsed: boolean;
 }
 
-const HeaderRedesign: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
+const HeaderBar: React.FC<HeaderBarProps> = ({ sidebarWidth, isSidebarCollapsed, user }) => {
   return (
     <div style={{
       display: 'flex',
@@ -44,4 +44,4 @@ const HeaderRedesign: React.FC<HeaderProps> = ({ sidebarWidth, isSidebarCollapse
   );
 };
 
-export default HeaderRedesign;
+export default HeaderBar;

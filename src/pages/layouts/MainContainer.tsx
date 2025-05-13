@@ -3,8 +3,8 @@ import PageTitle from "../components/PageTitle";
 import { Button, Input, Space } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
-import Loading from "../../pagesRedesign/components/Loading";
-import BackButton from "../../pagesRedesign/components/BackButton";
+import Loading from "../components/Loading";
+import BackButton from "../components/BackButton";
 
 interface MainContainerProps {
   title: string;

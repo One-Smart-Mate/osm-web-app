@@ -8,8 +8,8 @@ import {
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Outlet } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import SideBarRedesign from "../../pagesRedesign/components/SideBarRedesign";
-import HeaderRedesign from "../../pagesRedesign/components/HeaderRedesign";
+import SideBar from "../components/SideBar";
+import HeaderBar from "../components/HeaderBar";
 import { useSetAppTokenMutation } from "../../services/userService";
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import Constants from "../../utils/Constants";
@@ -62,13 +62,13 @@ const BaseLayout: React.FC = () => {
   
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
-      <HeaderRedesign
+      <HeaderBar
         user={user}
         sidebarWidth={sidebarWidth}
         isSidebarCollapsed={isCollapsed}
       />
 
-      <SideBarRedesign collapsed={isCollapsed} toggleCollapse={toggleCollapse} />
+      <SideBar collapsed={isCollapsed} toggleCollapse={toggleCollapse} />
 
       <Layout
         style={{

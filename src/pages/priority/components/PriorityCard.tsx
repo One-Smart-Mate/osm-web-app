@@ -3,7 +3,7 @@ import { getStatusAndText } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
 import { Priority } from "../../../data/priority/priority";
 import PriorityForm, { PriorityFormType } from "./PriorityForm";
-import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import AnatomySection from "../../components/AnatomySection";
 import { BsCalendarCheck, BsClock, BsListNested } from "react-icons/bs";
 
 interface CardProps {

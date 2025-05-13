@@ -1,7 +1,7 @@
 import { Badge, Button, Card, Space, Typography } from "antd";
 import React from "react";
 import { Site } from "../../../data/site/site";
-import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import AnatomySection from "../../components/AnatomySection";
 import AnatomySingleCollapsable from "../../components/AnatomySingleCollapsable";
 import Strings from "../../../utils/localizations/Strings";
 import {
