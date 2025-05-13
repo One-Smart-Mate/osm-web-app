@@ -13,11 +13,11 @@ import { Weeks } from "../../../data/charts/charts";
 import { useGetWeeksChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
 
-export interface ChartProps {
+export interface WeeksChartProps {
   siteId: string;
 }
 
-const WeeksChart = ({ siteId }: ChartProps) => {
+const WeeksChart = ({ siteId }: WeeksChartProps) => {
   const [getWeeks] = useGetWeeksChartDataMutation();
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const handleGetData = async () => {

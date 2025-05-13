@@ -17,13 +17,11 @@ import { Methodology } from "../../../data/charts/charts";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface MachinesChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
-  rol: UserRoles;
   methodologies: Methodology[];
   areaId?: number;
 }
@@ -33,9 +31,8 @@ const MachinesChart = ({
   startDate,
   endDate,
   methodologies,
-  rol,
   areaId,
-}: ChartProps) => {
+}: MachinesChartProps) => {
   const [getMachines] = useGetMachinesByAreaIdChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -143,11 +140,10 @@ const MachinesChart = ({
         isLoading={isFetching}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         label={Strings.machine}
         text={selectedMachineName}
-        label2={Strings.machineLocation}
-        text2={selectedLocation}
+        subLabel={Strings.machineLocation}
+        subText={selectedLocation}
         cardTypeName={selectedCardTypeName}
       />
     </>

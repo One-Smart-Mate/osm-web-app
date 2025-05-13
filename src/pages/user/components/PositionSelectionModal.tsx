@@ -113,9 +113,9 @@ const PositionSelectionModal = ({
         <Empty description={Strings.noPositionsAvailable} />
       ) : (
         <>
-          <div className="border rounded-md p-2 max-h-80 overflow-y-auto">
+          <div className="bg-gray-50 rounded-md p-2 max-h-80 overflow-y-auto">
             {paginatedPositions.map(position => (
-              <div key={position.id} className="py-2 border-b last:border-b-0">
+              <div key={position.id} className="py-2">
                 <Checkbox 
                   onChange={(e) => handlePositionSelection(position.id, e.target.checked)}
                   checked={selectedPositionIds.includes(position.id)}

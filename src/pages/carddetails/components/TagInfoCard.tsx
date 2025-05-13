@@ -69,6 +69,8 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
     card.cardCreationDate
   );
 
+  const isCardClosed = cardStatus.text == Strings.closed;
+
   const handleOnOpenModal = (modalType: string) => {
     if (!isPublicRoute) {
       setModalOpen(true);
@@ -151,7 +153,6 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
     return hasImages(evidences) || hasVideos(evidences) || hasAudios(evidences)
   }
 
-
   return (
     <>
       <div className="p-2">
@@ -181,7 +182,7 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
               label={
                 <span
                   className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center"
-                  style={{ backgroundColor: primaryColor }}
+                  style={{ backgroundColor: isCardClosed ? token["red-5"] : primaryColor }}
                 >
                   {cardStatus.text}
                 </span>
@@ -193,9 +194,15 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
               title={Strings.priority}
               label={
                 <span
-                  onClick={() => handleOnOpenModal(Strings.priority)}
+                  onClick={() => 
+                  {
+                    if(!isCardClosed) {
+                      handleOnOpenModal(Strings.priority)
+                    }
+                  }
+                  }
                   className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
-                  style={{ backgroundColor: primaryColor }}
+                  style={{ backgroundColor:  primaryColor }}
                 >
                   {card.priorityCode
                     ? `${card.priorityCode} - ${card.priorityDescription}`
@@ -263,7 +270,11 @@ const TagInfoCard = ({ data, evidences, cardName }: TagInfoCardProps) => {
               title={Strings.responsible}
               label={
                 <span
-                  onClick={() => handleOnOpenModal(Strings.mechanic)}
+                  onClick={() => {
+                    if(!isCardClosed) {
+                      handleOnOpenModal(Strings.mechanic)
+                    }
+                  }}
                   className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
                   style={{ backgroundColor: primaryColor }}
                 >

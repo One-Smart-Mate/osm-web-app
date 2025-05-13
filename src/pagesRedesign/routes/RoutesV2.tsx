@@ -18,10 +18,11 @@ import Constants from "../../utils/Constants";
 import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 
+
 const CardTypesV2 = React.lazy(
   () => import("../../pages/cardtypes/CardTypesV2")
 );
-const CompaniesV2 = React.lazy(() => import("../../pages/company/CompaniesV2"));
+const CompaniesPage = React.lazy(() => import("../../pages/company/CompaniesPage"));
 const CardDetails = React.lazy(
   () => import("../../pages/carddetails/CardDetails")
 );
@@ -30,13 +31,13 @@ const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
 const SystemHealth = React.lazy(
   () => import("../../pages/systemhealth/SystemHealth")
 );
-const SitesV2 = React.lazy(() => import("../../pages/site/SitesV2"));
-const ChartsV2 = React.lazy(() => import("../../pages/charts/ChartsV2"));
+const SitesPage = React.lazy(() => import("../../pages/site/SitesPage"));
+const ChartsPage = React.lazy(() => import("../../pages/charts/ChartsPage"));
 const PositionsPage = React.lazy(
   () => import("../../pages/positions/PositionsPage")
 );
-const PrioritiesV2 = React.lazy(
-  () => import("../../pages/priority/PrioritiesV2")
+const PrioritiesPage = React.lazy(
+  () => import("../../pages/priority/PrioritiesPage")
 );
 const TechnicalSupport = React.lazy(
   () => import("../components/TechnicalSupport")
@@ -51,13 +52,13 @@ const CiltTypesPage = React.lazy(
 const CiltFrecuenciesPage = React.lazy(
   () => import("../../pages/ciltFrecuencies/CiltFrecuenciesPage")
 );
-const TagsV2 = React.lazy(() => import("../../pages/card/TagsV2"));
+const TagsPage = React.lazy(() => import("../../pages/tags/TagsPage"));
 
 // Common routes
 const prioritiesV2 = new RouteV2(
   Strings.prioritiesSB,
   Constants.ROUTES_PATH.priorities,
-  <PrioritiesV2 />,
+  <PrioritiesPage />,
   <BsCalendarCheck />,
   Strings.catalogs
 );
@@ -73,7 +74,7 @@ const levelsV2 = new RouteV2(
 const tagsV2 = new RouteV2(
   Strings.cardsSB,
   Constants.ROUTES_PATH.cards,
-  <TagsV2 />,
+  <TagsPage />,
   <BsCardChecklist />,
   Strings.dashboard
 );
@@ -81,7 +82,7 @@ const tagsV2 = new RouteV2(
 const chartsV2 = new RouteV2(
   Strings.chartsSB,
   Constants.ROUTES_PATH.charts,
-  <ChartsV2 />,
+  <ChartsPage />,
   <BsBarChartLine />,
   Strings.dashboard
 );
@@ -89,7 +90,7 @@ const chartsV2 = new RouteV2(
 const sitesV2 = new RouteV2(
   Strings.sitesSB,
   Constants.ROUTES_PATH.sites,
-  <SitesV2 />,
+  <SitesPage />,
   <BsBuildingAdd />,
   Strings.catalogs
 );
@@ -161,7 +162,7 @@ const ciltFrecuenciesV2 = new RouteV2(
 const companiesV2 = new RouteV2(
   Strings.companiesSB,
   Constants.ROUTES_PATH.companies,
-  <CompaniesV2 />,
+  <CompaniesPage />,
   <BsBuildingAdd />,
   Strings.catalogs
 );

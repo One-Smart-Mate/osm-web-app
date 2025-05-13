@@ -1,137 +1,214 @@
-import { Card, Dropdown, MenuProps, Tag, theme } from "antd";
-import { getStatusAndText, UserRoles } from "../../../utils/Extensions";
-import { SlOptionsVertical } from "react-icons/sl";
-import Strings from "../../../utils/localizations/Strings";
-import ViewPrioritiesButton from "./ViewPrioritiesButton";
-import ViewCardTypesButton from "./ViewCardTypesButton";
-import ViewPositionsButton from "./ViewPositionsButton";
-import UpdateSite from "./UpdateSite";
-import ViewLevelsButton from "./ViewLevelsButton";
-import ViewCardsButton from "./ViewCardsButton";
-import ViewChartsButton from "./ViewChartsButton";
-import ViewUsersButton from "./ViewUsersButton";
+import { Badge, Button, Card, Space, Typography } from "antd";
+import React from "react";
 import { Site } from "../../../data/site/site";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import AnatomySingleCollapsable from "../../components/AnatomySingleCollapsable";
+import Strings from "../../../utils/localizations/Strings";
+import {
+  BsBuildingAdd,
+  BsDiagram3,
+  BsFiles,
+  BsMailbox,
+  BsPerson,
+  BsPinMap,
+  BsTelephone,
+  BsTelephoneOutbound,
+} from "react-icons/bs";
+import SiteForm, { SiteFormType } from "./SiteForm";
+import { navigateWithProps } from "../../../pagesRedesign/routes/RoutesExtensions";
+import Constants from "../../../utils/Constants";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
+import { getStatusAndText } from "../../../utils/Extensions";
 
-interface CompanyCardProps {
-  data: Site;
-  rol: UserRoles;
+interface SiteCardProps {
+  site: Site;
+  companyName?: string;
+  onComplete?: () => void;
 }
 
-const SiteCard = ({ data, rol }: CompanyCardProps) => {
-  const { status, text } = getStatusAndText(data.status);
-  const {
-    token: { colorBgContainer, colorPrimary },
-  } = theme.useToken();
+const SiteCard = ({ site, onComplete, companyName }: SiteCardProps): React.ReactElement => {
+  const navigate = navigateWithProps();
 
-  const buildSiteActions = () => {
-    const actions = [];
+  const { isIhAdmin } = useCurrentUser();
 
-    if (rol === UserRoles.IHSISADMIN || rol === UserRoles.LOCALSYSADMIN) {
-      actions.push({
-        key: `update-site-${data.id}`,
-        label: <UpdateSite siteId={data.id} />,
-      });
-    }
-
-    if (rol === UserRoles.IHSISADMIN) {
-      actions.push({
-        key: `view-charts-${data.id}`,
-        label: <ViewChartsButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-cards-${data.id}`,
-        label: <ViewCardsButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-priorities-${data.id}`,
-        label: <ViewPrioritiesButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-levels-${data.id}`,
-        label: <ViewLevelsButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-card-types-${data.id}`,
-        label: <ViewCardTypesButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-users-${data.id}`,
-        label: <ViewUsersButton siteId={data.id} siteName={data.name} />,
-      });
-      actions.push({
-        key: `view-positions-${data.id}`,
-        label: <ViewPositionsButton siteId={data.id} siteName={data.name} />,
-      });
-    }
-    return actions;
-  };
-
-  const items: MenuProps["items"] = buildSiteActions();
-
-  const titleCard = (
-    <div className="flex flex-row justify-center items-center">
-      <img className="size-9 border-white border" src={data.logo} alt="logo" />
-      <div className="ml-2 max-w-xs">
-        <p className="break-words text-wrap text-sm md:text-base text-white">
-          {data.name}
-        </p>
-      </div>
-      <div className="absolute left-1">
-        <Dropdown menu={{ items }} arrow>
-          <SlOptionsVertical
-            color={colorPrimary}
-            size={20}
-            onClick={(e) => e.preventDefault()}
+  const buildActions = (value: Site): [React.ReactNode | undefined] => {
+    if (isIhAdmin()) {
+      return [
+        <Space className="p-2" wrap>
+          <SiteForm
+            data={value}
+            onComplete={() => {
+              if (onComplete) {
+                onComplete();
+              }
+            }}
+            companyName={companyName ?? Strings.empty}
+            formType={SiteFormType.UPDATE}
           />
-        </Dropdown>
-      </div>
-    </div>
-  );
+          <Button
+            type="default"
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.charts,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCharts}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.cards,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCards}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.users,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewUsers}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.priorities,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewPriorities}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.cardTypes,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewCardTypes}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.levels,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewLevels}
+          </Button>
+
+          <Button
+            onClick={() => {
+              navigate({
+                path: Constants.ROUTES_PATH.positions,
+                siteId: value.id,
+                siteName: value.name,
+              });
+            }}
+          >
+            {Strings.viewPositions}
+          </Button>
+        </Space>,
+      ];
+    }
+    return [undefined];
+  };
 
   return (
     <Card
-      styles={{ body: { backgroundColor: colorBgContainer } }}
-      key={data.id}
-      type="inner"
-      title={titleCard}
-      className="h-max shadow-xl overflow-hidden text-sm md:text-base relative"
+      hoverable
+      className="rounded-xl shadow-md"
+      title={<Typography.Title level={5}>{site.name}</Typography.Title>}
+      cover={
+        <img
+          alt={site.name}
+          style={{ width: "auto", height: 200 }}
+          src={site.logo}
+        />
+      }
+      actions={buildActions(site)}
     >
-      <div className="absolute right-0 top-11">
-        {" "}
-        <Tag color={status}>{text}</Tag>
-      </div>
-      <div className="">
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.rfc}: </h1>
-          <p>{data.rfc}</p>
-        </div>
-        <div className="flex  flex-row">
-          <h1 className="font-semibold mr-1">{Strings.companyAddress}: </h1>
-          <p>{data.address}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.contact}: </h1>
-          <p>{data.contact}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.position}: </h1>
-          <p>{data.position}</p>
-        </div>
-        <div className="flex flex-row flex-wrap">
-          <h1 className="font-semibold mr-1">{Strings.phone}: </h1>
-          <p>{data.phone}</p>
-          <h1 className="font-semibold  ml-2 mr-1">{Strings.extension}: </h1>
-          <p>{data.extension}</p>
-        </div>
-        <div className="flex flex-row">
-          <h1 className="font-semibold mr-1">{Strings.cellular}: </h1>
-          <p>{data.cellular}</p>
-        </div>
-        <div className="flex flex-row flex-wrap">
-          <h1 className="font-semibold mr-1">{Strings.email}: </h1>
-          <p>{data.email}</p>
-        </div>
-      </div>
+      <AnatomySingleCollapsable
+        children={
+          <>
+            <AnatomySection
+              title={Strings.name}
+              label={site.name}
+              icon={<BsBuildingAdd />}
+            />
+            <AnatomySection
+              title={Strings.rfc}
+              label={site.rfc}
+              icon={<BsFiles />}
+            />
+            <AnatomySection
+              title={Strings.companyAddress}
+              label={site.address}
+              icon={<BsPinMap />}
+            />
+            <AnatomySection
+              title={Strings.contact}
+              label={site.contact}
+              icon={<BsPerson />}
+            />
+            <AnatomySection
+              title={Strings.position}
+              label={site.position}
+              icon={<BsDiagram3 />}
+            />
+            <AnatomySection
+              title={Strings.phone}
+              label={site.phone}
+              icon={<BsTelephone />}
+            />
+            <AnatomySection
+              title={Strings.extension}
+              label={site.extension}
+              icon={<BsTelephoneOutbound />}
+            />
+            <AnatomySection
+              title={Strings.email}
+              label={site.email}
+              icon={<BsMailbox />}
+            />
+            <AnatomySection
+              title={Strings.cellular}
+              label={site.cellular}
+              icon={<BsTelephone />}
+            />
+            <AnatomySection
+              title={Strings.status}
+              label={
+                <Badge
+                  status={getStatusAndText(site.status).status}
+                  text={getStatusAndText(site.status).text}
+                />
+              }
+            />
+          </>
+        }
+      />
     </Card>
   );
 };

@@ -14,21 +14,18 @@ import { useGetPreclassifiersChartDataMutation } from "../../../services/chartSe
 import Strings from "../../../utils/localizations/Strings";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface PreclassifiersChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
-  rol: UserRoles;
 }
 
 const PreclassifiersChart = ({
   siteId,
   startDate,
   endDate,
-  rol,
-}: ChartProps) => {
+}: PreclassifiersChartProps) => {
   const [getAnomalies] = useGetPreclassifiersChartDataMutation();
   const [preclassifiers, setPreclassifiers] = useState<Preclassifier[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -111,7 +108,6 @@ const PreclassifiersChart = ({
         label={Strings.preclassifier}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         text={selectedPreclassifierName}
         cardTypeName={selectedCardTypeName}
       />

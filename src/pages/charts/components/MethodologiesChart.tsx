@@ -12,15 +12,14 @@ import {
 } from "recharts";
 import { Methodology } from "../../../data/charts/charts";
 import { CardTypesCatalog } from "../../../data/cardtypes/cardTypes";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface MethodologiesChartProps {
   siteId: string; 
   methodologies: Methodology[];
   methodologiesCatalog: CardTypesCatalog[];
 }
 
-const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
+const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) => {
   const [open, setOpen] = useState(false);
   const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
@@ -38,14 +37,12 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
   const handleOnClick = (data: any) => {
     const cardTypeName = data.payload.methodology;
     const params = { siteId, cardTypeName };
-    console.log("Search Params:", params);
     setSearchParams(params);
     setSelectedTotalCards(data.payload.totalCards);
     setCardTypeName(cardTypeName);
     setOpen(true);
   };
   
-
   
   const renderCustomizedLabel = ({
     cx,
@@ -111,8 +108,9 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
               <div>
                 {payload?.map((item, index) => (
                   <div
-                    className="bg-card-fields md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
+                    className="md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
                     key={index}
+                    style={{backgroundColor: `#${item.payload.color ?? '000'}`}}
                   >
                     <p>
                       {Strings.cardName} {item.payload.methodology}
@@ -136,7 +134,7 @@ const MethodologiesChart = ({ siteId, methodologies }: ChartProps) => {
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
         text={selectedCardTypeName}
-        cardTypeName={selectedCardTypeName} rol={UserRoles.IHSISADMIN}      />
+        cardTypeName={selectedCardTypeName} />
     </>
   );
 };

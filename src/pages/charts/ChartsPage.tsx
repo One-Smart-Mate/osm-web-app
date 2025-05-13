@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
 import Strings from "../../utils/localizations/Strings";
 import AreasChart from "./components/AreasChart";
 import CreatorsChart from "./components/CreatorsChart";
@@ -16,11 +15,12 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import MachinesChart from "./components/MachinesChart";
 import MechanicsChart from "./components/MechanicsChart";
 import DefinitiveUsersChart from "./components/DefinitiveUsersChart";
-import { UserRoles } from "../../utils/Extensions";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
-import DownloadCarDataExceButton from "./components/DownloadCardDataExcelButton";
+import DownloadChartDataButton from "./components/DownloadChartDataButton";
 import ChartExpander from "./components/ChartExpander";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const { RangePicker } = DatePicker;
 
@@ -31,11 +31,7 @@ const rangePresets: TimeRangePickerProps["presets"] = [
   { label: Strings.last90days, value: [dayjs().add(-90, "d"), dayjs()] },
 ];
 
-interface Props {
-  rol: UserRoles;
-}
-
-const Charts = ({ rol }: Props) => {
+const ChartsPage = () => {
   const location = useLocation();
   const [getMethodologiesCatalog] = useGetCardTypesCatalogsMutation();
   const [getMethodologies] = useGetMethodologiesChartDataMutation();
@@ -46,17 +42,22 @@ const Charts = ({ rol }: Props) => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(
     undefined
   );
   const [selectedAreaName, setSelectedAreaName] = useState<string>("");
+  const { isIhAdmin } = useCurrentUser();
+  const siteName = location?.state?.siteName || Strings.empty;
+  const siteId = location?.state?.siteId || Strings.empty;
 
-  const handleGetMethodologiesCatalog = async () => {
+
+  const handleGetMethodologiesCatalog = async (): Promise<void> => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
     }
+    setIsLoading(true);
     const [response, response2] = await Promise.all([
       getMethodologiesCatalog().unwrap(),
       getMethodologies({
@@ -68,26 +69,25 @@ const Charts = ({ rol }: Props) => {
 
     setMethodologiesCatalog(response);
     setMethodologies(response2);
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    handleGetMethodologiesCatalog();
-  }, [location.state]);
+    if (location.state?.siteId) {
+      handleGetMethodologiesCatalog();
+    }
+  }, [location.state?.siteId, startDate, endDate]);
 
-  useEffect(() => {
-    handleGetMethodologiesCatalog();
-  }, [startDate, endDate]);
-
-  const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state?.siteId || Strings.empty;
 
   const onRangeChange = (
     dates: null | (Dayjs | null)[],
     dateStrings: string[]
   ) => {
     if (dates) {
-      setStartDate(dateStrings[0]);
-      setEndDate(dateStrings[1]);
+      if (dateStrings[0] !== startDate || dateStrings[1] !== endDate) {
+        setStartDate(dateStrings[0]);
+        setEndDate(dateStrings[1]);
+      }
     } else {
       setStartDate(Strings.empty);
       setEndDate(Strings.empty);
@@ -95,24 +95,20 @@ const Charts = ({ rol }: Props) => {
   };
 
   return (
-    <>
-      <div className="h-full flex flex-col">
-        <div className="flex flex-col gap-2 items-center m-3">
-          <div className="flex flex-wrap gap-2">
-            <PageTitle mainText={Strings.usersOf} subText={siteName} />
-            <div className=" flex items-center">
-              <DownloadCarDataExceButton siteId={siteId} />
-            </div>
+    <MainContainer
+      title={Strings.chartsOf}
+      description={siteName}
+      isLoading={isLoading}
+      enableBackButton={isIhAdmin()}
+      enableSearch={false}
+      content={
+        <div>
+          <div className="flex items-end justify-end">
+            <DownloadChartDataButton siteId={siteId} />
           </div>
-          <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
-              <Space className="w-full md:w-auto mb-1 md:mb-0">
-                <RangePicker presets={rangePresets} onChange={onRangeChange} />
-              </Space>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 overflow-auto">
+          <Space className="w-full md:w-auto mb-1 md:mb-0 pb-2">
+            <RangePicker presets={rangePresets} onChange={onRangeChange} />
+          </Space>
           {methodologies.length > 0 ? (
             <>
               <div className="mb-2 flex flex-wrap flex-row gap-2">
@@ -130,7 +126,6 @@ const Charts = ({ rol }: Props) => {
                             siteId={siteId}
                             startDate={startDate}
                             endDate={endDate}
-                            rol={rol}
                           />
                         </ChartExpander>
                       </div>
@@ -160,7 +155,6 @@ const Charts = ({ rol }: Props) => {
                           siteId={siteId}
                           startDate={startDate}
                           endDate={endDate}
-                          rol={rol}
                         />
                       </div>
                       <div className="md:w-80 w-full h-60">
@@ -190,8 +184,7 @@ const Charts = ({ rol }: Props) => {
                             endDate={endDate}
                             methodologies={methodologies}
                             siteId={siteId}
-                            rol={rol}
-                            onAreaSelect={(superiorId, areaName) => {
+                            onClick={(superiorId, areaName) => {
                               setSelectedAreaId(superiorId);
                               setSelectedAreaName(areaName || "");
                             }}
@@ -208,8 +201,7 @@ const Charts = ({ rol }: Props) => {
                       endDate={endDate}
                       methodologies={methodologies}
                       siteId={siteId}
-                      rol={rol}
-                      onAreaSelect={(superiorId, areaName) => {
+                      onClick={(superiorId, areaName) => {
                         setSelectedAreaId(superiorId);
                         setSelectedAreaName(areaName || "");
                       }}
@@ -223,7 +215,7 @@ const Charts = ({ rol }: Props) => {
                         <h2 className="text-xl font-semibold text-black">
                           {selectedAreaName
                             ? `${Strings.machinesOfArea}: ${selectedAreaName}`
-                            : Strings.mechanics}
+                            : Strings.machines}
                         </h2>
                       </div>
                       <div className="absolute right-0 top-0">
@@ -231,7 +223,7 @@ const Charts = ({ rol }: Props) => {
                           title={
                             selectedAreaName
                               ? `${Strings.machinesOfArea}: ${selectedAreaName}`
-                              : Strings.mechanics
+                              : Strings.machines
                           }
                         >
                           <MachinesChart
@@ -239,7 +231,6 @@ const Charts = ({ rol }: Props) => {
                             endDate={endDate}
                             siteId={siteId}
                             methodologies={methodologies}
-                            rol={rol}
                             areaId={selectedAreaId}
                           />
                         </ChartExpander>
@@ -254,7 +245,6 @@ const Charts = ({ rol }: Props) => {
                       endDate={endDate}
                       siteId={siteId}
                       methodologies={methodologies}
-                      rol={rol}
                       areaId={selectedAreaId}
                     />
                   </div>
@@ -276,7 +266,6 @@ const Charts = ({ rol }: Props) => {
                             endDate={endDate}
                             siteId={siteId}
                             methodologies={methodologies}
-                            rol={rol}
                           />
                         </ChartExpander>
                       </div>
@@ -290,7 +279,6 @@ const Charts = ({ rol }: Props) => {
                       endDate={endDate}
                       siteId={siteId}
                       methodologies={methodologies}
-                      rol={rol}
                     />
                   </div>
                 </Card>
@@ -300,7 +288,7 @@ const Charts = ({ rol }: Props) => {
                       <div className="flex flex-col items-center">
                         <h2 className="text-xl font-semibold text-black">
                           {selectedAreaName
-                            ? `${Strings.machines}: ${selectedAreaName}`
+                            ? `${Strings.mechanics}: ${selectedAreaName}`
                             : Strings.mechanics}
                         </h2>
                       </div>
@@ -315,7 +303,6 @@ const Charts = ({ rol }: Props) => {
                           <MechanicsChart
                             startDate={startDate}
                             endDate={endDate}
-                            rol={rol}
                             siteId={siteId}
                             methodologies={methodologies}
                           />
@@ -329,7 +316,6 @@ const Charts = ({ rol }: Props) => {
                     <MechanicsChart
                       startDate={startDate}
                       endDate={endDate}
-                      rol={rol}
                       siteId={siteId}
                       methodologies={methodologies}
                     />
@@ -350,7 +336,6 @@ const Charts = ({ rol }: Props) => {
                           <DefinitiveUsersChart
                             startDate={startDate}
                             endDate={endDate}
-                            rol={rol}
                             siteId={siteId}
                             methodologies={methodologies}
                           />
@@ -364,7 +349,6 @@ const Charts = ({ rol }: Props) => {
                     <DefinitiveUsersChart
                       startDate={startDate}
                       endDate={endDate}
-                      rol={rol}
                       siteId={siteId}
                       methodologies={methodologies}
                     />
@@ -397,9 +381,9 @@ const Charts = ({ rol }: Props) => {
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
           )}
         </div>
-      </div>
-    </>
+      }
+    />
   );
 };
 
-export default Charts;
+export default ChartsPage;

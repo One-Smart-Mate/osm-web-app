@@ -15,13 +15,11 @@ import Strings from "../../../utils/localizations/Strings";
 import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
-import { UserRoles } from "../../../utils/Extensions";
 
-export interface ChartProps {
+export interface CreatorsChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
-  rol: UserRoles;
   methodologies: Methodology[];
 }
 
@@ -30,8 +28,7 @@ const CreatorsChart = ({
   startDate,
   endDate,
   methodologies,
-  rol,
-}: ChartProps) => {
+}: CreatorsChartProps) => {
   const [getCreators] = useGetCreatorsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -132,7 +129,6 @@ const CreatorsChart = ({
         label={Strings.creator}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         text={selectedCreatorName}
         cardTypeName={selectedCardTypeName}
       />

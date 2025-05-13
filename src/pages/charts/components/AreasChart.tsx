@@ -12,18 +12,16 @@ import {
 import { Methodology } from "../../../data/charts/charts";
 import { useGetAreasChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
-import { UserRoles } from "../../../utils/Extensions";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import CustomLegend from "../../../components/CustomLegend";
 import CustomDrawerCardList from "../../../components/CustomDrawerCardList";
 
-export interface ChartProps {
+export interface AreasChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
   methodologies: Methodology[];
-  rol: UserRoles;
-  onAreaSelect?: (areaId: number, areaName?: string) => void;
+  onClick?: (areaId: number, areaName?: string) => void;
 }
 
 const AreasChart = ({
@@ -31,9 +29,8 @@ const AreasChart = ({
   startDate,
   endDate,
   methodologies,
-  rol,
-  onAreaSelect,
-}: ChartProps) => {
+  onClick,
+}: AreasChartProps) => {
   const [getAreas] = useGetAreasChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -79,7 +76,7 @@ const AreasChart = ({
         const defaultAreaId = transformedData[0].areaId;
         setAreaId(defaultAreaId);
   
-        onAreaSelect?.(defaultAreaId, transformedData[0].area);
+        onClick?.(defaultAreaId, transformedData[0].area);
       }
     } catch (error) {
       console.error(error);
@@ -107,9 +104,8 @@ const AreasChart = ({
   
     if (data.areaId !== areaId) {
       setAreaId(data.areaId);
-      onAreaSelect?.(data.areaId, data.area);
+      onClick?.(data.areaId, data.area);
     }
-    
   };
   
 
@@ -152,7 +148,6 @@ const AreasChart = ({
         label={Strings.area}
         onClose={() => setOpen(false)}
         totalCards={selectedTotalCards}
-        rol={rol}
         text={selectedAreaName}
         cardTypeName={selectedCardTypeName}
       />

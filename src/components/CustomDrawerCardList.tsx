@@ -1,10 +1,9 @@
 import React from "react";
 import { Drawer, List } from "antd";
-import PaginatedList from "./PaginatedList"; // Asegúrate de importar los componentes que usesmporta las constantes si las necesitas
+import PaginatedList from "./PaginatedList";
 import { CardInterface } from "../data/card/card";
-import { UserRoles } from "../utils/Extensions";
 import Strings from "../utils/localizations/Strings";
-import TagCardV2 from "../pages/card/components/TagCardV2";
+import TagCardV2 from "../pages/tags/components/TagCard";
 
 interface CustomDrawerProps {
   open: boolean;
@@ -13,11 +12,10 @@ interface CustomDrawerProps {
   cardTypeName: string;
   dataSource: any;
   isLoading: boolean;
-  rol: UserRoles;
   label: string;
   text: string;
-  label2?: string;
-  text2?: string;
+  subLabel?: string;
+  subText?: string;
 }
 
 const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
@@ -29,16 +27,16 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
   isLoading,
   text,
   label,
-  text2,
-  label2,
+  subText,
+  subLabel,
 }) => {
   const buildExtraLabel = () => {
-    if (text2) {
+    if (subText) {
       return (
         <div className="flex flex-wrap">
           <h1>
-            {label2}
-            {Strings.colon} <span className="font-normal">{text2}</span>
+            {subLabel}
+            {Strings.colon} <span className="font-normal">{subText}</span>
           </h1>
         </div>
       );
@@ -62,7 +60,7 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
           <div className="flex flex-wrap">
             <h1 className="flex-1">
               {Strings.type}
-              {Strings.colon}{" "}
+              {Strings.colon}
               <span className="font-normal">{cardTypeName}</span>
             </h1>
             <h1 className="flex-1 text-end">{Strings.total}</h1>
@@ -79,8 +77,8 @@ const CustomDrawerCardList: React.FC<CustomDrawerProps> = ({
         responsive={false}
         dataSource={dataSource}
         renderItem={(item: CardInterface, index: number) => (
-          <List.Item>
-            <TagCardV2 data={item} key={index} />
+          <List.Item  key={index} >
+            <TagCardV2 data={item}/>
           </List.Item>
         )}
         loading={isLoading}
