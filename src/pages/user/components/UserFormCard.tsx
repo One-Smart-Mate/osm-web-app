@@ -74,7 +74,7 @@ const UserFormCard = ({
             rules={[
               { required: true, message: Strings.requiredUserName },
               { max: 50 },
-              { pattern: /^[A-Za-z\s]+$/, message: Strings.onlyLetters },
+              { pattern: /^[A-Za-zñÑ\s]+$/, message: Strings.onlyLetters },
             ]}
           >
             <Input
