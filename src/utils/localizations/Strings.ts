@@ -901,6 +901,7 @@ class StringsBase {
   static oplMediaDefaultTitle = "oplMediaDefaultTitle";
   static oplMediaDefaultHint = "oplMediaDefaultHint";
   static oplMediaDefaultButton = "oplMediaDefaultButton";
+  static oplErrorInvalidFileType = "oplErrorInvalidFileType";
 
   // OplFormModal strings
   static oplFormModalViewTitle = "oplFormModalViewTitle";

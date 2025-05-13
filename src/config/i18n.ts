@@ -954,6 +954,8 @@ const resources = {
       oplMediaDefaultTitle: "Click or drag a file to this area to upload",
       oplMediaDefaultHint: "Supports various file formats",
       oplMediaDefaultButton: "Upload File",
+      oplErrorInvalidFileType: "The selected file is not a valid {type} file",
+      oplErrorInvalidFileType_es: "El archivo seleccionado no es un archivo válido de tipo {type}",
 
       // OplFormModal strings
       oplFormModalViewTitle: "View OPL",
@@ -2217,9 +2219,10 @@ const resources = {
       oplMediaPdfHint: "Compatible con archivos PDF solo",
       oplMediaPdfButton: "Subir PDF",
       oplMediaDefaultTitle:
-        "Haz clic o arrastra un archivo a esta área para subirlo",
-      oplMediaDefaultHint: "Compatible con varios formatos de archivo",
-      oplMediaDefaultButton: "Subir archivo",
+        "Haz clic o arrastra un archivo a esta área para subir",
+      oplMediaDefaultHint: "Admite varios formatos de archivo",
+      oplMediaDefaultButton: "Subir Archivo",
+      oplErrorInvalidFileType: "El archivo seleccionado no es un archivo válido de tipo {type}",
 
       // OplFormModal strings
       oplFormModalViewTitle: "Ver OPL",

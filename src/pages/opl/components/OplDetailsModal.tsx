@@ -236,6 +236,12 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
                 {renderDetailContent(detail)}
               </div>
             ))}
+            {/* Botón de cerrar en la parte inferior */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+              <Button type="default" onClick={onCancel}>
+                {Strings.close}
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -262,6 +268,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
         onFileChange={onFileChange}
         onPreview={onPreview}
         onUpload={() => onAddMedia("imagen")}
+        onCancel={onCancel}
       />
     </Card>
   );
@@ -276,6 +283,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
         onFileChange={onFileChange}
         onPreview={onPreview}
         onUpload={() => onAddMedia("video")}
+        onCancel={onCancel}
       />
     </Card>
   );
@@ -290,6 +298,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
         onFileChange={onFileChange}
         onPreview={onPreview}
         onUpload={() => onAddMedia("pdf")}
+        onCancel={onCancel}
       />
     </Card>
   );
