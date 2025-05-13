@@ -1,7 +1,7 @@
 import { Dropdown, Avatar, Tooltip, Tag, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import User, { getSiteName } from "../../data/user/user";
-import Logout from "../../pages/auth/Logout";
+import Logout from "../auth/Logout";
 import { MenuProps } from "antd/lib";
 
 interface UserProfileDropdownProps {

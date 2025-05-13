@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import DownloadChartDataButton from "./components/DownloadChartDataButton";
 import ChartExpander from "./components/ChartExpander";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const { RangePicker } = DatePicker;

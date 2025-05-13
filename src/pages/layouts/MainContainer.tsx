@@ -1,5 +1,5 @@
 import React from "react";
-import PageTitle from "../../pages/components/PageTitle";
+import PageTitle from "../components/PageTitle";
 import { Button, Input, Space } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";

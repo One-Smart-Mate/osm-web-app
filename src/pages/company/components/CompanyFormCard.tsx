@@ -125,7 +125,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
   );
 
   return (
-    <Form form={form} onFinish={onSubmit}>
+    <Form form={form} onFinish={onSubmit} layout="vertical">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap">
           <Form.Item name="id" className="hidden">
@@ -139,9 +139,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
               { max: 100 },
             ]}
             className="flex-1"
+            label={Strings.companyName}
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsBuilding />}
               placeholder={Strings.companyName}
@@ -151,6 +151,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
 
           <Form.Item
             name="rfc"
+            label={Strings.rfc}
             validateFirst
             rules={[
               { required: true, message: Strings.requiredRFC },
@@ -159,7 +160,6 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
             ]}
           >
             <Input
-              size="large"
               maxLength={13}
               addonBefore={<BsFiles />}
               placeholder={Strings.rfc}
@@ -181,9 +181,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
               { max: 200 },
             ]}
             className="flex-1"
+            label={Strings.companyAddress}
           >
             <Input
-              size="large"
               addonBefore={<BsPinMap />}
               placeholder={Strings.companyAddress}
             />
@@ -199,9 +199,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
               { max: 100 },
             ]}
             className="flex-1"
+            label={Strings.contact}
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsPerson />}
               placeholder={Strings.contact}
@@ -216,9 +216,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
               { max: 100 },
             ]}
             className="flex-1"
+            label={Strings.position}
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsDiagram3 />}
               placeholder={Strings.position}
@@ -234,9 +234,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
             className="flex-1 mr-2"
+            label={Strings.phone}
           >
             <InputNumber
-              size="large"
               maxLength={13}
               addonBefore={<BsTelephone />}
               placeholder={Strings.phone}
@@ -244,9 +244,8 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           </Form.Item>
           <AnatomyTooltip title={Strings.companyPhoneTooltip} />
 
-          <Form.Item name="extension">
+          <Form.Item name="extension" label={Strings.extension}>
             <InputNumber
-              size="large"
               maxLength={5}
               addonBefore={<BsTelephoneOutbound />}
               placeholder={Strings.extension}
@@ -258,9 +257,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
             className="flex-1"
+            label={Strings.cellular}
           >
             <InputNumber
-              size="large"
               maxLength={13}
               addonBefore={<BsPhone />}
               placeholder={Strings.cellular}
@@ -278,9 +277,9 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
               { max: 60 },
             ]}
             className="flex-1"
+            label={Strings.email}
           >
             <Input
-              size="large"
               maxLength={60}
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}

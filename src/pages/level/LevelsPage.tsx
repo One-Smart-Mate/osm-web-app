@@ -20,7 +20,7 @@ import NodeElement from "./components/NodeElement";
 import LevelMenuOptions from "./components/LevelMenuOptions";
 import LevelFormDrawer from "./components/LevelFormDrawer";
 import { useGetSiteMutation } from "../../services/siteService";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 

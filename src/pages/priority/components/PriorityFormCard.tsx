@@ -51,7 +51,7 @@ const PriorityFormCard = ({
   };
 
   return (
-    <Form form={form} onFinish={onSubmit}>
+    <Form form={form} onFinish={onSubmit} layout="vertical">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap">
           <Form.Item name="id" className="hidden">
@@ -61,6 +61,7 @@ const PriorityFormCard = ({
           <Form.Item
             name="code"
             validateFirst
+            label={Strings.code}
             rules={[
               { required: true, message: Strings.requiredCode },
               { max: 4 },
@@ -68,7 +69,6 @@ const PriorityFormCard = ({
             className="mr-1"
           >
             <Input
-              size="large"
               maxLength={4}
               addonBefore={<BsQrCode />}
               placeholder={Strings.code}
@@ -78,6 +78,7 @@ const PriorityFormCard = ({
 
           <Form.Item
             name="description"
+            label={Strings.description}
             validateFirst
             rules={[
               { required: true, message: Strings.requiredDescription },
@@ -86,7 +87,6 @@ const PriorityFormCard = ({
             className="flex-1"
           >
             <Input
-              size="large"
               maxLength={50}
               addonBefore={<BsCardText />}
               placeholder={Strings.description}
@@ -98,12 +98,12 @@ const PriorityFormCard = ({
         <div className="flex flex-wrap">
           <Form.Item
             name="days"
+            label={Strings.days}
             validateFirst
             rules={[{ required: true, message: Strings.requiredDaysNumber }]}
             className="mr-1"
           >
             <InputNumber
-              size="large"
               maxLength={3}
               addonBefore={<BsCalendar2Date />}
               placeholder={Strings.daysNumber}
@@ -112,8 +112,8 @@ const PriorityFormCard = ({
           <AnatomyTooltip title={Strings.priorityDaysNumberTooltip} />
 
           {!isLoading && enableStatus && (
-            <Form.Item name="status" className="w-60">
-              <Select size="large" options={formatStatusOptions()} />
+            <Form.Item name="status" className="w-60" label={Strings.status}>
+              <Select options={formatStatusOptions()} />
             </Form.Item>
           )}
         </div>

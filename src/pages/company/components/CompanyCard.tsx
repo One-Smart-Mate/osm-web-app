@@ -3,7 +3,7 @@ import { Company } from "../../../data/company/company";
 import { Badge, Button, Card, Typography } from "antd";
 import CompanyForm, { CompanyFormType } from "./CompanyForm";
 import AnatomySingleCollapsable from "../../components/AnatomySingleCollapsable";
-import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import AnatomySection from "../../components/AnatomySection";
 import Strings from "../../../utils/localizations/Strings";
 import {
   BsBuildingAdd,

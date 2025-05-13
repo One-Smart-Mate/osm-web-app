@@ -13,7 +13,7 @@ import {
 import Strings from "../../utils/localizations/Strings";
 import { ResetPasswordRoute } from "../../utils/Routes";
 import { BsLock, BsPersonLock } from "react-icons/bs";
-import LanguageDropdown from "../layouts/LanguageDropdown";
+import LanguageDropdown from "../components/LanguageDropdown";
 import Constants from "../../utils/Constants";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { buildInitRoute, navigateWithState } from "../../routes/RoutesExtensions";

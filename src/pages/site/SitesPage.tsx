@@ -14,7 +14,7 @@ import {
   selectSiteUpdatedIndicator,
 } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../components/PaginatedList";
 import SiteForm, { SiteFormType } from "./components/SiteForm";

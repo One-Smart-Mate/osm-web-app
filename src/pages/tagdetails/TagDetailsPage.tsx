@@ -21,7 +21,7 @@ import { Divider, Typography, App as AntdApp  } from "antd";
 import ProvisionalSolutionTagCard from "./components/ProvisionalSolutionTagCard";
 import NoteTagCard from "./components/NoteTagCard";
 import DefinitiveSolutionTagCard from "./components/DefinitiveSolutionTagCard";
-import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import MainContainer from "../layouts/MainContainer";
 import InfoTagCard from "./components/InfoTagCard";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
