@@ -6,8 +6,6 @@ import { UserRoles, getUserRol } from "../../utils/Extensions";
 import Routes from "../../utils/Routes";
 import CardTypess from "../cardtypes/CardTypes";
 import Preclassifiers from "../preclassifier/Preclassifiers";
-import Levels from "../level/Levels";
-import { PiMapPinAreaLight } from "react-icons/pi";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
 import PositionsPage from "../positions/PositionsPage";
@@ -39,14 +37,6 @@ export const adminPreclassifiers = new Route(
   "preclassifiers",
   Routes.AdminPrefix + Routes.Site + Routes.CardType + Routes.Preclassifiers,
   <Preclassifiers />,
-  <></>,
-);
-
-const adminLevels = new Route(
-  Strings.preclassifiersSB,
-  "levels",
-  Routes.AdminPrefix + Routes.Levels,
-  <Levels role={UserRoles.IHSISADMIN} />,
   <></>,
 );
 
@@ -94,20 +84,11 @@ const adminRoutesSiderOptions = (user: User): ItemType[] => {
 const adminRoutes: Route[] = [
   adminCardTypes,
   adminPreclassifiers,
-  adminLevels,
   adminPositions,
   adminNotifications,
   adminSystemHealth,
 ];
 
-
-const sysAdminLevels = new Route(
-  Strings.levelsSB,
-  "levels",
-  Routes.SysadminPrefix + Routes.Site + Routes.Levels,
-  <Levels role={UserRoles.LOCALSYSADMIN} />,
-  <PiMapPinAreaLight />,
-);
 
 const sysAdminCardTypes = new Route(
   Strings.cardTypesSB,
@@ -128,7 +109,6 @@ export const sysAdminPreclassifiers = new Route(
 );
 
 const sysAdminRoutes: Route[] = [
-  sysAdminLevels,
   sysAdminCardTypes,
   sysAdminPreclassifiers,
 ];
