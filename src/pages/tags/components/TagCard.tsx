@@ -13,7 +13,6 @@ import { AiOutlinePicture } from "react-icons/ai";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { GoDeviceCameraVideo } from "react-icons/go";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
-import CustomTagV2 from "../../../components/CustomTagV2";
 import {
   BsActivity,
   BsCalendar4,
@@ -23,13 +22,14 @@ import {
   BsPinMap,
 } from "react-icons/bs";
 import { buildCardDetailRoute, navigateWithState } from "../../../routes/RoutesExtensions";
+import TagStatus from "../../components/TagStatus";
 
 interface TagCardProps {
   data: CardInterface;
 }
 
 const TagCard = ({ data }: TagCardProps) => {
-  const { status, text, dateStatus } = getCardStatusAndText(
+  const { dateStatus } = getCardStatusAndText(
     data.status,
     data.cardDueDate,
     data.cardDefinitiveSolutionDate,
@@ -88,7 +88,7 @@ const TagCard = ({ data }: TagCardProps) => {
       }}
     >
       {dateStatus === Strings.expired ? (
-        <div className="w-full flex items-center justify-end bg-gray-50 p-2 ">
+        <div className="w-full flex items-center justify-end bg-gray-50 p-2">
           <Tag color="error">{Strings.expired}</Tag>
         </div>
       ) : (
@@ -104,14 +104,7 @@ const TagCard = ({ data }: TagCardProps) => {
         label={formatDate(data.cardCreationDate)}
         icon={<BsCalendar4 />}
       />
-      <AnatomySection
-        title={Strings.status}
-        label={
-          <CustomTagV2 className="w-min text-sm" color={status}>
-            <span className="font-medium">{text}</span>
-          </CustomTagV2>
-        }
-      />
+      <TagStatus card={data} justify={false} />
 
       <AnatomySection
         title={Strings.cardType}

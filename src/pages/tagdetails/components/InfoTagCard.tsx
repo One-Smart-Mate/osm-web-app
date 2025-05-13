@@ -37,6 +37,7 @@ import AudioPlayerPreviewGroup from "./AudioPlayerPreviewGroup";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
+import TagStatus from "../../components/TagStatus";
 
 const { useToken } = theme;
 
@@ -150,14 +151,14 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
   };
 
   const showEvidencesSection = (): boolean => {
-    return hasImages(evidences) || hasVideos(evidences) || hasAudios(evidences)
-  }
+    return hasImages(evidences) || hasVideos(evidences) || hasAudios(evidences);
+  };
 
   return (
     <>
       <div className="p-2">
         <Card className="px-2 mt-3" hoverable>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4 border-b pb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4 border-b pb-4">
             <AnatomySection
               title={Strings.cardNumber}
               label={card.siteCardId || Strings.NA}
@@ -177,32 +178,19 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
               justify={true}
             />
 
-            <AnatomySection
-              title={Strings.status}
-              label={
-                <span
-                  className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center"
-                  style={{ backgroundColor: isCardClosed ? token["red-5"] : primaryColor }}
-                >
-                  {cardStatus.text}
-                </span>
-              }
-              justify={true}
-            />
+            <TagStatus card={data.card} justify={true} />
 
             <AnatomySection
               title={Strings.priority}
               label={
                 <span
-                  onClick={() => 
-                  {
-                    if(!isCardClosed) {
-                      handleOnOpenModal(Strings.priority)
+                  onClick={() => {
+                    if (!isCardClosed) {
+                      handleOnOpenModal(Strings.priority);
                     }
-                  }
-                  }
+                  }}
                   className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
-                  style={{ backgroundColor:  primaryColor }}
+                  style={{ backgroundColor: primaryColor }}
                 >
                   {card.priorityCode
                     ? `${card.priorityCode} - ${card.priorityDescription}`
@@ -271,8 +259,8 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
               label={
                 <span
                   onClick={() => {
-                    if(!isCardClosed) {
-                      handleOnOpenModal(Strings.mechanic)
+                    if (!isCardClosed) {
+                      handleOnOpenModal(Strings.mechanic);
                     }
                   }}
                   className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
@@ -298,27 +286,29 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
           />
         </Card>
         {showEvidencesSection() && (
-            <>
-              <Divider
-                orientation="left"
-                className="text-xs my-2"
-                style={{ borderColor: "#808080" }}
-              >
-                {Strings.evidencesAtCreationDivider}
-              </Divider>
-              <div className="flex flex-wrap  gap-2 mt-2">
-                {hasImages(evidences) && <ImagesPreviewGroup data={evidences} />}
-              </div>
+          <>
+            <Divider
+              orientation="left"
+              className="text-xs my-2"
+              style={{ borderColor: "#808080" }}
+            >
+              {Strings.evidencesAtCreationDivider}
+            </Divider>
+            <div className="flex flex-wrap  gap-2 mt-2">
+              {hasImages(evidences) && <ImagesPreviewGroup data={evidences} />}
+            </div>
 
-              <div className="flex flex-wrap  gap-2 mt-2">
-                {hasVideos(evidences) && <VideoPreviewGroup data={evidences} />}
-              </div>
+            <div className="flex flex-wrap  gap-2 mt-2">
+              {hasVideos(evidences) && <VideoPreviewGroup data={evidences} />}
+            </div>
 
-              <div className="flex flex-wrap  gap-2 mt-2">
-                {hasAudios(evidences) && <AudioPlayerPreviewGroup data={evidences} />}
-              </div>
-            </>
-          )}
+            <div className="flex flex-wrap  gap-2 mt-2">
+              {hasAudios(evidences) && (
+                <AudioPlayerPreviewGroup data={evidences} />
+              )}
+            </div>
+          </>
+        )}
 
         <Form.Provider
           onFormFinish={async (_, { values }) =>
