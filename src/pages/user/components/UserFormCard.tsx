@@ -64,12 +64,13 @@ const UserFormCard = ({
   ];
 
   return (
-    <Form form={form} onFinish={onSubmit}>
+    <Form form={form} onFinish={onSubmit} layout="vertical">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="name"
             validateFirst
+            label={Strings.name}
             className="flex-1"
             rules={[
               { required: true, message: Strings.requiredUserName },
@@ -78,7 +79,6 @@ const UserFormCard = ({
             ]}
           >
             <Input
-              size="large"
               maxLength={50}
               addonBefore={<BsPerson />}
               placeholder={Strings.name}
@@ -88,6 +88,7 @@ const UserFormCard = ({
           <Form.Item
             name="email"
             validateFirst
+            label={Strings.email}
             className="flex-1"
             rules={[
               { required: true, message: Strings.requiredEmail },
@@ -95,7 +96,6 @@ const UserFormCard = ({
             ]}
           >
             <Input
-              size="large"
               maxLength={60}
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}
@@ -106,6 +106,7 @@ const UserFormCard = ({
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="password"
+            label={Strings.password}
             validateFirst
             rules={[
               {
@@ -121,7 +122,6 @@ const UserFormCard = ({
             className="flex-1"
           >
             <Input.Password
-              size="large"
               addonBefore={<BsLock />}
               placeholder={Strings.updatePassword}
             />
@@ -130,6 +130,7 @@ const UserFormCard = ({
           <Form.Item
             name="confirmPassword"
             validateFirst
+            label={Strings.confirmPassword}
             dependencies={["password"]}
             rules={[
               ({ getFieldValue }) => ({
@@ -149,7 +150,6 @@ const UserFormCard = ({
             className="flex-1"
           >
             <Input.Password
-              size="large"
               addonBefore={<BsLock />}
               placeholder={Strings.confirmPassword}
             />
@@ -174,13 +174,13 @@ const UserFormCard = ({
         <div className="flex flex-wrap">
           <Form.Item
             name="roles"
+            label={Strings.roles}
             validateFirst
             className="flex-1"
             rules={[{ required: true, message: Strings.requiredRoles }]}
           >
             <Select
               mode="multiple"
-              size="large"
               placeholder={Strings.roles}
               value={selectedRoles}
               onChange={setSelectedRoles}
@@ -196,12 +196,12 @@ const UserFormCard = ({
         {enableStatus && (
           <Form.Item
             name="status"
+            label={Strings.status}
             validateFirst
             rules={[{ required: true, message: Strings.requiredStatus }]}
             className="w-60"
           >
             <Select
-              size="large"
               placeholder={Strings.statusPlaceholder}
               options={statusOptions}
             />

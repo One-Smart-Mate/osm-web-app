@@ -165,7 +165,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
   );
 
   return (
-    <Form form={form} onFinish={onSubmit}>
+    <Form form={form} onFinish={onSubmit} layout="vertical">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap">
           <Form.Item name="id" className="hidden">
@@ -178,10 +178,10 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
               { required: true, message: Strings.requiredCompanyName },
               { max: 100 },
             ]}
+            label={Strings.companyName}
             className="flex-1"
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsBuilding />}
               placeholder={Strings.companyName}
@@ -197,9 +197,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
               { max: 13 },
               { min: 12 },
             ]}
+            label={Strings.rfc}
           >
             <Input
-              size="large"
               maxLength={13}
               addonBefore={<BsFiles />}
               placeholder={Strings.rfc}
@@ -214,8 +214,8 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         </div>
 
         <div className="flex flex-row flex-wrap">
-          <Form.Item name="siteCode">
-            <Input size="large" disabled addonBefore={<BsQrCode />} />
+          <Form.Item name="siteCode" label={Strings.siteCode}>
+            <Input  disabled addonBefore={<BsQrCode />} />
           </Form.Item>
           <AnatomyTooltip title={Strings.siteCodeTooltip} />
 
@@ -225,9 +225,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
               { required: true, message: Strings.requiredSiteBusinessName },
             ]}
             className="flex-1"
+            label={Strings.siteBusinessName}
           >
             <Input
-              size="large"
               maxLength={100}
               placeholder={Strings.siteBusinessName}
               addonBefore={<BsBuilding />}
@@ -241,9 +241,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             name="siteType"
             rules={[{ required: true, message: Strings.requiredSiteType }]}
             className="flex-1"
+            label={Strings.siteType}
           >
             <Input
-              size="large"
               maxLength={20}
               placeholder={Strings.siteType}
               addonBefore={<BsBuildingGear />}
@@ -254,9 +254,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           <Form.Item
             name="latitud"
             rules={[{ required: true, message: Strings.requiredLatitud }]}
+            label={Strings.latitud}
           >
             <InputNumber
-              size="large"
               maxLength={11}
               placeholder={Strings.latitud}
               addonBefore={<BsMap />}
@@ -267,9 +267,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           <Form.Item
             name="longitud"
             rules={[{ required: true, message: Strings.requiredLongitud }]}
+            label={Strings.longitud}
           >
             <InputNumber
-              size="large"
               maxLength={11}
               placeholder={Strings.longitud}
               addonBefore={<BsMap />}
@@ -282,6 +282,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         <div className="flex w-full">
           <Form.Item
             name="address"
+            label={Strings.companyAddress}
             rules={[
               { required: true, message: Strings.requiredAddress },
               { max: 200 },
@@ -289,7 +290,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             className="flex-1"
           >
             <Input
-              size="large"
               addonBefore={<BsPinMap />}
               placeholder={Strings.companyAddress}
             />
@@ -300,6 +300,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         <div className="flex flex-row flex-wrap">
           <Form.Item
             name="contact"
+            label={Strings.contact}
             rules={[
               { required: true, message: Strings.requiredContacName },
               { max: 100 },
@@ -307,7 +308,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             className="flex-1"
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsPerson />}
               placeholder={Strings.contact}
@@ -317,6 +317,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
 
           <Form.Item
             name="position"
+            label={Strings.position}
             rules={[
               { required: true, message: Strings.requiredPosition },
               { max: 100 },
@@ -324,7 +325,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             className="flex-1"
           >
             <Input
-              size="large"
               maxLength={100}
               addonBefore={<BsDiagram3 />}
               placeholder={Strings.position}
@@ -339,9 +339,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             name="phone"
             rules={[{ required: true, message: Strings.requiredPhone }]}
             className="flex-1 mr-2"
+            label={Strings.phone}
           >
             <InputNumber
-              size="large"
               maxLength={13}
               addonBefore={<BsTelephone />}
               placeholder={Strings.phone}
@@ -349,9 +349,8 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           </Form.Item>
           <AnatomyTooltip title={Strings.companyPhoneTooltip} />
 
-          <Form.Item name="extension">
+          <Form.Item name="extension" label={Strings.extension}>
             <InputNumber
-              size="large"
               maxLength={5}
               addonBefore={<BsTelephoneOutbound />}
               placeholder={Strings.extension}
@@ -363,9 +362,9 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             name="cellular"
             rules={[{ required: true, message: Strings.requiredCellular }]}
             className="flex-1"
+            label={Strings.cellular}
           >
             <InputNumber
-              size="large"
               maxLength={13}
               addonBefore={<BsPhone />}
               placeholder={Strings.cellular}
@@ -377,6 +376,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         <div className="flex w-full">
           <Form.Item
             name="email"
+            label={Strings.email}
             rules={[
               { required: true, message: Strings.requiredEmail },
               { type: "email", message: Strings.requiredValidEmailAddress },
@@ -385,7 +385,6 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
             className="flex-1"
           >
             <Input
-              size="large"
               maxLength={60}
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}
@@ -397,11 +396,11 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         <div className="flex flex-row">
           <Form.Item
             name="dueDate"
+            label={Strings.dueDate}
             rules={[{ required: true, message: Strings.requiredDueDate }]}
             className="mr-2"
           >
             <DatePicker
-              size="large"
               format="YYYY-MM-DD"
               placeholder={Strings.dueDate}
             />
@@ -410,13 +409,13 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
 
           <Form.Item
             name="monthlyPayment"
+            label={Strings.monthlyPayment}
             rules={[
               { required: true, message: Strings.requiredMonthlyPayment },
             ]}
             className="mr-2"
           >
             <InputNumber
-              size="large"
               maxLength={12}
               placeholder={Strings.monthlyPayment}
               addonBefore={<BsCashCoin />}
@@ -426,11 +425,11 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
 
           <Form.Item
             name="currency"
+            label={Strings.currency}
             rules={[{ required: true, message: Strings.requiredCurrency }]}
             className="w-72"
           >
             <Select
-              size="large"
               options={currencyOptions()}
               placeholder={Strings.currency}
             
@@ -442,12 +441,12 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
         <div className="flex">
           <Form.Item
             name="appHistoryDays"
+            label={Strings.appHistoryDays}
             rules={[
               { required: true, message: Strings.requiredAppHistoryDays },
             ]}
           >
             <InputNumber
-              size="large"
               maxLength={3}
               placeholder={Strings.appHistoryDays}
               addonBefore={<BsClockHistory />}
