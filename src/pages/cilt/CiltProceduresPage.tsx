@@ -15,7 +15,9 @@ const CiltProceduresPage = (): React.ReactElement => {
 
   const [isPositionModalVisible, setIsPositionModalVisible] = useState(false);
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
+    null
+  );
   const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -58,7 +60,10 @@ const CiltProceduresPage = (): React.ReactElement => {
     setIsCiltFormVisible(false);
     setSelectedPosition(null);
     ciltForm.resetFields();
+
     message.success(Strings.ciltMstrCreateSuccess);
+
+    window.location.reload();
   };
 
   const handleSearch = (value: string) => {

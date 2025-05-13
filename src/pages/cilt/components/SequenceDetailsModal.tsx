@@ -5,6 +5,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
 import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
 import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
+import { formatSecondsToNaturalTime } from "../../../utils/timeUtils";
 
 interface SequenceDetailsModalProps {
   visible: boolean;
@@ -44,9 +45,10 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
       title={`${Strings.detailsOf} ${Strings.sequence}`}
       open={visible}
       onCancel={onCancel}
-      zIndex={900}
+      zIndex={1001}
       footer={null}
       width={700}
+      style={{ top: 20 }}
     >
       <Card bordered={false}>
         <Row gutter={[16, 16]}>
@@ -67,7 +69,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <div>
               <Text strong>
                 {sequence.standardTime
-                  ? `${sequence.standardTime} ${Strings.seconds}`
+                  ? formatSecondsToNaturalTime(sequence.standardTime)
                   : "N/A"}
               </Text>
             </div>

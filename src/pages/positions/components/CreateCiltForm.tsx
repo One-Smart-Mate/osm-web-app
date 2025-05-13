@@ -203,7 +203,8 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
     
     try {
       // Make the API call to create the CILT procedure
-      await createCiltMstr(ciltPayload).unwrap();
+      const result = await createCiltMstr(ciltPayload).unwrap();
+      console.log('CILT Mstr created successfully:', result);
       
       // Show only one success notification with appropriate message
       notification.success({
@@ -212,11 +213,23 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
         duration: 4,
       });
       
-      // The cache invalidation is now handled by the RTK Query tags
-      // so we don't need to manually invalidate the cache here
+      // Reset form fields
+      form.resetFields();
+      setCreatorId(null);
+      setReviewerId(null);
+      setApprovedById(null);
+      setFileList([]);
+      setFirebaseUrl('');
       
+      // Call onSuccess callback to trigger data refresh in parent component
       if (onSuccess) {
+        // Call onSuccess immediately
         onSuccess();
+        
+        // Call it again after a short delay to ensure data is refreshed
+        setTimeout(() => {
+          onSuccess();
+        }, 500);
       }
     } catch (error: any) {
       console.error(Strings.ciltMasterCreateError, error);

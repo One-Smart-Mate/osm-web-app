@@ -10,6 +10,7 @@ interface CiltLevelTreeModalProps {
   siteId: string;
   siteName: string;
   onSelectLevel?: (levelData: any) => void;
+  referenceLevelId?: number; // Optional reference level ID to filter the tree
 }
 
 interface Level {
@@ -49,6 +50,7 @@ const CiltLevelTreeModal: React.FC<CiltLevelTreeModalProps> = ({
   siteId,
   siteName,
   onSelectLevel,
+  referenceLevelId,
 }) => {
   const [getLevels] = useGetlevelsMutation();
   const [isLoading, setLoading] = useState(false);
@@ -101,7 +103,50 @@ const CiltLevelTreeModal: React.FC<CiltLevelTreeModalProps> = ({
     setLoading(true);
     try {
       const response = await getLevels(siteId).unwrap();
-      const hierarchy = buildHierarchy(response);
+      
+      // Filter the hierarchy if a reference level ID is provided
+      let hierarchy;
+      if (referenceLevelId) {
+        // Find the reference level and its children
+        const referenceLevel = response.find(level => level.id === String(referenceLevelId));
+        
+        if (referenceLevel) {
+          // First build the complete hierarchy
+          const fullHierarchy = buildHierarchy(response);
+          
+          // Then extract just the reference node and its children
+          const findNodeById = (nodes: any[], id: string): any | null => {
+            for (const node of nodes) {
+              if (node.id === id) {
+                return node;
+              }
+              
+              if (node.children && node.children.length > 0) {
+                const found = findNodeById(node.children, id);
+                if (found) return found;
+              }
+            }
+            return null;
+          };
+          
+          // Find the reference node in the full hierarchy
+          const referenceNode = findNodeById(fullHierarchy, String(referenceLevelId));
+          
+          // If found, use it as the filtered hierarchy
+          if (referenceNode) {
+            hierarchy = [referenceNode];
+          } else {
+            // Fallback to full hierarchy if reference node not found
+            hierarchy = fullHierarchy;
+          }
+        } else {
+          // Fallback to full hierarchy if reference level not found
+          hierarchy = buildHierarchy(response);
+        }
+      } else {
+        // No reference level ID, use the full hierarchy
+        hierarchy = buildHierarchy(response);
+      }
 
       const isExpanded =
         localStorage.getItem("ciltLevelTreeModalExpandedState") === "true";
@@ -129,7 +174,9 @@ const CiltLevelTreeModal: React.FC<CiltLevelTreeModalProps> = ({
 
       setTreeData([
         {
-          name: Strings.levelsOf.concat(" ", siteName),
+          name: referenceLevelId ? 
+            (response.find(level => level.id === String(referenceLevelId))?.name || Strings.levelsOf.concat(" ", siteName)) :
+            Strings.levelsOf.concat(" ", siteName),
           id: "0",
           children: hierarchy,
         },
@@ -140,6 +187,7 @@ const CiltLevelTreeModal: React.FC<CiltLevelTreeModalProps> = ({
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
+      console.error("Error loading levels:", error);
     } finally {
       setLoading(false);
     }

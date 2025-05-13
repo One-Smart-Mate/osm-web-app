@@ -12,7 +12,7 @@ import {
   Row,
   Col,
   Card,
-  ColorPicker,
+  Tooltip,
 } from "antd";
 import { useLocation } from "react-router-dom";
 import { useCreateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
@@ -29,6 +29,7 @@ import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import Strings from "../../../utils/localizations/Strings";
 import CiltLevelTreeModal from "./CiltLevelTreeModal";
 import OplSelectionModal from "./OplSelectionModal";
+import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -72,7 +73,8 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     useState<OplMstr | null>(null);
   const [selectedRemediationOpl, setSelectedRemediationOpl] =
     useState<OplMstr | null>(null);
-  const [color, setColor] = useState<string>("#1677FF");
+  const [formattedTime, setFormattedTime] = useState<string>('');
+  const [referenceLevelId, setReferenceLevelId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (visible && location.state?.siteId) {
@@ -85,7 +87,6 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       setSelectedLevel(null);
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
-      setColor("#1677FF");
     }
   }, [visible, form, location.state]);
 
@@ -103,8 +104,16 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       form.setFieldsValue({
         positionId: cilt.positionId || null,
       });
+      
+      // Find the position to get its level ID
+      if (cilt.positionId && positions) {
+        const selectedPosition = positions.find(p => p.id === Number(cilt.positionId));
+        if (selectedPosition && selectedPosition.levelId) {
+          setReferenceLevelId(Number(selectedPosition.levelId));
+        }
+      }
     }
-  }, [cilt, form, visible]);
+  }, [cilt, form, visible, positions]);
 
   const fetchCiltTypes = async () => {
     if (!location.state?.siteId) return;
@@ -169,23 +178,26 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     });
   };
 
-  const getSelectedColor = (color: string | undefined): string => {
-    return (color || "#1890ff").replace("#", "");
-  };
-
-  const defaultColor = "#1890ff";
-
-  const handleColorChange = (colorValue: any) => {
-    const hexColor = colorValue.toHex().replace("#", "");
-    setColor("#" + hexColor);
-    form.setFieldsValue({ secuenceColor: hexColor });
-  };
-
-  useEffect(() => {
-    if (visible) {
-      form.setFieldsValue({ secuenceColor: defaultColor.replace("#", "") });
+  // Get color from selected CILT type
+  const getColorFromCiltType = (ciltTypeId: number | undefined): string => {
+    if (!ciltTypeId) return "1890ff";
+    
+    const selectedType = ciltTypes.find(type => type.id === ciltTypeId);
+    if (selectedType && selectedType.color) {
+      // Remove # if it exists and return the color
+      return selectedType.color.startsWith('#') ? 
+        selectedType.color.substring(1) : 
+        selectedType.color;
     }
-  }, [visible, form]);
+    
+    return "1890ff";
+  };
+  
+  // Handle CILT type change to update the color
+  const handleCiltTypeChange = (ciltTypeId: number) => {
+    const typeColor = getColorFromCiltType(ciltTypeId);
+    form.setFieldsValue({ secuenceColor: typeColor });
+  };
 
   const handleSubmit = async (values: any) => {
     try {
@@ -233,7 +245,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             levelName: selectedLevel?.name || "",
             order: combinedData.order || 1,
             secuenceList: combinedData.secuenceList,
-            secuenceColor: combinedData.secuenceColor || getSelectedColor(color),
+            secuenceColor: getColorFromCiltType(combinedData.ciltTypeId),
             ciltTypeId: combinedData.ciltTypeId,
             ciltTypeName:
               ciltTypes.find((type) => type.id === combinedData.ciltTypeId)
@@ -287,9 +299,17 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       setSelectedLevel(null);
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
-      setColor("#1677FF");
+      setFormattedTime('');
+      setReferenceLevelId(undefined);
 
+      // Notificar al componente padre para que actualice los datos
+      // Este es el punto clave para asegurar que la tabla se actualice
       onSuccess();
+      
+      // Cerrar el modal después de un breve retraso para asegurar que se completen todas las operaciones
+      setTimeout(() => {
+        onCancel();
+      }, 100);
     } catch (error) {
       console.error("Error creating CILT sequences:", error);
       notification.error({
@@ -307,7 +327,6 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     setSelectedLevel(null);
     setSelectedReferenceOpl(null);
     setSelectedRemediationOpl(null);
-    setColor("#1677FF");
     onCancel();
   };
 
@@ -365,6 +384,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     }
                     loading={loading}
                     disabled={loading}
+                    onChange={handleCiltTypeChange}
                   >
                     {ciltTypes.map((type) => (
                       <Option key={type.id} value={type.id}>
@@ -524,32 +544,12 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   />
                 </Form.Item>
 
-                {/* Sequence Color */}
+                {/* Hidden Sequence Color - inherited from CILT type */}
                 <Form.Item
                   name="secuenceColor"
-                  label={Strings.editCiltSequenceModalColorLabel}
-                  rules={[
-                    {
-                      required: true,
-                      message: Strings.editCiltSequenceModalColorRequired,
-                    },
-                  ]}
-                  initialValue="#1890ff"
+                  hidden
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <ColorPicker
-                      value={color}
-                      onChange={handleColorChange}
-                      showText
-                      defaultValue="#1890ff"
-                    />
-                  </div>
+                  <Input />
                 </Form.Item>
               </Card>
             </Col>
@@ -565,7 +565,18 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
               {/* Standard Time */}
               <Form.Item
                 name="standardTime"
-                label={Strings.editCiltSequenceModalStandardTimeLabel}
+                label={
+                  <span>
+                    {Strings.editCiltSequenceModalStandardTimeLabel}
+                    {formattedTime && (
+                      <Tooltip title="Time in HH:MM:SS format">
+                        <span style={{ marginLeft: '8px', color: '#1890ff' }}>
+                          ({formattedTime})
+                        </span>
+                      </Tooltip>
+                    )}
+                  </span>
+                }
                 rules={[
                   {
                     required: true,
@@ -577,6 +588,24 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   min={1}
                   style={{ width: '100%', height: '40px' }}
                   placeholder={Strings.editCiltSequenceModalStandardTimePlaceholder}
+                  onChange={(value) => {
+                    if (value) {
+                      setFormattedTime(formatSecondsToNaturalTime(Number(value)));
+                    } else {
+                      setFormattedTime('');
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const inputValue = e.target.value;
+                    // Check if the input is in time format (contains ':')
+                    if (inputValue && inputValue.includes(':')) {
+                      const seconds = parseNaturalTimeToSeconds(inputValue);
+                      if (seconds !== null) {
+                        form.setFieldsValue({ standardTime: seconds });
+                        setFormattedTime(formatSecondsToNaturalTime(seconds));
+                      }
+                    }
+                  }}
                 />
               </Form.Item>
 
@@ -671,6 +700,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             Strings.createCiltSequenceModalDefaultSiteName
           }
           onSelectLevel={handleLevelSelect}
+          referenceLevelId={referenceLevelId}
         />
       )}
 
