@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import sectionsTitlesCardDetails from "../../../components/SectionsTitlesCardDetails";
 import Strings from "../../../utils/localizations/Strings";
 import { Evidences } from "../../../data/card/card";
 import { isVideoURL } from "../../../utils/Extensions";
@@ -72,7 +71,9 @@ const VideoPreviewGroup = ({ data }: VideoPreviewGroupProps) => {
 
   return (
     <div>
-      {sectionsTitlesCardDetails(Strings.videos)}
+      <div className="rounded-md p-1 mb-1 bg-white">
+      <h1 className="font-semibold">{Strings.videos}</h1>
+    </div>
       <div className="flex flex-wrap gap-4">
         {videos.map((video, index) => {
           const videoId = video.id || `fallback-id-${index}`;

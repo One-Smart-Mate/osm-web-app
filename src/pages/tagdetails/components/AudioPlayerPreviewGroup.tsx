@@ -1,6 +1,5 @@
 import { Card } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import sectionsTitlesCardDetails from "../../../components/SectionsTitlesCardDetails";
 import { Evidences } from "../../../data/card/card";
 import { isAudioURL } from "../../../utils/Extensions";
 import { useRef } from "react";
@@ -40,7 +39,9 @@ const AudioPlayerPreviewGroup = ({ data }: AudioPlayerPreviewGroupProps) => {
 
   return (
     <div>
-      <div>{sectionsTitlesCardDetails(Strings.audios)}</div>
+      <div className="rounded-md p-1 mb-1 bg-white">
+      <h1 className="font-semibold">{Strings.audios}</h1>
+    </div>
       <div className="flex flex-wrap gap-4 px-2">
         {audios.map((audio, index) => (
           <audio

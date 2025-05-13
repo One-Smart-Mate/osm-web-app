@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Image } from "antd";
-import sectionsTitlesCardDetails from "../../../components/SectionsTitlesCardDetails";
 import { Evidences } from "../../../data/card/card";
 import { isImageURL } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
@@ -31,7 +30,9 @@ const ImagesPreviewGroup = ({ data }: CardProps) => {
 
   return (
     <div>
-      {sectionsTitlesCardDetails(Strings.images)}
+    <div className="rounded-md p-1 mb-1 bg-white">
+      <h1 className="font-semibold">{Strings.images}</h1>
+    </div>
       {images.length > 0 ? (
         <Image.PreviewGroup preview={{}}>
           <div className="grid grid-cols-3 gap-4">
