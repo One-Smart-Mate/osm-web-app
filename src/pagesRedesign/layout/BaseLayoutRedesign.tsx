@@ -8,19 +8,18 @@ import {
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Outlet } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import { useAppSelector } from "../../core/store";
-import { selectCurrentUser } from "../../core/authReducer";
 import NotificationHandler from "../../components/NotificationHandler";
 import SideBarRedesign from "../components/SideBarRedesign";
 import HeaderRedesign from "../components/HeaderRedesign";
 import { useSetAppTokenMutation } from "../../services/userService";
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import Constants from "../../utils/Constants";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const { Header, Content } = Layout;
 
 const BaseLayoutRedesign: React.FC = () => {
-  const user = useAppSelector(selectCurrentUser);
+  const { user } = useCurrentUser();
   const [isCollapsed, setCollapsed] = useState(false);
   const { token: { colorBgContainer }} = theme.useToken();
   const [setAppToken] = useSetAppTokenMutation();

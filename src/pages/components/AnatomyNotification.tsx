@@ -31,6 +31,7 @@ const getSuccessMessage = (type: AnatomyNotificationType): string => {
 class AnatomyNotification {
 
   static error(notification: NotificationInstance, valueOrText?: any, text?: string) {
+    this.handlePrintError(valueOrText);
     if (valueOrText?.data?.message) {
       notification.open({
         message: "Error!",
@@ -43,6 +44,18 @@ class AnatomyNotification {
         description: `${valueOrText || "Unknown error"} ${text || ""}`,
         type: "error",
       });
+    }
+  }
+
+  static handlePrintError = (valueOrText: any) => {
+    try {
+      if (valueOrText && typeof valueOrText === "object" && !Array.isArray(valueOrText)) {
+        console.error(`[ERROR] ${Object.values(valueOrText)}`)
+      } else {
+        console.error(`[ERROR] ${valueOrText}`)
+      }
+    } catch(error) {
+      console.error(`[ERROR] ${error}`);
     }
   }
 

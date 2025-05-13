@@ -11,13 +11,13 @@ interface PriorityFormCardProps {
   form: FormInstance;
   initialValues?: Priority;
   onSubmit: (values: any) => void;
-  showStatus: boolean;
+  enableStatus: boolean;
 }
 
 const PriorityFormCard = ({
   form,
   onSubmit,
-  showStatus,
+  enableStatus,
   initialValues,
 }: PriorityFormCardProps): React.ReactElement => {
   const [getStatus, { isLoading }] = useGetStatusMutation();
@@ -33,7 +33,7 @@ const PriorityFormCard = ({
         id: initialValues.id
       });
     }
-    if (showStatus) {
+    if (enableStatus) {
       handleGetStatus();
     }
   }, []);
@@ -111,7 +111,7 @@ const PriorityFormCard = ({
           </Form.Item>
           <AnatomyTooltip title={Strings.priorityDaysNumberTooltip} />
 
-          {!isLoading && showStatus && (
+          {!isLoading && enableStatus && (
             <Form.Item name="status" className="w-60">
               <Select size="large" options={formatStatusOptions()} />
             </Form.Item>

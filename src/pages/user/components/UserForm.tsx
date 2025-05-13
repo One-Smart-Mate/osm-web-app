@@ -1,41 +1,42 @@
-import { useState } from "react";
-import Strings from "../../../utils/localizations/Strings";
 import { Button, App as AntApp } from "antd";
-import ModalForm from "../../../components/ModalForm";
-import { FormInstance } from "antd/lib";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import AnatomyNotification, {
   AnatomyNotificationType,
 } from "../../components/AnatomyNotification";
-import { Priority } from "../../../data/priority/priority";
-import PriorityFormCard from "./PriorityFormCard";
+import Strings from "../../../utils/localizations/Strings";
+import ModalForm from "../../../components/ModalForm";
+import { FormInstance } from "antd/lib";
+import UserFormCard from "./UserFormCard";
+import { UserCardInfo } from "../../../data/user/user";
 import {
-  useCreatePriorityMutation,
-  useUpdatePriorityMutation,
-} from "../../../services/priorityService";
-import {
-  CreatePriority,
-  UpdatePriorityReq,
-} from "../../../data/priority/priority.request";
-import { useLocation } from "react-router-dom";
+  useCreateUserMutation,
+  useUpdateUserMutation,
+} from "../../../services/userService";
+import { CreateUser, UpdateUser } from "../../../data/user/user.request";
 
-interface PriorityFormProps {
-  formType: PriorityFormType;
-  data?: Priority;
+interface UserFormProps {
+  formType: UserFormType;
+  data?: UserCardInfo;
   onComplete?: () => void;
 }
 
-export enum PriorityFormType {
+export enum UserFormType {
   CREATE = "CREATE",
   UPDATE = "UPDATE",
 }
 
-const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
-  const [registerPriority] = useCreatePriorityMutation();
+const UserForm = ({
+  formType,
+  data,
+  onComplete,
+}: UserFormProps): React.ReactElement => {
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const { notification } = AntApp.useApp();
-  const [updatePriority] = useUpdatePriorityMutation();
+  const [registerUser] = useCreateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   const handleOnClickButton = () => {
     setModalOpen(true);
@@ -49,10 +50,10 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case PriorityFormType.CREATE:
+      case UserFormType.CREATE:
         await handleOnCreate(values);
         break;
-      case PriorityFormType.UPDATE:
+      case UserFormType.UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -61,14 +62,19 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
   const handleOnCreate = async (values: any) => {
     try {
       setIsLoading(true);
-      await registerPriority(
-        new CreatePriority(
-          Number(location?.state?.siteId),
-          values.code.trim(),
-          values.description.trim(),
-          Number(values.days)
+      const enableEvidences = values.enableEvidences ? 1 : 0;
+      await registerUser(
+        new CreateUser(
+          values.name.trim(),
+          values.email.trim(),
+          Number(location.state.siteId),
+          values.password,
+          enableEvidences,
+          enableEvidences,
+          values.roles
         )
       ).unwrap();
+
       setModalOpen(false);
       onComplete?.();
       AnatomyNotification.success(
@@ -86,12 +92,17 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
   const handleOnUpdate = async (values: any) => {
     try {
       setIsLoading(true);
-      await updatePriority(
-        new UpdatePriorityReq(
+      const enableEvidences = values.enableEvidences ? 1 : 0;
+      await updateUser(
+        new UpdateUser(
           Number(values.id),
-          values.code.trim(),
-          values.description,
-          Number(values.days),
+          values.name.trim(),
+          values.email.trim(),
+          Number(location.state.siteId),
+          values.password,
+          enableEvidences,
+          enableEvidences,
+          values.roles,
           values.status
         )
       ).unwrap();
@@ -110,26 +121,29 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == PriorityFormType.CREATE ? "primary" : "default"}
+        type={formType == UserFormType.CREATE ? "primary" : "default"}
       >
-        {formType == PriorityFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == UserFormType.CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
-        title={Strings.createCompany}
+        title={
+          formType == UserFormType.CREATE
+            ? Strings.createUser
+            : Strings.updateUser
+        }
         isLoading={isLoading}
         FormComponent={(form: FormInstance) => (
-          <PriorityFormCard
+          <UserFormCard
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
-            enableStatus={formType == PriorityFormType.UPDATE}
+            enableStatus={formType == UserFormType.UPDATE}
           />
         )}
       />
     </>
   );
 };
-
-export default PriorityForm;
+export default UserForm;

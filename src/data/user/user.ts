@@ -86,11 +86,9 @@ export interface UserPosition {
 }
 
 export const getSiteName = (user?: User): string | undefined => {
-  if(user == null || user == undefined) return ''
-  return user.sites.length > 0 ? user.sites[0].name : ''
-}
-
-
+  if (user == null || user == undefined) return "";
+  return user.sites.length > 0 ? user.sites[0].name : "";
+};
 
 export class UserCardInfo {
   id: string;
@@ -101,6 +99,9 @@ export class UserCardInfo {
   roles: Role[];
   sites: Site[];
   positions: Position[];
+  status?: string;
+  uploadCardDataWithDataNet?: number;
+  uploadCardEvidenceWithDataNet?: number;
   constructor(
     id: string,
     name: string,
@@ -109,7 +110,10 @@ export class UserCardInfo {
     sites: Site[] = [],
     positions: Position[] = [],
     lastLoginWeb?: string,
-  lastLoginApp?: string
+    lastLoginApp?: string,
+    status?: string,
+    uploadCardDataWithDataNet?: number,
+    uploadCardEvidenceWithDataNet?: number
   ) {
     this.id = id;
     this.name = name;
@@ -119,5 +123,8 @@ export class UserCardInfo {
     this.positions = positions;
     this.lastLoginApp = lastLoginApp;
     this.lastLoginWeb = lastLoginWeb;
+    this.status = status;
+    this.uploadCardDataWithDataNet = uploadCardDataWithDataNet;
+    this.uploadCardEvidenceWithDataNet = uploadCardEvidenceWithDataNet;
   }
 }

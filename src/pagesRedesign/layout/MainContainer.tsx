@@ -1,11 +1,8 @@
 import React from "react";
-import { isRedesign } from "../../utils/Extensions";
 import PageTitleTag from "../../components/PageTitleTag";
-import PageTitle from "../../components/PageTitle";
 import { Button, Input, Space } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import Strings from "../../utils/localizations/Strings";
-import CustomButton from "../../components/CustomButtons";
 import Loading from "../components/Loading";
 import BackButton from "../components/BackButton";
 
@@ -30,11 +27,7 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
         
         {/* Header Section */}
         <div className="flex flex-col gap-2 items-center m-3">
-          {isRedesign() ? (
-            <PageTitleTag mainText={title} subText={description} />
-          ) : (
-            <PageTitle mainText={title} subText={description} />
-          )}
+        <PageTitleTag mainText={title} subText={description} />
           <div className="flex flex-col md:flex-row flex-wrap items-center md:justify-between w-full">
             <div className="flex flex-col md:flex-row items-center flex-1 mb-1 md:mb-0">
               {enableSearch && (
@@ -51,23 +44,13 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
               )}
             </div>
             {enableCreateButton && <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-              {isRedesign() ? (
-                createButtonComponent ?? <Button
+              {createButtonComponent ?? <Button
                 onClick={onCreateButtonClick}
                 className="w-full md:w-auto"
                 type="primary"
               >
                 {Strings.create}
-              </Button>
-              ) : (
-                <CustomButton
-                  type="success"
-                  onClick={onCreateButtonClick}
-                  className="w-full md:w-auto"
-                >
-                  {Strings.create}
-                </CustomButton>
-              )}
+              </Button>}
             </div>}
           </div>
         </div>

@@ -6,11 +6,8 @@ import { UserRoles, getUserRol } from "../../utils/Extensions";
 import Routes from "../../utils/Routes";
 import CardTypess from "../cardtypes/CardTypes";
 import Preclassifiers from "../preclassifier/Preclassifiers";
-import Users from "../user/Users";
-import { MdOutlineManageAccounts } from "react-icons/md";
 import Levels from "../level/Levels";
 import CardDetails from "../carddetails/CardDetails";
-import SiteUsers from "../user/SiteUsers";
 import { PiMapPinAreaLight } from "react-icons/pi";
 import { BiCategory } from "react-icons/bi";
 import Strings from "../../utils/localizations/Strings";
@@ -26,22 +23,6 @@ const adminNotifications = new Route(
   Routes.AdminPrefix + "/notifications",
   <Notifications />,
   <AiOutlineBell />
-);
-
-const adminUsers = new Route(
-  Strings.usersSB,
-  "users",
-  Routes.AdminPrefix + Routes.Users,
-  <Users />,
-  <MdOutlineManageAccounts />,
-);
-
-export const adminSiteUsers = new Route(
-  Strings.siteUsersSB,
-  "site users",
-  Routes.AdminPrefix + Routes.Site + Routes.Users,
-  <SiteUsers rol={UserRoles.IHSISADMIN} />,
-  <MdOutlineManageAccounts />
 );
 
 
@@ -98,7 +79,6 @@ const adminSystemHealth = new Route(
 
 const adminRoutesSiderOptions = (user: User): ItemType[] => {
   const items: MenuProps["items"] = [
-    getItem(adminUsers.label, adminUsers.fullPath, adminUsers.icon),
     getItem(
       adminNotifications.label,
       adminNotifications.fullPath,
@@ -121,26 +101,14 @@ const adminRoutesSiderOptions = (user: User): ItemType[] => {
 };
 
 const adminRoutes: Route[] = [
-  adminUsers,
   adminCardTypes,
   adminPreclassifiers,
   adminLevels,
   adminCardDetails,
-  adminSiteUsers,
   adminPositions,
   adminNotifications,
   adminSystemHealth,
 ];
-
-
-
-const sysAdminSiteUsers = new Route(
-  Strings.siteUsersSB,
-  "users",
-  Routes.SysadminPrefix + Routes.Site + Routes.Users,
-  <SiteUsers rol={UserRoles.LOCALSYSADMIN} />,
-  <MdOutlineManageAccounts />,
-);
 
 
 const sysAdminLevels = new Route(
@@ -177,7 +145,6 @@ export const sysAdminPreclassifiers = new Route(
 );
 
 const sysAdminRoutes: Route[] = [
-  sysAdminSiteUsers,
   sysAdminLevels,
   sysAdminCardTypes,
   sysAdminPreclassifiers,

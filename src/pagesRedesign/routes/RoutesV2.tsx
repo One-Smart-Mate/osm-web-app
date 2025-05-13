@@ -26,7 +26,7 @@ const CompaniesPage = React.lazy(() => import("../../pages/company/CompaniesPage
 const CardDetails = React.lazy(
   () => import("../../pages/carddetails/CardDetails")
 );
-const SiteUsersV2 = React.lazy(() => import("../../pages/user/SiteUsersV2"));
+const UsersPage = React.lazy(() => import("../../pages/user/UsersPage"));
 const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
 const SystemHealth = React.lazy(
   () => import("../../pages/systemhealth/SystemHealth")
@@ -98,7 +98,7 @@ const sitesV2 = new RouteV2(
 const siteUsersV2 = new RouteV2(
   Strings.usersSB,
   Constants.ROUTES_PATH.users,
-  <SiteUsersV2 />,
+  <UsersPage />,
   <BsPersonPlus />,
   Strings.accounts
 );

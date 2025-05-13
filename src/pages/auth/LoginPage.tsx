@@ -16,7 +16,7 @@ import {
   buildInitRoute,
   navigateWithState,
 } from "../../pagesRedesign/routes/RoutesExtensions";
-import { BsFileLock, BsPersonLock } from "react-icons/bs";
+import { BsLock, BsPersonLock } from "react-icons/bs";
 import LanguageDropdown from "../layouts/LanguageDropdown";
 import Constants from "../../utils/Constants";
 import AnatomyNotification from "../components/AnatomyNotification";
@@ -128,7 +128,7 @@ const LoginPage = () => {
               >
                 <Input.Password
                   size="large"
-                  prefix={<BsFileLock />}
+                  prefix={<BsLock />}
                   placeholder={Strings.enterPassword}
                   className="rounded-md"
                 />

@@ -8,7 +8,7 @@ interface FormProps {
   form: FormInstance;
 }
 
-const ImportUsersForm = ({ form }: FormProps) => {
+const ImportUsersFormCard = ({ form }: FormProps) => {
   return (
     <>
       <Form form={form} layout="vertical">
@@ -35,4 +35,4 @@ const ImportUsersForm = ({ form }: FormProps) => {
   );
 };
 
-export default ImportUsersForm;
+export default ImportUsersFormCard;
