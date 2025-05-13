@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Tree from "react-d3-tree";
 import Strings from "../../utils/localizations/Strings";
-import LevelDetails from "./components/LevelDetails";
+import LevelDetailsCard from "./components/LevelDetailsCard";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   useCreateLevelMutation,
@@ -10,22 +10,20 @@ import {
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin, Modal, Button } from "antd";
+import { Form, Drawer, Spin, Modal, Button, App as AntApp } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { CreateNode } from "../../data/level/level.request";
-import { UserRoles } from "../../utils/Extensions";
 import Constants from "../../utils/Constants";
-import CustomNodeElement from "./components/CustomNodeElement";
-import LevelContextMenu from "./components/LevelContextMenu";
+import NodeElement from "./components/NodeElement";
+import LevelMenuOptions from "./components/LevelMenuOptions";
 import LevelFormDrawer from "./components/LevelFormDrawer";
-
 import { useGetSiteMutation } from "../../services/siteService";
+import MainContainer from "../../pagesRedesign/layout/MainContainer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
-interface Props {
-  role: UserRoles;
-}
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -51,16 +49,17 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-const Levels = ({ role }: Props) => {
+const LevelsPage = () => {
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [positionForm] = Form.useForm();
-
+  const {isIhAdmin, rol} = useCurrentUser();
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
   const [getCardsByLevel] = useGetCardsByLevelMutation();
+  const { notification } = AntApp.useApp();
 
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
@@ -329,8 +328,10 @@ const Levels = ({ role }: Props) => {
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
     const newNodeData = await createLevel(payload).unwrap();
+    AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
     const parentId = Number(newNodeData.id);
     if (isNaN(parentId)) {
+      AnatomyNotification.error(notification, Strings.errorGettingLevelId);
       throw new Error(Strings.errorGettingLevelId);
     }
     if (node.children && node.children.length > 0) {
@@ -343,6 +344,7 @@ const Levels = ({ role }: Props) => {
 
   const handleCloneLevel = async () => {
     if (!selectedNode?.data) return;
+
     Modal.confirm({
       title: Strings.confirmCloneLevel,
       content: `${Strings.confirmCloneLevelMessage}` + Strings.levelSubLebelsWarning,
@@ -393,6 +395,7 @@ const Levels = ({ role }: Props) => {
           values.notify ? 1 : 0
         );
         await createLevel(newNode).unwrap();
+        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
       } else if (drawerType === "update") {
         const { superiorId, ...updateValues } = values;
         const updatePayload = {
@@ -401,6 +404,7 @@ const Levels = ({ role }: Props) => {
           responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
         };
         await updateLevel(updatePayload).unwrap();
+        AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
       }
 
       await handleGetLevels();
@@ -478,8 +482,12 @@ const Levels = ({ role }: Props) => {
   const isRootNode = selectedNode?.data?.id === "0";
 
   return (
-    <div className="h-full flex flex-col">
-      <div
+    <MainContainer
+    title=""
+    enableBackButton={isIhAdmin()}
+    content={
+      <div>
+        <div
         ref={containerRef}
         className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
@@ -493,10 +501,10 @@ const Levels = ({ role }: Props) => {
           </div>
         ) : (
           <>
-            {/* Botón para expandir/contraer todos los nodos */}
+            {/* Expand all nodes */}
             <div className="absolute top-4 right-4 z-10">
               <Button 
-                type="primary" 
+                type={isTreeExpanded ? "default" : "primary"}
                 onClick={toggleAllNodes}
                 className="bg-blue-500 hover:bg-blue-600"
               >
@@ -509,8 +517,12 @@ const Levels = ({ role }: Props) => {
                 data={treeData}
                 orientation="horizontal"
                 translate={translate}
+                // Add nodeSize to control the size of nodes
+                nodeSize={{ x: 200, y: 80 }} // Reduce y value to decrease vertical spacing
+                // Add separation to control the distance between nodes
+                separation={{ siblings: 1, nonSiblings: 1.2 }} // Reduce these values to decrease spacing
                 renderCustomNodeElement={(rd3tProps) => (
-                  <CustomNodeElement
+                  <NodeElement
                     nodeDatum={rd3tProps.nodeDatum}
                     toggleNode={rd3tProps.toggleNode}
                     containerRef={containerRef}
@@ -533,9 +545,9 @@ const Levels = ({ role }: Props) => {
         )}
       </div>
 
-      <LevelContextMenu
+      <LevelMenuOptions
         isVisible={contextMenuVisible}
-        role={role}
+        role={rol}
         isRootNode={isRootNode}
         contextMenuPos={contextMenuPos}
         handleCreateLevel={handleCreateLevel}
@@ -560,7 +572,7 @@ const Levels = ({ role }: Props) => {
           closable={true}
           className="drawer-responsive"
         >
-          <LevelDetails
+          <LevelDetailsCard
             levelId={selectedLevelId}
             onClose={handleCloseDetails}
             siteId={siteId}
@@ -582,8 +594,9 @@ const Levels = ({ role }: Props) => {
         selectedNodeName={selectedNode?.data?.name || ""}
         positionData={positionData}
       />
-    </div>
+      </div>
+    }/>
   );
 };
 
-export default Levels;
+export default LevelsPage;

@@ -2,32 +2,26 @@ import React from "react";
 import { List } from "antd";
 import PaginatedList from "./PaginatedList";
 import { CardInterface } from "../data/card/card";
-import { UserRoles } from "../utils/Extensions";
-import TagCardV2 from "../pages/tags/components/TagCard";
+import TagCard from "../pages/tags/components/TagCard";
 
-interface CustomCardListProps {
-  dataSource: CardInterface[];
-  isLoading: boolean;
-  rol: UserRoles;
+interface TagListProps {
+  data: CardInterface[];
+  isResponsive?: boolean;
+  isLoading?: boolean;
 }
-const CustomCardList: React.FC<CustomCardListProps> = ({
-  dataSource,
-  isLoading,
-}) => {
+const TagList = ({data, isLoading, isResponsive = true}: TagListProps): React.ReactElement => {
   return (
-    <div>
-      <PaginatedList
-        responsive={false}
-        dataSource={dataSource}
+    <PaginatedList
+        dataSource={data}
+        responsive={isResponsive}
         renderItem={(item: CardInterface, index: number) => (
           <List.Item key={index}>
-            <TagCardV2 data={item}/>
+            <TagCard data={item}/>
           </List.Item>
         )}
         loading={isLoading}
       />
-    </div>
   );
 };
 
-export default CustomCardList;
+export default TagList;

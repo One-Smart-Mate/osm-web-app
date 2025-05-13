@@ -6,7 +6,6 @@ import UpdateLevelForm from "./UpdateLevelForm";
 import Constants from "../../../utils/Constants";
 
 
-
 interface LevelFormDrawerProps {
   drawerVisible: boolean;
   drawerType: "create" | "update" | "position" | null;
@@ -66,7 +65,7 @@ const LevelFormDrawer: React.FC<LevelFormDrawerProps> = ({
     >
       <Form.Provider
         onFormFinish={async (_name, { values }) => {
-          await handleSubmit(values);
+          handleSubmit(values);
         }}
       >
         <div className="drawer-content">

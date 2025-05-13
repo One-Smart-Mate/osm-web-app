@@ -1,7 +1,6 @@
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import { BsCardText } from "react-icons/bs";
-import { LuTextCursor } from "react-icons/lu";
+import { BsCardText, BsQrCodeScan } from "react-icons/bs";
 import { useAppSelector } from "../../../core/store";
 import { useEffect, useState } from "react";
 import { selectSiteId } from "../../../core/genericReducer";
@@ -9,14 +8,13 @@ import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { Responsible } from "../../../data/user/user";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";
-import { CiBarcode } from "react-icons/ci";
 
-interface FormProps {
+interface UpdateLevelFormProps {
   form: FormInstance;
   initialValues: any;
 }
 
-const UpdateLevelForm = ({ form, initialValues }: FormProps) => {
+const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
   const [getResponsibles] = useGetSiteResponsiblesMutation();
   const [getStatus] = useGetStatusMutation();
   const siteId = useAppSelector(selectSiteId);
@@ -74,7 +72,7 @@ const UpdateLevelForm = ({ form, initialValues }: FormProps) => {
           <Input
             size="large"
             maxLength={45}
-            addonBefore={<LuTextCursor />}
+            addonBefore={<BsCardText />}
             placeholder={Strings.name}
           />
         </Form.Item>
@@ -106,7 +104,7 @@ const UpdateLevelForm = ({ form, initialValues }: FormProps) => {
           <Input
             size="large"
             maxLength={50}
-            addonBefore={<CiBarcode />}
+            addonBefore={<BsQrCodeScan />}
             placeholder={Strings.levelMachineId}
           />
         </Form.Item>

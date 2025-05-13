@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import Constants from "../../../utils/Constants";
 import Strings from "../../../utils/localizations/Strings";
 
-interface CustomNodeElementProps {
+interface NodeElementProps {
   nodeDatum: any;
   toggleNode: () => void;
   containerRef: React.RefObject<HTMLDivElement> | React.RefObject<null>;
@@ -47,7 +47,7 @@ const calculateTotalCards = (
   return ownCards + childrenCards;
 };
 
-const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
+const NodeElement: React.FC<NodeElementProps> = ({
   nodeDatum,
   toggleNode,
   containerRef,
@@ -202,4 +202,4 @@ const CustomNodeElement: React.FC<CustomNodeElementProps> = ({
   );
 };
 
-export default CustomNodeElement;
+export default NodeElement;

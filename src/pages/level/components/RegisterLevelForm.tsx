@@ -1,19 +1,17 @@
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import { BsCardText } from "react-icons/bs";
-import { LuTextCursor } from "react-icons/lu";
+import { BsCardText, BsQrCodeScan } from "react-icons/bs";
 import { useAppSelector } from "../../../core/store";
 import { useEffect, useState } from "react";
 import { selectSiteId } from "../../../core/genericReducer";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { Responsible } from "../../../data/user/user";
-import { CiBarcode } from "react-icons/ci";
 
-interface FormProps {
+interface RegisterLevelFormProps {
   form: FormInstance;
 }
 
-const RegisterLevelForm = ({ form }: FormProps) => {
+const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
   const [getResponsibles] = useGetSiteResponsiblesMutation();
   const siteId = useAppSelector(selectSiteId);
   const [data, setData] = useState<Responsible[]>([]);
@@ -35,23 +33,16 @@ const RegisterLevelForm = ({ form }: FormProps) => {
   };
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      className="flex flex-col gap-1 w-full"
-    >
+    <Form form={form} layout="vertical" className="flex flex-col gap-1 w-full">
       <Form.Item
         name="name"
         validateFirst
-        rules={[
-          { required: true, message: Strings.name },
-          
-        ]}
+        rules={[{ required: true, message: Strings.name }]}
       >
         <Input
           size="large"
           maxLength={45}
-          addonBefore={<LuTextCursor />}
+          addonBefore={<BsCardText />}
           placeholder={Strings.name}
         />
       </Form.Item>
@@ -59,10 +50,7 @@ const RegisterLevelForm = ({ form }: FormProps) => {
       <Form.Item
         name="description"
         validateFirst
-        rules={[
-          { required: true, message: Strings.requiredDescription },
-          
-        ]}
+        rules={[{ required: true, message: Strings.requiredDescription }]}
       >
         <Input
           size="large"
@@ -73,28 +61,28 @@ const RegisterLevelForm = ({ form }: FormProps) => {
       </Form.Item>
 
       <Form.Item
-  name="responsibleId"
-  rules={[{ required: true, message: Strings.responsibleRequired }]}>
-  <Select
-    size="large"
-    placeholder={Strings.responsible}
-    options={selectOptions()}
-    showSearch
-    filterOption={(input, option) => {
-      if (!option) {
-        return false;
-      }
-      return option.label.toLowerCase().includes(input.toLowerCase());
-    }}
-  />
-</Form.Item>
-
+        name="responsibleId"
+        rules={[{ required: true, message: Strings.responsibleRequired }]}
+      >
+        <Select
+          size="large"
+          placeholder={Strings.responsible}
+          options={selectOptions()}
+          showSearch
+          filterOption={(input, option) => {
+            if (!option) {
+              return false;
+            }
+            return option.label.toLowerCase().includes(input.toLowerCase());
+          }}
+        />
+      </Form.Item>
 
       <Form.Item name="levelMachineId">
         <Input
           size="large"
           maxLength={50}
-          addonBefore={<CiBarcode />}
+          addonBefore={<BsQrCodeScan />}
           placeholder={Strings.levelMachineId}
         />
       </Form.Item>

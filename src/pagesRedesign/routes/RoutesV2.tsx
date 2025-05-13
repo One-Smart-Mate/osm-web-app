@@ -27,7 +27,7 @@ const TagDetailsPage = React.lazy(
   () => import("../../pages/tagdetails/TagDetailsPage")
 );
 const UsersPage = React.lazy(() => import("../../pages/user/UsersPage"));
-const LevelsV2 = React.lazy(() => import("../../pages/level/LevelsV2"));
+const LevelsPage = React.lazy(() => import("../../pages/level/LevelsPage"));
 const SystemHealth = React.lazy(
   () => import("../../pages/systemhealth/SystemHealth")
 );
@@ -66,7 +66,7 @@ const prioritiesV2 = new RouteV2(
 const levelsV2 = new RouteV2(
   Strings.levelsSB,
   Constants.ROUTES_PATH.levels,
-  <LevelsV2 />,
+  <LevelsPage />,
   <BsDiagram3 />,
   Strings.catalogs
 );
