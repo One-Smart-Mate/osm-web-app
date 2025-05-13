@@ -18,7 +18,7 @@ import {
 } from "react-icons/bs";
 import { getStatusAndText } from "../../../utils/Extensions";
 import Constants from "../../../utils/Constants";
-import { navigateWithProps } from "../../../pagesRedesign/routes/RoutesExtensions";
+import { navigateWithProps } from "../../../routes/RoutesExtensions";
 
 interface CompanyCardProps {
   company: Company;

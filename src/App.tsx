@@ -10,7 +10,7 @@ import Constants from "./utils/Constants";
 import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import React, { useEffect } from "react";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import { routesV2 } from "./pagesRedesign/routes/RoutesV2";
+import { routes } from "./routes/Routes";
 const BaseLayoutRedesign = React.lazy(() => import("./pagesRedesign/layout/BaseLayoutRedesign"));
 function App() {
   useEffect(() => {
@@ -54,7 +54,7 @@ function App() {
               path={Constants.ROUTES_PATH.dashboard}
               element={<BaseLayoutRedesign />}
             >
-              {routesV2.map((value, index) => (
+              {routes.map((value, index) => (
                 <Route key={index} path={value.path} element={value.element} />
               ))}
             </Route>

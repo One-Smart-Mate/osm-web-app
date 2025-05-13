@@ -8,7 +8,6 @@ import {
   headerStyle,
 } from "./BaseLayoutStyles";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { getUserSiderOptions } from "../routes/Routes";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
@@ -28,6 +27,7 @@ import NotificationHandler from "../../components/NotificationHandler";
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import { useSetAppTokenMutation } from "../../services/userService";
 import Constants from "../../utils/Constants";
+import { getUserSiderOptions } from "../../routes/RoutesExtensions";
 
 const { Header, Sider, Content } = Layout;
 

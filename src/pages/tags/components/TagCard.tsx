@@ -12,10 +12,6 @@ import React, { useMemo } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { GoDeviceCameraVideo } from "react-icons/go";
-import {
-  buildCardDetailRoute,
-  navigateWithState,
-} from "../../../pagesRedesign/routes/RoutesExtensions";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import CustomTagV2 from "../../../components/CustomTagV2";
 import {
@@ -26,6 +22,7 @@ import {
   BsPersonGear,
   BsPinMap,
 } from "react-icons/bs";
+import { buildCardDetailRoute, navigateWithState } from "../../../routes/RoutesExtensions";
 
 interface TagCardProps {
   data: CardInterface;

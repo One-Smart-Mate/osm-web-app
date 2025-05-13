@@ -1,6 +1,6 @@
 import React from "react";
 
-export class RouteV2 {
+export class Route {
     label: string;
     path: string;
     element: React.ReactElement;

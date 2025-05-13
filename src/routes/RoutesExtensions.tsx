@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { MenuProps } from "antd";
-import { useSessionStorage } from "../../core/useSessionStorage";
-import User from "../../data/user/user";
+
 import { ItemType } from "antd/es/menu/interface";
-import { getUserRol, UserRoles } from "../../utils/Extensions";
-import { cardDetailRoute, localAdminRoutesSiderOptionsV2, localIHSisAdminRoutesSiderOptionsV2, localSisAdminRoutesSiderOptionsV2 } from "./RoutesV2";
-import Constants from "../../utils/Constants";
+import { useSessionStorage } from "../core/useSessionStorage";
+import User from "../data/user/user";
+import Constants from "../utils/Constants";
+import { getUserRol, UserRoles } from "../utils/Extensions";
+import { localAdminRoutesSiderOptions, localIHSisAdminRoutesSiderOptions, localSisAdminRoutesSiderOptions, tagDetailsRoute } from "./Routes";
+
 
 export function navigateWithState() {
   
@@ -57,19 +59,19 @@ export function getItemV2({
 
 export type MenuItem = Required<MenuProps>["items"][number];
 
-export const getUserSiderOptionsV2 = (user: User): ItemType[] => {
+export const getUserSiderOptions = (user: User): ItemType[] => {
   const rol = getUserRol(user);
 
   let routes: ItemType[] = [];
   switch (rol) {
     case UserRoles.LOCALADMIN:
-      routes = localAdminRoutesSiderOptionsV2();
+      routes = localAdminRoutesSiderOptions();
       break;
       case UserRoles.LOCALSYSADMIN:
-        routes = localSisAdminRoutesSiderOptionsV2();
+        routes = localSisAdminRoutesSiderOptions();
       break;
       case UserRoles.IHSISADMIN:
-        routes = localIHSisAdminRoutesSiderOptionsV2();
+        routes = localIHSisAdminRoutesSiderOptions();
       break;
     default:
       break;
@@ -82,7 +84,7 @@ export const buildCardDetailRoute = (
   siteId: string,
   cardId: string
 ): string => {
-  const path = cardDetailRoute.path
+  const path = tagDetailsRoute.path
     .replace(Constants.ROUTES_PARAMS.siteId, siteId)
     .replace(Constants.ROUTES_PARAMS.cardId, cardId);
   return buildRoute(path);

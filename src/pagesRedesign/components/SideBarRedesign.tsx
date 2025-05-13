@@ -2,14 +2,10 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import User from "../../data/user/user";
-import {
-  buildRoute,
-  getUserSiderOptionsV2,
-  navigateWithState,
-} from "../routes/RoutesExtensions";
 import { Avatar, theme, Tooltip } from "antd";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
+import { buildRoute, getUserSiderOptions, navigateWithState } from "../../routes/RoutesExtensions";
 
 interface SideBarV2Props {
   collapsed: boolean;
@@ -29,7 +25,7 @@ const SideBarRedesign: React.FC<SideBarV2Props> = ({
 
   useEffect(() => {
     if (user) {
-      const routes = getUserSiderOptionsV2(user);
+      const routes = getUserSiderOptions(user);
       setMenuItems(routes);
       setDefaultRoute();
     }

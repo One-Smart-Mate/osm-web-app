@@ -15,10 +15,10 @@ import {
   BsTelephoneOutbound,
 } from "react-icons/bs";
 import SiteForm, { SiteFormType } from "./SiteForm";
-import { navigateWithProps } from "../../../pagesRedesign/routes/RoutesExtensions";
 import Constants from "../../../utils/Constants";
 import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 import { getStatusAndText } from "../../../utils/Extensions";
+import { navigateWithProps } from "../../../routes/RoutesExtensions";
 
 interface SiteCardProps {
   site: Site;

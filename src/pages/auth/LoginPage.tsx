@@ -12,14 +12,11 @@ import {
 } from "../../utils/Extensions";
 import Strings from "../../utils/localizations/Strings";
 import { ResetPasswordRoute } from "../../utils/Routes";
-import {
-  buildInitRoute,
-  navigateWithState,
-} from "../../pagesRedesign/routes/RoutesExtensions";
 import { BsLock, BsPersonLock } from "react-icons/bs";
 import LanguageDropdown from "../layouts/LanguageDropdown";
 import Constants from "../../utils/Constants";
 import AnatomyNotification from "../components/AnatomyNotification";
+import { buildInitRoute, navigateWithState } from "../../routes/RoutesExtensions";
 
 const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();
