@@ -74,7 +74,7 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
   
         {/* Content Section */}
         <Loading isLoading={isLoading ?? false} />
-        {!isLoading && <div className="flex-1">{content}</div>}
+        {!isLoading && <div className="flex-1 overflow-auto">{content}</div>}
       </div>
     </div>
   );
