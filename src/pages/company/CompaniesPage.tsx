@@ -10,7 +10,7 @@ import {
 } from "../../core/genericReducer";
 import CompanyForm, { CompanyFormType } from "./components/CompanyForm";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
-import PaginatedList from "../../components/PaginatedList";
+import PaginatedList from "../components/PaginatedList";
 import CompanyCard from "./components/CompanyCard";
 
 const CompaniesPage = () => {

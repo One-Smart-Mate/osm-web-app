@@ -10,7 +10,7 @@ import {
   CreateCompany,
   UpdateCompanyRequest,
 } from "../../../data/company/company.request";
-import ModalForm from "../../../components/ModalForm";
+import ModalForm from "../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import CompanyFormCard from "./CompanyFormCard";
 import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";

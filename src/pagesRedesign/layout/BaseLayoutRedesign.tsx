@@ -8,13 +8,13 @@ import {
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Outlet } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import NotificationHandler from "../../components/NotificationHandler";
 import SideBarRedesign from "../components/SideBarRedesign";
 import HeaderRedesign from "../components/HeaderRedesign";
 import { useSetAppTokenMutation } from "../../services/userService";
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import Constants from "../../utils/Constants";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import NotificationHandler from "../../pages/components/NotificationHandler";
 
 const { Header, Content } = Layout;
 

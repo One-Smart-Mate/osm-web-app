@@ -1,7 +1,7 @@
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 import { Role, UserCardInfo } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
-import AnatomyTooltip from "../../../components/AnatomyTooltip";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import { BsLock, BsMailbox, BsPerson } from "react-icons/bs";
 import { validateEmailPromise } from "../../../utils/Extensions";
 import { useEffect, useState } from "react";

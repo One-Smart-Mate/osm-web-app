@@ -2,7 +2,7 @@ import { Form, FormInstance, Input, InputNumber, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { Priority } from "../../../data/priority/priority";
 import Strings from "../../../utils/localizations/Strings";
-import AnatomyTooltip from "../../../components/AnatomyTooltip";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import { BsCalendar2Date, BsCardText, BsQrCode } from "react-icons/bs";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";

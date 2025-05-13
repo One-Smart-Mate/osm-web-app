@@ -9,7 +9,7 @@ import {
 } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
 import { CardDetailsInterface, Evidences } from "../../../data/card/card";
-import ModalForm from "../../../components/ModalForm";
+import ModalForm from "../../components/ModalForm";
 import { useState } from "react";
 import UpdatePriorityForm from "./UpdatePriorityForm";
 import {

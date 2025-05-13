@@ -21,7 +21,6 @@ import {
 import Logout from "../auth/Logout";
 import Routes, { UnauthorizedRoute } from "../../utils/Routes";
 import LanguageDropdown from "./LanguageDropdown";
-import NotificationHandler from "../../components/NotificationHandler";
 
 // NEW IMPORTS
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
@@ -223,9 +222,7 @@ const BaseLayout: React.FC = () => {
           </div>
         </Content>
         {/* NotificationHandler placed outside the main content flow */}
-        <div className="hidden">
-          <NotificationHandler />
-        </div>
+       
       </Layout>
     </Layout>
   );

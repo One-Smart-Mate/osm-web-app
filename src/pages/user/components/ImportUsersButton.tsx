@@ -1,5 +1,5 @@
 import { Button, Form, App as AntApp } from "antd";
-import ModalForm from "../../../components/ModalForm";
+import ModalForm from "../../components/ModalForm";
 import { useState } from "react";
 import Strings from "../../../utils/localizations/Strings";
 import { UploadOutlined } from "@ant-design/icons";

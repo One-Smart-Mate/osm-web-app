@@ -5,7 +5,7 @@ import AnatomyNotification, {
   AnatomyNotificationType,
 } from "../../components/AnatomyNotification";
 import Strings from "../../../utils/localizations/Strings";
-import ModalForm from "../../../components/ModalForm";
+import ModalForm from "../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import UserFormCard from "./UserFormCard";
 import { UserCardInfo } from "../../../data/user/user";

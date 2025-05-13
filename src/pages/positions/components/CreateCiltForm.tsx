@@ -7,7 +7,7 @@ import { UserOutlined, ClockCircleOutlined, PlusOutlined } from "@ant-design/ico
 import { Position } from "../../../data/postiions/positions";
 import { CreateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
-import UserSelectionModal from "../../../components/UserSelectionModal";
+import UserSelectionModal from "../../components/UserSelectionModal";
 import type { UploadFile, UploadFileStatus } from "antd/es/upload/interface";
 import Strings from "../../../utils/localizations/Strings";
 

@@ -1,6 +1,6 @@
 import { List } from "antd";
-import { RESPONSIVE_LIST } from "../utils/Extensions";
-import Constants from "../utils/Constants";
+import { RESPONSIVE_LIST } from "../../utils/Extensions";
+import Constants from "../../utils/Constants";
 
 interface ListProps {
   responsive?: boolean;

@@ -4,7 +4,7 @@ import { Priority } from "../../data/priority/priority";
 import { List } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import PaginatedList from "../../components/PaginatedList";
+import PaginatedList from "../components/PaginatedList";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";

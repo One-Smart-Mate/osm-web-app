@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-import PaginatedList from "../../components/PaginatedList";
+import PaginatedList from "../components/PaginatedList";
 import AnatomyNotification from "../components/AnatomyNotification";
 import UserForm, { UserFormType } from "./components/UserForm";
 import ImportUsersButton from "./components/ImportUsersButton";

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { notification } from "antd";
-import { onMessageListener } from "../config/firebaseMessaging";
+import { onMessageListener } from "../../config/firebaseMessaging";
 
 const NotificationHandler: React.FC = () => {
 

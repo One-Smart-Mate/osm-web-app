@@ -21,7 +21,7 @@ import {
   BsTelephone,
   BsTelephoneOutbound,
 } from "react-icons/bs";
-import AnatomyTooltip from "../../../components/AnatomyTooltip";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import Strings from "../../../utils/localizations/Strings";
 import {
   FIREBASE_COMPANY_DIRECTORY,

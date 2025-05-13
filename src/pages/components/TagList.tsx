@@ -1,6 +1,6 @@
 import React from "react";
 import { List } from "antd";
-import PaginatedList from "../../components/PaginatedList";
+import PaginatedList from "./PaginatedList";
 import TagCard from "../tags/components/TagCard";
 import { CardInterface } from "../../data/card/card";
 

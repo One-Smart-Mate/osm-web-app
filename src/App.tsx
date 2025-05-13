@@ -9,7 +9,7 @@ import PublicTagDetails from "./pages/tagdetails/PublicTagDetails";
 import Constants from "./utils/Constants";
 import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import React, { useEffect } from "react";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { routes } from "./routes/Routes";
 const BaseLayoutRedesign = React.lazy(() => import("./pagesRedesign/layout/BaseLayoutRedesign"));
 function App() {

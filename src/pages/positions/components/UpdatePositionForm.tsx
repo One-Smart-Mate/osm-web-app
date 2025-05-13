@@ -7,7 +7,7 @@ import { Position } from "../../../data/postiions/positions";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
-import UserSelectionModal from "../../../components/UserSelectionModal";
+import UserSelectionModal from "../../components/UserSelectionModal";
 import { UserOutlined } from "@ant-design/icons";
 
 const { Option } = Select;

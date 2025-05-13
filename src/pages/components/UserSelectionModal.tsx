@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Modal, Input, Button, Checkbox, Spin, Empty, Pagination } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Responsible } from "../data/user/user";
-import Strings from "../utils/localizations/Strings";
+import { Responsible } from "../../data/user/user";
+import Strings from "../../utils/localizations/Strings";
 
 interface UserSelectionModalProps {
   isVisible: boolean;

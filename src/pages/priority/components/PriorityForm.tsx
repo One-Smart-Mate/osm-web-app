@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Strings from "../../../utils/localizations/Strings";
 import { Button, App as AntApp } from "antd";
-import ModalForm from "../../../components/ModalForm";
+import ModalForm from "../../components/ModalForm";
 import { FormInstance } from "antd/lib";
 import AnatomyNotification, {
   AnatomyNotificationType,

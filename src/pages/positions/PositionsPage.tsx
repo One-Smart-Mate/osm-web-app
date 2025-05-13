@@ -34,7 +34,7 @@ import Constants from "../../utils/Constants";
 import { isRedesign } from "../../utils/Extensions";
 import MainContainer from "../../pagesRedesign/layout/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-import PaginatedList from "../../components/PaginatedList";
+import PaginatedList from "../components/PaginatedList";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import { BsDiagram2, BsLightbulb, BsList } from "react-icons/bs";
 

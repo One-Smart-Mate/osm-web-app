@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Form, FormInstance, Modal } from "antd";
-import Strings from "../utils/localizations/Strings";
+import Strings from "../../utils/localizations/Strings";
 
 interface ModalFormProps {
   open: boolean;
