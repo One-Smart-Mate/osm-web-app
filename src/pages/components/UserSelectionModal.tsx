@@ -116,8 +116,7 @@ const UserSelectionModal = ({
         <div>
           <Empty description={Strings.noUsersAvailableForSite} />
           <div className="mt-4 text-center">
-            <p className="text-red-500">No hay usuarios disponibles para este sitio.</p>
-            <p>Verifique que el sitio tenga usuarios asignados.</p>
+            <p className="text-red-500">{Strings.noUsersAvailableForSite}</p>
           </div>
         </div>
       ) : (
@@ -125,7 +124,7 @@ const UserSelectionModal = ({
           <div className="border rounded-md p-2 max-h-60 overflow-y-auto">
             {paginatedUsers.length === 0 ? (
               <div className="py-4 text-center">
-                <p>No se encontraron resultados para la búsqueda.</p>
+                <p>{Strings.notSpecified}</p>
               </div>
             ) : (
               paginatedUsers.map(user => (
