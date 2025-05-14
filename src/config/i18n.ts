@@ -1081,9 +1081,10 @@ const resources = {
       editCiltSequenceModalStandardTimeRequired: "Standard time is required",
       editCiltSequenceModalStandardOkLabel: "Standard OK",
       editCiltSequenceModalStandardOkRequired: "Standard OK is required",
-      editCiltSequenceModalStoppageReasonLabel: "Stoppage Reason",
-      editCiltSequenceModalQuantityPicturesCreateLabel:
-        "Quantity Pictures Create",
+      editCiltSequenceModalStoppageReasonLabel: "Is it a stoppage reason?",
+      editCiltSequenceModalMachineStoppedLabel: "Machine stopped?",
+      editCiltSequenceModalStatusLabel: "Status",
+      editCiltSequenceModalQuantityPicturesCreateLabel: "Fotos al inicio",
       editCiltSequenceModalQuantityPicturesCreateRequired:
         "Quantity Pictures Create is required",
       editCiltSequenceModalQuantityPicturesCloseLabel:
@@ -1242,6 +1243,9 @@ const resources = {
       imageLoadError: "Error uploading image",
       warningImageUpload: "Warning: image not uploaded correctly",
       scheduleSecuence: "Schedule Sequence",
+      confirmCloneCiltMstrMessage: "Are you sure you want to clone the CILT?",
+      confirmCloneSecuencesMessage: "All sequences will also be cloned",
+      draft: "Draft",
       totalUsersCreated: "Total number of users created",
       totalUsersProcessed: "Total number of users processed",
       importUsersSummary: "Summary of imported users",
@@ -2362,6 +2366,8 @@ const resources = {
       editCiltSequenceModalStandardOkLabel: "Estándar OK",
       editCiltSequenceModalStandardOkRequired: "El estándar OK es requerido",
       editCiltSequenceModalStoppageReasonLabel: "Razón de Parada",
+      editCiltSequenceModalMachineStoppedLabel: "¿Máquina detenida?",
+      editCiltSequenceModalStatusLabel: "Estado",
       editCiltSequenceModalQuantityPicturesCreateLabel:
         "Cantidad de Imágenes al Crear",
       editCiltSequenceModalQuantityPicturesCreateRequired:
@@ -2524,6 +2530,9 @@ const resources = {
       scheduleSequence: "Calendarizar",
       errorNoSiteId: "El id del site es obligatorio",
       clearFilters: "Limpiar filtros",
+      confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento CILT?",
+      confirmCloneSecuencesMessage: "Todas las secuencias también serán clonadas",
+      draft: "Borrador",
       totalUsersCreated: "Total de usuarios creados",
       totalUsersProcessed: "Total de usuarios procesados",
       importUsersSummary: "Resumen de usuarios importados",

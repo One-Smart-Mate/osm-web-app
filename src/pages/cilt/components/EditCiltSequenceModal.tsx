@@ -11,7 +11,7 @@ import {
   notification,
   Row,
   Col,
-  ColorPicker,
+  Tooltip,
 } from "antd";
 import { useUpdateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
@@ -22,8 +22,10 @@ import {
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import Strings from "../../../utils/localizations/Strings";
-import CiltLevelTreeModal from "./CiltLevelTreeModal";
+// CiltLevelTreeModal import removed
 import OplSelectionModal from "./OplSelectionModal";
+import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
+import Constants from "../../../utils/Constants";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -47,48 +49,36 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [levelTreeModalVisible, setLevelTreeModalVisible] = useState(false);
   const [referenceOplModalVisible, setReferenceOplModalVisible] =
     useState(false);
   const [remediationOplModalVisible, setRemediationOplModalVisible] =
     useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
-  const [color, setColor] = useState<string>("#1677FF");
+  const [formattedTime, setFormattedTime] = useState<string>('');
 
   useEffect(() => {
     if (visible && sequence?.siteId) {
       fetchCiltTypes();
-
       initializeForm();
+      
+      // Reference level ID code removed
     }
   }, [visible, sequence]);
 
   useEffect(() => {
     if (!visible) {
       form.resetFields();
-      setSelectedLevel(null);
     }
   }, [visible, form]);
 
   const initializeForm = () => {
     if (!sequence) return;
-
-    if (sequence.secuenceColor) {
-      const colorValue = sequence.secuenceColor.startsWith("#")
-        ? sequence.secuenceColor
-        : `#${sequence.secuenceColor}`;
-      setColor(colorValue);
+    
+    // Initialize formatted time display
+    if (sequence.standardTime) {
+      setFormattedTime(formatSecondsToNaturalTime(sequence.standardTime));
     }
 
-    if (sequence.levelId && sequence.levelName) {
-      setSelectedLevel({
-        id: sequence.levelId,
-        name: sequence.levelName,
-      });
-    }
+    // Level selection code removed
 
     form.setFieldsValue({
       id: sequence.id,
@@ -115,6 +105,8 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       standardOk: sequence.standardOk,
       toolsRequired: sequence.toolsRequired,
       stoppageReason: sequence.stoppageReason === 1,
+      machineStopped: sequence.machineStopped === 1,
+      status: sequence.status,
       quantityPicturesCreate: sequence.quantityPicturesCreate,
       quantityPicturesClose: sequence.quantityPicturesClose,
     });
@@ -139,20 +131,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     }
   };
 
-  const handleLevelSelect = (levelData: any) => {
-    if (levelData) {
-      setSelectedLevel({
-        id: Number(levelData.id),
-        name: levelData.name,
-      });
-
-      form.setFieldsValue({
-        levelId: Number(levelData.id),
-        levelName: levelData.name,
-      });
-    }
-    setLevelTreeModalVisible(false);
-  };
+  // handleLevelSelect function removed
 
   const handleReferenceOplSelect = (opl: OplMstr) => {
     form.setFieldsValue({
@@ -170,14 +149,24 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     setRemediationOplModalVisible(false);
   };
 
-  const getSelectedColor = (color: string | undefined): string => {
-    return color || "#1890ff";
+  // Get color from selected CILT type
+  const getColorFromCiltType = (ciltTypeId: number | undefined): string => {
+    if (!ciltTypeId) return "1890ff";
+    
+    const selectedType = ciltTypes.find(type => type.id === ciltTypeId);
+    if (selectedType && selectedType.color) {
+      // Remove # if it exists and return the color
+      return selectedType.color.startsWith('#') ? 
+        selectedType.color.substring(1) : 
+        selectedType.color;
+    }
+    
+    return "1890ff";
   };
-
-  const handleColorChange = (colorValue: any) => {
-    const hexColor = colorValue.toHex().replace("#", "");
-    setColor("#" + hexColor);
-    form.setFieldsValue({ secuenceColor: hexColor });
+  
+  // Handle CILT type change to update the color
+  const handleCiltTypeChange = (ciltTypeId: number) => {
+    form.setFieldsValue({ secuenceColor: getColorFromCiltType(ciltTypeId) });
   };
 
   const handleSubmit = async (values: any) => {
@@ -198,10 +187,11 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         values.ciltMstrId,
         values.ciltMstrName || sequence.ciltMstrName || "",
         values.levelId,
-        selectedLevel?.name || values.levelName || "",
+        values.levelName,
+        values.route,
         values.order,
         values.secuenceList,
-        values.secuenceColor || getSelectedColor(color).replace("#", ""),
+        getColorFromCiltType(values.ciltTypeId),
         values.ciltTypeId,
         ciltTypes.find((type) => type.id === values.ciltTypeId)?.name ||
           values.ciltTypeName,
@@ -211,8 +201,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         values.remediationOplSop,
         values.toolsRequired,
         values.stoppageReason ? 1 : 0,
+        values.machineStopped ? 1 : 0,
         values.quantityPicturesCreate,
-        values.quantityPicturesClose
+        values.quantityPicturesClose,
+        values.status || "A"
       );
 
       await updateCiltSequence(sequenceData).unwrap();
@@ -310,49 +302,18 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               </Col>
 
               <Col span={12}>
+                {/* Level field removed */}
                 <Form.Item
-                  label={Strings.editCiltSequenceModalLevelLabel}
-                  required
+                  name="levelId"
+                  hidden
                 >
-                  <div className="flex items-center">
-                    <Form.Item
-                      name="levelId"
-                      noStyle
-                      rules={[
-                        {
-                          required: true,
-                          message: Strings.editCiltSequenceModalLevelRequired,
-                        },
-                      ]}
-                    >
-                      <Input type="hidden" />
-                    </Form.Item>
-                    <Form.Item
-                      name="levelName"
-                      noStyle
-                      rules={[
-                        {
-                          required: true,
-                          message: Strings.editCiltSequenceModalLevelRequired,
-                        },
-                      ]}
-                    >
-                      <Input type="hidden" />
-                    </Form.Item>
-                    
-                    <Button
-                      type="primary"
-                      onClick={() => setLevelTreeModalVisible(true)}
-                      className="mr-2"
-                    >
-                      {Strings.select} {Strings.level}
-                    </Button>
-                    {(selectedLevel || form.getFieldValue('levelName')) && (
-                      <div className="border rounded p-2 flex-1">
-                        {selectedLevel ? selectedLevel.name : form.getFieldValue('levelName')}
-                      </div>
-                    )}
-                  </div>
+                  <Input type="hidden" />
+                </Form.Item>
+                <Form.Item
+                  name="levelName"
+                  hidden
+                >
+                  <Input type="hidden" />
                 </Form.Item>
               </Col>
             </Row>
@@ -373,6 +334,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                     placeholder={
                       Strings.editCiltSequenceModalCiltTypePlaceholder
                     }
+                    onChange={handleCiltTypeChange}
                   >
                     {ciltTypes.map((type) => (
                       <Option key={type.id} value={type.id}>
@@ -405,23 +367,29 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
             <Row gutter={16}>
               <Col span={12}>
+                {/* Hidden Sequence Color - inherited from CILT type */}
                 <Form.Item
-                  label={Strings.editCiltSequenceModalColorLabel}
                   name="secuenceColor"
+                  hidden
                 >
-                  <Input
-                    addonBefore={
-                      <ColorPicker value={color} onChange={handleColorChange} />
-                    }
-                    placeholder={Strings.editCiltSequenceModalColorPlaceholder}
-                    value={color.replace("#", "")}
-                  />
+                  <Input />
                 </Form.Item>
               </Col>
 
               <Col span={12}>
                 <Form.Item
-                  label={Strings.editCiltSequenceModalStandardTimeLabel}
+                  label={
+                    <span>
+                      {Strings.editCiltSequenceModalStandardTimeLabel}
+                      {formattedTime && (
+                        <Tooltip title="Time in HH:MM:SS format">
+                          <span style={{ marginLeft: '8px', color: '#1890ff' }}>
+                            ({formattedTime})
+                          </span>
+                        </Tooltip>
+                      )}
+                    </span>
+                  }
                   name="standardTime"
                   rules={[
                     {
@@ -437,6 +405,24 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                     placeholder={
                       Strings.editCiltSequenceModalStandardTimePlaceholder
                     }
+                    onChange={(value) => {
+                      if (value) {
+                        setFormattedTime(formatSecondsToNaturalTime(Number(value)));
+                      } else {
+                        setFormattedTime('');
+                      }
+                    }}
+                    onBlur={(e) => {
+                      const inputValue = e.target.value;
+                      // Check if the input is in time format (contains ':')
+                      if (inputValue && inputValue.includes(':')) {
+                        const seconds = parseNaturalTimeToSeconds(inputValue);
+                        if (seconds !== null) {
+                          form.setFieldsValue({ standardTime: seconds });
+                          setFormattedTime(formatSecondsToNaturalTime(seconds));
+                        }
+                      }
+                    }}
                   />
                 </Form.Item>
               </Col>
@@ -539,6 +525,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
               />
             </Form.Item>
+            
 
             <Row gutter={16}>
               <Col span={8}>
@@ -553,6 +540,32 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
               <Col span={8}>
                 <Form.Item
+                  label={Strings.editCiltSequenceModalMachineStoppedLabel}
+                  name="machineStopped"
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item
+                  label={Strings.editCiltSequenceModalStatusLabel}
+                  name="status"
+                >
+                  <Select placeholder={Strings.cardTypeTreeStatusPlaceholder}>
+                    <Option value={Constants.STATUS_ACTIVE}>{Strings.active}</Option>
+                    <Option value={Constants.STATUS_INACTIVE}>{Strings.inactive}</Option>
+                    <Option value={Constants.STATUS_DRAFT}>{Strings.draft}</Option>
+                    
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
                   label={
                     Strings.editCiltSequenceModalQuantityPicturesCreateLabel
                   }
@@ -562,7 +575,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
+              <Col span={12}>
                 <Form.Item
                   label={
                     Strings.editCiltSequenceModalQuantityPicturesCloseLabel
@@ -588,16 +601,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         </Spin>
       </Modal>
 
-      {/* Level Tree Modal */}
-      {sequence && sequence.siteId && (
-        <CiltLevelTreeModal
-          isVisible={levelTreeModalVisible}
-          onClose={() => setLevelTreeModalVisible(false)}
-          siteId={sequence.siteId.toString()}
-          siteName={sequence.siteName || ""}
-          onSelectLevel={handleLevelSelect}
-        />
-      )}
+      {/* Level Tree Modal removed */}
 
       {/* OPL Selection Modals */}
       <OplSelectionModal

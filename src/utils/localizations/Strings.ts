@@ -1086,6 +1086,8 @@ class StringsBase {
   static editCiltSequenceModalStandardOkLabel = "editCiltSequenceModalStandardOkLabel";
   static editCiltSequenceModalStandardOkPlaceholder = "editCiltSequenceModalStandardOkPlaceholder";
   static editCiltSequenceModalStoppageReasonLabel = "editCiltSequenceModalStoppageReasonLabel";
+  static editCiltSequenceModalMachineStoppedLabel = "editCiltSequenceModalMachineStoppedLabel";
+  static editCiltSequenceModalStatusLabel = "editCiltSequenceModalStatusLabel";
   static editCiltSequenceModalQuantityPicturesCreateLabel = "editCiltSequenceModalQuantityPicturesCreateLabel";
   static editCiltSequenceModalQuantityPicturesCloseLabel = "editCiltSequenceModalQuantityPicturesCloseLabel";
   static editCiltSequenceModalSelectReferenceOpl = "editCiltSequenceModalSelectReferenceOpl";
@@ -1167,8 +1169,9 @@ class StringsBase {
   static imageLoadError = "imageLoadError"
   static warningImageUpload = "warningImageUpload"
   static scheduleSequence = "scheduleSequence"
-
-
+  static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage"
+  static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage"
+  static draft = "draft"
   static totalUsersCreated = "totalUsersCreated"
   static totalUsersProcessed = "totalUsersProcessed"
   static importUsersSummary = "importUsersSummary"

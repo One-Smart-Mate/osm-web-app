@@ -15,6 +15,7 @@ interface CiltTableProps {
   onDetails: (cilt: CiltMstr) => void;
   onCreateSequence: (cilt: CiltMstr) => void;
   onViewSequences: (cilt: CiltMstr) => void;
+  onClone: (cilt: CiltMstr) => void;
 }
 
 const CiltTable: React.FC<CiltTableProps> = ({
@@ -26,6 +27,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
   onDetails,
   onCreateSequence,
   onViewSequences,
+  onClone,
 }) => {
   const columns: ColumnsType<CiltMstr> = [
     {
@@ -83,18 +85,10 @@ const CiltTable: React.FC<CiltTableProps> = ({
       key: "actions",
       render: (_, record) => (
         <Space size="small" wrap>
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => onEdit(record)}
-          >
+          <Button type="primary" size="small" onClick={() => onEdit(record)}>
             {Strings.edit}
           </Button>
-          <Button
-            type="default"
-            size="small"
-            onClick={() => onDetails(record)}
-          >
+          <Button type="default" size="small" onClick={() => onDetails(record)}>
             {Strings.details}
           </Button>
           <Button
@@ -110,6 +104,13 @@ const CiltTable: React.FC<CiltTableProps> = ({
             onClick={() => onViewSequences(record)}
           >
             {Strings.viewSequences}
+          </Button>
+          <Button
+            type="default"
+            size="small"
+            onClick={() => onClone(record)}
+          >
+            {Strings.levelsTreeOptionClone}
           </Button>
         </Space>
       ),
@@ -129,6 +130,12 @@ const CiltTable: React.FC<CiltTableProps> = ({
         pageSize: DEFAULT_PAGE_SIZE,
         total: ciltList.length,
         showSizeChanger: false,
+
+        showTotal: (total) => `Total ${total} registros`,
+        onChange: (page) => {
+          console.log("Changing to page:", page);
+          onTableChange({ current: page, pageSize: DEFAULT_PAGE_SIZE });
+        },
       }}
       onChange={onTableChange}
       bordered

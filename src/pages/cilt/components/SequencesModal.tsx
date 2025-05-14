@@ -16,6 +16,7 @@ import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
 import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
 import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
+import Constants from "../../../utils/Constants";
 
 interface SequencesModalProps {
   visible: boolean;
@@ -49,16 +50,21 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
   React.useEffect(() => { if (currentCilt?.id) getSeqFreqs(String(currentCilt.id)); }, [currentCilt?.id]);
 
   React.useEffect(() => {
-    setFilteredSequences(sequences);
+    // Filter to only show active sequences
+    const activeSequences = sequences.filter(sequence => sequence.status === Constants.STATUS_ACTIVE);
+    setFilteredSequences(activeSequences);
   }, [sequences]);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
 
+    // Get active sequences first
+    const activeSequences = sequences.filter(sequence => sequence.status === Constants.STATUS_ACTIVE);
+    
     if (!value.trim()) {
-      setFilteredSequences(sequences);
+      setFilteredSequences(activeSequences);
     } else {
-      const filtered = sequences.filter(
+      const filtered = activeSequences.filter(
         (sequence) =>
           sequence.secuenceList?.toLowerCase().includes(value.toLowerCase()) ||
           sequence.order?.toString().includes(value) ||

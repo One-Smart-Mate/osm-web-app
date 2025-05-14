@@ -8,12 +8,14 @@ interface CiltDetailsModalProps {
   visible: boolean;
   cilt: CiltMstr | null;
   onCancel: () => void;
+  onClone?: (cilt: CiltMstr) => void;
 }
 
 const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
   visible,
   cilt,
-  onCancel
+  onCancel,
+  onClone
 }) => {
   // Fix for image loading - ensure the URL is properly formed
   const getImageUrl = (url: string | undefined): string => {
@@ -37,6 +39,11 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
         <Button key="back" onClick={onCancel}>
           {Strings.ciltMstrCloseButton}
         </Button>,
+        onClone && cilt && (
+          <Button key="clone" type="primary" onClick={() => onClone(cilt)}>
+            {Strings.levelsTreeOptionClone}
+          </Button>
+        ),
       ]}
       width={600}
     >

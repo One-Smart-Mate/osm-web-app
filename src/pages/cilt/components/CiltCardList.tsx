@@ -11,7 +11,6 @@ import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService
 import { useGetOplDetailsByOplMutation } from "../../../services/cilt/oplDetailsService";
 import Strings from "../../../utils/localizations/Strings";
 
-// Import the smaller component modules
 import CiltTable from "./CiltTable";
 import CiltEditModal from "./CiltEditModal";
 import CiltDetailsModal from "./CiltDetailsModal";
@@ -20,6 +19,7 @@ import SequencesModal from "./SequencesModal";
 import SequenceDetailsModal from "./SequenceDetailsModal";
 import EditCiltSequenceModal from "./EditCiltSequenceModal";
 import OplDetailsModal from "./OplDetailsModal";
+import CloneCiltModal from "./CloneCiltModal";
 import type { TablePaginationConfig } from "antd/es/table";
 
 const { Text } = Typography;
@@ -33,53 +33,60 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const siteId = location.state?.siteId || "";
   const [currentPage, setCurrentPage] = useState(1);
 
-  // CILT State
   const [ciltProcedures, setCiltProcedures] = useState<CiltMstr[]>([]);
-  const [filteredCiltProcedures, setFilteredCiltProcedures] = useState<CiltMstr[]>([]);
+  const [filteredCiltProcedures, setFilteredCiltProcedures] = useState<
+    CiltMstr[]
+  >([]);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
-  // Modal visibility states
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
-  const [isCreateSequenceModalVisible, setIsCreateSequenceModalVisible] = useState(false);
+  const [isCreateSequenceModalVisible, setIsCreateSequenceModalVisible] =
+    useState(false);
   const [isSequencesModalVisible, setIsSequencesModalVisible] = useState(false);
-  const [isSequenceDetailModalVisible, setIsSequenceDetailModalVisible] = useState(false);
-  const [isEditSequenceModalVisible, setIsEditSequenceModalVisible] = useState(false);
-  const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] = useState(false);
+  const [isSequenceDetailModalVisible, setIsSequenceDetailModalVisible] =
+    useState(false);
+  const [isEditSequenceModalVisible, setIsEditSequenceModalVisible] =
+    useState(false);
+  const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] =
+    useState(false);
+  const [isCloneCiltModalVisible, setIsCloneCiltModalVisible] = useState(false);
 
-  // Modal data states
   const [editingCilt, setEditingCilt] = useState<CiltMstr | null>(null);
   const [detailsCilt, setDetailsCilt] = useState<CiltMstr | null>(null);
+  const [ciltToClone, setCiltToClone] = useState<CiltMstr | null>(null);
   const [sequenceCilt, setSequenceCilt] = useState<CiltMstr | null>(null);
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
-  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
+  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
+    null
+  );
 
-  // Sequences data
   const [sequences, setSequences] = useState<CiltSequence[]>([]);
   const [loadingSequences, setLoadingSequences] = useState(false);
 
-  // OPL data
   const [selectedOpl, setSelectedOpl] = useState<OplMstr | null>(null);
   const [selectedOplDetails, setSelectedOplDetails] = useState<OplDetail[]>([]);
   const [loadingOplDetails, setLoadingOplDetails] = useState(false);
 
-  // File preview states
   const [pdfPreviewVisible, setPdfPreviewVisible] = useState(false);
   const [currentPdfUrl, setCurrentPdfUrl] = useState("");
   const [videoPreviewVisible, setVideoPreviewVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
-  // API mutation hooks
   const [getCiltSequencesByCilt] = useGetCiltSequencesByCiltMutation();
   const [getOplMstrById] = useGetOplMstrByIdMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
 
-  // Data fetching query
-  const { data, isLoading, isError, error, refetch } = useGetCiltMstrBySiteQuery(siteId, {
-    skip: !siteId,
-    pollingInterval: 30000,
-  });
+  const { data, isLoading, isError, error, refetch } =
+    useGetCiltMstrBySiteQuery(siteId, {
+      skip: !siteId,
+      pollingInterval: 30000,
 
-  // Effects
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    });
+
   useEffect(() => {
     setCurrentPage(1);
   }, [siteId]);
@@ -87,14 +94,24 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   useEffect(() => {
     if (data) {
       setCiltProcedures(data);
+
+      if (refreshTrigger > 0) {
+        setCurrentPage(1);
+      }
     }
-  }, [data]);
+  }, [data, refreshTrigger]);
+
+  useEffect(() => {
+    if (refreshTrigger > 0) {
+      console.log("Refetching data due to refresh trigger:", refreshTrigger);
+      refetch();
+    }
+  }, [refreshTrigger, refetch]);
 
   useEffect(() => {
     filterCilts();
   }, [searchTerm, ciltProcedures]);
 
-  // Filter functions
   const filterCilts = () => {
     if (!ciltProcedures.length) return;
 
@@ -108,7 +125,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     }
   };
 
-  // CILT handlers
   const showEditModal = (cilt: CiltMstr) => {
     setEditingCilt(cilt);
     setIsEditModalVisible(true);
@@ -135,6 +151,23 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setDetailsCilt(null);
   };
 
+  const showCloneModal = (cilt: CiltMstr) => {
+    setCiltToClone(cilt);
+    setIsCloneCiltModalVisible(true);
+  };
+
+  const handleCloneCancel = () => {
+    setIsCloneCiltModalVisible(false);
+    setCiltToClone(null);
+  };
+
+  const handleCloneSuccess = () => {
+    setIsCloneCiltModalVisible(false);
+    setCiltToClone(null);
+    setRefreshTrigger((prev) => prev + 1);
+    refetch();
+  };
+
   const showCreateSequenceModal = (cilt: CiltMstr) => {
     setSequenceCilt(cilt);
     setIsCreateSequenceModalVisible(true);
@@ -148,14 +181,22 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const handleCreateSequenceSuccess = () => {
     setIsCreateSequenceModalVisible(false);
     setSequenceCilt(null);
+
+    setRefreshTrigger((prev) => prev + 1);
+
     refetch();
   };
 
   const handleTableChange = (pagination: TablePaginationConfig) => {
-    setCurrentPage(pagination.current || 1);
+    const newPage = pagination.current || 1;
+    setCurrentPage(newPage);
+
+    if (newPage !== currentPage) {
+      console.log("Page changed, forcing data refresh");
+      refetch();
+    }
   };
 
-  // Sequences handlers
   const showSequencesModal = async (cilt: CiltMstr) => {
     setCurrentCilt(cilt);
     setLoadingSequences(true);
@@ -231,7 +272,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     }
   };
 
-  // OPL handlers
   const showOplDetails = async (oplId: number | null) => {
     if (!oplId) {
       notification.info({
@@ -273,7 +313,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setSelectedOplDetails([]);
   };
 
-  // File preview handlers
   const handleOpenPdf = (url: string) => {
     setCurrentPdfUrl(url);
     setPdfPreviewVisible(true);
@@ -294,7 +333,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setCurrentVideoUrl("");
   };
 
-  // Rendering conditions
   if (!siteId) {
     return <Text type="secondary">{Strings.requiredSite}</Text>;
   }
@@ -320,6 +358,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onDetails={showDetailsModal}
         onCreateSequence={showCreateSequenceModal}
         onViewSequences={showSequencesModal}
+        onClone={showCloneModal}
       />
 
       {/* Edit Modal */}
@@ -335,6 +374,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         visible={isDetailsModalVisible}
         cilt={detailsCilt}
         onCancel={handleDetailsCancel}
+        onClone={showCloneModal}
       />
 
       {/* Create Sequence Modal */}
@@ -383,6 +423,14 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onCancel={handleOplDetailsModalCancel}
         onOpenPdf={handleOpenPdf}
         onOpenVideo={handleOpenVideo}
+      />
+
+      {/* Clone CILT Modal */}
+      <CloneCiltModal
+        visible={isCloneCiltModalVisible}
+        cilt={ciltToClone}
+        onCancel={handleCloneCancel}
+        onSuccess={handleCloneSuccess}
       />
 
       {/* PDF Preview Modal */}
