@@ -4,6 +4,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Position } from "../../../data/postiions/positions";
 import { UserPosition } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
+import useDarkMode from '../../../utils/hooks/useDarkMode';
 
 interface PositionSelectionModalProps {
   isVisible: boolean;
@@ -26,6 +27,7 @@ const PositionSelectionModal = ({
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
+  const isDarkMode = useDarkMode();
 
   // Reset selection when modal opens
   useEffect(() => {
@@ -113,7 +115,7 @@ const PositionSelectionModal = ({
         <Empty description={Strings.noPositionsAvailable} />
       ) : (
         <>
-          <div className="bg-gray-50 rounded-md p-2 max-h-80 overflow-y-auto">
+          <div className={`${isDarkMode ? '' : 'bg-gray-50'} rounded-md p-2 max-h-80 overflow-y-auto`}>
             {paginatedPositions.map(position => (
               <div key={position.id} className="py-2">
                 <Checkbox 
@@ -138,7 +140,7 @@ const PositionSelectionModal = ({
           </div>
           
           <div className="mt-4">
-            <span className="text-gray-600">
+            <span className={`${isDarkMode ? '' : 'text-gray-600'}`}> 
               {Strings.selected}: {selectedPositionIds.length} {selectedPositionIds.length === 1 ? 
                 Strings.positionFound : Strings.positionsFound}
             </span>

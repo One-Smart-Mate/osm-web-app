@@ -13,6 +13,8 @@ import {
 } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../../utils/Extensions";
+import useDarkMode from '../../../utils/hooks/useDarkMode';
+import { theme } from 'antd';
 
 interface UserCardProps {
   user: UserCardInfo;
@@ -22,6 +24,8 @@ interface UserCardProps {
 const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
   const location = useLocation();
   const siteId = location?.state.siteId || Strings.empty;
+  const isDarkMode = useDarkMode();
+  const { token } = theme.useToken();
 
   return (
     <Card
@@ -102,8 +106,8 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
                   <Tag
                     color="default"
                     style={{
-                      backgroundColor: "#f0f0f0",
-                      color: "#595959",
+                      backgroundColor: isDarkMode ? token.colorBgBase : "#f0f0f0",
+                      color: isDarkMode ? token.colorText : "#595959",
                       fontSize: 10,
                     }}
                   >
