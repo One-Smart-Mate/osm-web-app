@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer } from "antd";
+import { Drawer, Typography } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import TagList from "./TagList";
 
@@ -32,10 +32,10 @@ const DrawerTagList: React.FC<DrawerTagListProps> = ({
     if (subText) {
       return (
         <div className="flex flex-wrap">
-          <h1>
+          <Typography.Text>
             {subLabel}
             {Strings.colon} <span className="font-normal">{subText}</span>
-          </h1>
+          </Typography.Text>
         </div>
       );
     }
@@ -47,21 +47,24 @@ const DrawerTagList: React.FC<DrawerTagListProps> = ({
       destroyOnHidden
       title={
         <div className="text-sm font-medium text-black">
-          <h1 className="text-lg font-semibold">{Strings.cards}</h1>
+          <Typography.Title level={5}>{Strings.cards}</Typography.Title>
           <div className="flex flex-wrap">
-            <h1>
+            <Typography.Text>
               {label}
               {Strings.colon} <span className="font-normal">{text}</span>
-            </h1>
-            <h1 className="flex-1 text-end font-normal">{totalCards}</h1>
+            </Typography.Text>
+            <Typography.Text className="flex-1 text-end font-normal">
+              {totalCards}
+            </Typography.Text>
           </div>
           <div className="flex flex-wrap">
-            <h1 className="flex-1">
-              {Strings.type}
-              {Strings.colon}
+            <Typography.Text>
+              {Strings.type} {Strings.colon}
               <span className="font-normal">{cardTypeName}</span>
-            </h1>
-            <h1 className="flex-1 text-end">{Strings.total}</h1>
+            </Typography.Text>
+            <Typography.Text className="flex-1 text-end font-normal">
+              {Strings.total}
+            </Typography.Text>
           </div>
           {buildExtraLabel()}
         </div>
