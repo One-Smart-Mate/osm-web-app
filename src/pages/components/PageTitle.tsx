@@ -18,7 +18,7 @@ const PageTitle: React.FC<Props> = ({ mainText, subText }) => {
   // Memoize the primary color to prevent recalculation on each render
   const primaryColor = useMemo(() => token.colorPrimary, [token.colorPrimary]);
   
-  const textClass = isDarkMode ? 'text-white' : 'text-black';
+  const textClass = isDarkMode ? 'text-white' : '';
   
   return (
     <h3 className={`text-base md:text-2xl sm:text-1xl font-semibold ${textClass}`}>
