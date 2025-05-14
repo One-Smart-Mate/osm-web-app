@@ -67,10 +67,10 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
 
         <Form.Item
           name="name"
+          label={Strings.name}
           rules={[{ required: true, message: Strings.name }, { max: 45 }]}
         >
           <Input
-            size="large"
             maxLength={45}
             addonBefore={<BsCardText />}
             placeholder={Strings.name}
@@ -79,41 +79,39 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
 
         <Form.Item
           name="description"
+          label={Strings.description}
           rules={[
             { required: true, message: Strings.requiredDescription },
             { max: 100 },
           ]}
         >
           <Input
-            size="large"
             maxLength={100}
             addonBefore={<BsCardText />}
             placeholder={Strings.description}
           />
         </Form.Item>
 
-        <Form.Item name="responsibleId">
+        <Form.Item name="responsibleId" label={Strings.responsible}>
           <Select
-            size="large"
             placeholder={Strings.responsible}
             options={responsibleOptions()}
           />
         </Form.Item>
 
-        <Form.Item name="levelMachineId">
+        <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
           <Input
-            size="large"
             maxLength={50}
             addonBefore={<BsQrCodeScan />}
             placeholder={Strings.levelMachineId}
           />
         </Form.Item>
 
-        <Form.Item name="status">
-          <Select size="large" placeholder={Strings.status} options={statusOptions()} />
+        <Form.Item name="status" label={Strings.status}>
+          <Select placeholder={Strings.status} options={statusOptions()} />
         </Form.Item>
 
-        <Form.Item name="notify" valuePropName="checked">
+        <Form.Item name="notify" valuePropName="checked" label={Strings.notify}>
           <Checkbox>
             <p className="text-base">{Strings.notify}</p>
           </Checkbox>
