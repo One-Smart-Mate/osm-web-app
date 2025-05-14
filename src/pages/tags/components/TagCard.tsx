@@ -1,4 +1,4 @@
-import { Card, Tag, Typography } from "antd";
+import { Card, Tag, theme, Typography } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -9,14 +9,14 @@ import {
 import { CardInterface, Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
 import React, { useMemo } from "react";
-import { AiOutlinePicture } from "react-icons/ai";
-import { IoHeadsetOutline } from "react-icons/io5";
-import { GoDeviceCameraVideo } from "react-icons/go";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import {
   BsActivity,
   BsCalendar4,
+  BsCameraVideo,
   BsExclamationDiamond,
+  BsImages,
+  BsMusicPlayer,
   BsNodePlus,
   BsPersonGear,
   BsPinMap,
@@ -31,6 +31,7 @@ interface TagCardProps {
 
 const TagCard = ({ data }: TagCardProps) => {
   const isDarkMode = useDarkMode();
+  const { token } = theme.useToken();
   const { dateStatus } = getCardStatusAndText(
     data.status,
     data.cardDueDate,
@@ -43,13 +44,13 @@ const TagCard = ({ data }: TagCardProps) => {
     const elements = useMemo(() => {
       const elems: React.ReactElement[] = [];
       if (hasImages(evidences)) {
-        elems.push(<AiOutlinePicture key="images" />);
+        elems.push(<BsImages key="images" color={token.colorText} />);
       }
       if (hasVideos(evidences)) {
-        elems.push(<GoDeviceCameraVideo key="videos" />);
+        elems.push(<BsCameraVideo key="videos" color={token.colorText} />);
       }
       if (hasAudios(evidences)) {
-        elems.push(<IoHeadsetOutline key="audios" />);
+        elems.push(<BsMusicPlayer key="audios" color={token.colorText} />);
       }
       return elems;
     }, [evidences]);

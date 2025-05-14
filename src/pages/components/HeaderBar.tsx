@@ -61,13 +61,13 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       </div>
 
       <div style={{ display: "flex", alignItems: "center" }}>
-        {false && <Switch
+        <Switch
           checked={isDarkMode}
           checkedChildren="Dark mode"
           unCheckedChildren="Light mode"
           style={{ marginRight: 10 }}
           onChange={toggleDarkMode}
-        />}
+        />
 
         <NotificationDropdown />
         <div style={{ marginLeft: "20px" }}>
