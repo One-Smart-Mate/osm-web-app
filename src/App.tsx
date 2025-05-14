@@ -11,14 +11,13 @@ import { listenForBackgroundMessages } from "./config/firebaseMessaging";
 import React, { useEffect } from "react";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { routes } from "./routes/Routes";
+import useDarkMode from "./utils/hooks/useDarkMode";
 const BaseLayout = React.lazy(() => import("./pages/layouts/BaseLayout"));
 
 function App() {
 
-  const [isDarkMode] = React.useState<boolean>(() => {
-    const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
-    return storedMode ? JSON.parse(storedMode) : false;
-  });
+  const isDarkMode = useDarkMode();
+
 
   useEffect(() => {
     listenForBackgroundMessages();

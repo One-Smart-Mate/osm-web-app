@@ -1,4 +1,5 @@
 import React from "react";
+import useDarkMode from "../../utils/hooks/useDarkMode";
 
 
 interface AnatomySectionProps {
@@ -10,10 +11,15 @@ interface AnatomySectionProps {
 
 
 const AnatomySection = ({title, label, icon, justify}: AnatomySectionProps): React.ReactElement => {
+
+  const isDarkMode = useDarkMode();
+
   return (
-    <div className={justify ? "bg-gray-50 p-2 rounded-sm flex items-center flex-wrap justify-between" : "bg-gray-50 p-2 rounded-sm flex items-center flex-wrap"}>
+    <div className={
+      `${isDarkMode ? '' : 'bg-gray-50'} p-2 rounded-sm flex items-center flex-wrap${justify ? ' justify-between' : ''}`
+    }>
       {icon && <div className="mr-2">{icon}</div>}
-      <span className="text-gray-600 mr-2">{title}:</span>
+      <span className={`mr-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{title}:</span>
       <span className="font-semibold">{label}</span>
     </div>
   );

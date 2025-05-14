@@ -23,12 +23,14 @@ import {
 } from "react-icons/bs";
 import { buildCardDetailRoute, navigateWithState } from "../../../routes/RoutesExtensions";
 import TagStatus from "../../components/TagStatus";
+import useDarkMode from "../../../utils/hooks/useDarkMode";
 
 interface TagCardProps {
   data: CardInterface;
 }
 
 const TagCard = ({ data }: TagCardProps) => {
+  const isDarkMode = useDarkMode();
   const { dateStatus } = getCardStatusAndText(
     data.status,
     data.cardDueDate,
@@ -88,7 +90,7 @@ const TagCard = ({ data }: TagCardProps) => {
       }}
     >
       {dateStatus === Strings.expired ? (
-        <div className="w-full flex items-center justify-end bg-gray-50 p-2">
+        <div className={`w-full flex items-center justify-end p-2${isDarkMode ? '' : ' bg-gray-50'}`}>
           <Tag color="error">{Strings.expired}</Tag>
         </div>
       ) : (
