@@ -1177,6 +1177,7 @@ class StringsBase {
   static importUsersSummary = "importUsersSummary"
   static reason = "reason"
   static registered = "registered" 
+  static noProceduresFound = "noProceduresFound"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

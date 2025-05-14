@@ -1250,7 +1250,8 @@ const resources = {
       totalUsersProcessed: "Total number of users processed",
       importUsersSummary: "Summary of imported users",
       reason: "Reason",
-      registered: "Registered"
+      registered: "Registered",
+      noProceduresFound: "No procedures found"
     },
   },
   es: {
@@ -2537,7 +2538,8 @@ const resources = {
       totalUsersProcessed: "Total de usuarios procesados",
       importUsersSummary: "Resumen de usuarios importados",
       reason: "Razón",
-      registered: "Registrado"
+      registered: "Registrado",
+      noProceduresFound: "No se encontraron procedimientos"
     },
   },
 };
