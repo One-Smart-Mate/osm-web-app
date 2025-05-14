@@ -1241,7 +1241,12 @@ const resources = {
       imageLoadSuccess: "Image uploaded successfully",
       imageLoadError: "Error uploading image",
       warningImageUpload: "Warning: image not uploaded correctly",
-      scheduleSecuence: "Schedule Sequence"
+      scheduleSecuence: "Schedule Sequence",
+      totalUsersCreated: "Total number of users created",
+      totalUsersProcessed: "Total number of users processed",
+      importUsersSummary: "Summary of imported users",
+      reason: "Reason",
+      registered: "Registered"
     },
   },
   es: {
@@ -2519,6 +2524,11 @@ const resources = {
       scheduleSequence: "Calendarizar",
       errorNoSiteId: "El id del site es obligatorio",
       clearFilters: "Limpiar filtros",
+      totalUsersCreated: "Total de usuarios creados",
+      totalUsersProcessed: "Total de usuarios procesados",
+      importUsersSummary: "Resumen de usuarios importados",
+      reason: "Razón",
+      registered: "Registrado"
     },
   },
 };

@@ -10,9 +10,10 @@ import { useImportUsersMutation } from "../../../services/userService";
 import AnatomyNotification, {
   AnatomyNotificationType,
 } from "../../components/AnatomyNotification";
+import { ImportUsersData } from "../../../data/user/import.users.response";
 
 interface ImportUsersButtonProps {
-  onComplete?: () => void;
+  onComplete?: (data: ImportUsersData) => void;
 }
 
 const ImportUsersButton = ({
@@ -31,14 +32,15 @@ const ImportUsersButton = ({
       setLoading(true);
       const { fileObj } = values;
       const file = fileObj.fileList[0].originFileObj;
-      await importUsers({ file, siteId }).unwrap();
+      const response = await importUsers({ file, siteId }).unwrap();
       AnatomyNotification.success(
         notification,
         AnatomyNotificationType.REGISTER
       );
       if (onComplete) {
-        onComplete();
+        onComplete(response.data.data);
       }
+      setModalOpen(false);
     } catch (error) {
       AnatomyNotification.error(notification, error);
     } finally {
