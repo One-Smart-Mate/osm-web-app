@@ -21,6 +21,8 @@ import { useNavigate } from "react-router-dom";
 import Routes from "../../utils/Routes";
 import LanguageDropdown from "../components/LanguageDropdown";
 import { BsEnvelope } from "react-icons/bs";
+import { theme } from "antd";
+import useDarkMode from "../../utils/hooks/useDarkMode";
 
 const ResetPassword = () => {
   const [sendCodeToEmail] = useSendCodeToEmailMutation();
@@ -33,6 +35,8 @@ const ResetPassword = () => {
   const [email, setEmail] = useState(Strings.empty);
   const [code, setCode] = useState(Strings.empty);
   const navigate = useNavigate();
+  const isDarkMode = useDarkMode();
+  const { token } = theme.useToken();
 
   const onSendEmailFormFinish = async (values: any) => {
     try {
@@ -92,7 +96,10 @@ const ResetPassword = () => {
         />
 
         {/* Right Side - Login Form */}
-        <div className="lg:flex-1 flex justify-center items-center p-4">
+        <div
+          className="lg:flex-1 flex justify-center items-center p-4"
+          style={isDarkMode ? { backgroundColor: token.colorBgBase } : {}}
+        >
           <div>
             <div className="flex justify-end mb-4">
               <LanguageDropdown />

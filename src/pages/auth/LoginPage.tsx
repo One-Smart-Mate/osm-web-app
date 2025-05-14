@@ -1,4 +1,4 @@
-import { Form, Input, Card, Button, App as AntdApp } from "antd";
+import { Form, Input, Card, Button, App as AntdApp, theme } from "antd";
 import { useEffect } from "react";
 import { useLoginMutation } from "../../services/authService";
 import { LoginRequest } from "../../data/user/user.request";
@@ -17,6 +17,7 @@ import LanguageDropdown from "../components/LanguageDropdown";
 import Constants from "../../utils/Constants";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { buildInitRoute, navigateWithState } from "../../routes/RoutesExtensions";
+import useDarkMode from "../../utils/hooks/useDarkMode";
 
 const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();
@@ -26,6 +27,8 @@ const LoginPage = () => {
   );
   const navigatewithState = navigateWithState();
   const { notification } = AntdApp.useApp();
+  const isDarkMode = useDarkMode();
+  const { token } = theme.useToken();
 
   const handleUserSession = () => {
     const user = getSessionUser();
@@ -83,7 +86,10 @@ const LoginPage = () => {
       />
 
       {/* Right Side - Login Form */}
-      <div className="lg:flex-1 flex justify-center items-center p-4">
+      <div
+        className="lg:flex-1 flex justify-center items-center p-4"
+        style={isDarkMode ? { backgroundColor: token.colorBgBase } : {}}
+      >
         <div>
           <div className="flex justify-end mb-4">
             <LanguageDropdown />
