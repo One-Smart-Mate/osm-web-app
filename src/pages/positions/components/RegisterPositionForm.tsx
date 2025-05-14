@@ -37,11 +37,18 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
     try {
       // Convert siteId to string and ensure it's a valid value
       const siteIdString = String(levelData.siteId);
+      console.log('Fetching responsibles for site:', siteIdString);
       
       const response = await getSiteResponsibles(siteIdString).unwrap();
+      console.log('Responsibles loaded:', response);
       setResponsibles(response || []);
     } catch (error) {
-      // Error handling without logging
+      console.error('Error fetching responsibles:', error);
+      notification.error({
+        message: Strings.error,
+        description: `${Strings.error} ${Strings.loading.toLowerCase()}.`,
+        duration: 4,
+      });
     } finally {
       setLoading(false);
     }

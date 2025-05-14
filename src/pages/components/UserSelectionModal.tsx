@@ -32,10 +32,13 @@ const UserSelectionModal = ({
 
   // Reset selected users when the modal opens with initial values
   useEffect(() => {
-    if (isVisible && initialSelectedUserIds) {
-      setSelectedUserIds(initialSelectedUserIds);
+    if (isVisible) {
+      // Always set the selected user IDs when the modal becomes visible
+      setSelectedUserIds(initialSelectedUserIds || []);
+      console.log('UserSelectionModal opened with users:', users);
+      console.log('Initial selected user IDs:', initialSelectedUserIds);
     }
-  }, [isVisible, initialSelectedUserIds]);
+  }, [isVisible, initialSelectedUserIds, users]);
 
   // Filter users based on search text
   const filteredUsers = users.filter(user => 
@@ -110,20 +113,32 @@ const UserSelectionModal = ({
           <Spin size="large" />
         </div>
       ) : filteredUsers.length === 0 ? (
-        <Empty description={Strings.noUsersAvailableForSite} />
+        <div>
+          <Empty description={Strings.noUsersAvailableForSite} />
+          <div className="mt-4 text-center">
+            <p className="text-red-500">No hay usuarios disponibles para este sitio.</p>
+            <p>Verifique que el sitio tenga usuarios asignados.</p>
+          </div>
+        </div>
       ) : (
         <>
           <div className="border rounded-md p-2 max-h-60 overflow-y-auto">
-            {paginatedUsers.map(user => (
-              <div key={user.id} className="py-2 border-b last:border-b-0">
-                <Checkbox 
-                  onChange={(e) => handleUserSelection(Number(user.id), e.target.checked)}
-                  checked={selectedUserIds.includes(Number(user.id))}
-                >
-                  <span className="font-medium">{user.name}</span>
-                </Checkbox>
+            {paginatedUsers.length === 0 ? (
+              <div className="py-4 text-center">
+                <p>No se encontraron resultados para la búsqueda.</p>
               </div>
-            ))}
+            ) : (
+              paginatedUsers.map(user => (
+                <div key={user.id} className="py-2 border-b last:border-b-0">
+                  <Checkbox 
+                    onChange={(e) => handleUserSelection(Number(user.id), e.target.checked)}
+                    checked={selectedUserIds.includes(Number(user.id))}
+                  >
+                    <span className="font-medium">{user.name || 'Usuario sin nombre'}</span>
+                  </Checkbox>
+                </div>
+              ))
+            )}
           </div>
           
           <div className="mt-4 flex justify-center">

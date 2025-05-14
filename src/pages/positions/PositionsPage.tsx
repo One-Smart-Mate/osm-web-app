@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import ProceduresModal from "./components/ProceduresModal";
 import {
   Button,
-  Input,
-  Table,
   Form,
   Tag,
   Spin,
@@ -13,12 +12,8 @@ import {
   Modal,
 } from "antd";
 import {
-  SearchOutlined,
-  EditOutlined,
-  FilePdfOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import LevelTreeModal from "./components/LevelTreeModal";
 import RegisterPositionForm from "./components/RegisterPositionForm";
 import UpdatePositionForm from "./components/UpdatePositionForm";
 import CreateCiltForm from "./components/CreateCiltForm";
@@ -31,20 +26,16 @@ import { Position } from "../../data/postiions/positions";
 import { Responsible } from "../../data/user/user";
 import Strings from "../../utils/localizations/Strings";
 import Constants from "../../utils/Constants";
-import { isRedesign } from "../../utils/Extensions";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../components/PaginatedList";
 import AnatomySection from "../../pagesRedesign/components/AnatomySection";
-import { BsDiagram2, BsLightbulb, BsList } from "react-icons/bs";
 
 const { Text } = Typography;
 
 const PositionsPage = () => {
-  const [searchText, setSearchText] = useState("");
   const [filteredPositions, setFilteredPositions] = useState<Position[]>([]);
-  const [isTreeModalVisible, setIsTreeModalVisible] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<any>(null);
+  const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
   const [isPositionFormVisible, setIsPositionFormVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
@@ -62,14 +53,12 @@ const PositionsPage = () => {
   const siteId = location.state?.siteId || "";
   const siteName = location.state?.siteName || "";
 
-  // Fetch positions by site ID
   const {
     data: positions = [],
     isLoading: isLoadingPositions,
     refetch: refetchPositions,
   } = useGetPositionsBySiteIdQuery(siteId, {
     skip: !siteId,
-    // Refetch positions every 30 seconds
     pollingInterval: 30000,
   });
 
@@ -86,70 +75,16 @@ const PositionsPage = () => {
   }, [siteId, getSite]);
 
   const handleSearch = (value: string) => {
-    setSearchText(value);
     if (!positions) return;
 
     const filtered = positions.filter(
       (position) =>
         position.areaName?.toLowerCase().includes(value.toLowerCase()) ||
-        position.levelName?.toLowerCase().includes(value.toLowerCase()) ||
         position.name?.toLowerCase().includes(value.toLowerCase()) ||
         position.description?.toLowerCase().includes(value.toLowerCase()) ||
         position.status?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredPositions(filtered);
-  };
-
-  const showTreeModal = async () => {
-    // En lugar de mostrar el modal del árbol, obtener los datos del sitio y abrir directamente el formulario
-    try {
-      // Fetch site data to get the siteType
-      const siteResponse = await getSite(siteId).unwrap();
-      console.log("Site data:", siteResponse);
-
-      // Crear datos básicos del nivel (sin seleccionar un nivel específico)
-      const basicLevelData = {
-        id: null, // No hay nivel seleccionado
-        name: null, // No hay nombre de nivel
-        siteId: siteId,
-        siteName: siteName,
-        siteType: siteResponse.siteType,
-        levelLocation: null // No hay ubicación de nivel
-      };
-
-      setSelectedLevel(basicLevelData);
-      setIsPositionFormVisible(true);
-    } catch (error) {
-      console.error("Error fetching site data:", error);
-    }
-  };
-
-  const hideTreeModal = () => {
-    setIsTreeModalVisible(false);
-  };
-
-  // Mantener la función por si se necesita en el futuro
-  const handleLevelSelect = async (levelData: any) => {
-    console.log("Selected level for position creation:", levelData);
-
-    try {
-      // Fetch site data to get the siteType
-      const siteResponse = await getSite(siteId).unwrap();
-      console.log("Site data:", siteResponse);
-
-      // Enhance the level data with site information
-      const enhancedLevelData = {
-        ...levelData,
-        siteId: siteId,
-        siteName: siteName,
-        siteType: siteResponse.siteType, // Get siteType from API response
-      };
-
-      setSelectedLevel(enhancedLevelData);
-      setIsPositionFormVisible(true);
-    } catch (error) {
-      console.error("Error fetching site data:", error);
-    }
   };
 
   const handleFormCancel = () => {
@@ -160,7 +95,6 @@ const PositionsPage = () => {
   const handleFormSuccess = () => {
     setIsPositionFormVisible(false);
     positionForm.resetFields();
-    // Refresh the positions list
     refetchPositions();
   };
 
@@ -184,7 +118,6 @@ const PositionsPage = () => {
     setIsUpdateFormVisible(false);
     setSelectedPosition(null);
     updateForm.resetFields();
-    // Refresh the positions list
     refetchPositions();
   };
 
@@ -202,18 +135,14 @@ const PositionsPage = () => {
     setOpenPopoverId(visible ? positionId : null);
   };
 
-  // Component to render users assigned to a position
   const PositionUsers = ({ positionId }: { positionId: string }) => {
     const { data: users = [], isLoading, refetch } =
       useGetPositionUsersQuery(positionId, {
-        // Refetch when component mounts or when positionId changes
         refetchOnMountOrArgChange: true
       });
 
-    // Effect to refetch data when the modal is opened
     useEffect(() => {
       if (openPopoverId === positionId) {
-        // Refetch the users data when the popover is opened
         refetch();
       }
     }, [openPopoverId, positionId, refetch]);
@@ -241,7 +170,6 @@ const PositionsPage = () => {
     );
   };
 
-  // Helper function to render status tag
   const renderStatusTag = (status: string) => {
     if (status === Constants.STATUS_ACTIVE) {
       return <Tag color="green">{Strings.active}</Tag>;
@@ -254,132 +182,42 @@ const PositionsPage = () => {
     }
   };
 
-  const columns = [
-    {
-      title: Strings.positionAreaHeader,
-      dataIndex: "areaName",
-      key: "areaName",
-      width: 150,
-    },
-    {
-      title: Strings.positionNodeZoneHeader,
-      dataIndex: "levelName",
-      key: "levelName",
-      width: 150,
-    },
-    {
-      title: Strings.positionNameHeader,
-      dataIndex: "name",
-      key: "name",
-      width: 150,
-    },
-    {
-      title: Strings.positionDescriptionHeader,
-      dataIndex: "description",
-      key: "description",
-      width: 200,
-      render: (text: string) => text || "-",
-    },
-    {
-      title: Strings.positionStatusHeader,
-      dataIndex: "status",
-      key: "status",
-      width: 100,
-      render: (status: string) => renderStatusTag(status),
-    },
-    {
-      title: Strings.positionActionsHeader,
-      key: "actions",
-      width: 100,
-      render: (_: any, record: Position) => (
-        <div className="flex space-x-2">
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEditPosition(record);
-            }}
-          />
-          <Button
-            type="default"
-            icon={<FilePdfOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      ),
-    },
-  ];
-
-  return isRedesign() ? (
+  return (
     <MainContainer
       title={siteName}
       description={Strings.positions}
       enableCreateButton={true}
-      onCreateButtonClick={showTreeModal}
+      onCreateButtonClick={() => setIsPositionFormVisible(true)}
       enableBackButton={isIhAdmin()}
       enableSearch={true}
       onSearchChange={handleSearch}
       isLoading={isLoadingPositions}
       content={
         <div>
-          {isRedesign() ? (
-            <PaginatedList
-              dataSource={filteredPositions}
-              renderItem={(item: Position, index: number) => (
-                <List.Item key={index}>
-                  <Card
-                    hoverable
+          <PaginatedList
+            className="no-scrollbar"
+            dataSource={filteredPositions}
+            renderItem={(item: Position) => (
+              <List.Item key={item.id}>
+                <Card
+                  hoverable
+                  className="w-full shadow-md"
+                >
+                  <Card.Meta
                     title={
-                      <Typography.Title level={5}>
-                        {item.areaName}
-                      </Typography.Title>
+                      <div className="flex justify-between items-center">
+                        <div>{item.name}</div>
+                      </div>
                     }
-                    className="rounded-xl shadow-md"
-                    onClick={() => {
-                      handlePopoverVisibleChange(
-                        openPopoverId !== item.id.toString(),
-                        item.id.toString()
-                      );
-                    }}
-                    actions={[
-                      <Button
-                        type="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditPosition(item);
-                        }}
-                      >
-                        {Strings.edit}
-                      </Button>,
-                      <Button
-                        type="default"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        PDF
-                      </Button>,
-                    ]}
-                  >
+                    description={item.description}
+                  />
+                  <div className="mt-4">
                     <AnatomySection
-                      title={Strings.positionNodeZoneHeader}
-                      label={item.route || item.levelName || Strings.oplFormNotAssigned}
-                      icon={<BsDiagram2 />}
+                      title="Área"
+                      label={item.areaName || "Sin área"}
                     />
-
                     <AnatomySection
-                      title={Strings.positionNameHeader}
-                      label={item.name}
-                      icon={<BsLightbulb />}
-                    />
-
-                    <AnatomySection
-                      title={Strings.positionDescriptionHeader}
-                      label={item.description}
-                      icon={<BsList />}
-                    />
-
-                    <AnatomySection
-                      title={Strings.positionStatusHeader}
+                      title="Estado"
                       label={renderStatusTag(item.status)}
                     />
                     <div style={{ marginTop: '16px', textAlign: 'center' }}>
@@ -389,55 +227,57 @@ const PositionsPage = () => {
                           e.stopPropagation();
                           handleCreateCilt(item);
                         }}
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', marginBottom: '8px' }}
                       >
                         {Strings.createCiltProcedure}
                       </Button>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedPosition(item);
+                          setIsProceduresModalOpen(true);
+                        }}
+                        style={{ width: '100%' }}
+                      >
+                        Ver procedimientos
+                      </Button>
                     </div>
-                  </Card>
-                </List.Item>
-              )}
-              loading={isLoadingPositions}
-            />
-          ) : (
-            <div className="overflow-x-auto">
-              <Table
-                dataSource={filteredPositions}
-                columns={columns}
-                rowKey={(record) => record.id.toString()}
-                onRow={(record) => ({
-                  onClick: () =>
-                    handlePopoverVisibleChange(
-                      openPopoverId !== record.id.toString(),
-                      record.id.toString()
-                    ),
-                  className:
-                    openPopoverId === record.id.toString() ? "bg-blue-50" : "",
-                })}
-                pagination={{
-                  pageSize: Constants.DEFAULT_PAGE_SIZE,
-                  showSizeChanger: true,
-                  pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
-                  position: ["bottomCenter"],
-                }}
-                locale={{
-                  emptyText: Strings.noPositionsToShow,
-                  filterConfirm: Strings.accept,
-                  filterReset: Strings.reset,
-                  filterSearchPlaceholder: Strings.search,
-                  filterTitle: Strings.filter,
-                  selectAll: Strings.selectCurrentPage,
-                  selectInvert: Strings.invertSelection,
-                  selectionAll: Strings.selectAll,
-                  sortTitle: Strings.sort,
-                  triggerDesc: Strings.sortDesc,
-                  triggerAsc: Strings.sortAsc,
-                  cancelSort: Strings.cancelSort,
-                }}
-                scroll={Constants.TABLE_SCROLL_CONFIG}
-              />
-            </div>
-          )}
+                    <div className="flex space-x-2 mt-4 justify-center">
+                      <Button
+                        type="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditPosition(item);
+                        }}
+                      >
+                        {Strings.edit}
+                      </Button>
+                      <Button
+                        type="default"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        PDF
+                      </Button>
+                      <Button
+                        type="default"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePopoverVisibleChange(
+                            openPopoverId !== item.id.toString(),
+                            item.id.toString()
+                          );
+                        }}
+                        className={openPopoverId === item.id.toString() ? "text-blue-500" : ""}
+                      >
+                        {Strings.users}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </List.Item>
+            )}
+            loading={isLoadingPositions}
+          />
 
           {openPopoverId && (
             <div
@@ -460,17 +300,16 @@ const PositionsPage = () => {
             </div>
           )}
 
-          <LevelTreeModal
-            isVisible={isTreeModalVisible}
-            onClose={hideTreeModal}
-            siteId={siteId}
-            siteName={siteName}
-            onSelectLevel={handleLevelSelect}
-          />
-
           <RegisterPositionForm
             form={positionForm}
-            levelData={selectedLevel}
+            levelData={{
+              siteId: siteId,
+              siteName: siteName,
+              siteType: 'site', // Valor predeterminado si no se conoce el tipo
+              id: null,
+              name: null,
+              levelLocation: null
+            }}
             isVisible={isPositionFormVisible}
             onCancel={handleFormCancel}
             onSuccess={handleFormSuccess}
@@ -503,146 +342,16 @@ const PositionsPage = () => {
               </div>
             )}
           </Modal>
+
+          <ProceduresModal
+            isOpen={isProceduresModalOpen}
+            onClose={() => setIsProceduresModalOpen(false)}
+            positionId={selectedPosition?.id?.toString()}
+            positionName={selectedPosition?.name}
+          />
         </div>
       }
     />
-  ) : (
-    <div className="p-4 h-full overflow-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">
-          {siteName} - {Strings.positions}
-        </h1>
-        <Button type="primary" onClick={showTreeModal}>
-          {Strings.createPosition}
-        </Button>
-      </div>
-
-      <div className="mb-4 flex justify-between items-center">
-        <Input
-          placeholder={Strings.searchPositions}
-          prefix={<SearchOutlined />}
-          onChange={(e) => handleSearch(e.target.value)}
-          value={searchText}
-          className="max-w-md w-96"
-          allowClear
-        />
-        <div className="text-sm text-gray-500">
-          {filteredPositions.length}{" "}
-          {filteredPositions.length === 1
-            ? Strings.positionFound
-            : Strings.positionsFound}
-        </div>
-      </div>
-
-      {isLoadingPositions ? (
-        <div className="flex justify-center items-center h-64">
-          <Spin size="large" tip={Strings.loadingPositions} />
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <Table
-            dataSource={filteredPositions}
-            columns={columns}
-            rowKey={(record) => record.id.toString()}
-            onRow={(record) => ({
-              onClick: () =>
-                handlePopoverVisibleChange(
-                  openPopoverId !== record.id.toString(),
-                  record.id.toString()
-                ),
-              className:
-                openPopoverId === record.id.toString() ? "bg-blue-50" : "",
-            })}
-            pagination={{
-              pageSize: Constants.DEFAULT_PAGE_SIZE,
-              showSizeChanger: true,
-              pageSizeOptions: Constants.POSITION_PAGE_OPTIONS,
-              position: ["bottomCenter"],
-            }}
-            locale={{
-              emptyText: Strings.noPositionsToShow,
-              filterConfirm: Strings.accept,
-              filterReset: Strings.reset,
-              filterSearchPlaceholder: Strings.search,
-              filterTitle: Strings.filter,
-              selectAll: Strings.selectCurrentPage,
-              selectInvert: Strings.invertSelection,
-              selectionAll: Strings.selectAll,
-              sortTitle: Strings.sort,
-              triggerDesc: Strings.sortDesc,
-              triggerAsc: Strings.sortAsc,
-              cancelSort: Strings.cancelSort,
-            }}
-            scroll={Constants.TABLE_SCROLL_CONFIG}
-          />
-        </div>
-      )}
-
-      {openPopoverId && (
-        <div
-          className="fixed shadow-lg rounded-md bg-white z-50 p-4 border"
-          style={Constants.POSITION_POPUP_STYLE}
-        >
-          <div className="flex justify-between items-center mb-2">
-            <div className="font-medium text-blue-600">
-              {Strings.assignedUsers}
-            </div>
-            <Button
-              type="text"
-              size="small"
-              onClick={() => setOpenPopoverId(null)}
-            >
-              ×
-            </Button>
-          </div>
-          <PositionUsers positionId={openPopoverId} />
-        </div>
-      )}
-
-      <LevelTreeModal
-        isVisible={isTreeModalVisible}
-        onClose={hideTreeModal}
-        siteId={siteId}
-        siteName={siteName}
-        onSelectLevel={handleLevelSelect}
-      />
-
-      <RegisterPositionForm
-        form={positionForm}
-        levelData={selectedLevel}
-        isVisible={isPositionFormVisible}
-        onCancel={handleFormCancel}
-        onSuccess={handleFormSuccess}
-      />
-
-      <UpdatePositionForm
-        form={updateForm}
-        position={selectedPosition}
-        isVisible={isUpdateFormVisible}
-        onCancel={handleUpdateCancel}
-        onSuccess={handleUpdateSuccess}
-      />
-
-      {/* CILT Form Modal */}
-      <Modal
-        title={`${Strings.createCiltProcedureForPosition}: ${selectedPosition?.name || ''}`}
-        open={isCiltFormVisible}
-        onCancel={handleCiltFormCancel}
-        footer={null}
-        width={800}
-        destroyOnHidden
-      >
-        {selectedPosition && (
-          <div className="p-4">
-            <CreateCiltForm 
-              form={ciltForm} 
-              position={selectedPosition}
-              onSuccess={handleCiltFormCancel}
-            />
-          </div>
-        )}
-      </Modal>
-    </div>
   );
 };
 
