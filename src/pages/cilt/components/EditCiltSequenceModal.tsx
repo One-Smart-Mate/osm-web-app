@@ -22,7 +22,7 @@ import {
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import Strings from "../../../utils/localizations/Strings";
-import CiltLevelTreeModal from "./CiltLevelTreeModal";
+// CiltLevelTreeModal import removed
 import OplSelectionModal from "./OplSelectionModal";
 import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
 
@@ -48,34 +48,24 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
   const [loading, setLoading] = useState(false);
-  const [levelTreeModalVisible, setLevelTreeModalVisible] = useState(false);
   const [referenceOplModalVisible, setReferenceOplModalVisible] =
     useState(false);
   const [remediationOplModalVisible, setRemediationOplModalVisible] =
     useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
   const [formattedTime, setFormattedTime] = useState<string>('');
-  const [referenceLevelId, setReferenceLevelId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (visible && sequence?.siteId) {
       fetchCiltTypes();
       initializeForm();
       
-      // Set the reference level ID from the position's level ID
-      if (sequence.levelId) {
-        setReferenceLevelId(sequence.levelId);
-      }
+      // Reference level ID code removed
     }
   }, [visible, sequence]);
 
   useEffect(() => {
     if (!visible) {
       form.resetFields();
-      setSelectedLevel(null);
     }
   }, [visible, form]);
 
@@ -87,12 +77,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       setFormattedTime(formatSecondsToNaturalTime(sequence.standardTime));
     }
 
-    if (sequence.levelId && sequence.levelName) {
-      setSelectedLevel({
-        id: sequence.levelId,
-        name: sequence.levelName,
-      });
-    }
+    // Level selection code removed
 
     form.setFieldsValue({
       id: sequence.id,
@@ -143,20 +128,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     }
   };
 
-  const handleLevelSelect = (levelData: any) => {
-    if (levelData) {
-      setSelectedLevel({
-        id: Number(levelData.id),
-        name: levelData.name,
-      });
-
-      form.setFieldsValue({
-        levelId: Number(levelData.id),
-        levelName: levelData.name,
-      });
-    }
-    setLevelTreeModalVisible(false);
-  };
+  // handleLevelSelect function removed
 
   const handleReferenceOplSelect = (opl: OplMstr) => {
     form.setFieldsValue({
@@ -211,8 +183,8 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         values.positionName || sequence.positionName || "",
         values.ciltMstrId,
         values.ciltMstrName || sequence.ciltMstrName || "",
-        values.levelId,
-        selectedLevel?.name || values.levelName || "",
+        undefined,
+        undefined,
         values.order,
         values.secuenceList,
         getColorFromCiltType(values.ciltTypeId),
@@ -324,49 +296,18 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               </Col>
 
               <Col span={12}>
+                {/* Level field removed */}
                 <Form.Item
-                  label={Strings.editCiltSequenceModalLevelLabel}
-                  required
+                  name="levelId"
+                  hidden
                 >
-                  <div className="flex items-center">
-                    <Form.Item
-                      name="levelId"
-                      noStyle
-                      rules={[
-                        {
-                          required: true,
-                          message: Strings.editCiltSequenceModalLevelRequired,
-                        },
-                      ]}
-                    >
-                      <Input type="hidden" />
-                    </Form.Item>
-                    <Form.Item
-                      name="levelName"
-                      noStyle
-                      rules={[
-                        {
-                          required: true,
-                          message: Strings.editCiltSequenceModalLevelRequired,
-                        },
-                      ]}
-                    >
-                      <Input type="hidden" />
-                    </Form.Item>
-                    
-                    <Button
-                      type="primary"
-                      onClick={() => setLevelTreeModalVisible(true)}
-                      className="mr-2"
-                    >
-                      {Strings.select} {Strings.level}
-                    </Button>
-                    {(selectedLevel || form.getFieldValue('levelName')) && (
-                      <div className="border rounded p-2 flex-1">
-                        {selectedLevel ? selectedLevel.name : form.getFieldValue('levelName')}
-                      </div>
-                    )}
-                  </div>
+                  <Input type="hidden" />
+                </Form.Item>
+                <Form.Item
+                  name="levelName"
+                  hidden
+                >
+                  <Input type="hidden" />
                 </Form.Item>
               </Col>
             </Row>
@@ -627,17 +568,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         </Spin>
       </Modal>
 
-      {/* Level Tree Modal */}
-      {sequence && sequence.siteId && (
-        <CiltLevelTreeModal
-          isVisible={levelTreeModalVisible}
-          onClose={() => setLevelTreeModalVisible(false)}
-          siteId={sequence.siteId.toString()}
-          siteName={sequence.siteName || ""}
-          onSelectLevel={handleLevelSelect}
-          referenceLevelId={referenceLevelId}
-        />
-      )}
+      {/* Level Tree Modal removed */}
 
       {/* OPL Selection Modals */}
       <OplSelectionModal

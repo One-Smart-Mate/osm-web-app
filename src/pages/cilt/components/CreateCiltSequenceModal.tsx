@@ -27,7 +27,7 @@ import { CreateCiltSequenceDTO } from "../../../data/cilt/ciltSequences/ciltSequ
 import { CreateCiltSequencesFrequenciesDTO } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import Strings from "../../../utils/localizations/Strings";
-import CiltLevelTreeModal from "./CiltLevelTreeModal";
+// CiltLevelTreeModal import removed
 import OplSelectionModal from "./OplSelectionModal";
 import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
 
@@ -60,21 +60,15 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
   const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
   const [loading, setLoading] = useState(false);
-  const [levelTreeModalVisible, setLevelTreeModalVisible] = useState(false);
   const [referenceOplModalVisible, setReferenceOplModalVisible] =
     useState(false);
   const [remediationOplModalVisible, setRemediationOplModalVisible] =
     useState(false);
-  const [selectedLevel, setSelectedLevel] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
   const [selectedReferenceOpl, setSelectedReferenceOpl] =
     useState<OplMstr | null>(null);
   const [selectedRemediationOpl, setSelectedRemediationOpl] =
     useState<OplMstr | null>(null);
   const [formattedTime, setFormattedTime] = useState<string>('');
-  const [referenceLevelId, setReferenceLevelId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (visible && location.state?.siteId) {
@@ -84,20 +78,10 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
     if (visible) {
       form.resetFields();
-      setSelectedLevel(null);
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
     }
   }, [visible, form, location.state]);
-
-  useEffect(() => {
-    if (!visible) {
-      form.resetFields();
-      setSelectedLevel(null);
-      setSelectedReferenceOpl(null);
-      setSelectedRemediationOpl(null);
-    }
-  }, [visible, form]);
 
   useEffect(() => {
     if (cilt && visible) {
@@ -105,13 +89,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         positionId: cilt.positionId || null,
       });
       
-      // Find the position to get its level ID
-      if (cilt.positionId && positions) {
-        const selectedPosition = positions.find(p => p.id === Number(cilt.positionId));
-        if (selectedPosition && selectedPosition.levelId) {
-          setReferenceLevelId(Number(selectedPosition.levelId));
-        }
-      }
+      // Level ID code removed
     }
   }, [cilt, form, visible, positions]);
 
@@ -147,20 +125,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   };
 
-  const handleLevelSelect = (levelData: any) => {
-    if (levelData) {
-      setSelectedLevel({
-        id: Number(levelData.id),
-        name: levelData.name,
-      });
-
-      form.setFieldsValue({
-        levelId: Number(levelData.id),
-        levelName: levelData.name,
-      });
-    }
-    setLevelTreeModalVisible(false);
-  };
+  // handleLevelSelect function removed
 
   const handleReferenceOplSelect = (opl: OplMstr) => {
     setSelectedReferenceOpl(opl);
@@ -241,8 +206,8 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             positionName: combinedData.positionName,
             ciltMstrId: Number(combinedData.ciltMstrId),
             ciltMstrName: combinedData.ciltMstrName,
-            levelId: combinedData.levelId,
-            levelName: selectedLevel?.name || "",
+            levelId: undefined,
+            levelName: undefined,
             order: combinedData.order || 1,
             secuenceList: combinedData.secuenceList,
             secuenceColor: getColorFromCiltType(combinedData.ciltTypeId),
@@ -296,11 +261,9 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
       // Reset form and selections after successful submit
       form.resetFields();
-      setSelectedLevel(null);
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
       setFormattedTime('');
-      setReferenceLevelId(undefined);
 
       // Notificar al componente padre para que actualice los datos
       // Este es el punto clave para asegurar que la tabla se actualice
@@ -324,7 +287,6 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   // Custom cancel handler: reset form and states
   const handleCancel = () => {
     form.resetFields();
-    setSelectedLevel(null);
     setSelectedReferenceOpl(null);
     setSelectedRemediationOpl(null);
     onCancel();
@@ -394,33 +356,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   </Select>
                 </Form.Item>
 
-                {/* Level */}
-                <Form.Item
-                  name="levelId"
-                  label={Strings.editCiltSequenceModalLevelLabel}
-                  rules={[
-                    {
-                      required: true,
-                      message: Strings.editCiltSequenceModalLevelRequired,
-                    },
-                  ]}
-                >
-                  <div className="flex items-center">
-                    <Button
-                      type="primary"
-                      onClick={() => setLevelTreeModalVisible(true)}
-                      className="mr-2"
-                    >
-                      {Strings.selectRole} {Strings.level}
-                    </Button>
-                    {selectedLevel && (
-                      <div className="border rounded p-2 flex-1">
-                        {selectedLevel.name}
-                      </div>
-                    )}
-                    <Input type="hidden" value={selectedLevel?.id} />
-                  </div>
-                </Form.Item>
+                {/* Level field removed */}
 
                 {/* Frequencies */}
                 <Form.Item
@@ -689,20 +625,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         </Form>
       </Spin>
 
-      {/* Level Tree Modal */}
-      {location.state?.siteId && (
-        <CiltLevelTreeModal
-          isVisible={levelTreeModalVisible}
-          onClose={() => setLevelTreeModalVisible(false)}
-          siteId={String(location.state.siteId)}
-          siteName={
-            location.state.siteName ||
-            Strings.createCiltSequenceModalDefaultSiteName
-          }
-          onSelectLevel={handleLevelSelect}
-          referenceLevelId={referenceLevelId}
-        />
-      )}
+      {/* Level Tree Modal removed */}
 
       {/* OPL Selection Modals */}
       <OplSelectionModal
