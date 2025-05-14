@@ -11,7 +11,7 @@ import Strings from "../../../utils/localizations/Strings";
 const { Text, Title, Paragraph } = Typography;
 
 interface OplDetailsModalProps {
-  visible: boolean;
+  open: boolean;
   currentOpl: OplMstr | null;
   currentDetails: OplDetail[];
   activeTab: string;
@@ -27,7 +27,7 @@ interface OplDetailsModalProps {
 }
 
 const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
-  visible,
+  open,
   currentOpl,
   currentDetails,
   activeTab,
@@ -336,7 +336,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
     <>
       <Modal
         title={`${Strings.oplDetailsModalTitle.replace('{title}', currentOpl?.title || '')}`}
-        open={visible}
+        open={open}
         onCancel={onCancel}
         width={800}
         footer={null}

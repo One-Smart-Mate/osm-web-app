@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Typography, Button, Spin, Form, notification, Modal } from "antd";
+import {Button, Spin, Form, notification, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   useGetOplMstrAllMutation,
@@ -28,10 +28,10 @@ import OplForm from "./OplForm";
 import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
 import Strings from "../../../utils/localizations/Strings";
+
 import SearchBar from "../../../components/common/SearchBar";
 import { fileValidationCache } from "./OplMediaUploader";
 
-const { Title } = Typography;
 
 const Opl = (): React.ReactElement => {
   const location = useLocation();
@@ -450,9 +450,7 @@ const Opl = (): React.ReactElement => {
           />
         </div>
         
-        <Title level={3} style={{ flex: 2, margin: 0, textAlign: "center" }}>
-          {Strings.oplPageManagementTitle}
-        </Title>
+  
         
         <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
           <Button
@@ -480,7 +478,7 @@ const Opl = (): React.ReactElement => {
             ? Strings.oplPageEditModalTitle
             : Strings.oplPageCreateModalTitle
         }
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
         confirmLoading={submitting}
@@ -496,14 +494,14 @@ const Opl = (): React.ReactElement => {
       </Modal>
 
       <OplViewModal
-        visible={viewModalVisible}
+        open={viewModalVisible}
         currentOpl={currentOpl}
         currentDetails={viewDetails}
         onCancel={handleViewCancel}
       />
 
       <OplDetailsModal
-        visible={detailsModalVisible}
+        open={detailsModalVisible}
         currentOpl={currentOpl}
         currentDetails={currentDetails}
         activeTab={activeDetailTab}

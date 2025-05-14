@@ -8,14 +8,14 @@ import Strings from "../../../utils/localizations/Strings";
 const { Title, Text, Paragraph } = Typography;
 
 interface OplViewModalProps {
-  visible: boolean;
+  open: boolean;
   currentOpl: OplMstr | null;
   currentDetails: OplDetail[];
   onCancel: () => void;
 }
 
 const OplViewModal: React.FC<OplViewModalProps> = ({
-  visible,
+  open,
   currentOpl,
   currentDetails,
   onCancel,
@@ -191,7 +191,7 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
     <>
       <Modal
         title={<Title level={4}>{Strings.oplViewModalTitle}</Title>}
-        open={visible}
+        open={open}
         onCancel={onCancel}
         width={800}
         footer={[
