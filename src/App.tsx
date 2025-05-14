@@ -1,4 +1,4 @@
-import { ConfigProvider, App as AntdApp } from "antd";
+import { ConfigProvider, App as AntdApp, theme } from "antd";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import ResetPassword from "./pages/auth/ResetPassword";
@@ -12,17 +12,24 @@ import React, { useEffect } from "react";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import { routes } from "./routes/Routes";
 const BaseLayout = React.lazy(() => import("./pages/layouts/BaseLayout"));
+
 function App() {
+
+  const [isDarkMode] = React.useState<boolean>(() => {
+    const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
+    return storedMode ? JSON.parse(storedMode) : false;
+  });
+
   useEffect(() => {
     listenForBackgroundMessages();
   });
 
-  const getTheme = () => {
+  const getTheme = (isDarkMode: boolean) => {
     return {
-      token: {
+     token: {
         colorPrimary: "#1890ff",
-        colorLinkHover: "#1890ff",
-        colorLinkActive: "#e6f7ff",
+        colorLinkHover: isDarkMode ? '#177DDC': "#e6f7ff",
+        colorLinkActive: isDarkMode ? '#177DDC':"#e6f7ff",
         linkHoverDecoration: "underline",
         colorBgLayout: "#e2e8f0",
         colorPrimaryBgHover: "#e6f7ff",
@@ -30,17 +37,19 @@ function App() {
       },
       components: {
         Table: {
-          headerBg: "#001529",
+          headerBg: "#1890ff",
           headerColor: "white",
-          headerSortHoverBg: "#011e39",
-          headerSortActiveBg: "#011e39",
+          headerSortHoverBg: "#1890ff",
+          headerSortActiveBg: "#1890ff",
         },
       },
+      algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm
     };
   };
 
+
   return (
-    <ConfigProvider theme={getTheme()}>
+    <ConfigProvider theme={getTheme(isDarkMode)}>
       <AntdApp>
         <Routes>
           <Route

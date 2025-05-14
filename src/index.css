@@ -29,3 +29,19 @@
   -ms-overflow-style: none !important; /* Hide scrollbar for IE and Edge */
   scrollbar-width: none !important; /* Hide scrollbar for Firefox */
 }
+
+/* Add fade-out animation */
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    background-color: white;
+  }
+  to {
+    opacity: 0.5;
+    background-color: #1f2937; /* Dark gray */
+  }
+}

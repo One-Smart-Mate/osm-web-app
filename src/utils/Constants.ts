@@ -89,7 +89,8 @@ const ROUTES_PARAMS = {
 
 const SESSION_KEYS = {
   user:'user_key',
-  companyInfo: 'company_info_key'
+  companyInfo: 'company_info_key',
+  darkMode: 'darkMode'
 }
 export default {
   PAGE_SIZE,

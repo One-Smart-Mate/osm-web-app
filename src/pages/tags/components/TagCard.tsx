@@ -12,7 +12,7 @@ import React, { useMemo } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { IoHeadsetOutline } from "react-icons/io5";
 import { GoDeviceCameraVideo } from "react-icons/go";
-import AnatomySection from "../../components/AnatomySection";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import {
   BsActivity,
   BsCalendar4,

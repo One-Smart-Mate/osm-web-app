@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme } from 'antd';
+import { theme, Typography } from 'antd';
 
 const { useToken } = theme;
 
@@ -15,12 +15,12 @@ const PageTitle: React.FC<Props> = ({ mainText, subText }) => {
   const primaryColor = token.colorPrimary;
 
   return (
-    <h1 className="text-base md:text-2xl sm:text-1xl font-semibold text-black">
+    <Typography.Title level={3} className="text-base md:text-2xl sm:text-1xl font-semibold text-black">
       {mainText}{" "}
       <span className="font-bold" style={{ color: primaryColor }}>
         {subText}
       </span>
-    </h1>
+    </Typography.Title >
   );
 };
 

@@ -17,7 +17,7 @@ import {
   ImportUsersData,
   validateReason,
 } from "../../data/user/import.users.response";
-import AnatomySection from "../components/AnatomySection";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 
 const UsersPage = () => {
