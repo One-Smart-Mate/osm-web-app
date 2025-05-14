@@ -36,7 +36,7 @@ import VideoPreviewGroup from "./VideoPreviewGroup";
 import AudioPlayerPreviewGroup from "./AudioPlayerPreviewGroup";
 import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
-import AnatomySection from "../../components/AnatomySection";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import TagStatus from "../../components/TagStatus";
 
 const { useToken } = theme;

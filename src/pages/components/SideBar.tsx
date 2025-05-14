@@ -61,7 +61,7 @@ const SideBar: React.FC<SideBarProps> = ({
           zIndex: 1000,
           transition: "left 0.2s ease",
           padding: "0 10px",
-          background: "#fff",
+          background: token.colorBgContainer,
         }}
       >
         {collapsed ? (
@@ -89,7 +89,7 @@ const SideBar: React.FC<SideBarProps> = ({
           left: 0,
           height: "100vh",
           width: collapsed ? 80 : 250,
-          background: "#fff",
+          background: token.colorBgContainer,
           boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
           transition: "width 0.2s ease",
           overflow: "auto",
@@ -145,14 +145,14 @@ const SideBar: React.FC<SideBarProps> = ({
                         transition: "background 0.2s",
                         background:
                           selectedKey === item.key
-                            ? token.colorPrimaryBgHover
+                            ? token.colorLinkActive
                             : "transparent",
                         position: "relative",
                       }}
                       onMouseEnter={(e) => {
                         if (selectedKey !== item.key) {
                           (e.currentTarget as HTMLDivElement).style.background =
-                            "#e6f7ff";
+                            token.colorLinkHover;
                         }
                       }}
                       onMouseLeave={(e) => {

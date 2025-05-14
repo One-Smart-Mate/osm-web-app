@@ -21,7 +21,7 @@ const { Header, Content } = Layout;
 const BaseLayout: React.FC = () => {
   const { user } = useCurrentUser();
   const [isCollapsed, setCollapsed] = useState(false);
-  const { token: { colorBgContainer }} = theme.useToken();
+  const { token: { colorBgContainer, colorBgBase }} = theme.useToken();
   const [setAppToken] = useSetAppTokenMutation();
 
   const sidebarWidth = 250;
@@ -76,6 +76,7 @@ const BaseLayout: React.FC = () => {
           width: `calc(100vw - ${
             isCollapsed ? collapsedWidth : sidebarWidth
           }px)`,
+          backgroundColor: colorBgBase
         }}
       >
         <Header
@@ -93,7 +94,7 @@ const BaseLayout: React.FC = () => {
             {Strings.tagVersion}
           </span>
           <div className="layout-content h-full w-full">
-            <Card>
+            <Card style={{backgroundColor: colorBgContainer}}>
               <Outlet />
             </Card>
           </div>

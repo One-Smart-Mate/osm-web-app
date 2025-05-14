@@ -37,10 +37,10 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       <Form.Item
         name="name"
         validateFirst
+        label={Strings.name}
         rules={[{ required: true, message: Strings.name }]}
       >
         <Input
-          size="large"
           maxLength={45}
           addonBefore={<BsCardText />}
           placeholder={Strings.name}
@@ -50,10 +50,10 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       <Form.Item
         name="description"
         validateFirst
+        label={Strings.description}
         rules={[{ required: true, message: Strings.requiredDescription }]}
       >
         <Input
-          size="large"
           maxLength={100}
           addonBefore={<BsCardText />}
           placeholder={Strings.description}
@@ -62,10 +62,10 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
 
       <Form.Item
         name="responsibleId"
+        label={Strings.responsible}
         rules={[{ required: true, message: Strings.responsibleRequired }]}
       >
         <Select
-          size="large"
           placeholder={Strings.responsible}
           options={selectOptions()}
           showSearch
@@ -78,16 +78,15 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
         />
       </Form.Item>
 
-      <Form.Item name="levelMachineId">
+      <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
         <Input
-          size="large"
           maxLength={50}
           addonBefore={<BsQrCodeScan />}
           placeholder={Strings.levelMachineId}
         />
       </Form.Item>
 
-      <Form.Item name="notify" valuePropName="checked">
+      <Form.Item name="notify" valuePropName="checked" label={Strings.notify}>
         <Checkbox>
           <p className="text-base">{Strings.notify}</p>
         </Checkbox>

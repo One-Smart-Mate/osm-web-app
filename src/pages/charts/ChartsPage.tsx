@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useGetCardTypesCatalogsMutation } from "../../services/CardTypesService";
 import { CardTypesCatalog } from "../../data/cardtypes/cardTypes";
 import MethodologiesChart from "./components/MethodologiesChart";
-import { Card, DatePicker, Empty, Space, TimeRangePickerProps } from "antd";
+import { Card, DatePicker, Empty, Space, TimeRangePickerProps, Typography } from "antd";
 import { useGetMethodologiesChartDataMutation } from "../../services/chartService";
 import { Methodology } from "../../data/charts/charts";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -116,9 +116,9 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
+                        <Typography.Title level={4}>
                           {Strings.anomalies}
-                        </h2>
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.anomalies}>
@@ -173,9 +173,9 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
+                        <Typography.Title level={4}>
                           {Strings.areas}
-                        </h2>
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.areas}>
@@ -212,11 +212,11 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
-                          {selectedAreaName
+                        <Typography.Title level={4}>
+                         {selectedAreaName
                             ? `${Strings.machinesOfArea}: ${selectedAreaName}`
                             : Strings.machines}
-                        </h2>
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander
@@ -255,9 +255,9 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
-                          {Strings.creators}
-                        </h2>
+                        <Typography.Title level={4}>
+                         {Strings.creators}
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.creators}>
@@ -286,11 +286,11 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
-                          {selectedAreaName
+                         <Typography.Title level={4}>
+                         {selectedAreaName
                             ? `${Strings.mechanics}: ${selectedAreaName}`
                             : Strings.mechanics}
-                        </h2>
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander
@@ -327,9 +327,9 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
-                          {Strings.definitiveUsers}
-                        </h2>
+                         <Typography.Title level={4}>
+                         {Strings.definitiveUsers}
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.definitiveUsers}>
@@ -358,9 +358,9 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold text-black">
-                          {Strings.tagMonitoring}
-                        </h2>
+                         <Typography.Title level={4}>
+                         {Strings.tagMonitoring}
+                        </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.tagMonitoring}>

@@ -3,7 +3,7 @@ import { Role, UserCardInfo } from "../../../data/user/user";
 import { Card, Space, Tag, Tooltip, Typography } from "antd";
 import UserForm, { UserFormType } from "./UserForm";
 import AssignPositionsButton from "./AssignPositionsButton";
-import AnatomySection from "../../components/AnatomySection";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import Strings from "../../../utils/localizations/Strings";
 import {
   BsClockHistory,

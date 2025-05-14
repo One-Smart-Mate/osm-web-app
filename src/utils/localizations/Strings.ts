@@ -1172,6 +1172,11 @@ class StringsBase {
   static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage"
   static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage"
   static draft = "draft"
+  static totalUsersCreated = "totalUsersCreated"
+  static totalUsersProcessed = "totalUsersProcessed"
+  static importUsersSummary = "importUsersSummary"
+  static reason = "reason"
+  static registered = "registered" 
 }
 
 // Create a Proxy object for StringsBase to intercept property access

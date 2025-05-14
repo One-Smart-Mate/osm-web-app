@@ -1,6 +1,6 @@
 import { Tag } from "antd";
 import { CardInterface } from "../../data/card/card";
-import AnatomySection from "./AnatomySection";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
 import { getCardStatusAndText } from "../../utils/Extensions";
 import Strings from "../../utils/localizations/Strings";
 

@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  List,
-  App as AntApp,
-} from "antd";
+import { List, App as AntApp, Modal } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useGetUsersWithPositionsMutation } from "../../services/userService";
 import { UserCardInfo } from "../../data/user/user";
@@ -15,11 +12,22 @@ import AnatomyNotification from "../components/AnatomyNotification";
 import UserForm, { UserFormType } from "./components/UserForm";
 import ImportUsersButton from "./components/ImportUsersButton";
 import UserCard from "./components/UserCard";
+import {
+  ImportUser,
+  ImportUsersData,
+  validateReason,
+} from "../../data/user/import.users.response";
+import AnatomySection from "../../pagesRedesign/components/AnatomySection";
+import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 
 const UsersPage = () => {
   const [getUsersWithPositions] = useGetUsersWithPositionsMutation();
   const [data, setData] = useState<UserCardInfo[]>([]);
   const [isLoading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [importedUsers, setImportedUsers] = useState<ImportUsersData | null>(
+    null
+  );
   const location = useLocation();
   const navigate = useNavigate();
   const { isIhAdmin } = useCurrentUser();
@@ -39,9 +47,7 @@ const UsersPage = () => {
         return;
       }
       setLoading(true);
-      const response = await getUsersWithPositions(
-        siteId
-      ).unwrap();
+      const response = await getUsersWithPositions(siteId).unwrap();
       setData(response);
       setLoading(false);
     } catch (error) {
@@ -74,6 +80,12 @@ const UsersPage = () => {
     setSearchQuery(query);
   };
 
+  const handleImportUsersData = (data: ImportUsersData) => {
+    setImportedUsers(data);
+    handleGetUsers();
+    setModalOpen(true);
+  };
+
   return (
     <MainContainer
       title={Strings.usersOf}
@@ -92,7 +104,9 @@ const UsersPage = () => {
       content={
         <div>
           <div className="flex justify-end pb-2">
-            <ImportUsersButton onComplete={() => handleGetUsers()} />
+            <ImportUsersButton
+              onComplete={(data) => handleImportUsersData(data)}
+            />
           </div>
           <PaginatedList
             className="no-scrollbar"
@@ -104,6 +118,71 @@ const UsersPage = () => {
             )}
             loading={isLoading}
           />
+
+          {importedUsers && (
+            <Modal
+              onOk={() => {
+                setModalOpen(false);
+                setImportedUsers(null);
+              }}
+              title={Strings.importUsersSummary}
+              open={modalOpen}
+              onCancel={() => {
+                setModalOpen(false);
+                setImportedUsers(null);
+              }}
+              cancelText={Strings.cancel}
+              confirmLoading={isLoading}
+              destroyOnHidden
+            >
+              <div className="flex flex-col gap-2">
+                <AnatomySection
+                  title={Strings.totalUsersCreated}
+                  label={importedUsers.successfullyCreated}
+                />
+                <AnatomySection
+                  title={Strings.totalUsersProcessed}
+                  label={importedUsers.totalProcessed}
+                />
+                <PaginatedList
+                  dataSource={importedUsers.processedUsers}
+                  responsive={false}
+                  renderItem={(value: ImportUser, index: number) => (
+                    <div className="m-2">
+                      <AnatomySection
+                        key={index}
+                        title={value.name}
+                        label={
+                          <div className="flex flex-col">
+                            <AnatomySection
+                              title={Strings.email}
+                              label={value.email}
+                            />
+                            {validateReason(value.reason) && (
+                              <AnatomySection
+                                title={Strings.reason}
+                                label={value.reason}
+                              />
+                            )}
+                            <AnatomySection
+                              title={Strings.registered}
+                              label={
+                                value.registered ? (
+                                  <BsCheckCircle color="green" />
+                                ) : (
+                                  <BsXCircle color="red" />
+                                )
+                              }
+                            />
+                          </div>
+                        }
+                      />
+                    </div>
+                  )}
+                />
+              </div>
+            </Modal>
+          )}
         </div>
       }
     />

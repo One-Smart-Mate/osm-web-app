@@ -1,4 +1,4 @@
-import { Dropdown, Avatar, Tooltip, Tag, Typography } from "antd";
+import { Dropdown, Avatar, Tooltip, Tag, Typography, theme } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import User, { getSiteName } from "../../data/user/user";
 import Logout from "../auth/Logout";
@@ -9,6 +9,7 @@ interface UserProfileDropdownProps {
 }
 
 const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
+  const {token} = theme.useToken();
 
   const getFirstNameLetter = (): string => {
     const name = user?.name ?? "";
@@ -22,7 +23,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
     {
       key: "header",
       label: (
-        <div className="flex align-center justify-between p-4 bg-gray-100 items-center">
+        <div className="flex align-center justify-between p-4 items-center">
           <Avatar size={50} className="mr-2">
             {getFirstNameLetter()}
           </Avatar>
@@ -43,18 +44,17 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
           <Logout />
         </div>
       ),
-      disabled: true,
     },
   ];
 
   return (
     <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-      <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-        <UserOutlined /> {user?.name}
+      <span className="cursor-pointer">
+        <UserOutlined /> <span style={{color: token.colorPrimary}}>{user?.name}</span>
         <div style={{ fontSize: 12, color: "#8C8C8C" }}>
         {getSiteName(user)}
         </div>
-      </a>
+      </span>
     </Dropdown>
   );
 };

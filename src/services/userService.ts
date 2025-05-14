@@ -14,6 +14,7 @@ import {
 } from "../data/user/user.request";
 import i18next from "i18next";
 import Constants from "../utils/Constants";
+import { ImportUsersResponse } from "../data/user/import.users.response";
 
 export const userService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -109,7 +110,7 @@ export const userService = apiSlice.injectEndpoints({
         body: { ...resetPassword },
       }),
     }),
-    importUsers: builder.mutation({
+    importUsers: builder.mutation<ImportUsersResponse, any>({
       query: ({ file, siteId }) => {
         const formData = new FormData();
         formData.append("file", file);

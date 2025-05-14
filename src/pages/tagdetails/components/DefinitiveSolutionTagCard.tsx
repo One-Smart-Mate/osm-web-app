@@ -11,7 +11,7 @@ import { Card, Divider, Typography } from "antd";
 import ImagesPreviewGroup from "./ImagesPreviewGroup";
 import VideoPreviewGroup from "./VideoPreviewGroup";
 import AudioPlayerPreviewGroup from "./AudioPlayerPreviewGroup";
-import AnatomySection from "../../components/AnatomySection";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 
 const { Text } = Typography;
 

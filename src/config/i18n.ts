@@ -1246,6 +1246,11 @@ const resources = {
       confirmCloneCiltMstrMessage: "Are you sure you want to clone the CILT?",
       confirmCloneSecuencesMessage: "All sequences will also be cloned",
       draft: "Draft",
+      totalUsersCreated: "Total number of users created",
+      totalUsersProcessed: "Total number of users processed",
+      importUsersSummary: "Summary of imported users",
+      reason: "Reason",
+      registered: "Registered"
     },
   },
   es: {
@@ -2528,6 +2533,11 @@ const resources = {
       confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento CILT?",
       confirmCloneSecuencesMessage: "Todas las secuencias también serán clonadas",
       draft: "Borrador",
+      totalUsersCreated: "Total de usuarios creados",
+      totalUsersProcessed: "Total de usuarios procesados",
+      importUsersSummary: "Resumen de usuarios importados",
+      reason: "Razón",
+      registered: "Registrado"
     },
   },
 };
