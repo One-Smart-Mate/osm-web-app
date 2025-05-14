@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { UserRoles } from "../../../utils/Extensions";
+import { theme } from 'antd';
+import useDarkMode from '../../../utils/hooks/useDarkMode';
 
 interface LevelContextMenuProps {
   isVisible: boolean;
@@ -29,12 +31,16 @@ const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
   )
     return null;
 
+  const { token } = theme.useToken();
+  const isDarkMode = useDarkMode();
+
   return (
     <div
-      className="bg-white border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute"
+      className={`border border-gray-300 shadow-md p-2 flex flex-col gap-2 z-50 absolute${isDarkMode ? '' : ' bg-white'}`}
       style={{
         top: contextMenuPos.y,
         left: contextMenuPos.x * 0.7,
+        ...(isDarkMode ? { backgroundColor: token.colorBgContainer } : {}),
       }}
     >
       {isRootNode ? (
@@ -49,7 +55,7 @@ const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
             {Strings.levelsTreeOptionCreate}
           </Button>
           <Button
-            color="default"
+            color="primary"
             variant="outlined"
             onClick={handleUpdateLevel}
           >

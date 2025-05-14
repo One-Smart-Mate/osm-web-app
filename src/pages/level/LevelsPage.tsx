@@ -489,7 +489,7 @@ const LevelsPage = () => {
       <div>
         <div
         ref={containerRef}
-        className="flex-grow bg-white border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
+        className="flex-grow border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
         onPointerDown={() => {
           setContextMenuVisible(false);

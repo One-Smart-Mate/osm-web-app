@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Constants from "../../../utils/Constants";
 import Strings from "../../../utils/localizations/Strings";
+import { theme } from 'antd';
 
 interface NodeElementProps {
   nodeDatum: any;
@@ -59,6 +60,7 @@ const NodeElement: React.FC<NodeElementProps> = ({
 }) => {
   const longPressTimeoutRef = useRef<number | null>(null);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
+  const { token } = theme.useToken();
 
   const getCollapsedState = (nodeId: string): boolean => {
     const storedState = localStorage.getItem(
@@ -190,7 +192,7 @@ const NodeElement: React.FC<NodeElementProps> = ({
         <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
       )}
       <text
-        fill="black"
+        fill={token.colorText}
         strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
         x={nodeDatum.id === "0" ? -200 : 20}
         y={nodeDatum.id === "0" ? 0 : 20}
