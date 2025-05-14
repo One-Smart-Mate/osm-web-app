@@ -28,7 +28,7 @@ const CardTypeDetails: React.FC<CardTypeDetailsProps> = ({ nodeData }) => {
   }
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-md border border-gray-300">
+    <div className="p-4 shadow-md rounded-md border border-gray-300">
       <Descriptions bordered column={1}>
         <Descriptions.Item label={Strings.cardTypeDetailsMethodology}>
           {nodeData.methodology && nodeData.cardTypeMethodology

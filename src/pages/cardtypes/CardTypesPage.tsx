@@ -21,6 +21,7 @@ import CardTypeForm, { CardTypeFormType } from "./components/CardTypeForm";
 import PreclassifierForm, {
   PreclassifierFormType,
 } from "./components/preclassifier/PreclassifierForm";
+import { theme } from 'antd';
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -125,6 +126,8 @@ const CardTypesPage = () => {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const { token } = theme.useToken();
 
   const stripCloneSuffix = (original: string) => {
     return original.replace(/\(Clone.*\)$/i, Strings.empty).trim();
@@ -353,9 +356,9 @@ const CardTypesPage = () => {
 
     const textStyles = {
       fontSize: isRoot ? "26px" : isPreclassifier ? "16px" : "20px",
-      fontWeight: "300 !important",
+      fontWeight: 300,
       fontFamily: "Arial, sans-serif",
-      fill: "#000",
+      fill: token.colorText,
     };
 
     const handleEditPre = () => {
@@ -540,7 +543,7 @@ const CardTypesPage = () => {
           <text
             x={-300}
             y={-50}
-            style={{ fontSize: "24px", fontWeight: "normal" }}
+            style={textStyles}
           >
             {Strings.cardType}{" "}
             {location.state?.siteName || Strings.defaultSiteName}
