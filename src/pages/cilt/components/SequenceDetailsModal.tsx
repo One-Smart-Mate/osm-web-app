@@ -110,10 +110,16 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
               <Text>{sequence.toolsRequired || "N/A"}</Text>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={6}>
             <Text type="secondary">{Strings.stoppageReason}:</Text>
             <div>
               <Text>{sequence.stoppageReason ? Strings.yes : Strings.no}</Text>
+            </div>
+          </Col>
+          <Col span={6}>
+            <Text type="secondary">{Strings.editCiltSequenceModalMachineStoppedLabel}:</Text>
+            <div>
+              <Text>{sequence.machineStopped ? Strings.yes : Strings.no}</Text>
             </div>
           </Col>
           <Col span={12}>

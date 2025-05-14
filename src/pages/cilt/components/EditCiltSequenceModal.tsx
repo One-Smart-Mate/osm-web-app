@@ -25,6 +25,7 @@ import Strings from "../../../utils/localizations/Strings";
 // CiltLevelTreeModal import removed
 import OplSelectionModal from "./OplSelectionModal";
 import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
+import Constants from "../../../utils/Constants";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -104,6 +105,8 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       standardOk: sequence.standardOk,
       toolsRequired: sequence.toolsRequired,
       stoppageReason: sequence.stoppageReason === 1,
+      machineStopped: sequence.machineStopped === 1,
+      status: sequence.status,
       quantityPicturesCreate: sequence.quantityPicturesCreate,
       quantityPicturesClose: sequence.quantityPicturesClose,
     });
@@ -183,8 +186,9 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         values.positionName || sequence.positionName || "",
         values.ciltMstrId,
         values.ciltMstrName || sequence.ciltMstrName || "",
-        undefined,
-        undefined,
+        values.levelId,
+        values.levelName,
+        values.route,
         values.order,
         values.secuenceList,
         getColorFromCiltType(values.ciltTypeId),
@@ -197,8 +201,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         values.remediationOplSop,
         values.toolsRequired,
         values.stoppageReason ? 1 : 0,
+        values.machineStopped ? 1 : 0,
         values.quantityPicturesCreate,
-        values.quantityPicturesClose
+        values.quantityPicturesClose,
+        values.status || "A"
       );
 
       await updateCiltSequence(sequenceData).unwrap();
@@ -519,6 +525,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
               />
             </Form.Item>
+            
 
             <Row gutter={16}>
               <Col span={8}>
@@ -533,6 +540,32 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
               <Col span={8}>
                 <Form.Item
+                  label={Strings.editCiltSequenceModalMachineStoppedLabel}
+                  name="machineStopped"
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item
+                  label={Strings.editCiltSequenceModalStatusLabel}
+                  name="status"
+                >
+                  <Select placeholder={Strings.cardTypeTreeStatusPlaceholder}>
+                    <Option value={Constants.STATUS_ACTIVE}>{Strings.active}</Option>
+                    <Option value={Constants.STATUS_INACTIVE}>{Strings.inactive}</Option>
+                    <Option value={Constants.STATUS_DRAFT}>{Strings.draft}</Option>
+                    
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
                   label={
                     Strings.editCiltSequenceModalQuantityPicturesCreateLabel
                   }
@@ -542,7 +575,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
+              <Col span={12}>
                 <Form.Item
                   label={
                     Strings.editCiltSequenceModalQuantityPicturesCloseLabel

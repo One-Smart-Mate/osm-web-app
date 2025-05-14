@@ -36,6 +36,8 @@ const cloneBridge = "_clone_";
 const STATUS_ACTIVE = "A";
 const STATUS_SUSPENDED = "S";
 const STATUS_CANCELED = "C";
+const STATUS_INACTIVE = "I";
+const STATUS_DRAFT = "D";
 
 // Position table constants
 const DEFAULT_PAGE_SIZE = 6;
@@ -134,5 +136,7 @@ export default {
   en,
   ROUTES_PATH,
   ROUTES_PARAMS,
-  SESSION_KEYS
+  SESSION_KEYS,
+  STATUS_INACTIVE,
+  STATUS_DRAFT
 };

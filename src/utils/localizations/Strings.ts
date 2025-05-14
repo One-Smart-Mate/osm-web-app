@@ -1086,6 +1086,8 @@ class StringsBase {
   static editCiltSequenceModalStandardOkLabel = "editCiltSequenceModalStandardOkLabel";
   static editCiltSequenceModalStandardOkPlaceholder = "editCiltSequenceModalStandardOkPlaceholder";
   static editCiltSequenceModalStoppageReasonLabel = "editCiltSequenceModalStoppageReasonLabel";
+  static editCiltSequenceModalMachineStoppedLabel = "editCiltSequenceModalMachineStoppedLabel";
+  static editCiltSequenceModalStatusLabel = "editCiltSequenceModalStatusLabel";
   static editCiltSequenceModalQuantityPicturesCreateLabel = "editCiltSequenceModalQuantityPicturesCreateLabel";
   static editCiltSequenceModalQuantityPicturesCloseLabel = "editCiltSequenceModalQuantityPicturesCloseLabel";
   static editCiltSequenceModalSelectReferenceOpl = "editCiltSequenceModalSelectReferenceOpl";
@@ -1169,7 +1171,7 @@ class StringsBase {
   static scheduleSequence = "scheduleSequence"
   static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage"
   static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage"
-
+  static draft = "draft"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

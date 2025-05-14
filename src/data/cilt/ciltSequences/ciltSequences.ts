@@ -10,6 +10,7 @@ export interface CiltSequence {
     ciltMstrName: string | null;
     levelId: number | null;
     levelName: string | null;
+    route: string | null;
     order: number | null;
     secuenceList: string | null;
     secuenceColor: string | null;
@@ -21,11 +22,13 @@ export interface CiltSequence {
     remediationOplSop: number | null;
     toolsRequired: string | null;
     stoppageReason: number | null;
+    machineStopped: number | null;
     quantityPicturesCreate: number | null;
     quantityPicturesClose: number | null;
     createdAt: string | null;
     updatedAt: string | null;
     deletedAt: string | null;
+    status: string | null;
   }
   
   export class CreateCiltSequenceDTO {
@@ -39,6 +42,7 @@ export interface CiltSequence {
     ciltMstrName?: string;
     levelId?: number;
     levelName?: string;
+    route?: string;
     order?: number;
     secuenceList?: string;
     secuenceColor?: string;
@@ -50,9 +54,11 @@ export interface CiltSequence {
     remediationOplSop?: number;
     toolsRequired?: string;
     stoppageReason?: number;
+    machineStopped?: number;
     quantityPicturesCreate?: number;
     quantityPicturesClose?: number;
     createdAt: string;
+    status?: string;
   
     constructor(
       positionName: string,
@@ -66,6 +72,7 @@ export interface CiltSequence {
       ciltMstrName?: string,
       levelId?: number,
       levelName?: string,
+      route?: string,
       order?: number,
       secuenceList?: string,
       secuenceColor?: string,
@@ -77,8 +84,10 @@ export interface CiltSequence {
       remediationOplSop?: number,
       toolsRequired?: string,
       stoppageReason?: number,
+      machineStopped?: number,
       quantityPicturesCreate?: number,
-      quantityPicturesClose?: number
+      quantityPicturesClose?: number,
+      status?: string
     ) {
       this.siteId = siteId;
       this.siteName = siteName;
@@ -90,6 +99,7 @@ export interface CiltSequence {
       this.ciltMstrName = ciltMstrName;
       this.levelId = levelId;
       this.levelName = levelName;
+      this.route = route;
       this.order = order;
       this.secuenceList = secuenceList;
       this.secuenceColor = secuenceColor;
@@ -101,9 +111,11 @@ export interface CiltSequence {
       this.remediationOplSop = remediationOplSop;
       this.toolsRequired = toolsRequired;
       this.stoppageReason = stoppageReason;
+      this.machineStopped = machineStopped;
       this.quantityPicturesCreate = quantityPicturesCreate;
       this.quantityPicturesClose = quantityPicturesClose;
       this.createdAt = createdAt;
+      this.status = status;
     }
   }
   
@@ -119,6 +131,7 @@ export interface CiltSequence {
     ciltMstrName?: string;
     levelId?: number;
     levelName?: string;
+    route?: string;
     order?: number;
     secuenceList?: string;
     secuenceColor?: string;
@@ -130,9 +143,11 @@ export interface CiltSequence {
     remediationOplSop?: number;
     toolsRequired?: string;
     stoppageReason?: number;
+    machineStopped?: number;
     quantityPicturesCreate?: number;
     quantityPicturesClose?: number;
     updatedAt: string;
+    status?: string;
   
     constructor(
       id: number,
@@ -147,6 +162,7 @@ export interface CiltSequence {
       ciltMstrName?: string,
       levelId?: number,
       levelName?: string,
+      route?: string,
       order?: number,
       secuenceList?: string,
       secuenceColor?: string,
@@ -158,8 +174,10 @@ export interface CiltSequence {
       remediationOplSop?: number,
       toolsRequired?: string,
       stoppageReason?: number,
+      machineStopped?: number,
       quantityPicturesCreate?: number,
-      quantityPicturesClose?: number
+      quantityPicturesClose?: number,
+      status?: string
     ) {
       this.id = id;
       this.siteId = siteId;
@@ -172,6 +190,7 @@ export interface CiltSequence {
       this.ciltMstrName = ciltMstrName;
       this.levelId = levelId;
       this.levelName = levelName;
+      this.route = route;
       this.order = order;
       this.secuenceList = secuenceList;
       this.secuenceColor = secuenceColor;
@@ -183,9 +202,11 @@ export interface CiltSequence {
       this.remediationOplSop = remediationOplSop;
       this.toolsRequired = toolsRequired;
       this.stoppageReason = stoppageReason;
+      this.machineStopped = machineStopped;
       this.quantityPicturesCreate = quantityPicturesCreate;
       this.quantityPicturesClose = quantityPicturesClose;
       this.updatedAt = updatedAt;
+      this.status = status;
     }
   }
   
