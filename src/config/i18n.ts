@@ -1241,7 +1241,9 @@ const resources = {
       imageLoadSuccess: "Image uploaded successfully",
       imageLoadError: "Error uploading image",
       warningImageUpload: "Warning: image not uploaded correctly",
-      scheduleSecuence: "Schedule Sequence"
+      scheduleSecuence: "Schedule Sequence",
+      confirmCloneCiltMstrMessage: "Are you sure you want to clone the CILT?",
+      confirmCloneSecuencesMessage: "All sequences will also be cloned"
     },
   },
   es: {
@@ -2519,6 +2521,9 @@ const resources = {
       scheduleSequence: "Calendarizar",
       errorNoSiteId: "El id del site es obligatorio",
       clearFilters: "Limpiar filtros",
+      confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento CILT?",
+      confirmCloneSecuencesMessage: "Todas las secuencias también serán clonadas"
+
     },
   },
 };

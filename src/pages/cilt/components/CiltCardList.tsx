@@ -19,6 +19,7 @@ import SequencesModal from "./SequencesModal";
 import SequenceDetailsModal from "./SequenceDetailsModal";
 import EditCiltSequenceModal from "./EditCiltSequenceModal";
 import OplDetailsModal from "./OplDetailsModal";
+import CloneCiltModal from "./CloneCiltModal";
 import type { TablePaginationConfig } from "antd/es/table";
 
 const { Text } = Typography;
@@ -49,9 +50,11 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     useState(false);
   const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] =
     useState(false);
+  const [isCloneCiltModalVisible, setIsCloneCiltModalVisible] = useState(false);
 
   const [editingCilt, setEditingCilt] = useState<CiltMstr | null>(null);
   const [detailsCilt, setDetailsCilt] = useState<CiltMstr | null>(null);
+  const [ciltToClone, setCiltToClone] = useState<CiltMstr | null>(null);
   const [sequenceCilt, setSequenceCilt] = useState<CiltMstr | null>(null);
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
@@ -146,6 +149,23 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const handleDetailsCancel = () => {
     setIsDetailsModalVisible(false);
     setDetailsCilt(null);
+  };
+
+  const showCloneModal = (cilt: CiltMstr) => {
+    setCiltToClone(cilt);
+    setIsCloneCiltModalVisible(true);
+  };
+
+  const handleCloneCancel = () => {
+    setIsCloneCiltModalVisible(false);
+    setCiltToClone(null);
+  };
+
+  const handleCloneSuccess = () => {
+    setIsCloneCiltModalVisible(false);
+    setCiltToClone(null);
+    setRefreshTrigger((prev) => prev + 1);
+    refetch();
   };
 
   const showCreateSequenceModal = (cilt: CiltMstr) => {
@@ -338,6 +358,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onDetails={showDetailsModal}
         onCreateSequence={showCreateSequenceModal}
         onViewSequences={showSequencesModal}
+        onClone={showCloneModal}
       />
 
       {/* Edit Modal */}
@@ -353,6 +374,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         visible={isDetailsModalVisible}
         cilt={detailsCilt}
         onCancel={handleDetailsCancel}
+        onClone={showCloneModal}
       />
 
       {/* Create Sequence Modal */}
@@ -401,6 +423,14 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onCancel={handleOplDetailsModalCancel}
         onOpenPdf={handleOpenPdf}
         onOpenVideo={handleOpenVideo}
+      />
+
+      {/* Clone CILT Modal */}
+      <CloneCiltModal
+        visible={isCloneCiltModalVisible}
+        cilt={ciltToClone}
+        onCancel={handleCloneCancel}
+        onSuccess={handleCloneSuccess}
       />
 
       {/* PDF Preview Modal */}

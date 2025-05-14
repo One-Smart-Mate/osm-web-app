@@ -1167,6 +1167,9 @@ class StringsBase {
   static imageLoadError = "imageLoadError"
   static warningImageUpload = "warningImageUpload"
   static scheduleSequence = "scheduleSequence"
+  static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage"
+  static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage"
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access
