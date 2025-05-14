@@ -100,14 +100,35 @@ const PositionsPage = () => {
     setFilteredPositions(filtered);
   };
 
-  const showTreeModal = () => {
-    setIsTreeModalVisible(true);
+  const showTreeModal = async () => {
+    // En lugar de mostrar el modal del árbol, obtener los datos del sitio y abrir directamente el formulario
+    try {
+      // Fetch site data to get the siteType
+      const siteResponse = await getSite(siteId).unwrap();
+      console.log("Site data:", siteResponse);
+
+      // Crear datos básicos del nivel (sin seleccionar un nivel específico)
+      const basicLevelData = {
+        id: null, // No hay nivel seleccionado
+        name: null, // No hay nombre de nivel
+        siteId: siteId,
+        siteName: siteName,
+        siteType: siteResponse.siteType,
+        levelLocation: null // No hay ubicación de nivel
+      };
+
+      setSelectedLevel(basicLevelData);
+      setIsPositionFormVisible(true);
+    } catch (error) {
+      console.error("Error fetching site data:", error);
+    }
   };
 
   const hideTreeModal = () => {
     setIsTreeModalVisible(false);
   };
 
+  // Mantener la función por si se necesita en el futuro
   const handleLevelSelect = async (levelData: any) => {
     console.log("Selected level for position creation:", levelData);
 
@@ -341,7 +362,7 @@ const PositionsPage = () => {
                   >
                     <AnatomySection
                       title={Strings.positionNodeZoneHeader}
-                      label={item.route || item.levelName}
+                      label={item.route || item.levelName || Strings.oplFormNotAssigned}
                       icon={<BsDiagram2 />}
                     />
 

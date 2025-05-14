@@ -4,8 +4,6 @@ import { useLocation } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
 import MainContainer from "../layouts/MainContainer";
 import CiltCardList from "./components/CiltCardList";
-import PositionSelectionModal from "./components/PositionSelectionModal";
-import { Position } from "../../data/postiions/positions";
 import { useGetSiteMutation } from "../../services/siteService";
 import CreateCiltModal from "./components/CreateCiltModal";
 
@@ -13,11 +11,7 @@ const CiltProceduresPage = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
 
-  const [isPositionModalVisible, setIsPositionModalVisible] = useState(false);
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
-    null
-  );
   const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,33 +26,21 @@ const CiltProceduresPage = (): React.ReactElement => {
     }
   }, [siteId, getSite]);
 
-  const showPositionModal = () => {
+  const showCreateCiltModal = () => {
     if (!siteId) {
       message.warning(Strings.requiredPosition);
       return;
     }
-    setIsPositionModalVisible(true);
-  };
-
-  const handlePositionModalCancel = () => {
-    setIsPositionModalVisible(false);
-  };
-
-  const handlePositionSelect = (position: Position) => {
-    setSelectedPosition(position);
-    setIsPositionModalVisible(false);
     setIsCiltFormVisible(true);
   };
 
   const handleCiltFormCancel = () => {
     setIsCiltFormVisible(false);
-    setSelectedPosition(null);
     ciltForm.resetFields();
   };
 
   const handleCiltFormSuccess = () => {
     setIsCiltFormVisible(false);
-    setSelectedPosition(null);
     ciltForm.resetFields();
 
     message.success(Strings.ciltMstrCreateSuccess);
@@ -78,22 +60,15 @@ const CiltProceduresPage = (): React.ReactElement => {
         content={<CiltCardList searchTerm={searchTerm} />}
         enableSearch={true}
         enableCreateButton={true}
-        onCreateButtonClick={showPositionModal}
+        onCreateButtonClick={showCreateCiltModal}
         onSearchChange={handleSearch}
         isLoading={isLoading}
-      />
-
-      <PositionSelectionModal
-        visible={isPositionModalVisible}
-        siteId={siteId}
-        onCancel={handlePositionModalCancel}
-        onPositionSelect={handlePositionSelect}
       />
 
       {/* Create CILT Modal */}
       <CreateCiltModal
         visible={isCiltFormVisible}
-        position={selectedPosition}
+        position={null}
         form={ciltForm}
         onCancel={handleCiltFormCancel}
         onSuccess={handleCiltFormSuccess}

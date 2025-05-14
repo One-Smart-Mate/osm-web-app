@@ -66,8 +66,8 @@ const RegisterPositionForm = ({ form, levelData, isVisible, onCancel, onSuccess 
       siteType: levelData.siteType || "", // Default if not available
       areaId: null, // Backend will generate this automatically
       areaName: null, // Backend will generate this automatically
-      levelId: Number(levelData.id),
-      levelName: levelData.name,
+      levelId: levelData.id ? Number(levelData.id) : null,
+      levelName: levelData.name || null,
       route: levelData.levelLocation || null,
       name: values.name,
       description: values.description,

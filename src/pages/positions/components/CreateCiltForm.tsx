@@ -10,6 +10,7 @@ import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
 import UserSelectionModal from "../../components/UserSelectionModal";
 import type { UploadFile, UploadFileStatus } from "antd/es/upload/interface";
 import Strings from "../../../utils/localizations/Strings";
+import { useLocation } from "react-router-dom";
 
 interface FormProps {
   form: any;
@@ -32,27 +33,28 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
   const [uploading, setUploading] = useState(false);
   const [firebaseUrl, setFirebaseUrl] = useState<string>("");
 
+  // Get siteId from location state
+  const location = useLocation();
+  const siteId = location.state?.siteId || "";
+
   useEffect(() => {
-    if (position?.siteId) {
+    if (siteId) {
       fetchResponsibles();
-      // Reset form when position changes
+      // Reset form when component loads
       form.resetFields();
       setCreatorId(null);
       setReviewerId(null);
       setApprovedById(null);
       setFileList([]);
     }
-  }, [position]);
+  }, [siteId]); // Dependency on siteId instead of position
 
   const fetchResponsibles = async () => {
-    if (!position?.siteId) return;
+    if (!siteId) return;
     
     setLoading(true);
     try {
-      // Convert siteId to string and ensure it's a valid value
-      const siteIdString = String(position.siteId);
-      
-      const response = await getSiteResponsibles(siteIdString).unwrap();
+      const response = await getSiteResponsibles(siteId).unwrap();
       setResponsibles(response || []);
     } catch (error) {
       console.error("Error fetching responsibles:", error);
@@ -166,10 +168,6 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
   );
 
   const handleSubmit = async (values: any) => {
-    if (!position) {
-      return;
-    }
-
     // Use the stored Firebase URL
     if (!firebaseUrl) {
       notification.error({
@@ -182,8 +180,8 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
 
     // Construct the payload
     const ciltPayload: CreateCiltMstrDTO = {
-      siteId: Number(position.siteId),
-      positionId: Number(position.id),
+      siteId: Number(siteId),
+      positionId: position ? Number(position.id) : undefined,
       ciltName: values.ciltName,
       ciltDescription: values.ciltDescription,
       creatorId: creatorId ? Number(creatorId) : 0,
