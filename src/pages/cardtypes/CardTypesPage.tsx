@@ -3,34 +3,24 @@ import { useEffect, useRef, useState } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import RegisterCardTypeForm from "./components/RegisterCardTypeForm";
-import UpdateCardTypeForm from "./components/UpdateCardTypeForm";
-import RegisterPreclassifierForm2 from "./components/preclassifier/RegisterPreclassifierForm";
-import UpdatePreclassifierForm2 from "./components/preclassifier/UpdatePreclassifierForm";
 import {
-  useCreateCardTypeMutation,
   useGetCardTypesMutation,
-  useUpdateCardTypeMutation,
 } from "../../services/CardTypesService";
 import {
-  useCreatePreclassifierMutation,
   useGetPreclassifiersMutation,
-  useUpdatePreclassifierMutation,
 } from "../../services/preclassifierService";
 import { setSiteId } from "../../core/genericReducer";
 import { useAppDispatch } from "../../core/store";
 import { CardTypes } from "../../data/cardtypes/cardTypes";
-import {
-  CreateCardType,
-  UpdateCardTypeReq,
-} from "../../data/cardtypes/cardTypes.request";
-import { CreatePreclassifier } from "../../data/preclassifier/preclassifier.request";
 import { isRedesign } from "../../utils/Extensions";
 import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
-import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
+import CardTypeForm, { CardTypeFormType } from "./components/CardTypeForm";
+import PreclassifierForm, {
+  PreclassifierFormType,
+} from "./components/preclassifier/PreclassifierForm";
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState<boolean>(false);
@@ -99,17 +89,10 @@ const buildHierarchy = (
   return tree;
 };
 
-
 const CardTypesPage = () => {
   const [getCardTypes] = useGetCardTypesMutation();
-  const [createCardType] = useCreateCardTypeMutation();
-  const [updateCardType] = useUpdateCardTypeMutation();
   const [getPreclassifiers] = useGetPreclassifiersMutation();
-  const [createPreclassifier] = useCreatePreclassifierMutation();
-  const [updatePreclassifier] = useUpdatePreclassifierMutation();
-
   const [treeData, setTreeData] = useState<any[]>([]);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<DrawerType>(null);
   const [formData, setFormData] = useState<any>(null);
@@ -126,7 +109,7 @@ const CardTypesPage = () => {
   const [updateForm] = Form.useForm();
   const [createPreForm] = Form.useForm();
   const [updatePreForm] = Form.useForm();
-  const {isIhAdmin, rol} = useCurrentUser();
+  const { isIhAdmin } = useCurrentUser();
 
   const [rootMenuVisible, setRootMenuVisible] = useState(false);
 
@@ -147,14 +130,6 @@ const CardTypesPage = () => {
     return original.replace(/\(Clone.*\)$/i, Strings.empty).trim();
   };
 
-  const formatColor = (colorValue: any) => {
-    if (!colorValue) return "transparent";
-    let c =
-      typeof colorValue === "string"
-        ? colorValue
-        : colorValue?.toHex?.() || Strings.empty;
-    return c.startsWith("#") ? c.slice(1) : c;
-  };
 
   useEffect(() => {
     const handleClickOutside = () => {
@@ -263,7 +238,6 @@ const CardTypesPage = () => {
     setDrawerVisible(false);
     setDrawerType(null);
     setFormData(null);
-    setSelectedNode(null);
 
     createForm.resetFields();
     updateForm.resetFields();
@@ -274,7 +248,6 @@ const CardTypesPage = () => {
   const handleDrawerOpen = (type: DrawerType, data: any = null) => {
     setDrawerType(type);
     setDrawerVisible(true);
-    setSelectedNode(data || null);
 
     let nextFormData: any = data || {};
 
@@ -320,132 +293,6 @@ const CardTypesPage = () => {
     }
 
     setFormData(nextFormData);
-  };
-
-  const handleOnFormFinish = async (values: any) => {
-    try {
-      setLoading(true);
-
-      if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
-        if (!values.cardTypeMethodology) {
-          throw new Error(Strings.cardTypesMethodologyError);
-        }
-
-        const aux = values.cardTypeMethodology.split(" - ");
-        const cardTypeMethodology = aux[1];
-        const methodologyName = aux[0];
-
-        const newCardType = new CreateCardType(
-          cardTypeMethodology,
-          Number(location.state.siteId),
-          methodologyName,
-          values.name?.trim() || Strings.empty,
-          values.description?.trim() || Strings.empty,
-          formatColor(values.color),
-          Number(values.responsableId || 0),
-          Number(values.quantityPicturesCreate || 0),
-          Number(values.quantityAudiosCreate || 0),
-          Number(values.quantityVideosCreate || 0),
-          Number(values.audiosDurationCreate || 0),
-          Number(values.videosDurationCreate || 0),
-          Number(values.quantityPicturesClose || 0),
-          Number(values.quantityAudiosClose || 0),
-          Number(values.quantityVideosClose || 0),
-          Number(values.audiosDurationClose || 0),
-          Number(values.videosDurationClose || 0),
-          Number(values.quantityPicturesPs || 0),
-          Number(values.quantityAudiosPs || 0),
-          Number(values.quantityVideosPs || 0),
-          Number(values.audiosDurationPs || 0),
-          Number(values.videosDurationPs || 0)
-        );
-        await createCardType(newCardType).unwrap();
-        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
-      
-      } else if (
-        drawerType === Strings.cardTypesDrawerTypeUpdateCardType &&
-        selectedNode
-      ) {
-        const updatedCardType = new UpdateCardTypeReq(
-          Number(selectedNode.id),
-          values.methodology?.trim() || Strings.empty,
-          values.name?.trim() || Strings.empty,
-          values.description?.trim() || Strings.empty,
-          formatColor(values.color),
-          Number(values.responsableId || 0),
-          Number(values.quantityPicturesCreate || 0),
-          Number(values.quantityAudiosCreate || 0),
-          Number(values.quantityVideosCreate || 0),
-          Number(values.audiosDurationCreate || 0),
-          Number(values.videosDurationCreate || 0),
-          Number(values.quantityPicturesClose || 0),
-          Number(values.quantityAudiosClose || 0),
-          Number(values.quantityVideosClose || 0),
-          Number(values.audiosDurationClose || 0),
-          Number(values.videosDurationClose || 0),
-          Number(values.quantityPicturesPs || 0),
-          Number(values.quantityAudiosPs || 0),
-          Number(values.quantityVideosPs || 0),
-          Number(values.audiosDurationPs || 0),
-          Number(values.videosDurationPs || 0),
-          values.status || Strings.active.toUpperCase()
-        );
-        await updateCardType(updatedCardType).unwrap();
-        AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
-      } else if (
-        drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
-      ) {
-        if (!formData?.cardTypeId) {
-          throw new Error(Strings.cardTypesNoCardTypeIdError);
-        }
-        const newPre = new CreatePreclassifier(
-          values.code?.trim() || Strings.empty,
-          values.description?.trim() || Strings.empty,
-          Number(formData.cardTypeId)
-        );
-        await createPreclassifier(newPre).unwrap();
-        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
-      } else if (
-        drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier &&
-        selectedNode
-      ) {
-        const payload = {
-          id: Number(selectedNode.id),
-          preclassifierCode: values.code?.trim() || Strings.empty,
-          preclassifierDescription: values.description?.trim() || Strings.empty,
-          status: values.status || Strings.activeStatus,
-        };
-        await updatePreclassifier(payload).unwrap();
-        AnatomyNotification.success(
-          notification,
-          AnatomyNotificationType.UPDATE
-        );
-
-      }
-
-      if (drawerType === Strings.cardTypesDrawerTypeCreateCardType) {
-        createForm.resetFields();
-      } else if (drawerType === Strings.cardTypesDrawerTypeUpdateCardType) {
-        updateForm.resetFields();
-      } else if (
-        drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
-      ) {
-        createPreForm.resetFields();
-      } else if (
-        drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
-      ) {
-        updatePreForm.resetFields();
-      }
-
-      setDrawerVisible(false);
-      await handleLoadData(location.state.siteId);
-    } catch (error) {
-      console.error("Error in form submission:", error);
-            AnatomyNotification.error(notification, error);
-    
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleShowDetails = (node: any) => {
@@ -621,36 +468,20 @@ const CardTypesPage = () => {
     const ctMenu = [
       {
         key: Strings.cardTypesOptionEdit,
-        label: isRedesign() ? (
-          <Button type="primary">{Strings.cardTypesEdit}</Button>
-        ) : (
-          <button className="w-28 bg-blue-700 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesEdit}
-          </button>
-        ),
+        label: <Button type="primary">{Strings.cardTypesEdit}</Button>,
         onClick: handleEditCT,
       },
       {
         key: Strings.cardTypesOptionClone,
-        label: isRedesign() ? (
-          <Button type="default">{Strings.cardTypesCloneCardType}</Button>
-        ) : (
-          <button className="w-28 bg-yellow-500 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesCloneCardType}
-          </button>
-        ),
+        label: <Button type="default">{Strings.cardTypesCloneCardType}</Button>,
         onClick: handleCloneCT,
       },
       {
         key: Strings.cardTypesOptionCreate,
-        label: isRedesign() ? (
+        label: (
           <Button type="link" variant="dashed">
             {Strings.cardTypesCreatePreclassifier}
           </Button>
-        ) : (
-          <button className="w-28 bg-green-700 text-white p-2 rounded-md text-xs">
-            {Strings.cardTypesCreatePreclassifier}
-          </button>
         ),
         onClick: handleCreatePre,
       },
@@ -659,7 +490,15 @@ const CardTypesPage = () => {
     if (isPreclassifier) {
       return (
         <g>
-          <Dropdown menu={{ items: preMenu }} trigger={["contextMenu"]}>
+          <Dropdown
+            menu={{ items: preMenu }}
+            trigger={["contextMenu"]}
+            onOpenChange={(open) => {
+              if (open && drawerVisible) {
+                setDrawerVisible(false);
+              }
+            }}
+          >
             <circle
               r={18}
               fill={fillColor}
@@ -712,7 +551,15 @@ const CardTypesPage = () => {
 
     return (
       <g>
-        <Dropdown menu={{ items: ctMenu }} trigger={["contextMenu"]}>
+        <Dropdown
+          menu={{ items: ctMenu }}
+          trigger={["contextMenu"]}
+          onOpenChange={(open) => {
+            if (open && drawerVisible) {
+              setDrawerVisible(false);
+            }
+          }}
+        >
           <circle
             r={18}
             stroke="none"
@@ -806,6 +653,11 @@ const CardTypesPage = () => {
     }
   };
 
+  const handleCompleteCardTypeForm = async () => {
+    setDrawerVisible(false);
+    handleLoadData(location.state.siteId);
+  };
+
   return (
     <MainContainer
       title=""
@@ -820,23 +672,12 @@ const CardTypesPage = () => {
             <>
               {/* Toggle expand/collapse button */}
               <div className="absolute top-4 right-4 z-10">
-                {isRedesign() ? (
-                  <Button
-                    onClick={toggleAllNodes}
-                    type={isTreeExpanded ? "primary" : "default"}
-                  >
-                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-                  </Button>
-                ) : (
-                  <button
-                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm ${
-                      isTreeExpanded ? "bg-red-500 hover:bg-red-700" : ""
-                    }`}
-                    onClick={toggleAllNodes}
-                  >
-                    {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
-                  </button>
-                )}
+                <Button
+                  onClick={toggleAllNodes}
+                  type={isTreeExpanded ? "primary" : "default"}
+                >
+                  {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
+                </Button>
               </div>
 
               {treeData && treeData.length > 0 && (
@@ -852,70 +693,67 @@ const CardTypesPage = () => {
             </>
           </div>
 
-          <Form.Provider
-            onFormFinish={async (_, { values }) => {
-              await handleOnFormFinish(values);
-            }}
+          <Drawer
+            title={
+              drawerType === Strings.cardTypesDrawerTypeCreateCardType
+                ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
+                  ? Strings.cardTypesCloneCardType
+                  : Strings.cardTypesCreateCardType
+                : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
+                ? Strings.cardTypesUpdateCardType
+                : drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier
+                ? formData?.description?.includes(Strings.cardTypesCloneSuffix)
+                  ? Strings.cardTypesClonePreclassifier
+                  : Strings.cardTypesCreatePreclassifier
+                : drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier
+                ? Strings.cardTypesUpdatePreclassifier
+                : Strings.empty
+            }
+            placement={isMobile ? "bottom" : "right"}
+            width={isMobile ? "100%" : 400}
+            onClose={handleDrawerClose}
+            open={drawerVisible}
+            destroyOnHidden
+            mask={false}
+            className="pr-5"
           >
-            <Drawer
-              title={
-                drawerType === Strings.cardTypesDrawerTypeCreateCardType
-                  ? formData?.name?.includes(Strings.cardTypesCloneSuffix)
-                    ? Strings.cardTypesCloneCardType
-                    : Strings.cardTypesCreateCardType
-                  : drawerType === Strings.cardTypesDrawerTypeUpdateCardType
-                  ? Strings.cardTypesUpdateCardType
-                  : drawerType ===
-                    Strings.cardTypesDrawerTypeCreatePreclassifier
-                  ? formData?.description?.includes(
-                      Strings.cardTypesCloneSuffix
-                    )
-                    ? Strings.cardTypesClonePreclassifier
-                    : Strings.cardTypesCreatePreclassifier
-                  : drawerType ===
-                    Strings.cardTypesDrawerTypeUpdatePreclassifier
-                  ? Strings.cardTypesUpdatePreclassifier
-                  : Strings.empty
-              }
-              placement={isMobile ? "bottom" : "right"}
-              width={isMobile ? "100%" : 400}
-              onClose={handleDrawerClose}
-              open={drawerVisible}
-              destroyOnHidden
-              mask={false}
-              className="pr-5"
-            >
-              {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
-                <RegisterCardTypeForm
-                  form={createForm}
-                  onFinish={handleOnFormFinish}
-                  rol={rol}
-                  initialValues={formData}
-                />
-              )}
-              {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
-                <UpdateCardTypeForm
-                  form={updateForm}
-                  initialValues={formData}
-                  onFinish={handleOnFormFinish}
-                />
-              )}
-              {drawerType ===
-                Strings.cardTypesDrawerTypeCreatePreclassifier && (
-                <RegisterPreclassifierForm2
-                  form={createPreForm}
-                  initialValues={formData}
-                />
-              )}
-              {drawerType ===
-                Strings.cardTypesDrawerTypeUpdatePreclassifier && (
-                <UpdatePreclassifierForm2
-                  form={updatePreForm}
-                  initialValues={formData}
-                />
-              )}
-            </Drawer>
-          </Form.Provider>
+            {drawerType === Strings.cardTypesDrawerTypeCreateCardType && (
+              <CardTypeForm
+                onComplete={() => {
+                  handleCompleteCardTypeForm();
+                }}
+                formType={CardTypeFormType.CREATE}
+                data={formData}
+              />
+            )}
+            {drawerType === Strings.cardTypesDrawerTypeUpdateCardType && (
+              <CardTypeForm
+                onComplete={() => {
+                  handleCompleteCardTypeForm();
+                }}
+                formType={CardTypeFormType.UPDATE}
+                data={formData}
+              />
+            )}
+            {drawerType === Strings.cardTypesDrawerTypeCreatePreclassifier && (
+              <PreclassifierForm
+                onComplete={() => {
+                  handleCompleteCardTypeForm();
+                }}
+                formType={PreclassifierFormType.CREATE}
+                data={formData}
+              />
+            )}
+            {drawerType === Strings.cardTypesDrawerTypeUpdatePreclassifier && (
+              <PreclassifierForm
+                onComplete={() => {
+                  handleCompleteCardTypeForm();
+                }}
+                formType={PreclassifierFormType.UPDATE}
+                data={formData}
+              />
+            )}
+          </Drawer>
           <Drawer
             title={Strings.details}
             placement={isMobile ? "bottom" : "right"}
