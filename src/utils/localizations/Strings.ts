@@ -1178,6 +1178,8 @@ class StringsBase {
   static reason = "reason"
   static registered = "registered" 
   static noProceduresFound = "noProceduresFound"
+  static ciltDueDate = "ciltDueDate"
+  static ciltDueDatePlaceholder = "ciltDueDatePlaceholder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

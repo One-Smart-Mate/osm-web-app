@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Alert, Select, Upload, Spin, notification, Typography, Popconfirm } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, InputNumber, Alert, Select, Upload, Spin, notification, Typography, Popconfirm, Button } from 'antd';
+import { PlusOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadFileStatus, UploadProps } from 'antd/es/upload/interface';
 import { handleUploadToFirebaseStorage } from '../../../config/firebaseUpload';
 import { CiltMstr, UpdateCiltMstrDTO } from '../../../data/cilt/ciltMstr/ciltMstr';
 import { useUpdateCiltMstrMutation } from '../../../services/cilt/ciltMstrService';
+import { useGetSiteResponsiblesMutation } from '../../../services/userService';
 import Constants from '../../../utils/Constants';
 import Strings from '../../../utils/localizations/Strings';
+import UserSelectionModal from '../../../pages/components/UserSelectionModal';
+import { Responsible } from '../../../data/user/user';
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -27,9 +30,79 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [form] = Form.useForm();
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateCiltMstr, { isLoading: isUpdating }] = useUpdateCiltMstrMutation();
+  const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [firebaseUrl, setFirebaseUrl] = useState<string | undefined>(undefined);
+
+  // Estados para los modales de selección de usuarios
+  const [creatorModalVisible, setCreatorModalVisible] = useState(false);
+  const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
+  const [approverModalVisible, setApproverModalVisible] = useState(false);
+  const [responsibles, setResponsibles] = useState<Responsible[]>([]);
+  const [creatorId, setCreatorId] = useState<number | undefined>(cilt?.creatorId ? Number(cilt.creatorId) : undefined);
+  const [reviewerId, setReviewerId] = useState<number | undefined>(cilt?.reviewerId ? Number(cilt.reviewerId) : undefined);
+  const [approvedById, setApprovedById] = useState<number | undefined>(cilt?.approvedById ? Number(cilt.approvedById) : undefined);
+  
+  // Cargar usuarios responsables para los modales de selección
+  useEffect(() => {
+    const fetchResponsibles = async () => {
+      if (cilt && cilt.siteId) {
+        setLoading(true);
+        try {
+          const response = await getSiteResponsibles(String(cilt.siteId)).unwrap();
+          setResponsibles(response || []);
+        } catch (error) {
+          console.error("Error fetching responsibles:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchResponsibles();
+  }, [cilt, getSiteResponsibles]);
+  
+  // Funciones para manejar la selección de usuarios
+  const handleCreatorSelection = (userIds: number[]) => {
+    if (userIds.length > 0) {
+      setCreatorId(userIds[0]);
+      // Find the user by comparing with the same type
+      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      form.setFieldsValue({ creatorName: selectedUser?.name || "" });
+    } else {
+      setCreatorId(undefined);
+      form.setFieldsValue({ creatorName: "" });
+    }
+    setCreatorModalVisible(false);
+  };
+  
+  const handleReviewerSelection = (userIds: number[]) => {
+    if (userIds.length > 0) {
+      setReviewerId(userIds[0]);
+      // Find the user by comparing with the same type
+      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      form.setFieldsValue({ reviewerName: selectedUser?.name || "" });
+    } else {
+      setReviewerId(undefined);
+      form.setFieldsValue({ reviewerName: "" });
+    }
+    setReviewerModalVisible(false);
+  };
+  
+  const handleApproverSelection = (userIds: number[]) => {
+    if (userIds.length > 0) {
+      setApprovedById(userIds[0]);
+      // Find the user by comparing with the same type
+      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      form.setFieldsValue({ approvedByName: selectedUser?.name || "" });
+    } else {
+      setApprovedById(undefined);
+      form.setFieldsValue({ approvedByName: "" });
+    }
+    setApproverModalVisible(false);
+  };
 
   // Functions for image upload
   const getBase64 = (file: File): Promise<string> =>
@@ -166,17 +239,18 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           cilt.positionId ?? undefined,
           values.ciltName,
           values.ciltDescription,
-          cilt.creatorId ?? undefined,
-          cilt.creatorName ?? undefined,
-          cilt.reviewerId ?? undefined,
-          cilt.reviewerName ?? undefined,
-          cilt.approvedById ?? undefined,
-          cilt.approvedByName ?? undefined,
+          creatorId ?? undefined,
+          values.creatorName ?? undefined,
+          reviewerId ?? undefined,
+          values.reviewerName ?? undefined,
+          approvedById ?? undefined,
+          values.approvedByName ?? undefined,
           values.standardTime,
           undefined, // Removing learnigTime from the flow as requested
           imageUrl, // Using the properly determined image URL
           cilt.order ?? undefined,
-          values.status
+          values.status,
+          values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined 
         );
         
         // Submit the update
@@ -225,6 +299,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         ciltName: cilt.ciltName,
         ciltDescription: cilt.ciltDescription,
         standardTime: cilt.standardTime,
+        ciltDueDate: cilt.ciltDueDate ? cilt.ciltDueDate.split('T')[0] : null,
         status: cilt.status,
       });
       
@@ -266,6 +341,10 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         <Form.Item name="standardTime" label={Strings.ciltMstrStandardTimeLabel} rules={[{ type: 'number', message: Strings.ciltMstrInvalidNumberMessage }]}>
           <InputNumber min={0} style={{ width: '100%' }} />
         </Form.Item>
+        {/* Campo ciltDueDate agregado */}
+        <Form.Item name="ciltDueDate" label={Strings.ciltDueDate}>
+          <Input type="date" style={{ width: '100%' }} />
+        </Form.Item>
         {/* Campo learnigTime eliminado del flujo */}
         <Form.Item name="status" label={Strings.ciltMstrStatusLabel} rules={[{ required: true, message: Strings.ciltMstrStatusRequired }]}>
           <Select placeholder={Strings.ciltMstrStatusPlaceholder}>
@@ -274,6 +353,74 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
             <Option value={Constants.STATUS_CANCELED}>{Strings.ciltMstrStatusCanceled}</Option>
           </Select>
         </Form.Item>
+        
+        <div className="flex flex-row gap-4">
+          <Form.Item
+            name="creatorName"
+            label={Strings.ciltCreator}
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.registerCiltCreatorRequiredValidation }
+            ]}
+          >
+            <Input 
+              size="large" 
+              placeholder={Strings.selectCreator}
+              readOnly
+              addonAfter={
+                <Button 
+                  type="text" 
+                  icon={<UserOutlined />} 
+                  onClick={() => setCreatorModalVisible(true)}
+                />
+              }
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="reviewerName"
+            label={Strings.reviewer}
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.registerCiltReviewerRequiredValidation }
+            ]}
+          >
+            <Input 
+              size="large" 
+              placeholder={Strings.registerCiltReviewerPlaceholer}
+              readOnly
+              addonAfter={
+                <Button 
+                  type="text" 
+                  icon={<UserOutlined />} 
+                  onClick={() => setReviewerModalVisible(true)}
+                />
+              }
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="approvedByName"
+            label={Strings.approver}
+            className="flex-1"
+            rules={[
+              { required: true, message: Strings.registerCiltApproverRequiredValidation }
+            ]}
+          >
+            <Input 
+              size="large" 
+              placeholder={Strings.registerCiltApproverPlaceholer}
+              readOnly
+              addonAfter={
+                <Button 
+                  type="text" 
+                  icon={<UserOutlined />} 
+                  onClick={() => setApproverModalVisible(true)}
+                />
+              }
+            />
+          </Form.Item>
+        </div>
         
         {/* Last updated date - read-only information field */}
         {cilt?.updatedAt && (
@@ -373,6 +520,39 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           </Upload>
         </div>
       </Form>
+
+      <UserSelectionModal
+        isVisible={creatorModalVisible}
+        onCancel={() => setCreatorModalVisible(false)}
+        onConfirm={handleCreatorSelection}
+        users={responsibles}
+        loading={loading}
+        initialSelectedUserIds={creatorId ? [creatorId] : []}
+        title={Strings.selectCreator}
+        singleSelection={true}
+      />
+
+      <UserSelectionModal
+        isVisible={reviewerModalVisible}
+        onCancel={() => setReviewerModalVisible(false)}
+        onConfirm={handleReviewerSelection}
+        users={responsibles}
+        loading={loading}
+        initialSelectedUserIds={reviewerId ? [reviewerId] : []}
+        title={Strings.selectReviewer}
+        singleSelection={true}
+      />
+
+      <UserSelectionModal
+        isVisible={approverModalVisible}
+        onCancel={() => setApproverModalVisible(false)}
+        onConfirm={handleApproverSelection}
+        users={responsibles}
+        loading={loading}
+        initialSelectedUserIds={approvedById ? [approvedById] : []}
+        title={Strings.selectApprover}
+        singleSelection={true}
+      />
     </Modal>
   );
 };
