@@ -1251,7 +1251,11 @@ const resources = {
       importUsersSummary: "Summary of imported users",
       reason: "Reason",
       registered: "Registered",
-      noProceduresFound: "No procedures found"
+      noProceduresFound: "No procedures found",
+      select: "Select",
+      editUser:"Update user",
+      fastPassword: "Fast password",
+      manual: "User manual" 
     },
   },
   es: {
@@ -2539,7 +2543,11 @@ const resources = {
       importUsersSummary: "Resumen de usuarios importados",
       reason: "Razón",
       registered: "Registrado",
-      noProceduresFound: "No se encontraron procedimientos"
+      noProceduresFound: "No se encontraron procedimientos",
+      select: "Seleccionar",
+      editUser:"Editar usuario",
+      fastPassword: "Password rápido",
+      manual: "Manual de usuario"
     },
   },
 };
