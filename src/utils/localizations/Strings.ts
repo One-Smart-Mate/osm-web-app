@@ -1178,6 +1178,13 @@ class StringsBase {
   static reason = "reason"
   static registered = "registered" 
   static noProceduresFound = "noProceduresFound"
+
+  //UPDATE 
+  static frequencyCodeToolTip = "frequencyCodeToolTip"
+  static descriptionToolTip = "descriptionToolTip"
+  static nameCiltTypeToolTip = "nameCiltTypeToolTip"
+  static ciltTypeColorTooltip: "ciltTypeColorTooltip:";
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access
