@@ -1181,6 +1181,7 @@ class StringsBase {
   static editUser = "editUser"
   static fastPassword = "fastPassword"
   static manual = "manual"
+  static downloadUsersTemplate = "downloadUsersTemplate"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

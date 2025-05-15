@@ -1255,7 +1255,8 @@ const resources = {
       select: "Select",
       editUser:"Update user",
       fastPassword: "Fast password",
-      manual: "User manual" 
+      manual: "User manual",
+      downloadUsersTemplate: "Download users template"
     },
   },
   es: {
@@ -2547,7 +2548,8 @@ const resources = {
       select: "Seleccionar",
       editUser:"Editar usuario",
       fastPassword: "Password rápido",
-      manual: "Manual de usuario"
+      manual: "Manual de usuario",
+      downloadUsersTemplate: "Descargar plantilla de usuarios"
     },
   },
 };
