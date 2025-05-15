@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { 
-  Modal, 
-  Button, 
-  Space, 
-  Spin, 
-  Card, 
-  Row, 
-  Col, 
+import {
+  Modal,
+  Button,
+  Space,
+  Spin,
+  Card,
+  Row,
+  Col,
   Input,
   Typography
 } from "antd";
@@ -16,6 +16,8 @@ import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
 import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
 import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
+import NewFeatureModal from "./NewFeatureModal"; // Asegúrate de poner la ruta correcta
+
 
 interface SequencesModalProps {
   visible: boolean;
@@ -28,6 +30,9 @@ interface SequencesModalProps {
   onViewOpl: (oplId: number | null) => void;
   onEditSequence: (sequence: CiltSequence) => void;
 }
+
+
+
 
 const { Text } = Typography;
 
@@ -69,190 +74,243 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
     }
   };
 
+  const [isNewFeatureModalVisible, setNewFeatureModalVisible] = useState(false);
+
+  const [scheduledData, setScheduledData] = useState<Record<number, any>>({});
+
+  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
+
+
   return (
-    <Modal
-      title={`${Strings.sequences} ${currentCilt?.ciltName || "CILT"}`}
-      open={visible}
-      onCancel={onCancel}
-      zIndex={900}
-      footer={[
-        <Button key="close" onClick={onCancel}>
-          {Strings.close}
-        </Button>,
-        <Button
-          key="create"
-          type="primary"
-          onClick={() => {
-            onCancel();
-            if (currentCilt) {
-              onCreateSequence(currentCilt);
-            }
-          }}
-          disabled={!currentCilt}
-        >
-          {Strings.createNewSequence}
-        </Button>,
-      ]}
-      width={800}
-    >
-      <div style={{ marginBottom: 16 }}>
-        <Row gutter={16} align="middle">
-          <Col span={16}>
-            <Input
-              placeholder={Strings.searchByDescriptionOrderOrTime}
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              prefix={<SearchOutlined />}
-              allowClear
-            />
-          </Col>
-          <Col span={8} style={{ textAlign: "right" }}>
-            <Text>Total: {filteredSequences.length} {Strings.sequences}</Text>
-          </Col>
-        </Row>
-      </div>
-
-      <Spin spinning={loading}>
-        {filteredSequences.length === 0 ? (
-          sequences.length === 0 ? (
-            <Text type="secondary">
-              {Strings.noSequencesForCilt}
-            </Text>
-          ) : (
-            <Text type="secondary">
-              {Strings.noSequencesMatchSearch}
-            </Text>
-          )
-        ) : (
-          <div
-            style={{ maxHeight: "60vh", overflowY: "auto", padding: "10px" }}
+    <>
+      <Modal
+        title={`${Strings.sequences} ${currentCilt?.ciltName || "CILT"}`}
+        open={visible}
+        onCancel={onCancel}
+        zIndex={900}
+        footer={[
+          <Button key="close" onClick={onCancel}>
+            {Strings.close}
+          </Button>,
+          <Button
+            key="create"
+            type="primary"
+            onClick={() => {
+              onCancel();
+              if (currentCilt) {
+                onCreateSequence(currentCilt);
+              }
+            }}
+            disabled={!currentCilt}
           >
-            {filteredSequences.map((sequence) => (
-              <Card
-                key={sequence.id}
-                style={{
-                  marginBottom: 16,
-                  borderLeft: `4px solid ${
-                    sequence.secuenceColor &&
-                    sequence.secuenceColor.startsWith("#")
-                      ? sequence.secuenceColor
-                      : `#${sequence.secuenceColor || "1890ff"}`
-                  }`,
-                }}
-                hoverable
-              >
-                <Row gutter={[16, 16]}>
-                  <Col span={16}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: 8,
-                      }}
-                    >
-                      <div
-                        style={{
-                          backgroundColor:
-                            sequence.secuenceColor &&
-                            sequence.secuenceColor.startsWith("#")
-                              ? sequence.secuenceColor
-                              : `#${sequence.secuenceColor || "f0f0f0"}`,
-                          width: "20px",
-                          height: "20px",
-                          borderRadius: "50%",
-                          marginRight: "10px",
-                          border: "1px solid #d9d9d9",
-                        }}
-                      />
-                      <Text strong>{Strings.sequence} {sequence.order}</Text>
-                    </div>
+            {Strings.createNewSequence}
+          </Button>,
+        ]}
+        width={800}
+      >
+        <div style={{ marginBottom: 16 }}>
+          <Row gutter={16} align="middle">
+            <Col span={16}>
+              <Input
+                placeholder={Strings.searchByDescriptionOrderOrTime}
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                prefix={<SearchOutlined />}
+                allowClear
+              />
+            </Col>
+            <Col span={8} style={{ textAlign: "right" }}>
+              <Text>Total: {filteredSequences.length} {Strings.sequences}</Text>
+            </Col>
+          </Row>
+        </div>
 
-                    <div style={{ marginBottom: 8 }}>
-                      <Text type="secondary">{Strings.standardTime}:</Text>{" "}
-                      <Text>{sequence.standardTime || "N/A"}</Text>
-                    </div>
+        <Spin spinning={loading}>
+          {filteredSequences.length === 0 ? (
+            sequences.length === 0 ? (
+              <Text type="secondary">
+                {Strings.noSequencesForCilt}
+              </Text>
+            ) : (
+              <Text type="secondary">
+                {Strings.noSequencesMatchSearch}
+              </Text>
+            )
+          ) : (
+            <div
+              style={{ maxHeight: "60vh", overflowY: "auto", padding: "10px" }}
+            >
+              {filteredSequences.map((sequence) => {
+                const schedule = scheduledData[sequence.id];  // Mueve esta línea dentro del map
 
-                    {/* Frequencies */}
-                    <div style={{ marginBottom: 8 }}>
-                      <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>{" "}
-                      <Text>{allSeqFreqs.filter((f: CiltSequenceFrequency) => f.secuencyId === sequence.id).map(f => f.frecuencyCode).join(", ") || "N/A"}</Text>
-                    </div>
-
-                    {sequence.toolsRequired && (
-                      <div style={{ marginBottom: 8 }}>
-                        <Text type="secondary">{Strings.tools}:</Text>{" "}
-                        <Text>{sequence.toolsRequired}</Text>
-                      </div>
-                    )}
-
-                    <div>
-                      <Text type="secondary">{Strings.created}:</Text>{" "}
-                      <Text>
-                        {sequence.createdAt
-                          ? new Date(sequence.createdAt).toLocaleDateString()
-                          : "N/A"}
-                      </Text>
-                    </div>
-                  </Col>
-                  <Col
-                    span={8}
+                return (
+                  <Card
+                    key={sequence.id}
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "flex-end",
+                      marginBottom: 16,
+                      borderLeft: `4px solid ${sequence.secuenceColor &&
+                        sequence.secuenceColor.startsWith("#")
+                        ? sequence.secuenceColor
+                        : `#${sequence.secuenceColor || "1890ff"}`
+                        }`,
                     }}
+                    hoverable
                   >
-                    <Space direction="vertical">
-                      <Button
-                        type="primary"
-                        onClick={() => onViewDetails(sequence)}
-                      >
-                        {Strings.viewDetails}
-                      </Button>
+                    <Row gutter={[16, 16]}>
+                      <Col span={16}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: 8,
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor:
+                                sequence.secuenceColor && sequence.secuenceColor.startsWith("#")
+                                  ? sequence.secuenceColor
+                                  : `#${sequence.secuenceColor || "f0f0f0"}`,
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              marginRight: "10px",
+                              border: "1px solid #d9d9d9",
+                            }}
+                          />
+                          <Text strong>{Strings.sequence} {sequence.order}</Text>
+                        </div>
 
-                      <Button
-                        type="default"
-                        onClick={() =>
-                          onViewOpl(sequence.referenceOplSop)
-                        }
-                        disabled={!sequence.referenceOplSop}
-                      >
-                        {Strings.viewReferenceOpl}
-                      </Button>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text type="secondary">{Strings.standardTime}:</Text>{" "}
+                          <Text>{sequence.standardTime || "N/A"}</Text>
+                        </div>
 
-                      <Button
-                        type="default"
-                        onClick={() =>
-                          onViewOpl(sequence.remediationOplSop)
-                        }
-                        disabled={!sequence.remediationOplSop}
-                      >
-                        {Strings.viewRemediationOpl}
-                      </Button>
+                        {/* Frequencies */}
+                        <div style={{ marginBottom: 8 }}>
+                          <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>{" "}
+                          <Text>{allSeqFreqs.filter((f: CiltSequenceFrequency) => f.secuencyId === sequence.id).map(f => f.frecuencyCode).join(", ") || "N/A"}</Text>
+                        </div>
 
-                      <Button
-                        type="default"
-                      >
-                        {Strings.scheduleSequence}
-                      </Button>
+                        {sequence.toolsRequired && (
+                          <div style={{ marginBottom: 8 }}>
+                            <Text type="secondary">{Strings.tools}:</Text>{" "}
+                            <Text>{sequence.toolsRequired}</Text>
+                          </div>
+                        )}
 
-                      <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        onClick={() => onEditSequence(sequence)}
+                        <div>
+                          <Text type="secondary">{Strings.created}:</Text>{" "}
+                          <Text>
+                            {sequence.createdAt
+                              ? new Date(sequence.createdAt).toLocaleDateString()
+                              : "N/A"}
+                          </Text>
+                        </div>
+
+                        {schedule && (
+                          <div style={{ marginTop: 8 }}>
+                            <Text type="secondary">Programación:</Text>{" "}
+                            <Text>
+                              Cada {schedule.interval} {schedule.frequency}(s) los {schedule.selectedDays.join(", ")}{" "}
+                              desde {schedule.startDate.format("DD/MM/YYYY")}
+                              {schedule.endDate ? ` hasta ${schedule.endDate.format("DD/MM/YYYY")}` : ""}
+                            </Text>
+                          </div>
+                        )}
+                      </Col>
+                      <Col
+                        span={8}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "flex-end",
+                        }}
                       >
-                        {Strings.editSequence}
-                      </Button>
-                    </Space>
-                  </Col>
-                </Row>
-              </Card>
-            ))}
-          </div>
-        )}
-      </Spin>
-    </Modal>
+                        <Space direction="vertical">
+                          <Button
+                            type="primary"
+                            onClick={() => onViewDetails(sequence)}
+                          >
+                            {Strings.viewDetails}
+                          </Button>
+
+                          <Button
+                            type="default"
+                            onClick={() =>
+                              onViewOpl(sequence.referenceOplSop)
+                            }
+                            disabled={!sequence.referenceOplSop}
+                          >
+                            {Strings.viewReferenceOpl}
+                          </Button>
+
+                          <Button
+                            type="default"
+                            onClick={() =>
+                              onViewOpl(sequence.remediationOplSop)
+                            }
+                            disabled={!sequence.remediationOplSop}
+                          >
+                            {Strings.viewRemediationOpl}
+                          </Button>
+
+                          <Button
+                            type="default"
+                            onClick={() => {
+                              setSelectedSequence(sequence);
+                              setNewFeatureModalVisible(true);
+                            }}
+                          >
+                            {Strings.scheduleSequence}
+                          </Button>
+
+
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            onClick={() => onEditSequence(sequence)}
+                          >
+                            {Strings.editSequence}
+                          </Button>
+                        </Space>
+                      </Col>
+                    </Row>
+                  </Card>
+                );
+              })}
+
+            </div>
+          )}
+        </Spin>
+      </Modal>
+      <NewFeatureModal
+        visible={isNewFeatureModalVisible}
+        existingSchedule={selectedSequence ? scheduledData[selectedSequence.id] : undefined}
+        onCancel={() => setNewFeatureModalVisible(false)}
+        onSave={(data) => {
+          if (selectedSequence) {
+            setScheduledData((prev) => ({
+              ...prev,
+              [selectedSequence.id]: data,
+            }));
+          }
+          setNewFeatureModalVisible(false);
+        }}
+        onDelete={() => {
+          if (selectedSequence) {
+            setScheduledData((prev) => {
+              const newData = { ...prev };
+              delete newData[selectedSequence.id];
+              return newData;
+            });
+          }
+          setNewFeatureModalVisible(false);
+        }}
+      />
+
+    </>
   );
 };
 

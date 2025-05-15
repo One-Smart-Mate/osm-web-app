@@ -1167,6 +1167,13 @@ class StringsBase {
   static imageLoadError = "imageLoadError"
   static warningImageUpload = "warningImageUpload"
   static scheduleSequence = "scheduleSequence"
+
+  //UPDATE 
+  static frequencyCodeToolTip = "frequencyCodeToolTip"
+  static descriptionToolTip = "descriptionToolTip"
+  static nameCiltTypeToolTip = "nameCiltTypeToolTip"
+  static ciltTypeColorTooltip: "ciltTypeColorTooltip:";
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access
