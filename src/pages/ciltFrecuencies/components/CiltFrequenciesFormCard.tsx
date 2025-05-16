@@ -18,10 +18,6 @@ const CiltFrequenciesFormCard = ({
     enableStatus,
 }: CiltFrequenciesFormCardProps): React.ReactElement => {
 
-    useEffect(() => {
-        console.log(initialValues);
-    }, []);
-
 
     const statusOptions = [
         { value: Strings.activeStatus, label: Strings.active, key: 1 },

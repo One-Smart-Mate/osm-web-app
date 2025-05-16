@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, Typography} from "antd";
 import Strings from "../../../utils/localizations/Strings";
-import AnatomySection from "../../components/AnatomySection";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import CiltTypesForm, { CiltTypesFormType } from "./CiltTypesForm";
+import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 
 
 interface CiltTypesCardProps {
@@ -35,7 +35,7 @@ const CiltTypesCard = ({ item, onComplete }: CiltTypesCardProps): React.ReactEle
 <AnatomySection
         title={Strings.status}
         label={
-          item.status === "A" ? (
+          item.status === Strings.activeValue ? (
             <span style={{ color: "green" }}>{Strings.active}</span>
           ) : (
             <span style={{ color: "red" }}>{Strings.inactive}</span>

@@ -38,7 +38,7 @@ const CiltFrequenciesCard = ({ item, onComplete }: CiltFrequenciesCardProps): Re
       <AnatomySection
         title={Strings.status}
         label={
-          item.status === "A" ? (
+          item.status === Strings.activeValue ? (
             <span style={{ color: "green" }}>{Strings.active}</span>
           ) : (
             <span style={{ color: "red" }}>{Strings.inactive}</span>

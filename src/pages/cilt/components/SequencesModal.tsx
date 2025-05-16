@@ -18,6 +18,12 @@ import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/c
 import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
 import Constants from "../../../utils/Constants";
 import NewFeatureModal from "./NewFeatureModal"; // Asegúrate de poner la ruta correcta
+import { CreateCiltSequencesExecutionDTO } from "../../../data/cilt/ciltSequencesExecutions/ciltSequencesExecutions";
+import dayjs from "dayjs";
+import { useCreateCiltSequenceExecutionMutation } from "../../../services/cilt/ciltSequencesExecutionsService";
+import { message } from "antd";
+
+
 
 
 interface SequencesModalProps {
@@ -48,6 +54,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
   onViewOpl,
   onEditSequence
 }) => {
+  if (!currentCilt) return null;
+
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>(sequences);
   // fetch all sequence-frequency associations for this CILT
@@ -65,7 +74,7 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
     // Get active sequences first
     const activeSequences = sequences.filter(sequence => sequence.status === Constants.STATUS_ACTIVE);
-    
+
     if (!value.trim()) {
       setFilteredSequences(activeSequences);
     } else {
@@ -85,7 +94,46 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
   const [scheduledData, setScheduledData] = useState<Record<number, any>>({});
 
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
+  
 
+
+  const handleSave = async (schedule: {
+    startDate: string;   // ISO string
+    interval: number;
+    frequency: string;
+    selectedDays: string[];
+    endDate: string | null;
+  }) => {
+    const now = new Date().toISOString();
+
+    if (!selectedSequence) return;
+
+    const payload: CreateCiltSequencesExecutionDTO = {
+      siteId: Number(currentCilt.siteId),
+      positionId: Number(currentCilt.positionId),
+      ciltId: currentCilt.id,
+      ciltDetailsId: Number(selectedSequence.id),
+      secuenceStart: schedule.startDate,           // ya es string ISO
+      secuenceStop: schedule.endDate ?? undefined, // ya es string ISO o null
+      duration: schedule.interval,
+      standardOk: schedule.frequency,
+      initialParameter: schedule.selectedDays.join(","),
+      runSecuenceSchedule: schedule.startDate,
+      createdAt: now,
+    };
+
+    try {
+      await createExecution(payload).unwrap();
+      message.success("Programación guardada exitosamente.");
+    } catch (error) {
+      console.error("Error al guardar ejecución:", error);
+      message.error("Hubo un error al guardar la programación.");
+    }
+  };
+
+
+
+  const [createExecution] = useCreateCiltSequenceExecutionMutation();
 
   return (
     <>
@@ -219,8 +267,8 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                             <Text type="secondary">Programación:</Text>{" "}
                             <Text>
                               Cada {schedule.interval} {schedule.frequency}(s) los {schedule.selectedDays.join(", ")}{" "}
-                              desde {schedule.startDate.format("DD/MM/YYYY")}
-                              {schedule.endDate ? ` hasta ${schedule.endDate.format("DD/MM/YYYY")}` : ""}
+                              desde {schedule.startDate ? dayjs(schedule.startDate).format("DD/MM/YYYY") : ""}
+                              {schedule.endDate ? ` hasta ${dayjs(schedule.endDate).format("DD/MM/YYYY")}` : ""}
                             </Text>
                           </div>
                         )}
@@ -291,30 +339,33 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
           )}
         </Spin>
       </Modal>
+
       <NewFeatureModal
-        visible={isNewFeatureModalVisible}
-        existingSchedule={selectedSequence ? scheduledData[selectedSequence.id] : undefined}
-        onCancel={() => setNewFeatureModalVisible(false)}
-        onSave={(data) => {
-          if (selectedSequence) {
-            setScheduledData((prev) => ({
-              ...prev,
-              [selectedSequence.id]: data,
-            }));
-          }
-          setNewFeatureModalVisible(false);
-        }}
-        onDelete={() => {
-          if (selectedSequence) {
-            setScheduledData((prev) => {
-              const newData = { ...prev };
-              delete newData[selectedSequence.id];
-              return newData;
-            });
-          }
-          setNewFeatureModalVisible(false);
-        }}
-      />
+  visible={isNewFeatureModalVisible}
+  onCancel={() => setNewFeatureModalVisible(false)}
+  existingSchedule={
+    selectedSequence && scheduledData[selectedSequence.id]
+      ? {
+          ...scheduledData[selectedSequence.id],
+          startDate: dayjs(scheduledData[selectedSequence.id].startDate),
+          endDate: scheduledData[selectedSequence.id].endDate
+            ? dayjs(scheduledData[selectedSequence.id].endDate)
+            : null,
+        }
+      : undefined
+  }
+  onSave={async (data) => {
+    if (!selectedSequence) return;
+
+    setScheduledData((prev) => ({
+      ...prev,
+      [selectedSequence.id]: data,
+    }));
+
+    await handleSave(data);
+    setNewFeatureModalVisible(false);
+  }}
+/>
 
     </>
   );

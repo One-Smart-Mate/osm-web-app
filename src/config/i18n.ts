@@ -1251,7 +1251,16 @@ const resources = {
       importUsersSummary: "Summary of imported users",
       reason: "Reason",
       registered: "Registered",
-      noProceduresFound: "No procedures found"
+      noProceduresFound: "No procedures found",
+
+      //NEW UPDATE ENGLISH
+      dayValue: "day",
+      weekValue: "week",
+      monthValue: "month",
+      yearValue: "year",
+      repeat : "Repeat",
+      repeatEach : "Repeat each"
+
     },
   },
   es: {
@@ -2539,7 +2548,16 @@ const resources = {
       importUsersSummary: "Resumen de usuarios importados",
       reason: "Razón",
       registered: "Registrado",
-      noProceduresFound: "No se encontraron procedimientos"
+      noProceduresFound: "No se encontraron procedimientos",
+
+      //NEW UPDATE SPANISH
+      dayValue: "dia",
+      weekValue: "semana",
+      monthValue: "mes",
+      yearValue: "año",
+      repeat: "Repetir",
+      repeatEach: "Repetir cada"
+
     },
   },
 };

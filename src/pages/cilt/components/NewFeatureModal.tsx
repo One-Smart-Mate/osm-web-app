@@ -2,6 +2,7 @@ import { Modal, DatePicker, InputNumber, Select, Button, Typography, Space } fro
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect } from "react";
+import Strings from "../../../utils/localizations/Strings";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -9,36 +10,33 @@ const { Option } = Select;
 const days = ["L", "M", "X", "J", "V", "S", "D"];
 
 interface NewFeatureModalProps {
-    visible: boolean;
-    onCancel: () => void;
-    onSave: (data: {
-      startDate: Dayjs;
-      interval: number;
-      frequency: string;
-      selectedDays: string[];
-      endDate: Dayjs | null;
-    }) => void;
-    onDelete?: () => void; // 👈 nueva prop opcional
-    existingSchedule?: {
-      startDate: Dayjs;
-      interval: number;
-      frequency: string;
-      selectedDays: string[];
-      endDate: Dayjs | null;
-    };
-  }
+  visible: boolean;
+  onCancel: () => void;
+  onSave: (data: {
+    startDate: string;
+    interval: number;
+    frequency: string;
+    selectedDays: string[];
+    endDate: string | null;
+  }) => void;
+  onDelete?: () => void;
+  existingSchedule?: {
+    startDate: Dayjs;
+    interval: number;
+    frequency: string;
+    selectedDays: string[];
+    endDate: Dayjs | null;
+  };
+}
 
 
-
-
-  
-  export default function NewFeatureModal({
-    visible,
-    onCancel,
-    onSave,
-    onDelete,
-    existingSchedule,
-  }: NewFeatureModalProps) {
+export default function NewFeatureModal({
+  visible,
+  onCancel,
+  onSave,
+  onDelete,
+  existingSchedule,
+}: NewFeatureModalProps) {
   const [startDate, setStartDate] = useState<Dayjs>(dayjs());
   const [interval, setInterval] = useState<number>(1);
   const [frequency, setFrequency] = useState<string>("semana");
@@ -61,16 +59,16 @@ interface NewFeatureModalProps {
     } else {
       setStartDate(dayjs());
       setInterval(1);
-      setFrequency("semana");
+      setFrequency(Strings.weekValue);
       setSelectedDays(["L", "M", "X"]);
       setEndDate(dayjs("2025-10-28"));
     }
   }, [existingSchedule, visible]);
-  
+
 
   return (
     <Modal
-      title="Repetir"
+      title={Strings.repeat}
       open={visible}
       onCancel={onCancel}
       footer={null}
@@ -86,10 +84,10 @@ interface NewFeatureModalProps {
           <Space>
             <InputNumber min={1} value={interval} onChange={(value) => setInterval(value ?? 1)} />
             <Select value={frequency} onChange={setFrequency}>
-              <Option value="día">día</Option>
-              <Option value="semana">semana</Option>
-              <Option value="mes">mes</Option>
-              <Option value="año">año</Option>
+              <Option value="día">{Strings.dayValue}</Option>
+              <Option value="semana">{Strings.weekValue}</Option>
+              <Option value="mes">{Strings.monthValue}</Option>
+              <Option value="año">{Strings.yearValue}</Option>
             </Select>
           </Space>
         </div>
@@ -121,30 +119,34 @@ interface NewFeatureModalProps {
         </Space>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-        <Button danger onClick={onDelete} disabled={!onDelete}>
-  Eliminar
-</Button>
+          <Button danger onClick={onDelete} disabled={!onDelete}>
+            Eliminar
+          </Button>
 
           <Button onClick={onCancel}>Descartar</Button>
-          
+
           <Button
   type="primary"
   onClick={() =>
     onSave({
-      startDate,
+      
+      startDate: startDate.toISOString(),
       interval,
       frequency,
       selectedDays,
-      endDate,
+      endDate: endDate ? endDate.toISOString() : null,
     })
   }
+  disabled={!startDate || selectedDays.length === 0}
 >
   Guardar
 </Button>
+
+
 
 
         </div>
       </Space>
     </Modal>
   );
-}
+}  

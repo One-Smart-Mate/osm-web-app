@@ -1183,7 +1183,15 @@ class StringsBase {
   static frequencyCodeToolTip = "frequencyCodeToolTip"
   static descriptionToolTip = "descriptionToolTip"
   static nameCiltTypeToolTip = "nameCiltTypeToolTip"
-  static ciltTypeColorTooltip: "ciltTypeColorTooltip:";
+  static ciltTypeColorTooltip= "ciltTypeColorTooltip:"
+
+  //NEW UPDATE
+  static dayValue = "dayValue" 
+  static weekValue = "weekValue"
+  static monthValue = "monthValue"
+  static yearValue = "yearValue"
+  static repeat = "repeat"
+  static repeatEach = "repeatEach" 
 
 }
 
