@@ -1178,6 +1178,10 @@ class StringsBase {
   static reason = "reason"
   static registered = "registered" 
   static noProceduresFound = "noProceduresFound"
+
+  static ciltDueDate = "ciltDueDate"
+  static ciltDueDatePlaceholder = "ciltDueDatePlaceholder"
+
   static editUser = "editUser"
   static fastPassword = "fastPassword"
   static manual = "manual"

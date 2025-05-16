@@ -9,9 +9,6 @@ import {
   Switch,
   Spin,
   notification,
-  Row,
-  Col,
-  Card,
   Tooltip,
 } from "antd";
 import { useLocation } from "react-router-dom";
@@ -306,6 +303,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       onCancel={handleCancel}
       footer={null}
       width={1000}
+      className="cilt-sequence-modal"
     >
       <Spin spinning={loading}>
         <Form
@@ -318,42 +316,37 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             quantityPicturesClose: 0,
             positionId: cilt?.positionId,
           }}
+          className="max-h-[70vh] overflow-y-auto px-1"
         >
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Card
-                title={
-                  <div
-                    style={{
-                      color: "#1890ff",
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                    }}
-                  >
-                    {Strings.createCiltSequenceModalBasicInfoTitle}
-                  </div>
-                }
-                bordered={true}
-                style={{ height: "100%" }}
-              >
+          {/* Hidden fields */}
+          <Form.Item name="order" hidden><Input type="number" /></Form.Item>
+          <Form.Item name="secuenceColor" hidden><Input /></Form.Item>
+          <Form.Item name="positionId" hidden><Input /></Form.Item>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left Column - Basic Info */}
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="text-primary text-lg font-semibold mb-4 border-b pb-2">
+                  {Strings.createCiltSequenceModalBasicInfoTitle}
+                </h3>
+                
                 {/* CILT Type */}
                 <Form.Item
                   name="ciltTypeId"
                   label={Strings.editCiltSequenceModalCiltTypeLabel}
-                  rules={[
-                    {
-                      required: true,
-                      message: Strings.editCiltSequenceModalCiltTypeRequired,
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: Strings.editCiltSequenceModalCiltTypeRequired,
+                  }]}
                 >
                   <Select
-                    placeholder={
-                      Strings.editCiltSequenceModalCiltTypePlaceholder
-                    }
+                    placeholder={Strings.editCiltSequenceModalCiltTypePlaceholder}
                     loading={loading}
                     disabled={loading}
                     onChange={handleCiltTypeChange}
+                    className="w-full h-10 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                   >
                     {ciltTypes.map((type) => (
                       <Option key={type.id} value={type.id}>
@@ -363,82 +356,203 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   </Select>
                 </Form.Item>
 
-                {/* Level field removed */}
-
                 {/* Frequencies */}
                 <Form.Item
                   name="frequencies"
                   label={Strings.createCiltSequenceModalFrequenciesTitle}
                   help={Strings.createCiltSequenceModalFrequenciesDescription}
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        Strings.createCiltSequenceModalFrequenciesRequired,
-                    },
-                  ]}
+                  rules={[{
+                    required: true,
+                    message: Strings.createCiltSequenceModalFrequenciesRequired,
+                  }]}
                 >
                   <Select
                     mode="multiple"
-                    placeholder={
-                      Strings.createCiltSequenceModalFrequenciesRequired
-                    }
+                    placeholder={Strings.createCiltSequenceModalFrequenciesRequired}
                     showSearch
                     optionFilterProp="children"
                     filterOption={(input, option) => {
                       const childText = option?.label?.toString() || "";
-                      return (
-                        childText.toLowerCase().indexOf(input.toLowerCase()) >=
-                        0
-                      );
+                      return childText.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                     }}
-                    style={{ width: "100%" }}
+                    className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     options={ciltFrequencies.map((frequency) => ({
                       value: frequency.id,
                       label: `${frequency.frecuencyCode} - ${frequency.description}`,
                     }))}
                   />
                 </Form.Item>
+              </div>
 
-                {/* Hidden Order field */}
-                <Form.Item name="order" hidden>
-                  <Input type="number" />
-                </Form.Item>
-              </Card>
-            </Col>
-
-            <Col span={12}>
-              <Card
-                title={
-                  <div
-                    style={{
-                      color: "#1890ff",
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                    }}
-                  >
-                    {Strings.createCiltSequenceModalDetailsTitle}
+              {/* Time and Standard Info */}
+              <div className="bg-white rounded-lg p-4">
+                {/* Removed title as requested */}
+                
+                {/* Standard Time */}
+                <Form.Item
+                  name="standardTime"
+                  label={
+                    <div className="flex items-center">
+                      {Strings.editCiltSequenceModalStandardTimeLabel}
+                      {formattedTime && (
+                        <Tooltip title="Time in HH:MM:SS format">
+                          <span className="ml-2 text-primary">({formattedTime})</span>
+                        </Tooltip>
+                      )}
+                    </div>
+                  }
+                  rules={[{
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardTimeRequired,
+                  }]}
+                >
+                  <div className="relative">
+                    <InputNumber
+                      min={1}
+                      className="w-full h-10 text-base"
+                      style={{ paddingRight: '30px' }}
+                      placeholder={Strings.editCiltSequenceModalStandardTimePlaceholder}
+                      onChange={(value) => {
+                        if (value) {
+                          setFormattedTime(formatSecondsToNaturalTime(Number(value)));
+                        } else {
+                          setFormattedTime("");
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const inputValue = e.target.value;
+                        if (inputValue && inputValue.includes(":")) {
+                          const seconds = parseNaturalTimeToSeconds(inputValue);
+                          if (seconds !== null) {
+                            form.setFieldsValue({ standardTime: seconds });
+                            setFormattedTime(formatSecondsToNaturalTime(seconds));
+                          }
+                        }
+                      }}
+                    />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
+                      <small>sec</small>
+                    </div>
                   </div>
-                }
-                bordered={true}
-                style={{ height: "100%" }}
-              >
+                </Form.Item>
+
+                {/* Standard OK */}
+                <Form.Item
+                  name="standardOk"
+                  label={Strings.editCiltSequenceModalStandardOkLabel}
+                  rules={[{
+                    required: true,
+                    message: Strings.editCiltSequenceModalStandardOkRequired,
+                  }]}
+                >
+                  <Input
+                    placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
+                    className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                  />
+                </Form.Item>
+              </div>
+
+              {/* Pictures */}
+              <div className="bg-white rounded-lg p-4">
+                {/* Removed title as requested */}
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Quantity Pictures Create */}
+                  <Form.Item
+                    name="quantityPicturesCreate"
+                    label={Strings.editCiltSequenceModalQuantityPicturesCreateLabel}
+                    rules={[{
+                      required: true,
+                      message: Strings.editCiltSequenceModalQuantityPicturesCreateRequired,
+                    }]}
+                  >
+                    <InputNumber 
+                      min={0} 
+                      className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary" 
+                    />
+                  </Form.Item>
+
+                  {/* Quantity Pictures Close */}
+                  <Form.Item
+                    name="quantityPicturesClose"
+                    label={Strings.editCiltSequenceModalQuantityPicturesCloseLabel}
+                    rules={[{
+                      required: true,
+                      message: Strings.editCiltSequenceModalQuantityPicturesCloseRequired,
+                    }]}
+                  >
+                    <InputNumber 
+                      min={0} 
+                      className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary" 
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Sequence Details */}
+            <div className="space-y-4">
+              {/* Sequence Details */}
+              <div className="bg-white rounded-lg p-4">
+                <h3 className="text-primary text-lg font-semibold mb-4 border-b pb-2">
+                  {Strings.createCiltSequenceModalDetailsTitle}
+                </h3>
+                
+                {/* Sequence List */}
+                <Form.Item
+                  name="secuenceList"
+                  label={Strings.editCiltSequenceModalSequenceListLabel}
+                  rules={[{
+                    required: true,
+                    message: Strings.editCiltSequenceModalSequenceListRequired,
+                  }]}
+                >
+                  <TextArea
+                    placeholder={Strings.editCiltSequenceModalSequenceListPlaceholder}
+                    autoSize={{ minRows: 4, maxRows: 8 }}
+                    className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                  />
+                </Form.Item>
+
+                {/* Tools Required */}
+                <Form.Item
+                  name="toolsRequired"
+                  label={Strings.editCiltSequenceModalToolsRequiredLabel}
+                  getValueFromEvent={(e) => e.target.value}
+                >
+                  <TextArea 
+                    autoSize={{ minRows: 3, maxRows: 6 }} 
+                    className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    placeholder="Ingrese las herramientas requeridas"
+                  />
+                </Form.Item>
+              </div>
+
+              {/* OPL References */}
+              <div className="bg-white rounded-lg p-4">
+                {/* Removed title as requested */}
+                
                 {/* Reference OPL/SOP */}
                 <Form.Item
                   name="referenceOplSop"
                   label={Strings.editCiltSequenceModalReferenceOplLabel}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center space-x-2">
                     <Button
                       type="primary"
                       onClick={() => setReferenceOplModalVisible(true)}
-                      className="mr-2"
+                      className="flex-shrink-0"
                     >
                       {Strings.oplSelectionModalSelectButton}
                     </Button>
-                    {selectedReferenceOpl && (
-                      <div className="border rounded p-2 flex-1">
+                    {selectedReferenceOpl ? (
+                      <div className="border rounded p-2 flex-1 bg-gray-50 truncate">
                         {selectedReferenceOpl.title}
+                      </div>
+                    ) : (
+                      <div className="border rounded p-2 flex-1 bg-gray-50 text-gray-400 italic">
+                        {Strings.editCiltSequenceModalReferenceOplLabel}
                       </div>
                     )}
                     <Input type="hidden" value={selectedReferenceOpl?.id} />
@@ -450,201 +564,74 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   name="remediationOplSop"
                   label={Strings.editCiltSequenceModalRemediationOplLabel}
                 >
-                  <div className="flex items-center">
+                  <div className="flex items-center space-x-2">
                     <Button
                       type="primary"
                       onClick={() => setRemediationOplModalVisible(true)}
-                      className="mr-2"
+                      className="flex-shrink-0"
                     >
                       {Strings.oplSelectionModalSelectButton}
                     </Button>
-                    {selectedRemediationOpl && (
-                      <div className="border rounded p-2 flex-1">
+                    {selectedRemediationOpl ? (
+                      <div className="border rounded p-2 flex-1 bg-gray-50 truncate">
                         {selectedRemediationOpl.title}
+                      </div>
+                    ) : (
+                      <div className="border rounded p-2 flex-1 bg-gray-50 text-gray-400 italic">
+                        {Strings.editCiltSequenceModalRemediationOplLabel}
                       </div>
                     )}
                     <Input type="hidden" value={selectedRemediationOpl?.id} />
                   </div>
                 </Form.Item>
+              </div>
 
-                {/* Sequence List */}
-                <Form.Item
-                  name="secuenceList"
-                  label={Strings.editCiltSequenceModalSequenceListLabel}
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        Strings.editCiltSequenceModalSequenceListRequired,
-                    },
-                  ]}
-                >
-                  <TextArea
-                    placeholder={
-                      Strings.editCiltSequenceModalSequenceListPlaceholder
-                    }
-                    autoSize={{ minRows: 4, maxRows: 8 }}
-                  />
-                </Form.Item>
+              {/* Machine Status */}
+              <div className="bg-white rounded-lg p-4">
+                {/* Removed title as requested */}
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Stoppage Reason */}
+                  <Form.Item
+                    name="stoppageReason"
+                    label={Strings.editCiltSequenceModalStoppageReasonLabel}
+                    valuePropName="checked"
+                  >
+                    <Switch />
+                  </Form.Item>
 
-                {/* Hidden Sequence Color - inherited from CILT type */}
-                <Form.Item name="secuenceColor" hidden>
-                  <Input />
-                </Form.Item>
-              </Card>
-            </Col>
-          </Row>
+                  {/* Machine Stopped */}
+                  <Form.Item
+                    name="machineStopped"
+                    label={Strings.editCiltSequenceModalMachineStoppedLabel}
+                    valuePropName="checked"
+                  >
+                    <Switch />
+                  </Form.Item>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              {/* Position */}
-              <Form.Item hidden name="positionId">
-                <Input />
-              </Form.Item>
-
-              {/* Standard Time */}
-              <Form.Item
-                name="standardTime"
-                label={
-                  <span>
-                    {Strings.editCiltSequenceModalStandardTimeLabel}
-                    {formattedTime && (
-                      <Tooltip title="Time in HH:MM:SS format">
-                        <span style={{ marginLeft: "8px", color: "#1890ff" }}>
-                          ({formattedTime})
-                        </span>
-                      </Tooltip>
-                    )}
-                  </span>
-                }
-                rules={[
-                  {
-                    required: true,
-                    message: Strings.editCiltSequenceModalStandardTimeRequired,
-                  },
-                ]}
-              >
-                <InputNumber
-                  min={1}
-                  style={{ width: "100%", height: "40px" }}
-                  placeholder={
-                    Strings.editCiltSequenceModalStandardTimePlaceholder
-                  }
-                  onChange={(value) => {
-                    if (value) {
-                      setFormattedTime(
-                        formatSecondsToNaturalTime(Number(value))
-                      );
-                    } else {
-                      setFormattedTime("");
-                    }
-                  }}
-                  onBlur={(e) => {
-                    const inputValue = e.target.value;
-
-                    if (inputValue && inputValue.includes(":")) {
-                      const seconds = parseNaturalTimeToSeconds(inputValue);
-                      if (seconds !== null) {
-                        form.setFieldsValue({ standardTime: seconds });
-                        setFormattedTime(formatSecondsToNaturalTime(seconds));
-                      }
-                    }
-                  }}
-                />
-              </Form.Item>
-
-              {/* Standard OK */}
-              <Form.Item
-                name="standardOk"
-                label={Strings.editCiltSequenceModalStandardOkLabel}
-                rules={[
-                  {
-                    required: true,
-                    message: Strings.editCiltSequenceModalStandardOkRequired,
-                  },
-                ]}
-              >
-                <Input
-                  placeholder={
-                    Strings.editCiltSequenceModalStandardOkPlaceholder
-                  }
-                />
-              </Form.Item>
-
-              {/* Stoppage Reason */}
-              <Form.Item
-                name="stoppageReason"
-                label={Strings.editCiltSequenceModalStoppageReasonLabel}
-                valuePropName="checked"
-              >
-                <Switch />
-              </Form.Item>
-
-              {/* Machine Stopped */}
-              <Form.Item
-                name="machineStopped"
-                label={Strings.editCiltSequenceModalMachineStoppedLabel}
-                valuePropName="checked"
-              >
-                <Switch />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              {/* Quantity Pictures Create */}
-              <Form.Item
-                name="quantityPicturesCreate"
-                label={Strings.editCiltSequenceModalQuantityPicturesCreateLabel}
-                rules={[
-                  {
-                    required: true,
-                    message:
-                      Strings.editCiltSequenceModalQuantityPicturesCreateRequired,
-                  },
-                ]}
-              >
-                <InputNumber min={0} className="w-full" />
-              </Form.Item>
-
-              {/* Quantity Pictures Close */}
-              <Form.Item
-                name="quantityPicturesClose"
-                label={Strings.editCiltSequenceModalQuantityPicturesCloseLabel}
-                rules={[
-                  {
-                    required: true,
-                    message:
-                      Strings.editCiltSequenceModalQuantityPicturesCloseRequired,
-                  },
-                ]}
-              >
-                <InputNumber min={0} className="w-full" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={24}>
-              {/* Tools Required */}
-              <Form.Item
-                name="toolsRequired"
-                label={Strings.editCiltSequenceModalToolsRequiredLabel}
-                getValueFromEvent={(e) => e.target.value}
-              >
-                <TextArea autoSize={{ minRows: 3, maxRows: 6 }} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <div className="flex justify-end mt-4 space-x-2">
-            <Button onClick={handleCancel}>{Strings.cancel}</Button>
-            <Button type="primary" htmlType="submit" loading={loading}>
+          {/* Action Buttons */}
+          <div className="flex justify-end mt-6 space-x-3 sticky bottom-0 bg-white py-3 border-t">
+            <Button 
+              onClick={handleCancel}
+              className="min-w-[100px]"
+            >
+              {Strings.cancel}
+            </Button>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              loading={loading}
+              className="min-w-[100px]"
+            >
               {Strings.save}
             </Button>
           </div>
         </Form>
       </Spin>
-
-      {/* Level Tree Modal removed */}
 
       {/* OPL Selection Modals */}
       <OplSelectionModal
