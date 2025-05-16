@@ -403,7 +403,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const CiltPDFButton = () => {
+
+interface CiltPDFButtonProps {
+  id: string;
+}
+const CiltPDFButton = ({id}: CiltPDFButtonProps) => {
   const [getCiltDetails] = useGetCiltDetailsMutation();
   const [isLoading, setLoading] = useState(false);
   const { notification } = AntApp.useApp();
@@ -413,7 +417,7 @@ const CiltPDFButton = () => {
   const handleGetCiltDetails = async () => {
     try {
       setLoading(true);
-      const response = await getCiltDetails("6").unwrap();
+      const response = await getCiltDetails(id).unwrap();
       setData(response);
     } catch (error) {
       AnatomyNotification.error(notification, error);
@@ -444,7 +448,7 @@ const CiltPDFButton = () => {
         onClick={handleGetCiltDetails}
         icon={<BsFilePdf />}
       >
-        Download CILT PDF
+        {Strings.downloadData}
       </Button>
       {data && (
         <BlobProvider document={<CiltPDFDocument data={data} />}>

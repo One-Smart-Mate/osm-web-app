@@ -113,7 +113,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
           >
             {Strings.levelsTreeOptionClone}
           </Button>
-          <CiltPDFButton />
+          <CiltPDFButton id={record.id.toString()} />
         </Space>
       ),
     },
