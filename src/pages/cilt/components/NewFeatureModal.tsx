@@ -80,7 +80,7 @@ export default function NewFeatureModal({
         </div>
 
         <div>
-          <Text strong>Repetir cada</Text>
+          <Text strong>{Strings.repeatEach}</Text>
           <Space>
             <InputNumber min={1} value={interval} onChange={(value) => setInterval(value ?? 1)} />
             <Select value={frequency} onChange={setFrequency}>
