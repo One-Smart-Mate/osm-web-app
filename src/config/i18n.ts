@@ -1252,8 +1252,15 @@ const resources = {
       reason: "Reason",
       registered: "Registered",
       noProceduresFound: "No procedures found",
+
       ciltDueDate: "CILT Due Date",
       ciltDueDatePlaceholder: "CILT Due Date"
+      select: "Select",
+      editUser:"Update user",
+      fastPassword: "Fast password",
+      manual: "User manual",
+      downloadUsersTemplate: "Download users template"
+
     },
   },
   es: {
@@ -2542,8 +2549,14 @@ const resources = {
       reason: "Razón",
       registered: "Registrado",
       noProceduresFound: "No se encontraron procedimientos",
+
       ciltDueDate: "Fecha de vencimiento del CILT",
       ciltDueDatePlaceholder: "Fecha de vencimiento del CILT"
+      select: "Seleccionar",
+      editUser:"Editar usuario",
+      fastPassword: "Password rápido",
+      manual: "Manual de usuario",
+      downloadUsersTemplate: "Descargar plantilla de usuarios"
     },
   },
 };

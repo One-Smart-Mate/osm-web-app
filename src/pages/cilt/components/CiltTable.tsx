@@ -5,6 +5,7 @@ import { getStatusAndText } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
 import type { TablePaginationConfig } from "antd/es/table";
 import type { ColumnsType } from "antd/es/table";
+import CiltPDFButton from "./CiltPDFButton";
 
 interface CiltTableProps {
   ciltList: CiltMstr[];
@@ -112,6 +113,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
           >
             {Strings.levelsTreeOptionClone}
           </Button>
+          <CiltPDFButton id={record.id.toString()} />
         </Space>
       ),
     },

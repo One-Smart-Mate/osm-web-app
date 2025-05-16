@@ -4,6 +4,7 @@ import {
   CreateCiltMstrDTO,
   UpdateCiltMstrDTO,
 } from "../../data/cilt/ciltMstr/ciltMstr";
+import { CiltDetails, CiltDetailsResponse } from "../../data/cilt/ciltMstr/cilt.master.detail";
 
 export const ciltMstrService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -39,6 +40,10 @@ export const ciltMstrService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
     }),
+    getCiltDetails: builder.mutation<CiltDetails, string>({
+      query: (ciltId) => `/cilt-mstr/details/${ciltId}`,
+      transformResponse: (response: CiltDetailsResponse) => response.data,
+    }),
   }),
 });
 
@@ -49,4 +54,5 @@ export const {
   useGetCiltMstrByIdMutation,
   useCreateCiltMstrMutation,
   useUpdateCiltMstrMutation,
+  useGetCiltDetailsMutation
 } = ciltMstrService;

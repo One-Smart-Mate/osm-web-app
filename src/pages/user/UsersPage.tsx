@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { List, App as AntApp, Modal } from "antd";
+import { List, App as AntApp, Modal, Button } from "antd";
 import Strings from "../../utils/localizations/Strings";
 import { useGetUsersWithPositionsMutation } from "../../services/userService";
 import { UserCardInfo } from "../../data/user/user";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
@@ -103,10 +103,18 @@ const UsersPage = () => {
       }
       content={
         <div>
-          <div className="flex justify-end pb-2">
+          <div className="flex justify-end pb-2 gap-2">
             <ImportUsersButton
               onComplete={(data) => handleImportUsersData(data)}
             />
+            <Link
+              to={import.meta.env.VITE_IMPORT_USERS_EXCEL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
+            >
+              <Button type="dashed">{Strings.downloadUsersTemplate}</Button>
+            </Link>
           </div>
           <PaginatedList
             className="no-scrollbar"
