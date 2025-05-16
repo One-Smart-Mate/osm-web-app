@@ -1183,7 +1183,7 @@ class StringsBase {
   static frequencyCodeToolTip = "frequencyCodeToolTip"
   static descriptionToolTip = "descriptionToolTip"
   static nameCiltTypeToolTip = "nameCiltTypeToolTip"
-  static ciltTypeColorTooltip= "ciltTypeColorTooltip:"
+  static ciltTypeColorTooltip= "ciltTypeColorTooltip"
 
   //NEW UPDATE
   static dayValue = "dayValue" 
@@ -1192,6 +1192,14 @@ class StringsBase {
   static yearValue = "yearValue"
   static repeat = "repeat"
   static repeatEach = "repeatEach" 
+
+  static ciltDueDate = "ciltDueDate"
+  static ciltDueDatePlaceholder = "ciltDueDatePlaceholder"
+
+  static editUser = "editUser"
+  static fastPassword = "fastPassword"
+  static manual = "manual"
+  static downloadUsersTemplate = "downloadUsersTemplate"
 
 }
 

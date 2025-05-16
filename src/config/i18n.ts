@@ -1259,7 +1259,16 @@ const resources = {
       monthValue: "month",
       yearValue: "year",
       repeat : "Repeat",
-      repeatEach : "Repeat each"
+      repeatEach : "Repeat each",
+
+      ciltDueDate: "CILT Due Date",
+      ciltDueDatePlaceholder: "CILT Due Date",
+      select: "Select",
+      editUser:"Update user",
+      fastPassword: "Fast password",
+      manual: "User manual",
+      downloadUsersTemplate: "Download users template",
+
 
     },
   },
@@ -2556,8 +2565,15 @@ const resources = {
       monthValue: "mes",
       yearValue: "año",
       repeat: "Repetir",
-      repeatEach: "Repetir cada"
+      repeatEach: "Repetir cada",
 
+      ciltDueDate: "Fecha de vencimiento del CILT",
+      ciltDueDatePlaceholder: "Fecha de vencimiento del CILT",
+      select: "Seleccionar",
+      editUser:"Editar usuario",
+      fastPassword: "Password rápido",
+      manual: "Manual de usuario",
+      downloadUsersTemplate: "Descargar plantilla de usuarios",
     },
   },
 };

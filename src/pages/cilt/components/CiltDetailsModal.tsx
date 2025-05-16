@@ -65,6 +65,7 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
             )}
           </Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrLastUsedLabel}>{cilt.dateOfLastUsed ? new Date(cilt.dateOfLastUsed).toLocaleDateString() : Strings.ciltMstrNA}</Descriptions.Item>
+          <Descriptions.Item label={Strings.ciltDueDate}>{cilt.ciltDueDate ? new Date(cilt.ciltDueDate).toLocaleDateString() : Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrLastUpdated}>{cilt.updatedAt ? new Date(cilt.updatedAt).toLocaleString() : Strings.ciltMstrNA}</Descriptions.Item>
           <Descriptions.Item label={Strings.ciltMstrLayoutLabel}>
             {cilt.urlImgLayout ? (

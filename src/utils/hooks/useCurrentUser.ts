@@ -6,15 +6,26 @@ import Constants from "../Constants";
 
 
 const useCurrentUser = () => {
-  const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
-  const [user, setUser] = useState<User>(getSessionUser() as User);
+  const [getSessionUser, setSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
+  const [user, setUserState] = useState<User>(getSessionUser() as User);
 
-const isIhAdmin = () => {
+  const setUser = (newUser: { name: string; email: string }) => {
+    setUserState((prevUser) => {
+      const updatedUser = {
+        ...prevUser,
+        name: newUser.name,
+        email: newUser.email,
+      };
+      setSessionUser(updatedUser);
+      return updatedUser;
+    });
+  };
+
+  const isIhAdmin = () => {
     return getUserRol(user) === UserRoles.IHSISADMIN;
   };
 
-  const rol =  getUserRol(user) ?? UserRoles.UNDEFINED;
-
+  const rol = getUserRol(user) ?? UserRoles.UNDEFINED;
 
   return { user, setUser, isIhAdmin, rol };
 };

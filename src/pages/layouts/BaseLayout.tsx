@@ -80,7 +80,7 @@ const BaseLayout: React.FC = () => {
         }}
       >
         <Header
-          style={{ background: colorBgContainer }}
+          style={{ background: colorBgContainer, zIndex: 900 }}
           className="d-flex justify-between"
         >
           <Button

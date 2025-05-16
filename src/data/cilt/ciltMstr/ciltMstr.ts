@@ -15,6 +15,7 @@ export interface CiltMstr {
   order: number | null;
   status: string | null;
   dateOfLastUsed: string | null;
+  ciltDueDate: string | null;
   createdAt: string | null;
   updatedAt: string | null;
   deletedAt: string | null;
@@ -37,6 +38,7 @@ export class CreateCiltMstrDTO {
   order?: number;
   status?: string;
   dateOfLastUsed: string;
+  ciltDueDate?: string;
   createdAt: string;
 
   constructor(
@@ -56,7 +58,8 @@ export class CreateCiltMstrDTO {
     learnigTime?: string,
     urlImgLayout?: string,
     order?: number,
-    status?: string
+    status?: string,
+    ciltDueDate?: string
   ) {
     this.siteId = siteId;
     this.positionId = positionId;
@@ -74,6 +77,7 @@ export class CreateCiltMstrDTO {
     this.order = order;
     this.status = status;
     this.dateOfLastUsed = dateOfLastUsed;
+    this.ciltDueDate = ciltDueDate;
     this.createdAt = createdAt;
   }
 }
@@ -96,6 +100,7 @@ export class UpdateCiltMstrDTO {
   order?: number;
   status?: string;
   dateOfLastUsed: string;
+  ciltDueDate?: string;
   updatedAt: string;
 
   constructor(
@@ -116,7 +121,8 @@ export class UpdateCiltMstrDTO {
     learnigTime?: string,
     urlImgLayout?: string,
     order?: number,
-    status?: string
+    status?: string,
+    ciltDueDate?: string
   ) {
     this.id = id;
     this.siteId = siteId;
@@ -135,6 +141,7 @@ export class UpdateCiltMstrDTO {
     this.order = order;
     this.status = status;
     this.dateOfLastUsed = dateOfLastUsed;
+    this.ciltDueDate = ciltDueDate;
     this.updatedAt = updatedAt;
   }
 }

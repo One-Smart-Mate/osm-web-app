@@ -195,6 +195,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       urlImgLayout: firebaseUrl, // Use the stored Firebase URL
       order: 1, // Default order
       status: "A", // Default status is Active
+      ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined, 
       dateOfLastUsed: new Date().toISOString(),
       createdAt: new Date().toISOString()
     };
@@ -298,7 +299,17 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           />
         </Form.Item>
 
-        {/* Campo learnigTime eliminado del flujo */}
+        <Form.Item
+          name="ciltDueDate"
+          label={Strings.ciltDueDate}
+          className="flex-1"
+        >
+          <Input 
+            size="large" 
+            type="date"
+          />
+        </Form.Item>
+
       </div>
 
       <div className="flex flex-row gap-4">
