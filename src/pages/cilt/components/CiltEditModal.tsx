@@ -36,7 +36,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [firebaseUrl, setFirebaseUrl] = useState<string | undefined>(undefined);
 
-  // Estados para los modales de selección de usuarios
   const [creatorModalVisible, setCreatorModalVisible] = useState(false);
   const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
   const [approverModalVisible, setApproverModalVisible] = useState(false);
@@ -45,26 +44,25 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [reviewerId, setReviewerId] = useState<number | undefined>(cilt?.reviewerId ? Number(cilt.reviewerId) : undefined);
   const [approvedById, setApprovedById] = useState<number | undefined>(cilt?.approvedById ? Number(cilt.approvedById) : undefined);
   
-  // Cargar usuarios responsables para los modales de selección
   useEffect(() => {
-    const fetchResponsibles = async () => {
-      if (cilt && cilt.siteId) {
-        setLoading(true);
-        try {
-          const response = await getSiteResponsibles(String(cilt.siteId)).unwrap();
-          setResponsibles(response || []);
-        } catch (error) {
-          console.error("Error fetching responsibles:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
     fetchResponsibles();
   }, [cilt, getSiteResponsibles]);
   
-  // Funciones para manejar la selección de usuarios
+
+  const fetchResponsibles = async () => {
+    if (cilt && cilt.siteId) {
+      setLoading(true);
+      try {
+        const response = await getSiteResponsibles(String(cilt.siteId)).unwrap();
+        setResponsibles(response || []);
+      } catch (error) {
+        console.error("Error fetching responsibles:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   const handleCreatorSelection = (userIds: number[]) => {
     if (userIds.length > 0) {
       setCreatorId(userIds[0]);
