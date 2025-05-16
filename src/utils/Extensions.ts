@@ -5,6 +5,7 @@ import Strings from "./localizations/Strings";
 import { v4 as uuidv4 } from "uuid";
 import Constants from "./Constants";
 import { Evidences } from "../data/card/card";
+import moment from "moment";
 
 export const isAudioURL = (url: string) => {
   return Constants.AUDIO_FORMATS.some((ext) => url.includes(ext));
@@ -334,4 +335,10 @@ export const formatCompanyName = (input: string): string => {
 export const isRedesign = (): boolean => {
   const redesign = import.meta.env.VITE_IS_REDESIGN;
   return redesign != null && redesign != undefined && redesign != "" && redesign == "yes";
+}
+
+
+export function formatSecondsToHHMMSS(seconds: number | string): string {
+  const sec = typeof seconds === "string" ? parseInt(seconds, 10) : seconds;
+  return moment.utc(sec * 1000).format("HH:mm:ss");
 }
