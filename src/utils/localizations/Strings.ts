@@ -1185,7 +1185,7 @@ class StringsBase {
   static nameCiltTypeToolTip = "nameCiltTypeToolTip"
   static ciltTypeColorTooltip= "ciltTypeColorTooltip"
 
-  //NEW UPDATE
+
   static dayValue = "dayValue" 
   static weekValue = "weekValue"
   static monthValue = "monthValue"
@@ -1200,6 +1200,14 @@ class StringsBase {
   static fastPassword = "fastPassword"
   static manual = "manual"
   static downloadUsersTemplate = "downloadUsersTemplate"
+
+    //NEW UPDATE
+  static start = "start"
+  static eachPlace = "eachPlace"
+  static until = "until"
+  static quitDate = "quitDate"
+  static freqMessage = "freqMessage"
+
 
 }
 

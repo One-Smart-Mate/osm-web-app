@@ -817,7 +817,7 @@ const resources = {
       ciltFrecuenciesDescription:
         "This page contains information about CILT frequencies.",
 
-      //CILT TYPES IN ENGLISH
+    
       searchByName: "Search by name",
       addNewCiltType: "Add new type of CILT",
       errorLoadingNewTypesCilt: "Error loading CILT types",
@@ -832,7 +832,7 @@ const resources = {
       errorNoSiteId: "A site Id is obligatory",
       clearFilters: "Clear filters",
 
-      //CILT FREQUENCIES IN ENGLISH
+   
       frequencyCode: "Frequency Code",
       addNewCiltFrequency: "Add New Cilt Frequency",
       editCiltFrequency: "Edit Cilt Frequency",
@@ -1253,7 +1253,7 @@ const resources = {
       registered: "Registered",
       noProceduresFound: "No procedures found",
 
-      //NEW UPDATE ENGLISH
+      
       dayValue: "day",
       weekValue: "week",
       monthValue: "month",
@@ -1269,6 +1269,12 @@ const resources = {
       manual: "User manual",
       downloadUsersTemplate: "Download users template",
 
+      //NEW UPDATE ENGLISH
+      start: "Start",
+      eachPlace: "It takes place every",
+      until: "until", 
+      quitDate: "Remove end date",
+      freqMessage: "The code cannot exceed 3 characters"
 
     },
   },
@@ -2559,7 +2565,7 @@ const resources = {
       registered: "Registrado",
       noProceduresFound: "No se encontraron procedimientos",
 
-      //NEW UPDATE SPANISH
+ 
       dayValue: "dia",
       weekValue: "semana",
       monthValue: "mes",
@@ -2574,6 +2580,13 @@ const resources = {
       fastPassword: "Password rápido",
       manual: "Manual de usuario",
       downloadUsersTemplate: "Descargar plantilla de usuarios",
+
+      //NEW UPDATE SPANISH
+      start: "Iniciar",
+      eachPlace: "Tiene lugar cada",
+      until: "Hasta",
+      quitDate: "Quitar fehca de finalización",
+      freqMessage: "El código no puede exceder 3 caracteres"
     },
   },
 };

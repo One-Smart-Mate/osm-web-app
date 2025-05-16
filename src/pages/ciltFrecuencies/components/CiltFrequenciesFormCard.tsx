@@ -48,7 +48,7 @@ const CiltFrequenciesFormCard = ({
                         className="flex-1"
                         rules={[
                             { required: true, message: Strings.obligatoryCode },
-                            { max: 3, message: 'El código no puede exceder 3 caracteres' },
+                            { max: 3, message: Strings.freqMessage },
                         ]}
                     >
                         <Input

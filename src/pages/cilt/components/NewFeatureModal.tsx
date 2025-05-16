@@ -39,7 +39,7 @@ export default function NewFeatureModal({
 }: NewFeatureModalProps) {
   const [startDate, setStartDate] = useState<Dayjs>(dayjs());
   const [interval, setInterval] = useState<number>(1);
-  const [frequency, setFrequency] = useState<string>("semana");
+  const [frequency, setFrequency] = useState<string>(Strings.weekValue);
   const [selectedDays, setSelectedDays] = useState<string[]>(["L", "M", "X"]);
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2025-10-28"));
 
@@ -75,7 +75,7 @@ export default function NewFeatureModal({
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         <div>
-          <Text strong>Iniciar</Text>
+          <Text strong>{Strings.start}</Text>
           <DatePicker value={startDate} onChange={(date) => setStartDate(date!)} style={{ width: "100%" }} />
         </div>
 
@@ -107,23 +107,23 @@ export default function NewFeatureModal({
         </div>
 
         <Text>
-          Tiene lugar cada {selectedDays.join(", ")} hasta{" "}
+          {Strings.eachPlace} {selectedDays.join(", ")} {Strings.until} {" "}
           <strong>{endDate?.format("D [de] MMM [de] YYYY")}</strong>
         </Text>
 
         <Space>
           <DatePicker value={endDate} onChange={(date) => setEndDate(date)} />
           <Button type="link" onClick={() => setEndDate(null)}>
-            Quitar fecha de finalización
+            {Strings.quitDate}
           </Button>
         </Space>
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
           <Button danger onClick={onDelete} disabled={!onDelete}>
-            Eliminar
+            {Strings.delete}
           </Button>
 
-          <Button onClick={onCancel}>Descartar</Button>
+          <Button onClick={onCancel}>{Strings.cancel}</Button>
 
           <Button
   type="primary"
