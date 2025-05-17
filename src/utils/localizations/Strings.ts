@@ -1179,6 +1179,20 @@ class StringsBase {
   static registered = "registered" 
   static noProceduresFound = "noProceduresFound"
 
+  //UPDATE 
+  static frequencyCodeToolTip = "frequencyCodeToolTip"
+  static descriptionToolTip = "descriptionToolTip"
+  static nameCiltTypeToolTip = "nameCiltTypeToolTip"
+  static ciltTypeColorTooltip= "ciltTypeColorTooltip"
+
+
+  static dayValue = "dayValue" 
+  static weekValue = "weekValue"
+  static monthValue = "monthValue"
+  static yearValue = "yearValue"
+  static repeat = "repeat"
+  static repeatEach = "repeatEach" 
+
   static ciltDueDate = "ciltDueDate"
   static ciltDueDatePlaceholder = "ciltDueDatePlaceholder"
 
@@ -1186,6 +1200,15 @@ class StringsBase {
   static fastPassword = "fastPassword"
   static manual = "manual"
   static downloadUsersTemplate = "downloadUsersTemplate"
+
+    //NEW UPDATE
+  static start = "start"
+  static eachPlace = "eachPlace"
+  static until = "until"
+  static quitDate = "quitDate"
+  static freqMessage = "freqMessage"
+
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access
