@@ -1274,8 +1274,10 @@ const resources = {
       eachPlace: "It takes place every",
       until: "until", 
       quitDate: "Remove end date",
-      freqMessage: "The code cannot exceed 3 characters"
-
+      freqMessage: "The code cannot exceed 3 characters",
+      referencePoint: "Reference Point",
+      selectableWithoutProgramming: "Selectable Without Programming",
+      createCiltSequenceModalErrorSelectFrequency: "Please select at least one frequency.",
     },
   },
   es: {
@@ -2586,7 +2588,10 @@ const resources = {
       eachPlace: "Tiene lugar cada",
       until: "Hasta",
       quitDate: "Quitar fehca de finalización",
-      freqMessage: "El código no puede exceder 3 caracteres"
+      freqMessage: "El código no puede exceder 3 caracteres",
+      referencePoint: "Punto de referencia",
+      selectableWithoutProgramming: "Seleccionable sin programación",
+      createCiltSequenceModalErrorSelectFrequency: "Por favor selecciona al menos una frecuencia.",
     },
   },
 };

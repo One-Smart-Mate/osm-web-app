@@ -29,6 +29,8 @@ export interface CiltSequence {
     updatedAt: string | null;
     deletedAt: string | null;
     status: string | null;
+    referencePoint: string | null;
+    selectableWithoutProgramming: number | null;
   }
   
   export class CreateCiltSequenceDTO {
@@ -57,9 +59,10 @@ export interface CiltSequence {
     machineStopped?: number;
     quantityPicturesCreate?: number;
     quantityPicturesClose?: number;
-    createdAt: string;
+    referencePoint?: string;
+    selectableWithoutProgramming?: number;
     status?: string;
-  
+    createdAt: string;
     constructor(
       positionName: string,
       createdAt: string,
@@ -87,7 +90,9 @@ export interface CiltSequence {
       machineStopped?: number,
       quantityPicturesCreate?: number,
       quantityPicturesClose?: number,
-      status?: string
+      status?: string,
+      referencePoint?: string,
+      selectableWithoutProgramming?: number
     ) {
       this.siteId = siteId;
       this.siteName = siteName;
@@ -116,6 +121,8 @@ export interface CiltSequence {
       this.quantityPicturesClose = quantityPicturesClose;
       this.createdAt = createdAt;
       this.status = status;
+      this.referencePoint = referencePoint;
+      this.selectableWithoutProgramming = selectableWithoutProgramming;
     }
   }
   
@@ -148,7 +155,8 @@ export interface CiltSequence {
     quantityPicturesClose?: number;
     updatedAt: string;
     status?: string;
-  
+    referencePoint?: string;
+    selectableWithoutProgramming?: number;
     constructor(
       id: number,
       updatedAt: string,
@@ -177,7 +185,9 @@ export interface CiltSequence {
       machineStopped?: number,
       quantityPicturesCreate?: number,
       quantityPicturesClose?: number,
-      status?: string
+      status?: string,
+      referencePoint?: string,
+      selectableWithoutProgramming?: number
     ) {
       this.id = id;
       this.siteId = siteId;
@@ -207,6 +217,8 @@ export interface CiltSequence {
       this.quantityPicturesClose = quantityPicturesClose;
       this.updatedAt = updatedAt;
       this.status = status;
+      this.referencePoint = referencePoint;
+      this.selectableWithoutProgramming = selectableWithoutProgramming;
     }
   }
   

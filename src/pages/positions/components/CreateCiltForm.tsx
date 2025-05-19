@@ -3,7 +3,7 @@ import { useCreateCiltMstrMutation } from "../../../services/cilt/ciltMstrServic
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
-import { UserOutlined, ClockCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { UserOutlined, PlusOutlined } from "@ant-design/icons";
 import { Position } from "../../../data/postiions/positions";
 import { CreateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
@@ -190,7 +190,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       reviewerName: values.reviewerName || "",
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
-      standardTime: Number(values.standardTime) || 0,
+      standardTime: undefined, // Standard time field removed - now calculated automatically in the database
       learnigTime: undefined, // Campo eliminado del flujo
       urlImgLayout: firebaseUrl, // Use the stored Firebase URL
       order: 1, // Default order
@@ -262,6 +262,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           placeholder={Strings.registerCiltNamePlaceholer} 
           maxLength={100}
           showCount
+          className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
         />
       </Form.Item>
 
@@ -278,27 +279,12 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           placeholder={Strings.registerCiltDescriptionPlaceholer} 
           maxLength={500}
           showCount
+          className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
         />
       </Form.Item>
 
       <div className="flex flex-row gap-4">
-        <Form.Item
-          name="standardTime"
-          label={Strings.ciltMstrStandardTimeLabel}
-          className="flex-1"
-          rules={[
-            { required: true, message: Strings.registerCiltStandardTimeRequiredValidation }
-          ]}
-        >
-          <Input 
-            size="large" 
-            type="number"
-            min={0}
-            addonBefore={<ClockCircleOutlined />}
-            placeholder={Strings.registerCiltStandardTimePlaceholer} 
-          />
-        </Form.Item>
-
+        {/* Standard time field removed - now calculated automatically in the database */}
         <Form.Item
           name="ciltDueDate"
           label={Strings.ciltDueDate}
@@ -307,76 +293,85 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           <Input 
             size="large" 
             type="date"
+            className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </Form.Item>
-
       </div>
 
-      <div className="flex flex-row gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Form.Item
           name="creatorName"
           label={Strings.ciltCreator}
-          className="flex-1"
+          className="mb-0"
           rules={[
             { required: true, message: Strings.registerCiltCreatorRequiredValidation }
           ]}
         >
-          <Input 
-            size="large" 
-            placeholder={Strings.selectCreator}
-            readOnly
-            addonAfter={
-              <Button 
-                type="text" 
-                icon={<UserOutlined />} 
-                onClick={() => setCreatorModalVisible(true)}
-              />
-            }
-          />
+          <div className="flex items-center">
+            <Input 
+              className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+              placeholder={Strings.selectCreator}
+              readOnly
+            />
+            <Button 
+              type="primary"
+              icon={<UserOutlined />} 
+              onClick={() => setCreatorModalVisible(true)}
+              className="ml-2"
+            >
+              {Strings.select}
+            </Button>
+          </div>
         </Form.Item>
 
         <Form.Item
           name="reviewerName"
           label={Strings.reviewer}
-          className="flex-1"
+          className="mb-0"
           rules={[
             { required: true, message: Strings.registerCiltReviewerRequiredValidation }
           ]}
         >
-          <Input 
-            size="large" 
-            placeholder={Strings.registerCiltReviewerPlaceholer}
-            readOnly
-            addonAfter={
-              <Button 
-                type="text" 
-                icon={<UserOutlined />} 
-                onClick={() => setReviewerModalVisible(true)}
-              />
-            }
-          />
+          <div className="flex items-center">
+            <Input 
+              className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+              placeholder={Strings.registerCiltReviewerPlaceholer}
+              readOnly
+            />
+            <Button 
+              type="primary"
+              icon={<UserOutlined />} 
+              onClick={() => setReviewerModalVisible(true)}
+              className="ml-2"
+            >
+              {Strings.select}
+            </Button>
+          </div>
         </Form.Item>
-
+        
         <Form.Item
           name="approvedByName"
           label={Strings.approver}
-          className="flex-1"
+          className="mb-0"
           rules={[
             { required: true, message: Strings.registerCiltApproverRequiredValidation }
           ]}
         >
-          <Input 
-            size="large" 
-            placeholder={Strings.registerCiltApproverPlaceholer}
-            readOnly
-            addonAfter={
-              <Button 
-                type="text" 
-                icon={<UserOutlined />} 
-                onClick={() => setApproverModalVisible(true)}
-              />
-            }
-          />
+          <div className="flex items-center">
+            <Input 
+              className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+              placeholder={Strings.registerCiltApproverPlaceholer}
+              readOnly
+            />
+            <Button 
+              type="primary"
+              icon={<UserOutlined />} 
+              onClick={() => setApproverModalVisible(true)}
+              className="ml-2"
+            >
+              {Strings.select}
+            </Button>
+          </div>
         </Form.Item>
       </div>
 
@@ -404,13 +399,19 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
             return isImage || Upload.LIST_IGNORE;
           }}
           maxCount={1}
+          className="border-gray-300 p-2 rounded-md"
         >
           {fileList.length >= 1 ? null : uploadButton}
         </Upload>
       </Form.Item>
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="primary" htmlType="submit">
+      <div className="flex justify-end mt-4">
+        <Button 
+          type="primary" 
+          htmlType="submit"
+          size="large"
+          className="px-6 py-2 h-auto font-medium"
+        >
           {Strings.save}
         </Button>
       </div>

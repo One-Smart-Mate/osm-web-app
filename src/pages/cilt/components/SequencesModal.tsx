@@ -292,10 +292,16 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
                           <Button
                             type="default"
-                            onClick={() =>
-                              onViewOpl(sequence.referenceOplSop)
-                            }
-                            disabled={!sequence.referenceOplSop}
+                            onClick={() => {
+                              // Verificar que el ID del OPL sea válido antes de llamar a onViewOpl
+                              if (sequence.referenceOplSop && sequence.referenceOplSop > 0) {
+                                // Asegurar que el ID se pase como string para evitar problemas de tipo
+                                const oplId = String(sequence.referenceOplSop).trim();
+                                console.log("Viewing OPL with ID:", oplId);
+                                onViewOpl(Number(oplId));
+                              }
+                            }}
+                            disabled={!sequence.referenceOplSop || sequence.referenceOplSop <= 0}
                           >
                             {Strings.viewReferenceOpl}
                           </Button>

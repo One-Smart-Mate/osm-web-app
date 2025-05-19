@@ -18,9 +18,16 @@ export const oplDetailsService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: OplDetail }) => response.data,
     }),
     // GET /opl-details/by-opl/:oplId
-    getOplDetailsByOpl: builder.mutation<OplDetail[], string>({
-      query: (oplId) => `/opl-details/by-opl/${oplId}`,
-      transformResponse: (response: { data: OplDetail[] }) => response.data,
+    getOplDetailsByOpl: builder.mutation<OplDetail[], string | number>({
+      query: (oplId) => {
+        // Ensure oplId is a string and is not empty
+        const id = String(oplId).trim();
+        if (!id) {
+          throw new Error('OPL ID is required');
+        }
+        return `/opl-details/by-opl/${id}`;
+      },
+      transformResponse: (response: { data: OplDetail[] }) => response.data || [],
     }),
     // POST /opl-details/create
     createOplDetail: builder.mutation<OplDetail, CreateOplDetailsDTO>({

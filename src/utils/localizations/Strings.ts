@@ -1207,8 +1207,9 @@ class StringsBase {
   static until = "until"
   static quitDate = "quitDate"
   static freqMessage = "freqMessage"
-
-
+  static referencePoint = "referencePoint"
+  static selectableWithoutProgramming = "selectableWithoutProgramming"
+  static createCiltSequenceModalErrorSelectFrequency = "createCiltSequenceModalErrorSelectFrequency"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
