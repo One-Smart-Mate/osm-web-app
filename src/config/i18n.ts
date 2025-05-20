@@ -1263,6 +1263,8 @@ const resources = {
 
       ciltDueDate: "CILT Due Date",
       ciltDueDatePlaceholder: "CILT Due Date",
+      asignamentsSB: "Level Assignments",
+      ciltLevelAssignments: "CILT Level Assignments",
       select: "Select",
       editUser:"Update user",
       fastPassword: "Fast password",
@@ -2592,6 +2594,8 @@ const resources = {
       referencePoint: "Punto de referencia",
       selectableWithoutProgramming: "Seleccionable sin programación",
       createCiltSequenceModalErrorSelectFrequency: "Por favor selecciona al menos una frecuencia.",
+      asignamentsSB: "Asignaciones Niveles-CILT",
+      ciltLevelAssignments: "Asignaciones Niveles-CILT",
     },
   },
 };

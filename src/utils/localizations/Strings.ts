@@ -796,6 +796,8 @@ class StringsBase {
   static ciltFrecuenciesSB = "ciltFrecuenciesSB";
   static ciltFrecuenciesOf = "ciltFrecuenciesOf";
   static ciltFrecuenciesDescription = "ciltFrecuenciesDescription";
+  static asignamentsSB = "asignamentsSB";
+  static ciltLevelAssignments = "ciltLevelAssignments";
 
   //Cilt Types
   static searchByName = "searchByName";

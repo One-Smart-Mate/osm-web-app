@@ -17,7 +17,6 @@ import React from "react";
 import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
 
-
 const CardTypesPage = React.lazy(
   () => import("../pages/cardtypes/CardTypesPage")
 );
@@ -50,6 +49,19 @@ const CiltFrecuenciesPage = React.lazy(
   () => import("../pages/ciltFrecuencies/CiltFrecuenciesPage")
 );
 const TagsPage = React.lazy(() => import("../pages/tags/TagsPage"));
+
+const CiltLevelAssignamentsPage = React.lazy(
+  () => import("../pages/ciltLevelAssignments/CiltLevelAssignaments")
+);
+
+
+const ciltLevelAssignamentsRoute = new Route(
+  Strings.asignamentsSB,
+  Constants.ROUTES_PATH.ciltLevelAssignaments,
+  <CiltLevelAssignamentsPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
 
 // Common routes
 const prioritiesRoute = new Route(
@@ -176,7 +188,6 @@ const routes: Route[] = [
   tagDetailsRoute,
   siteUsersRoute,
   sitesRoute,
-  chartsRoute,
   tagsRoute,
   levelsRoute,
   positionsRoute,
@@ -188,6 +199,8 @@ const routes: Route[] = [
   oplRoute,
   ciltTypesRoute,
   ciltFrecuenciesRoute,
+  ciltLevelAssignamentsRoute,
+  chartsRoute, // Moved charts route to the end to prevent it from matching first
 ];
 
 const localAdminRoutesSiderOptions = (): ItemType[] => {
@@ -287,6 +300,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltFrecuenciesRoute.path,
       icon: ciltFrecuenciesRoute.icon,
       section: ciltFrecuenciesRoute.section,
+    }),
+    getItemV2({
+      label: ciltLevelAssignamentsRoute.label,
+      key: ciltLevelAssignamentsRoute.path,
+      icon: ciltLevelAssignamentsRoute.icon,
+      section: ciltLevelAssignamentsRoute.section,
     }),
   ];
   return items;
