@@ -13,7 +13,6 @@ import {
 
 import { Position } from "../../../data/postiions/positions";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
-import { CreateCiltMstrPositionLevelDTO } from "../../../data/cilt/assignaments/ciltMstrPositionsLevels";
 import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
 import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import Strings from "../../../utils/localizations/Strings";
@@ -27,7 +26,7 @@ interface CiltAssignmentDrawerProps {
   siteId: string | number;
   placement: "right" | "bottom";
   onClose: () => void;
-  onAssign: (payload: CreateCiltMstrPositionLevelDTO) => Promise<void>;
+  onAssign: (payload: any) => Promise<void>;
   selectedNode: any;
   drawerType: "cilt-position" | "opl" | "details";
   isSubmitting?: boolean;
@@ -54,6 +53,9 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [positionToView, setPositionToView] = useState<Position | null>(null);
   const [ciltMstrToView, setCiltMstrToView] = useState<CiltMstr | null>(null);
+
+  const [positionDropdownOpen, setPositionDropdownOpen] = useState(false);
+  const [ciltDropdownOpen, setCiltDropdownOpen] = useState(false);
 
   const { data: positions, isLoading: isLoadingPositions } =
     useGetPositionsBySiteIdQuery(siteId.toString());
@@ -88,21 +90,36 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
     }
 
     try {
-      const payload = new CreateCiltMstrPositionLevelDTO(
-        Number(siteId),
-        selectedCiltMstr.id,
-        selectedPosition.id,
-        Number(selectedNode.id),
-        "A"
-      );
+      // Asegurarse de que todos los campos numéricos sean números válidos
+      const numericSiteId = Number(siteId);
+      const numericCiltMstrId = Number(selectedCiltMstr.id);
+      const numericPositionId = Number(selectedPosition.id);
+      const numericLevelId = Number(selectedNode.id);
+      
+      // Validar que todos los IDs sean números válidos
+      if (isNaN(numericSiteId)) {
+        throw new Error("El ID del sitio no es un número válido");
+      }
+      if (isNaN(numericCiltMstrId)) {
+        throw new Error("El ID del CILT no es un número válido");
+      }
+      if (isNaN(numericPositionId)) {
+        throw new Error("El ID de la posición no es un número válido");
+      }
+      if (isNaN(numericLevelId)) {
+        throw new Error("El ID del nivel no es un número válido");
+      }
+      
+      // Crear un objeto simple en lugar de usar el constructor de la clase
+      const payload = {
+        siteId: numericSiteId,
+        ciltMstrId: numericCiltMstrId,
+        positionId: numericPositionId,
+        levelId: numericLevelId,
+        status: "A"
+      };
 
-      console.log("Payload enviado:", {
-        siteId: Number(siteId),
-        ciltMstrId: selectedCiltMstr.id,
-        positionId: selectedPosition.id,
-        levelId: Number(selectedNode.id),
-        status: "A",
-      });
+      console.log("Payload enviado:", payload);
 
       await onAssign(payload);
 
@@ -112,9 +129,23 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       onClose();
     } catch (error) {
       console.error("Error in assignment:", error);
+      
+      // Mostrar un mensaje de error más específico
+      let errorMessage = Strings.errorOccurred;
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object') {
+        // Intentar extraer el mensaje de error de la respuesta de la API
+        const data = error.data as any;
+        if (data.message) {
+          errorMessage = data.message;
+        }
+      }
+      
       notification.error({
         message: Strings.error,
-        description: Strings.errorOccurred,
+        description: errorMessage,
       });
     }
   };
@@ -143,9 +174,17 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                     onChange={(value) => {
                       const position = positions?.find((p) => p.id === value);
                       setSelectedPosition(position || null);
+
+                      setPositionDropdownOpen(false);
                     }}
                     showSearch
                     optionFilterProp="label"
+                    open={positionDropdownOpen}
+                    onDropdownVisibleChange={(open) => {
+                      if (!positionDetailsVisible) {
+                        setPositionDropdownOpen(open);
+                      }
+                    }}
                     dropdownRender={(menu) => <>{menu}</>}
                     optionLabelProp="label"
                   >
@@ -162,6 +201,10 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                             size="small"
                             onClick={(e) => {
                               e.stopPropagation();
+                              e.preventDefault();
+
+                              setPositionDropdownOpen(true);
+
                               setPositionToView(position);
                               setPositionDetailsVisible(true);
                             }}
@@ -202,9 +245,17 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                     onChange={(value) => {
                       const ciltMstr = ciltMstrs?.find((c) => c.id === value);
                       setSelectedCiltMstr(ciltMstr || null);
+
+                      setCiltDropdownOpen(false);
                     }}
                     showSearch
                     optionFilterProp="label"
+                    open={ciltDropdownOpen}
+                    onDropdownVisibleChange={(open) => {
+                      if (!ciltMstrDetailsVisible) {
+                        setCiltDropdownOpen(open);
+                      }
+                    }}
                     dropdownRender={(menu) => <>{menu}</>}
                     optionLabelProp="label"
                   >
@@ -221,6 +272,10 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                             size="small"
                             onClick={(e) => {
                               e.stopPropagation();
+                              e.preventDefault();
+
+                              setCiltDropdownOpen(true);
+
                               setCiltMstrToView(ciltMstr);
                               setCiltMstrDetailsVisible(true);
                             }}
@@ -311,13 +366,21 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       <PositionDetailsModal
         visible={positionDetailsVisible}
         position={positionToView}
-        onCancel={() => setPositionDetailsVisible(false)}
+        onCancel={() => {
+          setPositionDetailsVisible(false);
+
+          setPositionDropdownOpen(true);
+        }}
       />
 
       <CiltMstrDetailsModal
         visible={ciltMstrDetailsVisible}
         ciltMstr={ciltMstrToView}
-        onCancel={() => setCiltMstrDetailsVisible(false)}
+        onCancel={() => {
+          setCiltMstrDetailsVisible(false);
+
+          setCiltDropdownOpen(true);
+        }}
       />
     </Drawer>
   );

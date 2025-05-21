@@ -20,11 +20,15 @@ const PositionDetailsModal: React.FC<PositionDetailsModalProps> = ({
     <Modal
       title={`${Strings.details}: ${position.name}`}
       open={visible}
-      onCancel={onCancel}
+      onCancel={(e) => {
+        // Evitar que el evento se propague y afecte al dropdown
+        e?.stopPropagation();
+        onCancel();
+      }}
+      maskClosable={false}
       footer={null}
       width={700}
     >
-
 
       <Descriptions bordered column={1} size="small">
         <Descriptions.Item label={Strings.ciltMstrPositionLabel}>

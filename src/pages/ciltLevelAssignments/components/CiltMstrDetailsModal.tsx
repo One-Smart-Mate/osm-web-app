@@ -35,7 +35,11 @@ const CiltMstrDetailsModal: React.FC<CiltMstrDetailsModalProps> = ({
     <Modal
       title={`${Strings.details}: ${ciltMstr.ciltName}`}
       open={visible}
-      onCancel={onCancel}
+      onCancel={(e) => {
+        e?.stopPropagation();
+        onCancel();
+      }}
+      maskClosable={false}
       footer={null}
       width={700}
     >
