@@ -1,14 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Button, Spin, theme } from 'antd';
-import Tree from 'react-d3-tree';
-import Strings from '../../utils/localizations/Strings';
-import MainContainer from '../layouts/MainContainer';
-import Constants from '../../utils/Constants';
-import { useGetlevelsMutation } from '../../services/levelService';
-import { Level } from '../../data/level/level';
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import { Button, Spin, theme, App as AntApp } from "antd";
+import Tree from "react-d3-tree";
+import Strings from "../../utils/localizations/Strings";
+import MainContainer from "../layouts/MainContainer";
+import Constants from "../../utils/Constants";
+import CiltLevelMenuOptions from "./components/CiltLevelMenuOptions";
+import CiltAssignmentDrawer from "./components/CiltAssignmentDrawer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useGetlevelsMutation } from "../../services/levelService";
+import { Level } from "../../data/level/level";
 
-// Helper function to build the hierarchy from flat data
+import { CreateCiltMstrPositionLevelDTO } from "../../data/cilt/assignaments/ciltMstrPositionsLevels";
+import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
+
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
   const tree: any[] = [];
@@ -33,14 +38,14 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-// Custom Node component for the tree
-const CustomNode = ({ nodeDatum, toggleNode }: any) => {
+const CustomNode = ({ nodeDatum, toggleNode, onNodeContextMenu }: any) => {
   const { token } = theme.useToken();
-  
-  const isCollapsed = localStorage.getItem(
-    `${Constants.nodeStartBridgeCollapsed}${nodeDatum.id}${Constants.nodeEndBridgeCollapserd}`
-  ) === "true";
-  
+
+  const isCollapsed =
+    localStorage.getItem(
+      `${Constants.nodeStartBridgeCollapsed}${nodeDatum.id}${Constants.nodeEndBridgeCollapserd}`
+    ) === "true";
+
   nodeDatum.__rd3t = nodeDatum.__rd3t || {};
   nodeDatum.__rd3t.collapsed = isCollapsed;
 
@@ -48,7 +53,12 @@ const CustomNode = ({ nodeDatum, toggleNode }: any) => {
   const fillColor = isLeafNode ? "#FFFF00" : "#145695";
 
   return (
-    <g onClick={toggleNode}>
+    <g
+      onClick={toggleNode}
+      onContextMenu={(e) =>
+        onNodeContextMenu && onNodeContextMenu(e, nodeDatum)
+      }
+    >
       <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
       <text
         fill={token.colorText}
@@ -69,21 +79,73 @@ const CiltLevelAssignaments: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [getLevels] = useGetlevelsMutation();
+  const [createCiltMstrPositionLevel] =
+    useCreateCiltMstrPositionLevelMutation();
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
-    const storedState = localStorage.getItem('treeExpandedState');
-    return storedState === 'true';
+    const storedState = localStorage.getItem("treeExpandedState");
+    return storedState === "true";
   });
 
+  const { notification } = AntApp.useApp();
+  const { rol } = useCurrentUser();
+
+  const [selectedNode, setSelectedNode] = useState<any | null>(null);
+  const [contextMenuVisible, setContextMenuVisible] = useState(false);
+  const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
+
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [drawerType, setDrawerType] = useState<
+    "cilt-position" | "opl" | "details"
+  >("cilt-position");
+  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
+    "right"
+  );
+
+  const [isAssigning, setIsAssigning] = useState(false);
+
   const siteName = location.state?.siteName || "Default Site";
-  const siteId = location.state?.siteId || "1"; // Default to 1 for demo purposes
-  
+  const siteId = location.state?.siteId || "1";
+
   useEffect(() => {
     handleGetLevels();
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('treeExpandedState', isTreeExpanded.toString());
+    const updateDrawerPlacement = () => {
+      if (window.innerWidth < 768) {
+        setDrawerPlacement("bottom");
+      } else {
+        setDrawerPlacement("right");
+      }
+    };
+
+    updateDrawerPlacement();
+    window.addEventListener("resize", updateDrawerPlacement);
+    return () => {
+      window.removeEventListener("resize", updateDrawerPlacement);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target as Node)
+      ) {
+        setContextMenuVisible(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [contextMenuVisible]);
+
+  useEffect(() => {
+    localStorage.setItem("treeExpandedState", isTreeExpanded.toString());
   }, [isTreeExpanded]);
 
   const handleGetLevels = async () => {
@@ -91,27 +153,26 @@ const CiltLevelAssignaments: React.FC = () => {
     try {
       const response = await getLevels(siteId).unwrap();
       const hierarchyData = buildHierarchy(response);
-      
-      const isExpanded = localStorage.getItem('treeExpandedState') === 'true';
-      
-      // Apply expand/collapse state to all nodes
+
+      const isExpanded = localStorage.getItem("treeExpandedState") === "true";
+
       const applyExpandState = (nodes: any[]) => {
-        nodes.forEach(node => {
-          if (node.id !== "0") { 
+        nodes.forEach((node) => {
+          if (node.id !== "0") {
             localStorage.setItem(
               `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
-              (!isExpanded).toString() 
+              (!isExpanded).toString()
             );
           }
-          
+
           if (node.children && node.children.length > 0) {
             applyExpandState(node.children);
           }
         });
       };
-      
+
       applyExpandState(hierarchyData);
-      
+
       setTreeData([
         {
           name: `${Strings.levelsOf} ${siteName}`,
@@ -119,28 +180,26 @@ const CiltLevelAssignaments: React.FC = () => {
           children: hierarchyData,
         },
       ]);
-      
-      // Center the tree in the container
+
       if (containerRef.current) {
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error('Error fetching levels:', error);
+      console.error("Error fetching levels:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-
   const expandAllNodes = () => {
     const expandNodes = (nodes: any[]) => {
-      nodes.forEach(node => {
+      nodes.forEach((node) => {
         localStorage.setItem(
           `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
           "false"
         );
-        
+
         if (node.children && node.children.length > 0) {
           expandNodes(node.children);
         }
@@ -148,8 +207,8 @@ const CiltLevelAssignaments: React.FC = () => {
     };
 
     if (treeData.length > 0) {
-      expandNodes(treeData);
-      localStorage.setItem('treeExpandedState', 'true');
+      expandNodes(treeData[0].children);
+      localStorage.setItem("treeExpandedState", "true");
       handleGetLevels();
       setIsTreeExpanded(true);
     }
@@ -157,14 +216,14 @@ const CiltLevelAssignaments: React.FC = () => {
 
   const collapseAllNodes = () => {
     const collapseNodes = (nodes: any[]) => {
-      nodes.forEach(node => {
+      nodes.forEach((node) => {
         if (node.id !== "0") {
           localStorage.setItem(
             `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
             "true"
           );
         }
-        
+
         if (node.children && node.children.length > 0) {
           collapseNodes(node.children);
         }
@@ -172,8 +231,8 @@ const CiltLevelAssignaments: React.FC = () => {
     };
 
     if (treeData.length > 0) {
-      collapseNodes(treeData);
-      localStorage.setItem('treeExpandedState', 'false');
+      collapseNodes(treeData[0].children);
+      localStorage.setItem("treeExpandedState", "false");
       handleGetLevels();
       setIsTreeExpanded(false);
     }
@@ -187,7 +246,67 @@ const CiltLevelAssignaments: React.FC = () => {
     }
   };
 
-  // Content to display in the MainContainer
+  const handleNodeContextMenu = (event: React.MouseEvent, nodeDatum: any) => {
+    event.preventDefault();
+    setSelectedNode(nodeDatum);
+    setContextMenuVisible(true);
+
+    setContextMenuPos({
+      x: event.clientX - 250,
+      y: event.clientY - 150,
+    });
+  };
+
+  const handleAssignPositionCiltMstr = () => {
+    setDrawerType("cilt-position");
+    setIsDrawerVisible(true);
+    setContextMenuVisible(false);
+  };
+
+  const handleAssignOpl = () => {
+    setDrawerType("opl");
+    setIsDrawerVisible(true);
+    setContextMenuVisible(false);
+  };
+
+  const handleAssignment = async (payload: CreateCiltMstrPositionLevelDTO) => {
+    setIsAssigning(true);
+    try {
+      console.log("Payload en CiltLevelAssignaments:", {
+        siteId: payload.siteId,
+        ciltMstrId: payload.ciltMstrId,
+        positionId: payload.positionId,
+        levelId: payload.levelId,
+        status: payload.status,
+      });
+
+      await createCiltMstrPositionLevel(payload).unwrap();
+      notification.success({
+        message: Strings.assignmentSuccess,
+        description: Strings.assignmentSuccess,
+      });
+    } catch (error) {
+      console.error("Error creating assignment:", error);
+
+      if (error && typeof error === "object" && "data" in error) {
+        console.error("Error details:", error.data);
+        notification.error({
+          message: Strings.assignmentError,
+          description: Strings.errorOccurred,
+        });
+      } else {
+        notification.error({
+          message: Strings.assignmentError,
+          description: Strings.errorOccurred,
+        });
+      }
+    } finally {
+      setIsAssigning(false);
+
+      setIsDrawerVisible(false);
+    }
+  };
+
   const content = (
     <div>
       <div
@@ -203,7 +322,7 @@ const CiltLevelAssignaments: React.FC = () => {
           <>
             {/* Expand/Collapse all nodes button */}
             <div className="absolute top-4 right-4 z-10">
-              <Button 
+              <Button
                 type={isTreeExpanded ? "default" : "primary"}
                 onClick={toggleAllNodes}
                 className="bg-blue-500 hover:bg-blue-600"
@@ -211,7 +330,7 @@ const CiltLevelAssignaments: React.FC = () => {
                 {isTreeExpanded ? Strings.collapseAll : Strings.expandAll}
               </Button>
             </div>
-            
+
             {treeData.length > 0 && (
               <Tree
                 data={treeData}
@@ -223,11 +342,35 @@ const CiltLevelAssignaments: React.FC = () => {
                   <CustomNode
                     nodeDatum={rd3tProps.nodeDatum}
                     toggleNode={rd3tProps.toggleNode}
+                    onNodeContextMenu={handleNodeContextMenu}
                   />
                 )}
                 collapsible={true}
               />
             )}
+
+            {/* Context Menu */}
+            <div ref={contextMenuRef}>
+              <CiltLevelMenuOptions
+                isVisible={contextMenuVisible}
+                role={rol}
+                contextMenuPos={contextMenuPos}
+                handleAssignPositionCiltMstr={handleAssignPositionCiltMstr}
+                handleAssignOpl={handleAssignOpl}
+              />
+            </div>
+
+            {/* Assignment Drawer */}
+            <CiltAssignmentDrawer
+              isVisible={isDrawerVisible}
+              siteId={siteId}
+              placement={drawerPlacement}
+              onClose={() => setIsDrawerVisible(false)}
+              onAssign={handleAssignment}
+              selectedNode={selectedNode}
+              drawerType={drawerType}
+              isSubmitting={isAssigning}
+            />
           </>
         )}
       </div>
@@ -236,7 +379,7 @@ const CiltLevelAssignaments: React.FC = () => {
 
   return (
     <MainContainer
-      title={Strings.ciltLevelAssignments}
+      title={Strings.empty}
       content={content}
       enableSearch={false}
     />

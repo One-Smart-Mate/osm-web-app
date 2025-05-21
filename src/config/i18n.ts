@@ -1263,9 +1263,28 @@ const resources = {
 
       ciltDueDate: "CILT Due Date",
       ciltDueDatePlaceholder: "CILT Due Date",
+
+      // CILT Level Assignments
+      assignPositionCiltMstrLevel: "Assign Position CILT",
+      assignOplLevel: "Assign OPL",
       asignamentsSB: "Level Assignments",
       ciltLevelAssignments: "CILT Level Assignments",
       select: "Select",
+      
+      // Position and CILT selection modals
+      selectPosition: "Select Position",
+      searchPosition: "Search positions...",
+      errorLoadingPositions: "Error loading positions",
+      noPositionsFound: "No positions found",
+      selectCiltMstr: "Select CILT",
+      searchCiltMstr: "Search CILTs...",
+      errorLoadingCiltMstrs: "Error loading CILTs",
+      noCiltMstrsFound: "No CILTs found",
+      assignmentSuccess: "Assignment created successfully",
+      assignmentError: "Error creating assignment",
+      to: "to",
+      errorOccurred: "An error occurred",
+      featureUnderDevelopment: "Feature under development",
       editUser:"Update user",
       fastPassword: "Fast password",
       manual: "User manual",
@@ -1280,6 +1299,7 @@ const resources = {
       referencePoint: "Reference Point",
       selectableWithoutProgramming: "Selectable Without Programming",
       createCiltSequenceModalErrorSelectFrequency: "Please select at least one frequency.",
+      ciltMstr: "CILT Procedure",
     },
   },
   es: {
@@ -2596,6 +2616,24 @@ const resources = {
       createCiltSequenceModalErrorSelectFrequency: "Por favor selecciona al menos una frecuencia.",
       asignamentsSB: "Asignaciones Niveles-CILT",
       ciltLevelAssignments: "Asignaciones Niveles-CILT",
+      assignPositionCiltMstrLevel: "Asignar CILT / Posición",
+      assignOplLevel: "Asignar OPL/SOP",
+      
+      // Position and CILT selection modals
+      selectPosition: "Seleccionar Posición",
+      searchPosition: "Buscar posiciones...",
+      errorLoadingPositions: "Error al cargar posiciones",
+      noPositionsFound: "No se encontraron posiciones",
+      selectCiltMstr: "Seleccionar CILT",
+      searchCiltMstr: "Buscar CILTs...",
+      errorLoadingCiltMstrs: "Error al cargar CILTs",
+      noCiltMstrsFound: "No se encontraron CILTs",
+      assignmentSuccess: "Asignación creada exitosamente",
+      assignmentError: "Error al crear la asignación",
+      to: "a",
+      errorOccurred: "Ocurrió un error",
+      featureUnderDevelopment: "Funcionalidad en desarrollo",
+      ciltMstr: "Procedimiento CILT",
     },
   },
 };

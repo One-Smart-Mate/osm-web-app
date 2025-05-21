@@ -1206,12 +1206,31 @@ class StringsBase {
     //NEW UPDATE
   static start = "start"
   static eachPlace = "eachPlace"
-  static until = "until"
   static quitDate = "quitDate"
   static freqMessage = "freqMessage"
   static referencePoint = "referencePoint"
   static selectableWithoutProgramming = "selectableWithoutProgramming"
   static createCiltSequenceModalErrorSelectFrequency = "createCiltSequenceModalErrorSelectFrequency"
+
+  // Level assignaments tree
+  static assignPositionCiltMstrLevel = "assignPositionCiltMstrLevel"
+  static assignOplLevel = "assignOplLevel"
+  
+  // Position and CILT selection modals
+  static selectPosition = "selectPosition"
+  static searchPosition = "searchPosition"
+  static errorLoadingPositions = "errorLoadingPositions"
+  static noPositionsFound = "noPositionsFound"
+  static selectCiltMstr = "selectCiltMstr"
+  static searchCiltMstr = "searchCiltMstr"
+  static errorLoadingCiltMstrs = "errorLoadingCiltMstrs"
+  static noCiltMstrsFound = "noCiltMstrsFound"
+  static assignmentSuccess = "assignmentSuccess"
+  static assignmentError = "assignmentError"
+  static to = "to"
+  static errorOccurred = "errorOccurred"
+  static featureUnderDevelopment = "featureUnderDevelopment"
+  static ciltMstr = "ciltMstr"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
