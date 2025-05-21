@@ -11,7 +11,6 @@ import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
 
-import { CreateCiltMstrPositionLevelDTO } from "../../data/cilt/assignaments/ciltMstrPositionsLevels";
 import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
 
 const buildHierarchy = (data: Level[]) => {
@@ -269,18 +268,21 @@ const CiltLevelAssignaments: React.FC = () => {
     setContextMenuVisible(false);
   };
 
-  const handleAssignment = async (payload: CreateCiltMstrPositionLevelDTO) => {
+  const handleAssignment = async (payload: any) => {
     setIsAssigning(true);
     try {
-      console.log("Payload en CiltLevelAssignaments:", {
-        siteId: payload.siteId,
-        ciltMstrId: payload.ciltMstrId,
-        positionId: payload.positionId,
-        levelId: payload.levelId,
+      // Asegurarse de que todos los campos numéricos sean números válidos
+      const validatedPayload = {
+        siteId: Number(payload.siteId),
+        ciltMstrId: Number(payload.ciltMstrId),
+        positionId: Number(payload.positionId),
+        levelId: Number(payload.levelId),
         status: payload.status,
-      });
+      };
+      
+      console.log("Payload en CiltLevelAssignaments:", validatedPayload);
 
-      await createCiltMstrPositionLevel(payload).unwrap();
+      await createCiltMstrPositionLevel(validatedPayload).unwrap();
       notification.success({
         message: Strings.assignmentSuccess,
         description: Strings.assignmentSuccess,

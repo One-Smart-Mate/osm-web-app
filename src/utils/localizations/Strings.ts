@@ -1231,6 +1231,8 @@ class StringsBase {
   static errorOccurred = "errorOccurred"
   static featureUnderDevelopment = "featureUnderDevelopment"
   static ciltMstr = "ciltMstr"
+  static ciltCardListViewDetailsButton = "ciltCardListViewDetailsButton"
+  static ciltCardListCreatedLabel = "ciltCardListCreatedLabel"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
