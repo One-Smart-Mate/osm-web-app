@@ -7,13 +7,18 @@ import {
   Space,
   Typography,
   notification,
+  Row,
+  Col,
 } from "antd";
+
 import { Position } from "../../../data/postiions/positions";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CreateCiltMstrPositionLevelDTO } from "../../../data/cilt/assignaments/ciltMstrPositionsLevels";
 import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
 import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import Strings from "../../../utils/localizations/Strings";
+import PositionDetailsModal from "./PositionDetailsModal";
+import CiltMstrDetailsModal from "./CiltMstrDetailsModal";
 
 const { Text } = Typography;
 
@@ -44,6 +49,11 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   const [selectedCiltMstr, setSelectedCiltMstr] = useState<CiltMstr | null>(
     null
   );
+
+  const [positionDetailsVisible, setPositionDetailsVisible] = useState(false);
+  const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
+  const [positionToView, setPositionToView] = useState<Position | null>(null);
+  const [ciltMstrToView, setCiltMstrToView] = useState<CiltMstr | null>(null);
 
   const { data: positions, isLoading: isLoadingPositions } =
     useGetPositionsBySiteIdQuery(siteId.toString());
@@ -123,42 +133,120 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
 
             <div>
               <Text strong>{Strings.ciltMstrPositionLabel}:</Text>
-              <Select
-                placeholder={Strings.selectPosition}
-                className="w-full mt-1"
-                loading={isLoadingPositions}
-                value={selectedPosition?.id}
-                onChange={(value) => {
-                  const position = positions?.find((p) => p.id === value);
-                  setSelectedPosition(position || null);
-                }}
-                showSearch
-                optionFilterProp="label"
-                options={positions?.map((position) => ({
-                  value: position.id,
-                  label: `${position.name} - ${position.areaName}`,
-                }))}
-              />
+              <Row gutter={8} align="middle">
+                <Col flex="auto">
+                  <Select
+                    placeholder={Strings.selectPosition}
+                    className="w-full mt-1"
+                    loading={isLoadingPositions}
+                    value={selectedPosition?.id}
+                    onChange={(value) => {
+                      const position = positions?.find((p) => p.id === value);
+                      setSelectedPosition(position || null);
+                    }}
+                    showSearch
+                    optionFilterProp="label"
+                    dropdownRender={(menu) => <>{menu}</>}
+                    optionLabelProp="label"
+                  >
+                    {positions?.map((position) => (
+                      <Select.Option
+                        key={position.id}
+                        value={position.id}
+                        label={`${position.name} - ${position.areaName}`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span>{`${position.name} - ${position.areaName}`}</span>
+                          <Button
+                            type="primary"
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPositionToView(position);
+                              setPositionDetailsVisible(true);
+                            }}
+                          >
+                            {Strings.ciltCardListViewDetailsButton}
+                          </Button>
+                        </div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+                {selectedPosition && (
+                  <Col flex="none">
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        setPositionToView(selectedPosition);
+                        setPositionDetailsVisible(true);
+                      }}
+                    >
+                      {Strings.ciltCardListViewDetailsButton}
+                    </Button>
+                  </Col>
+                )}
+              </Row>
             </div>
 
             <div>
               <Text strong>{Strings.ciltMstr}:</Text>
-              <Select
-                placeholder={Strings.selectCiltMstr}
-                className="w-full mt-1"
-                loading={isLoadingCiltMstrs}
-                value={selectedCiltMstr?.id}
-                onChange={(value) => {
-                  const ciltMstr = ciltMstrs?.find((c) => c.id === value);
-                  setSelectedCiltMstr(ciltMstr || null);
-                }}
-                showSearch
-                optionFilterProp="label"
-                options={ciltMstrs?.map((ciltMstr) => ({
-                  value: ciltMstr.id,
-                  label: ciltMstr.ciltName,
-                }))}
-              />
+              <Row gutter={8} align="middle">
+                <Col flex="auto">
+                  <Select
+                    placeholder={Strings.selectCiltMstr}
+                    className="w-full mt-1"
+                    loading={isLoadingCiltMstrs}
+                    value={selectedCiltMstr?.id}
+                    onChange={(value) => {
+                      const ciltMstr = ciltMstrs?.find((c) => c.id === value);
+                      setSelectedCiltMstr(ciltMstr || null);
+                    }}
+                    showSearch
+                    optionFilterProp="label"
+                    dropdownRender={(menu) => <>{menu}</>}
+                    optionLabelProp="label"
+                  >
+                    {ciltMstrs?.map((ciltMstr) => (
+                      <Select.Option
+                        key={ciltMstr.id}
+                        value={ciltMstr.id}
+                        label={ciltMstr.ciltName}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span>{ciltMstr.ciltName}</span>
+                          <Button
+                            type="primary"
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCiltMstrToView(ciltMstr);
+                              setCiltMstrDetailsVisible(true);
+                            }}
+                          >
+                            {Strings.ciltCardListViewDetailsButton}
+                          </Button>
+                        </div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+                {selectedCiltMstr && (
+                  <Col flex="none">
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        setCiltMstrToView(selectedCiltMstr);
+                        setCiltMstrDetailsVisible(true);
+                      }}
+                    >
+                      {Strings.ciltCardListViewDetailsButton}
+                    </Button>
+                  </Col>
+                )}
+              </Row>
             </div>
 
             <div className="flex justify-end mt-6">
@@ -218,6 +306,19 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       ) : (
         renderContent()
       )}
+
+      {/* Modales de detalles */}
+      <PositionDetailsModal
+        visible={positionDetailsVisible}
+        position={positionToView}
+        onCancel={() => setPositionDetailsVisible(false)}
+      />
+
+      <CiltMstrDetailsModal
+        visible={ciltMstrDetailsVisible}
+        ciltMstr={ciltMstrToView}
+        onCancel={() => setCiltMstrDetailsVisible(false)}
+      />
     </Drawer>
   );
 };
