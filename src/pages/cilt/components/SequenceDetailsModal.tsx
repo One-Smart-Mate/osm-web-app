@@ -122,6 +122,18 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
               <Text>{sequence.machineStopped ? Strings.yes : Strings.no}</Text>
             </div>
           </Col>
+          <Col span={6}>
+            <Text type="secondary">{Strings.referencePoint}:</Text>
+            <div>
+              <Text>{sequence.referencePoint || "N/A"}</Text>
+            </div>
+          </Col>
+          <Col span={6}>
+            <Text type="secondary">{Strings.selectableWithoutProgramming}:</Text>
+            <div>
+              <Text>{sequence.selectableWithoutProgramming ? Strings.yes : Strings.no}</Text>
+            </div>
+          </Col>
           <Col span={12}>
             <Text type="secondary">{Strings.standardOk}:</Text>
             <div>

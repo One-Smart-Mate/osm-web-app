@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Modal,
   Table,
@@ -54,6 +55,8 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   onClose,
   onSelect,
 }) => {
+  const location = useLocation();
+  const currentSiteId = location.state?.siteId || null;
   const [getOplMstrAll] = useGetOplMstrAllMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
@@ -170,6 +173,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           )
         : null;
 
+      // Usar el siteId de la ubicación actual o del formulario
+      const siteIdToUse = values.siteId ? Number(values.siteId) : (currentSiteId ? Number(currentSiteId) : null);
+      
       const createPayload = {
         title: values.title,
         objetive: values.objetive || "", // Provide empty string as default
@@ -179,6 +185,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         reviewerName: reviewer?.name || "", // Provide empty string as default
         oplType: values.oplType || "opl", // Default to 'opl'
         createdAt: new Date().toISOString(),
+        siteId: siteIdToUse, // Usar el siteId obtenido
       };
       
       console.log("Creating OPL with payload:", createPayload);
@@ -644,7 +651,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         onCancel={onClose}
         footer={null}
         width={900}
-        style={{ maxWidth: "95vw" }}
+        style={{ maxWidth: "95vw", top: 20 }}
+        maskStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.65)' }}
+        getContainer={() => document.body}
       >
         <div
           className="mb-4"

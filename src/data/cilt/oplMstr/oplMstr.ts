@@ -10,6 +10,7 @@ export interface OplMstr {
     createdAt: string | null;
     updatedAt: string | null;
     deletedAt: string | null;
+    siteId: number | null;
   }
   
   export class CreateOplMstrDTO {
@@ -21,10 +22,12 @@ export interface OplMstr {
     reviewerName?: string;
     oplType?: 'opl' | 'sop';
     createdAt: string;
+    siteId: number | null;
   
     constructor(
       title: string,
       createdAt: string,
+      siteId: number | null,
       objetive?: string,
       creatorId?: number,
       creatorName?: string,
@@ -40,6 +43,7 @@ export interface OplMstr {
       this.reviewerName = reviewerName;
       this.oplType = oplType;
       this.createdAt = createdAt;
+      this.siteId = siteId;
     }
   }
   
@@ -53,10 +57,12 @@ export interface OplMstr {
     reviewerName?: string;
     oplType?: 'opl' | 'sop';
     updatedAt: string;
+    siteId: number | null;
   
     constructor(
       id: number,
       updatedAt: string,
+      siteId: number | null,
       title?: string,
       objetive?: string,
       creatorId?: number,
@@ -74,5 +80,6 @@ export interface OplMstr {
       this.reviewerName = reviewerName;
       this.oplType = oplType;
       this.updatedAt = updatedAt;
+      this.siteId = siteId;
     }
   }

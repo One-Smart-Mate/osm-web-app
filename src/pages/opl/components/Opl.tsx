@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {Button, Spin, Form, notification, Modal } from "antd";
+import { Button, Spin, Form, notification, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   useGetOplMstrAllMutation,
+  useGetOplMstrBySiteMutation,
   useCreateOplMstrMutation,
   useUpdateOplMstrMutation,
 } from "../../../services/cilt/oplMstrService";
@@ -32,7 +33,6 @@ import Strings from "../../../utils/localizations/Strings";
 import SearchBar from "../../../components/common/SearchBar";
 import { fileValidationCache } from "./OplMediaUploader";
 
-
 const Opl = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
@@ -58,9 +58,10 @@ const Opl = (): React.ReactElement => {
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [getOplMstrAll] = useGetOplMstrAllMutation();
+  const [getOplMstrBySite] = useGetOplMstrBySiteMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
   const [updateOplMstr] = useUpdateOplMstrMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
@@ -77,10 +78,16 @@ const Opl = (): React.ReactElement => {
   const fetchOpls = async () => {
     setLoading(true);
     try {
-      const response = await getOplMstrAll().unwrap();
       
+      let response;
+      if (siteId) {
+        response = await getOplMstrBySite(String(siteId)).unwrap();
+      } else {
+        response = await getOplMstrAll().unwrap();
+      }
+
       if (searchTerm) {
-        const filtered = response.filter(opl => 
+        const filtered = response.filter((opl: OplMstr) =>
           opl.title.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setOplList(filtered);
@@ -214,6 +221,7 @@ const Opl = (): React.ReactElement => {
           reviewerName: reviewer?.name || undefined,
           oplType: values.oplType,
           updatedAt: new Date().toISOString(),
+          siteId: values.siteId || Number(siteId) || null,
         };
 
         await updateOplMstr(updatePayload).unwrap();
@@ -231,6 +239,7 @@ const Opl = (): React.ReactElement => {
           reviewerName: reviewer?.name || undefined,
           oplType: values.oplType,
           createdAt: new Date().toISOString(),
+          siteId: values.siteId || Number(siteId) || null,
         };
 
         await createOplMstr(createPayload).unwrap();
@@ -290,9 +299,12 @@ const Opl = (): React.ReactElement => {
       }
     } catch (error) {
       console.error("Error fetching OPL details:", error);
-      // Solo mostrar error si es un problema real de red o servidor, no cuando simplemente no hay detalles
-      // Verificar si el error tiene una propiedad status y si es diferente de 404
-      if (error && typeof error === 'object' && 'status' in error && error.status !== 404) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        error.status !== 404
+      ) {
         notification.error({
           message: "Error",
           description: Strings.oplErrorLoadingDetails,
@@ -362,10 +374,11 @@ const Opl = (): React.ReactElement => {
         setUploadLoading(false);
         return;
       }
-      
-      // Verificar si el archivo ya fue validado en el componente OplMediaUploader
-      // usando el caché de validación
-      if (fileValidationCache.has(file.uid) && !fileValidationCache.get(file.uid)) {
+
+      if (
+        fileValidationCache.has(file.uid) &&
+        !fileValidationCache.get(file.uid)
+      ) {
         notification.error({
           message: "Error",
           description: Strings.oplErrorInvalidFileType.replace("{type}", type),
@@ -440,18 +453,16 @@ const Opl = (): React.ReactElement => {
           display: "flex",
           alignItems: "center",
           marginBottom: "16px",
-          gap: "16px"
+          gap: "16px",
         }}
       >
         <div style={{ flex: 1, maxWidth: "300px" }}>
-          <SearchBar 
+          <SearchBar
             placeholder={Strings.oplSearchBarPlaceholder}
             onSearch={handleSearch}
           />
         </div>
-        
-  
-        
+
         <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
           <Button
             type="primary"
@@ -513,7 +524,9 @@ const Opl = (): React.ReactElement => {
         onFileChange={handleFileChange}
         onPreview={handlePreview}
         onAddText={(values) => handleAddTextDetail(values)}
-        onAddMedia={(type) => handleAddMediaDetail(type as "imagen" | "video" | "pdf")}
+        onAddMedia={(type) =>
+          handleAddMediaDetail(type as "imagen" | "video" | "pdf")
+        }
       />
     </div>
   );
