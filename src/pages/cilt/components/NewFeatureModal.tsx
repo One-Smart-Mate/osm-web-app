@@ -129,7 +129,6 @@ export default function NewFeatureModal({
   type="primary"
   onClick={() =>
     onSave({
-      
       startDate: startDate.toISOString(),
       interval,
       frequency,
