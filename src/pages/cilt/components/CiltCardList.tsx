@@ -313,20 +313,13 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setSelectedOplDetails([]);
   };
 
-  const handleOpenPdf = (url: string) => {
-    setCurrentPdfUrl(url);
-    setPdfPreviewVisible(true);
-  };
+
 
   const handleClosePdf = () => {
     setPdfPreviewVisible(false);
     setCurrentPdfUrl("");
   };
 
-  const handleOpenVideo = (url: string) => {
-    setCurrentVideoUrl(url);
-    setVideoPreviewVisible(true);
-  };
 
   const handleCloseVideo = () => {
     setVideoPreviewVisible(false);
@@ -421,8 +414,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         details={selectedOplDetails}
         loading={loadingOplDetails}
         onCancel={handleOplDetailsModalCancel}
-        onOpenPdf={handleOpenPdf}
-        onOpenVideo={handleOpenVideo}
       />
 
       {/* Clone CILT Modal */}

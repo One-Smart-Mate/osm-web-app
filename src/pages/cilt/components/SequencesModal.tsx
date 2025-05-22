@@ -259,15 +259,15 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
                         {schedule && (
                           <div style={{ marginTop: 8 }}>
-                            <Text type="secondary">Programación:</Text>{" "}
+                            <Text type="secondary">{Strings.schedule}:</Text>{" "}
                             <Text>
-                              Cada {schedule.interval} {schedule.frequency}(s)
-                              los {schedule.selectedDays.join(", ")} desde{" "}
+                              {Strings.each} {schedule.interval} {schedule.frequency}(s)
+                              {Strings.theDays} {schedule.selectedDays.join(", ")} {Strings.since}{" "}
                               {schedule.startDate
                                 ? dayjs(schedule.startDate).format("DD/MM/YYYY")
                                 : ""}
                               {schedule.endDate
-                                ? ` hasta ${dayjs(schedule.endDate).format(
+                                ? ` ${Strings.until} ${dayjs(schedule.endDate).format(
                                     "DD/MM/YYYY"
                                   )}`
                                 : ""}

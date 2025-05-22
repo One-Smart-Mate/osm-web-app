@@ -158,7 +158,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
                 icon={<FileOutlined />}
                 onClick={() => detail.mediaUrl && handleOpenPdf(detail.mediaUrl)}
               >
-                Ver PDF
+                {Strings.oplViewPdf}
               </Button>
               <Text style={{ display: "block", fontWeight: "bold" }}>{detail.mediaUrl ? getFileName(detail.mediaUrl) : ""}</Text>
             </Space>
@@ -218,13 +218,13 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       
       {/* PDF Preview Modal */}
       <Modal
-        title="Vista previa del PDF"
+        title={Strings.oplPdfPreviewTitle}
         open={pdfPreviewVisible}
         onCancel={() => setPdfPreviewVisible(false)}
         width={800}
         footer={[
           <Button key="close" onClick={() => setPdfPreviewVisible(false)}>
-            Cerrar
+            {Strings.oplClose}
           </Button>
         ]}
       >

@@ -1251,6 +1251,10 @@ class StringsBase {
   static dayValue = "dayValue"
   static weekValue = "weekValue"
   static until = "until"
+  static each = "eachPlace"
+  static theDays = "theDays"
+  static since = "since"
+  static schedule = "schedule"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

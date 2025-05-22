@@ -1317,6 +1317,10 @@ const resources = {
       selectableWithoutProgramming: "Selectable Without Programming",
       createCiltSequenceModalErrorSelectFrequency: "Please select at least one frequency.",
       ciltMstr: "CILT Procedure",
+      each:"Each",
+      theDays:"the",
+      since:"since",
+      schedule: "Programming",
     },
   },
   es: {
@@ -2670,6 +2674,10 @@ const resources = {
       errorOccurred: "Ocurrió un error",
       featureUnderDevelopment: "Funcionalidad en desarrollo",
       ciltMstr: "Procedimiento CILT",
+      each:"Cada",
+      theDays: "los",
+      since: "desde",
+      schedule: "Programación",
     },
   },
 };
