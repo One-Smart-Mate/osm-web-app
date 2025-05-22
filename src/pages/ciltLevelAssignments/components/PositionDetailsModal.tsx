@@ -21,7 +21,6 @@ const PositionDetailsModal: React.FC<PositionDetailsModalProps> = ({
       title={`${Strings.details}: ${position.name}`}
       open={visible}
       onCancel={(e) => {
-        // Evitar que el evento se propague y afecte al dropdown
         e?.stopPropagation();
         onCancel();
       }}
@@ -29,14 +28,11 @@ const PositionDetailsModal: React.FC<PositionDetailsModalProps> = ({
       footer={null}
       width={700}
     >
-
       <Descriptions bordered column={1} size="small">
         <Descriptions.Item label={Strings.ciltMstrPositionLabel}>
           {position.name}
         </Descriptions.Item>
-        <Descriptions.Item label="ID">
-          {position.id}
-        </Descriptions.Item>
+        <Descriptions.Item label="ID">{position.id}</Descriptions.Item>
         <Descriptions.Item label="Site">
           {position.siteName || "-"}
         </Descriptions.Item>

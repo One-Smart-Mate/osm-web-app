@@ -799,6 +799,17 @@ class StringsBase {
   static asignamentsSB = "asignamentsSB";
   static ciltLevelAssignments = "ciltLevelAssignments";
 
+  // Nuevas cadenas para LevelDetailsDrawer
+  static ciltProcedures = "ciltProcedures";
+  static ciltTypeName = "ciltTypeName";
+  static ciltDetails = "ciltDetails";
+  static noCiltAssignedToLevel = "noCiltAssignedToLevel";
+  static noPositionsAssignedToLevel = "noPositionsAssignedToLevel";
+  static noSequencesFound = "noSequencesFound";
+  static sequenceDetails = "sequenceDetails";
+  static toolsRequired = "toolsRequired";
+  static machineStopped = "machineStopped";
+
   //Cilt Types
   static searchByName = "searchByName";
   static addNewCiltType = "addNewCiltType";
@@ -1186,17 +1197,21 @@ class StringsBase {
   static descriptionToolTip = "descriptionToolTip"
   static nameCiltTypeToolTip = "nameCiltTypeToolTip"
   static ciltTypeColorTooltip= "ciltTypeColorTooltip"
+  static monthValue = "monthValue";
+  static yearValue = "yearValue";
+  static repeat = "repeat";
+  static repeatEach = "repeatEach"; 
 
+  static ciltDueDate = "ciltDueDate";
+  static ciltDueDatePlaceholder = "ciltDueDatePlaceholder";
 
-  static dayValue = "dayValue" 
-  static weekValue = "weekValue"
-  static monthValue = "monthValue"
-  static yearValue = "yearValue"
-  static repeat = "repeat"
-  static repeatEach = "repeatEach" 
-
-  static ciltDueDate = "ciltDueDate"
-  static ciltDueDatePlaceholder = "ciltDueDatePlaceholder"
+  // LevelDetailsDrawer strings
+  static errorLoadingData = "errorLoadingData";
+  static noCiltProceduresAssigned = "noCiltProceduresAssigned";
+  static noPositionsAssigned = "noPositionsAssigned";
+  static andMore = "andMore";
+  static more = "more";
+  static functionalityInDevelopment = "functionalityInDevelopment";
 
   static editUser = "editUser"
   static fastPassword = "fastPassword"

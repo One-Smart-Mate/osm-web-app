@@ -1263,6 +1263,23 @@ const resources = {
 
       ciltDueDate: "CILT Due Date",
       ciltDueDatePlaceholder: "CILT Due Date",
+      
+      // Level Details Drawer
+      errorLoadingData: "Error loading data",
+      noCiltProceduresAssigned: "No CILT procedures assigned to this level",
+      noPositionsAssigned: "No positions assigned to this level",
+      andMore: "And",
+      more: "more",
+      functionalityInDevelopment: "This functionality is under development",
+      ciltProcedures: "CILT Procedures",
+      ciltTypeName: "CILT Type",
+      ciltDetails: "CILT Details",
+      noCiltAssignedToLevel: "No CILT procedures assigned to this level",
+      noPositionsAssignedToLevel: "No positions assigned to this level",
+      noSequencesFound: "No sequences found",
+      sequenceDetails: "Sequence Details",
+      toolsRequired: "Tools Required",
+      machineStopped: "Machine Stopped",
 
       // CILT Level Assignments
       assignPositionCiltMstrLevel: "Assign Position CILT",
@@ -2597,8 +2614,27 @@ const resources = {
       repeat: "Repetir",
       repeatEach: "Repetir cada",
 
-      ciltDueDate: "Fecha de vencimiento del CILT",
-      ciltDueDatePlaceholder: "Fecha de vencimiento del CILT",
+      ciltDueDate: "Fecha de vencimiento CILT",
+      ciltDueDatePlaceholder: "Fecha de vencimiento CILT",
+      
+      // LevelDetailsDrawer translations
+      errorLoadingData: "Error al cargar datos",
+      noCiltProceduresAssigned: "No hay procedimientos CILT asignados a este nivel",
+      noPositionsAssigned: "No hay posiciones asignadas a este nivel",
+      andMore: "Y",
+      more: "más",
+      functionalityInDevelopment: "Esta funcionalidad está en desarrollo",
+      
+      // Level Details Drawer
+      ciltProcedures: "Procedimientos CILT",
+      ciltTypeName: "Tipo de CILT",
+      ciltDetails: "Detalles del CILT",
+      noCiltAssignedToLevel: "No hay procedimientos CILT asignados a este nivel",
+      noPositionsAssignedToLevel: "No hay posiciones asignadas a este nivel",
+      noSequencesFound: "No se encontraron secuencias",
+      sequenceDetails: "Detalles de la Secuencia",
+      toolsRequired: "Herramientas Requeridas",
+      machineStopped: "Máquina Detenida",
       select: "Seleccionar",
       editUser:"Editar usuario",
       fastPassword: "Password rápido",

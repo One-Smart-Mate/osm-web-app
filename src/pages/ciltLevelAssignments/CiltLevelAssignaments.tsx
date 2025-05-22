@@ -7,6 +7,7 @@ import MainContainer from "../layouts/MainContainer";
 import Constants from "../../utils/Constants";
 import CiltLevelMenuOptions from "./components/CiltLevelMenuOptions";
 import CiltAssignmentDrawer from "./components/CiltAssignmentDrawer";
+import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
@@ -37,7 +38,7 @@ const buildHierarchy = (data: Level[]) => {
   return tree;
 };
 
-const CustomNode = ({ nodeDatum, toggleNode, onNodeContextMenu }: any) => {
+const CustomNode = ({ nodeDatum, toggleNode, onNodeContextMenu, onNodeClick }: any) => {
   const { token } = theme.useToken();
 
   const isCollapsed =
@@ -51,9 +52,20 @@ const CustomNode = ({ nodeDatum, toggleNode, onNodeContextMenu }: any) => {
   const isLeafNode = !nodeDatum.children || nodeDatum.children.length === 0;
   const fillColor = isLeafNode ? "#FFFF00" : "#145695";
 
+  // Manejador para el click izquierdo
+  const handleClick = (e: React.MouseEvent) => {
+    // Si es un nodo hoja (sin hijos), mostrar detalles
+    if (isLeafNode && onNodeClick) {
+      onNodeClick(e, nodeDatum);
+    } else {
+      // Si no es un nodo hoja, mantener el comportamiento de expandir/colapsar
+      toggleNode();
+    }
+  };
+
   return (
     <g
-      onClick={toggleNode}
+      onClick={handleClick}
       onContextMenu={(e) =>
         onNodeContextMenu && onNodeContextMenu(e, nodeDatum)
       }
@@ -95,14 +107,16 @@ const CiltLevelAssignaments: React.FC = () => {
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [drawerType, setDrawerType] = useState<
-    "cilt-position" | "opl" | "details"
-  >("cilt-position");
-  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">(
-    "right"
-  );
+  const [drawerType, setDrawerType] = useState<"cilt-position" | "opl" | "details">("cilt-position");
+  const [drawerPlacement, setDrawerPlacement] = useState<"right" | "bottom">("right");
 
   const [isAssigning, setIsAssigning] = useState(false);
+
+  // Estado para el drawer de detalles del nivel
+  const [isLevelDetailsVisible, setIsLevelDetailsVisible] = useState(false);
+  const [selectedLevelForDetails, setSelectedLevelForDetails] = useState<any>(
+    null
+  );
 
   const siteName = location.state?.siteName || "Default Site";
   const siteId = location.state?.siteId || "1";
@@ -256,6 +270,17 @@ const CiltLevelAssignaments: React.FC = () => {
     });
   };
 
+  // Manejador para el click izquierdo en un nodo hoja
+  const handleNodeClick = (_event: React.MouseEvent, nodeDatum: any) => {
+    // Solo mostrar detalles para nodos hoja (sin hijos)
+    if (!nodeDatum.children || nodeDatum.children.length === 0) {
+      console.log('handleNodeClick - nodeDatum:', nodeDatum);
+      setSelectedLevelForDetails(nodeDatum);
+      setIsLevelDetailsVisible(true);
+      console.log('handleNodeClick - selectedLevelForDetails after set:', nodeDatum);
+    }
+  };
+
   const handleAssignPositionCiltMstr = () => {
     setDrawerType("cilt-position");
     setIsDrawerVisible(true);
@@ -345,6 +370,7 @@ const CiltLevelAssignaments: React.FC = () => {
                     nodeDatum={rd3tProps.nodeDatum}
                     toggleNode={rd3tProps.toggleNode}
                     onNodeContextMenu={handleNodeContextMenu}
+                    onNodeClick={handleNodeClick}
                   />
                 )}
                 collapsible={true}
@@ -372,6 +398,14 @@ const CiltLevelAssignaments: React.FC = () => {
               selectedNode={selectedNode}
               drawerType={drawerType}
               isSubmitting={isAssigning}
+            />
+            
+            {/* Drawer para mostrar detalles del nivel */}
+            <LevelDetailsDrawer
+              visible={isLevelDetailsVisible}
+              levelId={selectedLevelForDetails?.id}
+              levelName={selectedLevelForDetails?.name}
+              onClose={() => setIsLevelDetailsVisible(false)}
             />
           </>
         )}
