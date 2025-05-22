@@ -17,17 +17,26 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
   onCancel,
   onClone
 }) => {
-  // Fix for image loading - ensure the URL is properly formed
+  
+  const fallbackImageUrl = 'https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=';
+  
   const getImageUrl = (url: string | undefined): string => {
-    if (!url) return '';
+    if (!url || url.trim() === '') return fallbackImageUrl;
     
-    // If the URL is already absolute (starts with http or https), return it as is
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
     
-    // Otherwise, ensure it has a proper protocol
     return url.startsWith('/') ? `https:${url}` : `https://${url}`;
+  };
+  
+  const handleImageError = () => {
+    const imgElements = document.querySelectorAll('.cilt-layout-image');
+    imgElements.forEach(img => {
+      if (img instanceof HTMLImageElement) {
+        img.src = fallbackImageUrl;
+      }
+    });
   };
 
   return (
@@ -72,15 +81,17 @@ const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({
               <div>
                 <Image
                   width={200}
+                  className="cilt-layout-image"
                   src={getImageUrl(cilt.urlImgLayout)}
                   alt="Layout Preview"
-                  fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
+                  fallback={fallbackImageUrl}
+                  onError={handleImageError}
+                  preview={{
+                    src: getImageUrl(cilt.urlImgLayout),
+                    mask: Strings.ciltMstrViewFullImage,
+                    maskClassName: 'custom-mask'
+                  }}
                 />
-                <div style={{ marginTop: '5px' }}>
-                  <a href={getImageUrl(cilt.urlImgLayout)} target="_blank" rel="noopener noreferrer">
-                    {Strings.ciltMstrViewFullImage}
-                  </a>
-                </div>
               </div>
             ) : (
               Strings.ciltMstrNotAvailable
