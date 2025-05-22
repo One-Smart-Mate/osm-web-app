@@ -19,7 +19,7 @@ import {
 } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
-import { Position } from "../../../data/postiions/positions";
+
 
 // Interface for sequence data structure from API response
 interface CiltSequence {
@@ -82,12 +82,10 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
 
-  // Estado para almacenar los datos obtenidos directamente
   const [levelAssignments, setLevelAssignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
-  // Efecto para cargar los datos cuando cambia el levelId
   useEffect(() => {
     const fetchData = async () => {
       if (!levelId) return;
@@ -96,7 +94,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       setError(null);
       
       try {
-        // Usar fetch directamente en lugar de RTK Query
         const apiUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
         console.log('Fetching from URL:', apiUrl);
         
@@ -115,7 +112,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         const data = await response.json();
         console.log('API Response:', data);
         
-        // Extraer los datos si están envueltos en una propiedad data
         const assignments = data.data || data;
         setLevelAssignments(Array.isArray(assignments) ? assignments : []);
       } catch (err) {
@@ -129,43 +125,25 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     fetchData();
   }, [levelId]);
   
-  // Log para depuración
   console.log('LevelDetailsDrawer - levelId:', levelId);
   console.log('LevelDetailsDrawer - levelAssignments:', levelAssignments);
   
-  // Extender el objeto CiltMstr para incluir secuencias
   interface ExtendedCiltMstr extends CiltMstr {
     sequences?: CiltSequence[];
   }
-  
-  // Define the type for the API response data
-  type CiltMstrPositionLevelResponse = {
-    id: number;
-    siteId: string | number;
-    ciltMstrId: number;
-    positionId: number;
-    levelId: string | number;
-    status: string;
-    createdAt?: string;
-    updatedAt?: string;
-    deletedAt?: string | null;
-    position?: Position;
-    ciltMstr?: ExtendedCiltMstr;
-  };
 
-  // Función para mostrar los detalles de un CILT
+  
   const showCiltDetails = (ciltMstr: CiltMstr) => {
     setSelectedCiltMstr(ciltMstr);
     setCiltDetailsModalVisible(true);
   };
 
-  // Función para mostrar los detalles de una secuencia
+    
   const showSequenceDetails = (sequence: CiltSequence) => {
     setSelectedSequence(sequence);
     setSequenceDetailsModalVisible(true);
   };
 
-  // Función para formatear URLs de imágenes
   const getImageUrl = (url: string | null | undefined): string => {
     if (!url) return '';
     
@@ -176,14 +154,12 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     return url.startsWith('/') ? `https:${url}` : `https://${url}`;
   };
 
-  // Calcular el rango de elementos a mostrar en la página actual
   const getPageItems = (items: any[] = []) => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     return items.slice(startIndex, endIndex);
   };
 
-  // Renderizar las tarjetas de procedimientos CILT
   const renderCiltProcedures = () => {
     if (isLoading) return <Spin size="large" />;
     if (error) {
@@ -207,7 +183,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       return <Empty description={Strings.noCiltProceduresAssigned} />;
     }
     
-    // Calcular el rango de elementos a mostrar en la página actual
     const paginatedData = getPageItems(levelAssignments);
     
     return (

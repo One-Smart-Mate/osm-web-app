@@ -1248,6 +1248,9 @@ class StringsBase {
   static ciltMstr = "ciltMstr"
   static ciltCardListViewDetailsButton = "ciltCardListViewDetailsButton"
   static ciltCardListCreatedLabel = "ciltCardListCreatedLabel"
+  static dayValue = "dayValue"
+  static weekValue = "weekValue"
+  static until = "until"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
