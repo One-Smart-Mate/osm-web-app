@@ -17,15 +17,16 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 import { useUpdateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
-import {
-  CiltSequence,
-} from "../../../data/cilt/ciltSequences/ciltSequences";
+import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import Strings from "../../../utils/localizations/Strings";
 
 import OplSelectionModal from "./OplSelectionModal";
-import { formatSecondsToNaturalTime, parseNaturalTimeToSeconds } from "../../../utils/timeUtils";
+import {
+  formatSecondsToNaturalTime,
+  parseNaturalTimeToSeconds,
+} from "../../../utils/timeUtils";
 import Constants from "../../../utils/Constants";
 import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
 
@@ -56,53 +57,52 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     useState(false);
   const [remediationOplModalVisible, setRemediationOplModalVisible] =
     useState(false);
-  const [formattedTime, setFormattedTime] = useState<string>('');
-  const [referenceOplName, setReferenceOplName] = useState<string>('');
-  const [remediationOplName, setRemediationOplName] = useState<string>('');
+  const [formattedTime, setFormattedTime] = useState<string>("");
+  const [referenceOplName, setReferenceOplName] = useState<string>("");
+  const [remediationOplName, setRemediationOplName] = useState<string>("");
 
   useEffect(() => {
     if (visible && sequence?.siteId) {
-      
       getCiltTypesBySite(sequence.siteId.toString())
         .unwrap()
         .then((types) => {
           setCiltTypes(types);
         })
         .catch((error) => {
-          console.error('Error fetching CILT types:', error);
+          console.error("Error fetching CILT types:", error);
         });
 
-      
       const loadFormData = async () => {
         if (!sequence) return;
-    
-        
+
         if (sequence.standardTime) {
           setFormattedTime(formatSecondsToNaturalTime(sequence.standardTime));
         }
 
-        
-        if (sequence.referenceOplSop) {
+        if (sequence.referenceOplSopId) {
           try {
-            const referenceOpl = await getOplMstrById(String(sequence.referenceOplSop)).unwrap();
-            setReferenceOplName(referenceOpl.title || '');
+            const referenceOpl = await getOplMstrById(
+              String(sequence.referenceOplSopId)
+            ).unwrap();
+            setReferenceOplName(referenceOpl.title || "");
             form.setFieldsValue({ referenceOplName: referenceOpl.title });
           } catch (error) {
-            console.error('Error al cargar el OPL de referencia:', error);
+            console.error("Error al cargar el OPL de referencia:", error);
           }
         }
 
-        if (sequence.remediationOplSop) {
+        if (sequence.remediationOplSopId) {
           try {
-            const remediationOpl = await getOplMstrById(String(sequence.remediationOplSop)).unwrap();
-            setRemediationOplName(remediationOpl.title || '');
+            const remediationOpl = await getOplMstrById(
+              String(sequence.remediationOplSopId)
+            ).unwrap();
+            setRemediationOplName(remediationOpl.title || "");
             form.setFieldsValue({ remediationOplName: remediationOpl.title });
           } catch (error) {
-            console.error('Error al cargar el OPL de remediación:', error);
+            console.error("Error al cargar el OPL de remediación:", error);
           }
         }
 
-        
         form.setFieldsValue({
           id: sequence.id,
           siteId: sequence.siteId,
@@ -120,8 +120,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
           secuenceColor: sequence.secuenceColor?.replace("#", ""),
           ciltTypeId: sequence.ciltTypeId,
           ciltTypeName: sequence.ciltTypeName,
-          referenceOplSop: sequence.referenceOplSop,
-          remediationOplSop: sequence.remediationOplSop,
+          referenceOplSopId: sequence.referenceOplSopId,
+          remediationOplSopId: sequence.remediationOplSopId,
+          frecuencyId: sequence.frecuencyId,
+          frecuencyCode: sequence.frecuencyCode,
           standardTime: sequence.standardTime,
           standardOk: sequence.standardOk,
           toolsRequired: sequence.toolsRequired,
@@ -131,17 +133,17 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
           quantityPicturesCreate: sequence.quantityPicturesCreate,
           quantityPicturesClose: sequence.quantityPicturesClose,
           referencePoint: sequence.referencePoint,
-          selectableWithoutProgramming: sequence.selectableWithoutProgramming === 1,
+          selectableWithoutProgramming:
+            sequence.selectableWithoutProgramming === 1,
         });
       };
 
       loadFormData();
     }
-    
-    
+
     if (!visible) {
-      setReferenceOplName('');
-      setRemediationOplName('');
+      setReferenceOplName("");
+      setRemediationOplName("");
     }
   }, [visible, sequence, form, getCiltTypesBySite, getOplMstrById]);
 
@@ -151,64 +153,53 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     }
   }, [visible, form]);
 
-  
-
   const handleReferenceOplSelect = (opl: OplMstr) => {
     try {
-      // Actualizar tanto el estado como el formulario
-      setReferenceOplName(opl.title || '');
-      
-      // Actualizar los campos del formulario
+      setReferenceOplName(opl.title || "");
+
       form.setFieldsValue({
-        referenceOplSop: opl.id,
+        referenceOplSopId: opl.id,
         referenceOplName: opl.title,
       });
-      
-      // Cerrar el modal después de una pequeña pausa para asegurar que los datos se guarden
+
       setTimeout(() => {
         setReferenceOplModalVisible(false);
       }, 100);
     } catch (error) {
-      console.error('Error al seleccionar OPL de referencia:', error);
+      console.error("Error al seleccionar OPL de referencia:", error);
     }
   };
 
   const handleRemediationOplSelect = (opl: OplMstr) => {
     try {
-      // Actualizar tanto el estado como el formulario
-      setRemediationOplName(opl.title || '');
-      
-      // Actualizar los campos del formulario
+      setRemediationOplName(opl.title || "");
+
       form.setFieldsValue({
-        remediationOplSop: opl.id,
+        remediationOplSopId: opl.id,
         remediationOplName: opl.title,
       });
-      
-      // Cerrar el modal después de una pequeña pausa para asegurar que los datos se guarden
+
       setTimeout(() => {
         setRemediationOplModalVisible(false);
       }, 100);
     } catch (error) {
-      console.error('Error al seleccionar OPL de remediación:', error);
+      console.error("Error al seleccionar OPL de remediación:", error);
     }
   };
 
-  
   const getColorFromCiltType = (ciltTypeId: number | undefined): string => {
     if (!ciltTypeId) return "1890ff";
-    
-    const selectedType = ciltTypes.find(type => type.id === ciltTypeId);
+
+    const selectedType = ciltTypes.find((type) => type.id === ciltTypeId);
     if (selectedType && selectedType.color) {
-      
-      return selectedType.color.startsWith('#') ? 
-        selectedType.color.substring(1) : 
-        selectedType.color;
+      return selectedType.color.startsWith("#")
+        ? selectedType.color.substring(1)
+        : selectedType.color;
     }
-    
+
     return "1890ff";
   };
-  
-  
+
   const handleCiltTypeChange = (ciltTypeId: number) => {
     form.setFieldsValue({ secuenceColor: getColorFromCiltType(ciltTypeId) });
   };
@@ -218,13 +209,11 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
     try {
       setLoading(true);
-      
-      
+
       values.positionId = sequence.positionId;
       values.positionName = sequence.positionName;
       values.order = sequence.order;
 
-      
       const payload = {
         id: values.id,
         siteId: Number(values.siteId),
@@ -235,6 +224,9 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         positionName: values.positionName || sequence.positionName || "string",
         ciltMstrId: Number(values.ciltMstrId),
         ciltMstrName: values.ciltMstrName || sequence.ciltMstrName || "string",
+        frecuencyId: Number(values.frecuencyId) || sequence.frecuencyId || 0,
+        frecuencyCode:
+          values.frecuencyCode || sequence.frecuencyCode || "string",
         levelId: Number(values.levelId),
         levelName: values.levelName || "string",
         route: values.route || "string",
@@ -242,24 +234,36 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         secuenceList: values.secuenceList || "string",
         secuenceColor: getColorFromCiltType(values.ciltTypeId),
         ciltTypeId: Number(values.ciltTypeId),
-        ciltTypeName: ciltTypes.find((type) => type.id === values.ciltTypeId)?.name || values.ciltTypeName || "string",
-        referenceOplSop: Number(values.referenceOplSop) || 0,
+        ciltTypeName:
+          ciltTypes.find((type) => type.id === values.ciltTypeId)?.name ||
+          values.ciltTypeName ||
+          "string",
+        referenceOplSopId: Number(values.referenceOplSopId) || 0,
         standardTime: Number(values.standardTime) || 0,
         standardOk: values.standardOk || "string",
-        remediationOplSop: Number(values.remediationOplSop) || 0,
+        remediationOplSopId: Number(values.remediationOplSopId) || 0,
         toolsRequired: values.toolsRequired || "string",
         stoppageReason: values.stoppageReason ? 1 : 0,
         machineStopped: values.machineStopped ? 1 : 0,
         quantityPicturesCreate: Number(values.quantityPicturesCreate) || 0,
         quantityPicturesClose: Number(values.quantityPicturesClose) || 0,
         referencePoint: values.referencePoint || "",
-        selectableWithoutProgramming: values.selectableWithoutProgramming ? 1 : 0,
+        selectableWithoutProgramming: values.selectableWithoutProgramming
+          ? 1
+          : 0,
         status: values.status || "A",
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      
+
       delete (values as any).referenceOplName;
       delete (values as any).remediationOplName;
+
+      if (!payload.frecuencyId && sequence.frecuencyId) {
+        payload.frecuencyId = sequence.frecuencyId;
+      }
+      if (!payload.frecuencyCode && sequence.frecuencyCode) {
+        payload.frecuencyCode = sequence.frecuencyCode;
+      }
 
       await updateCiltSequence(payload).unwrap();
 
@@ -306,20 +310,49 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               <Input />
             </Form.Item>
 
-            
-            <div style={{ display: 'none' }}>
-              <Form.Item name="siteId" hidden><Input /></Form.Item>
-              <Form.Item name="siteName" hidden><Input /></Form.Item>
-              <Form.Item name="areaId" hidden><Input /></Form.Item>
-              <Form.Item name="areaName" hidden><Input /></Form.Item>
-              <Form.Item name="positionId" hidden><Input /></Form.Item>
-              <Form.Item name="positionName" hidden><Input /></Form.Item>
-              <Form.Item name="ciltMstrId" hidden><Input /></Form.Item>
-              <Form.Item name="ciltMstrName" hidden><Input /></Form.Item>
-              <Form.Item name="levelId" hidden><Input /></Form.Item>
-              <Form.Item name="levelName" hidden><Input /></Form.Item>
-              <Form.Item name="order" hidden><Input /></Form.Item>
-              <Form.Item name="secuenceColor" hidden><Input /></Form.Item>
+            <div style={{ display: "none" }}>
+              <Form.Item name="siteId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="siteName" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="areaId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="areaName" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="positionId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="positionName" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="ciltMstrId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="ciltMstrName" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="levelId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="levelName" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="order" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="secuenceColor" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="frecuencyId" hidden>
+                <Input />
+              </Form.Item>
+              <Form.Item name="frecuencyCode" hidden>
+                <Input />
+              </Form.Item>
             </div>
 
             <div className="mb-4">
@@ -334,9 +367,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 ]}
               >
                 <Select
-                  placeholder={
-                    Strings.editCiltSequenceModalCiltTypePlaceholder
-                  }
+                  placeholder={Strings.editCiltSequenceModalCiltTypePlaceholder}
                   onChange={handleCiltTypeChange}
                   className="w-full"
                 >
@@ -350,12 +381,13 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
             </div>
 
             <Row gutter={16}>
-
               <Col span={12}>
                 <Form.Item
                   label={
                     <div className="flex items-center">
-                      <span>{Strings.editCiltSequenceModalStandardTimeLabel}</span>
+                      <span>
+                        {Strings.editCiltSequenceModalStandardTimeLabel}
+                      </span>
                       {formattedTime && (
                         <Tooltip title="Time in HH:MM:SS format">
                           <span className="ml-2 text-primary">
@@ -383,7 +415,9 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                       }
                       onChange={(value) => {
                         if (value) {
-                          setFormattedTime(formatSecondsToNaturalTime(Number(value)));
+                          setFormattedTime(
+                            formatSecondsToNaturalTime(Number(value))
+                          );
                         } else {
                           setFormattedTime("");
                         }
@@ -394,12 +428,13 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                           const seconds = parseNaturalTimeToSeconds(inputValue);
                           if (seconds !== null) {
                             form.setFieldsValue({ standardTime: seconds });
-                            setFormattedTime(formatSecondsToNaturalTime(seconds));
+                            setFormattedTime(
+                              formatSecondsToNaturalTime(seconds)
+                            );
                           }
                         }
                       }}
-                      
-                      value={form.getFieldValue('standardTime')}
+                      value={form.getFieldValue("standardTime")}
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
                       <small>sec</small>
@@ -432,19 +467,18 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalReferenceOplLabel}
                 >
-                  <Form.Item name="referenceOplSop" hidden>
+                  <Form.Item name="referenceOplSopId" hidden>
                     <Input type="hidden" />
                   </Form.Item>
                   <Input.Group compact>
-                    <Form.Item
-                      name="referenceOplName"
-                      noStyle
-                    >
+                    <Form.Item name="referenceOplName" noStyle>
                       <Input
-                        style={{ width: 'calc(100% - 32px)' }}
+                        style={{ width: "calc(100% - 32px)" }}
                         readOnly
-                        placeholder={Strings.editCiltSequenceModalReferenceOplLabel}
-                        value={referenceOplName} 
+                        placeholder={
+                          Strings.editCiltSequenceModalReferenceOplLabel
+                        }
+                        value={referenceOplName}
                         onChange={(e) => setReferenceOplName(e.target.value)}
                       />
                     </Form.Item>
@@ -460,19 +494,18 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalRemediationOplLabel}
                 >
-                  <Form.Item name="remediationOplSop" hidden>
+                  <Form.Item name="remediationOplSopId" hidden>
                     <Input type="hidden" />
                   </Form.Item>
                   <Input.Group compact>
-                    <Form.Item
-                      name="remediationOplName"
-                      noStyle
-                    >
+                    <Form.Item name="remediationOplName" noStyle>
                       <Input
-                        style={{ width: 'calc(100% - 32px)' }}
+                        style={{ width: "calc(100% - 32px)" }}
                         readOnly
-                        placeholder={Strings.editCiltSequenceModalRemediationOplLabel}
-                        value={remediationOplName} 
+                        placeholder={
+                          Strings.editCiltSequenceModalRemediationOplLabel
+                        }
+                        value={remediationOplName}
                         onChange={(e) => setRemediationOplName(e.target.value)}
                       />
                     </Form.Item>
@@ -506,7 +539,6 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
               />
             </Form.Item>
-            
 
             <Row gutter={16}>
               <Col span={8}>
@@ -535,10 +567,15 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                   name="status"
                 >
                   <Select placeholder={Strings.cardTypeTreeStatusPlaceholder}>
-                    <Option value={Constants.STATUS_ACTIVE}>{Strings.active}</Option>
-                    <Option value={Constants.STATUS_INACTIVE}>{Strings.inactive}</Option>
-                    <Option value={Constants.STATUS_DRAFT}>{Strings.draft}</Option>
-                    
+                    <Option value={Constants.STATUS_ACTIVE}>
+                      {Strings.active}
+                    </Option>
+                    <Option value={Constants.STATUS_INACTIVE}>
+                      {Strings.inactive}
+                    </Option>
+                    <Option value={Constants.STATUS_DRAFT}>
+                      {Strings.draft}
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -570,11 +607,11 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item
-                  label="Punto de referencia"
-                  name="referencePoint"
-                >
-                  <Input maxLength={10} placeholder="Ingrese el punto de referencia" />
+                <Form.Item label="Punto de referencia" name="referencePoint">
+                  <Input
+                    maxLength={10}
+                    placeholder="Ingrese el punto de referencia"
+                  />
                 </Form.Item>
               </Col>
 
@@ -603,9 +640,6 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         </Spin>
       </Modal>
 
-      {/* Level Tree Modal removed */}
-
-      {/* OPL Selection Modals - Renderizados en el body del documento para evitar problemas de z-index */}
       {createPortal(
         <>
           {referenceOplModalVisible && (
@@ -615,7 +649,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               onSelect={handleReferenceOplSelect}
             />
           )}
-          
+
           {remediationOplModalVisible && (
             <OplSelectionModal
               isVisible={true}

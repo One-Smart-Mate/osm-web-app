@@ -2,8 +2,7 @@ import React from "react";
 import { Modal, Card, Row, Col, Typography, Divider } from "antd";
 import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
-import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
-import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
+
 import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
 import { formatSecondsToNaturalTime } from "../../../utils/timeUtils";
 
@@ -23,22 +22,17 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
 }) => {
   if (!sequence) return null;
 
-  // fetch all frequencies for this CILT master then filter by this sequence
-  const [getSeqFreqs, { data: allSeqFreqs = [] }] = useGetCiltSequenceFrequenciesByCiltMutation();
-  React.useEffect(() => {
-    if (sequence.ciltMstrId) getSeqFreqs(String(sequence.ciltMstrId));
-  }, [sequence.ciltMstrId]);
-  const sequenceFreqs: CiltSequenceFrequency[] = (allSeqFreqs || []).filter(f => f.secuencyId === sequence.id);
+  
 
-  // fetch OPL master details
+  
   const [getRefOpl, { data: referenceOpl }] = useGetOplMstrByIdMutation();
   const [getRemOpl, { data: remediationOpl }] = useGetOplMstrByIdMutation();
   React.useEffect(() => {
-    if (sequence.referenceOplSop) getRefOpl(String(sequence.referenceOplSop));
-  }, [sequence.referenceOplSop]);
+    if (sequence.referenceOplSopId) getRefOpl(String(sequence.referenceOplSopId));
+  }, [sequence.referenceOplSopId]);
   React.useEffect(() => {
-    if (sequence.remediationOplSop) getRemOpl(String(sequence.remediationOplSop));
-  }, [sequence.remediationOplSop]);
+    if (sequence.remediationOplSopId) getRemOpl(String(sequence.remediationOplSopId));
+  }, [sequence.remediationOplSopId]);
 
   return (
     <Modal
@@ -173,7 +167,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           <Col span={24}>
             <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>
             <div>
-              <Text>{sequenceFreqs.length > 0 ? sequenceFreqs.map(f => f.frecuencyCode).join(", ") : "N/A"}</Text>
+              <Text>{sequence.frecuencyCode || "N/A"}</Text>
             </div>
           </Col>
         </Row>
@@ -188,7 +182,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           <Col span={12}>
             <Text type="secondary">{Strings.referenceOPL}:</Text>
             <div>
-              {sequence.referenceOplSop ? (
+              {sequence.referenceOplSopId ? (
                 <Text>{referenceOpl?.title || 'Loading...'}</Text>
               ) : (
                 <Text>N/A</Text>
@@ -199,7 +193,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           <Col span={12}>
             <Text type="secondary">{Strings.remediationOPL}:</Text>
             <div>
-              {sequence.remediationOplSop ? (
+              {sequence.remediationOplSopId ? (
                 <Text>{remediationOpl?.title || 'Loading...'}</Text>
               ) : (
                 <Text>N/A</Text>

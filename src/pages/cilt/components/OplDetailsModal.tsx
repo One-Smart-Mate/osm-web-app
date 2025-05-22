@@ -1,11 +1,11 @@
-import React from "react";
-import { Modal, Spin, Card, Typography, Space, Button } from "antd";
+import React, { useState } from "react";
+import { Modal, Spin, Card, Typography, Space, Button, Image } from "antd";
 import {
-  FileOutlined,
+  FileTextOutlined,
   VideoCameraOutlined,
   FilePdfOutlined,
   PictureOutlined,
-  PlayCircleOutlined,
+  FileOutlined,
 } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { OplDetail } from "../../../data/cilt/oplDetails/oplDetails";
@@ -17,21 +17,28 @@ interface OplDetailsModalProps {
   details: OplDetail[];
   loading: boolean;
   onCancel: () => void;
-  onOpenPdf: (url: string) => void;
-  onOpenVideo: (url: string) => void;
 }
 
-const { Text, Paragraph } = Typography;
+const { Text, Paragraph, Title } = Typography;
 
 const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
   visible,
   opl,
   details,
   loading,
-  onCancel,
-  onOpenPdf,
-  onOpenVideo,
+  onCancel
 }) => {
+  
+  const [pdfPreviewVisible, setPdfPreviewVisible] = useState(false);
+  const [currentPdfUrl, setCurrentPdfUrl] = useState("");
+  
+  const handleOpenPdf = (url: string) => {
+    setCurrentPdfUrl(url);
+    setPdfPreviewVisible(true);
+    
+  };
+  
+  // Video ahora se reproduce directamente en la interfaz sin modal adicional
   const getFileName = (url: string | undefined): string => {
     if (!url) return "";
 
@@ -68,12 +75,21 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
             bordered={true}
           >
             {detail.mediaUrl ? (
-              <div style={{ textAlign: "center" }}>
-                <img
+              <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+                <Image
                   src={detail.mediaUrl}
                   alt={Strings.oplSelectionModalImageAlt}
-                  style={{ maxWidth: "100%", maxHeight: "300px" }}
+                  style={{ 
+                    width: "400px", 
+                    height: "300px", 
+                    objectFit: "contain",
+                    maxWidth: "100%" 
+                  }}
+                  fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
                 />
+                <Text style={{ marginTop: 8, display: "block", fontWeight: "bold", textAlign: "center" }}>
+                  {getFileName(detail.mediaUrl)}
+                </Text>
               </div>
             ) : (
               <Text type="secondary">{Strings.oplSelectionModalNoContent}</Text>
@@ -96,20 +112,24 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
               </Space>
             }
             bordered={true}
-            actions={[
-              detail.mediaUrl ? (
-                <Button
-                  type="primary"
-                  icon={<PlayCircleOutlined />}
-                  onClick={() => onOpenVideo(detail.mediaUrl || "")}
-                >
-                  Reproducir Video
-                </Button>
-              ) : null,
-            ].filter(Boolean)}
           >
             {detail.mediaUrl ? (
-              <Text>{getFileName(detail.mediaUrl)}</Text>
+              <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+                <video 
+                  src={detail.mediaUrl} 
+                  controls 
+                  style={{ 
+                    width: "400px", 
+                    maxWidth: "100%", 
+                    height: "300px", 
+                    objectFit: "contain" 
+                  }}
+                  // Removed onPlay event to prevent opening in modal
+                />
+                <Text style={{ marginTop: 8, display: "block", fontWeight: "bold", textAlign: "center" }}>
+                  {getFileName(detail.mediaUrl)}
+                </Text>
+              </div>
             ) : (
               <Text type="secondary">{Strings.oplSelectionModalNoContent}</Text>
             )}
@@ -131,23 +151,17 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
               </Space>
             }
             bordered={true}
-            actions={[
-              detail.mediaUrl ? (
-                <Button
-                  type="primary"
-                  icon={<FileOutlined />}
-                  onClick={() => onOpenPdf(detail.mediaUrl || "")}
-                >
-                  Ver PDF
-                </Button>
-              ) : null,
-            ].filter(Boolean)}
           >
-            {detail.mediaUrl ? (
-              <Text>{getFileName(detail.mediaUrl)}</Text>
-            ) : (
-              <Text type="secondary">{Strings.oplSelectionModalNoContent}</Text>
-            )}
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <Button 
+                type="primary" 
+                icon={<FileOutlined />}
+                onClick={() => detail.mediaUrl && handleOpenPdf(detail.mediaUrl)}
+              >
+                Ver PDF
+              </Button>
+              <Text style={{ display: "block", fontWeight: "bold" }}>{detail.mediaUrl ? getFileName(detail.mediaUrl) : ""}</Text>
+            </Space>
           </Card>
         );
       case "texto":
@@ -155,12 +169,13 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           <Card
             style={{
               marginBottom: "16px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
               border: "1px solid #e8e8e8",
               borderRadius: "8px",
             }}
             title={
               <Space>
-                <FileOutlined style={{ color: "#1890ff", fontSize: "18px" }} />{" "}
+                <FileTextOutlined style={{ color: "#1890ff", fontSize: "18px" }} />{" "}
                 <Text strong>Texto</Text>
               </Space>
             }
@@ -175,29 +190,51 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
   };
 
   return (
-    <Modal
-      title={`${Strings.oplSelectionModalMultimediaTitle} - ${opl?.title || ""}`}
-      open={visible}
-      onCancel={onCancel}
-      footer={[
-        <Button key="close" onClick={onCancel}>
-          Cerrar
-        </Button>,
-      ]}
-      width={800}
-    >
-      <Spin spinning={loading}>
-        {details.length === 0 ? (
-          <Text type="secondary">{Strings.oplSelectionModalNoContent}</Text>
-        ) : (
-          <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
-            {details.map((detail) => (
-              <div key={detail.id}>{renderMediaContent(detail)}</div>
-            ))}
-          </div>
-        )}
-      </Spin>
-    </Modal>
+    <>
+      <Modal
+        title={`${Strings.oplSelectionModalMultimediaTitle} - ${opl?.title || ""}`}
+        open={visible}
+        onCancel={onCancel}
+        footer={[
+          <Button key="close" onClick={onCancel}>
+            Cerrar
+          </Button>,
+        ]}
+        width={800}
+      >
+        <Spin spinning={loading}>
+          {details.length === 0 ? (
+            <Text type="secondary">{Strings.oplSelectionModalNoContent}</Text>
+          ) : (
+            <div style={{ maxHeight: "60vh", overflowY: "auto", padding: "0 16px" }}>
+              <Title level={5} style={{ marginBottom: 24 }}>Contenido del OPL</Title>
+              {details.map((detail) => (
+                <div key={detail.id}>{renderMediaContent(detail)}</div>
+              ))}
+            </div>
+          )}
+        </Spin>
+      </Modal>
+      
+      {/* PDF Preview Modal */}
+      <Modal
+        title="Vista previa del PDF"
+        open={pdfPreviewVisible}
+        onCancel={() => setPdfPreviewVisible(false)}
+        width={800}
+        footer={[
+          <Button key="close" onClick={() => setPdfPreviewVisible(false)}>
+            Cerrar
+          </Button>
+        ]}
+      >
+        <embed 
+          src={currentPdfUrl} 
+          style={{ width: '100%', height: '600px', border: 'none' }} 
+          type="application/pdf"
+        />
+      </Modal>
+    </>
   );
 };
 
