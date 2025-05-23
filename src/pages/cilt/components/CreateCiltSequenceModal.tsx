@@ -87,6 +87,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   }, [cilt, form, visible, positions]);
 
+  // Fetch CILT types and filter by active status
   const fetchCiltTypes = async () => {
     if (!location.state?.siteId) return;
 
@@ -95,7 +96,9 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       const response = await getCiltTypesBySite(
         String(location.state.siteId)
       ).unwrap();
-      setCiltTypes(response || []);
+      // Filter CILT types to only include those with status 'A' (active)
+      const activeTypes = response ? response.filter(type => type.status === 'A') : [];
+      setCiltTypes(activeTypes);
     } catch (error) {
       notification.error({
         message: Strings.error,
@@ -106,11 +109,14 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     }
   };
 
+  // Fetch CILT frequencies and filter by active status
   const fetchCiltFrequencies = async () => {
     setLoading(true);
     try {
       const response = await getCiltFrequenciesAll().unwrap();
-      setCiltFrequencies(response || []);
+      // Filter frequencies to only include those with status 'A' (active)
+      const activeFrequencies = response ? response.filter(freq => freq.status === 'A') : [];
+      setCiltFrequencies(activeFrequencies);
     } catch (error) {
       notification.error({
         message: Strings.error,
@@ -552,6 +558,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     }
                     autoSize={{ minRows: 4, maxRows: 8 }}
                     className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    style={{ whiteSpace: 'pre-wrap' }}
                   />
                 </Form.Item>
 
@@ -565,6 +572,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     autoSize={{ minRows: 3, maxRows: 6 }}
                     className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Ingrese las herramientas requeridas"
+                    style={{ whiteSpace: 'pre-wrap' }}
                   />
                 </Form.Item>
               </div>

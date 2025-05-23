@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
   Button,
@@ -16,7 +16,9 @@ import {
   Descriptions,
   Image,
   Empty,
+  Input,
 } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 
@@ -58,7 +60,6 @@ interface CiltSequence {
 }
 
 const { Text } = Typography;
-// Tabs ahora usa items en lugar de TabPane
 
 interface LevelDetailsDrawerProps {
   visible: boolean;
@@ -74,13 +75,17 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState("cilt");
-  // Estados para los modales
+  const [searchText, setSearchText] = useState("");
   const [selectedCiltMstr, setSelectedCiltMstr] = useState<ExtendedCiltMstr | null>(null);
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
   const [ciltDetailsModalVisible, setCiltDetailsModalVisible] = useState(false);
-  const [sequenceDetailsModalVisible, setSequenceDetailsModalVisible] = useState(false);
+  const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
+  const [singleSequenceModalVisible, setSingleSequenceModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sequenceSearchText, setSequenceSearchText] = useState("");
+  const [sequencePage, setSequencePage] = useState(1);
   const pageSize = 4;
+  const sequencePageSize = 4;
 
   const [levelAssignments, setLevelAssignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -138,10 +143,15 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     setCiltDetailsModalVisible(true);
   };
 
+  const showSequenceList = (ciltMstr: CiltMstr) => {
+    setSelectedCiltMstr(ciltMstr);
+    setSequenceListModalVisible(true);
+  };
     
+  // Show details of a specific sequence
   const showSequenceDetails = (sequence: CiltSequence) => {
     setSelectedSequence(sequence);
-    setSequenceDetailsModalVisible(true);
+    setSingleSequenceModalVisible(true);
   };
 
   const getImageUrl = (url: string | null | undefined): string => {
@@ -154,11 +164,31 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     return url.startsWith('/') ? `https:${url}` : `https://${url}`;
   };
 
-  const getPageItems = (items: any[] = []) => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+  // Helper function to get paginated items - used by both main component and sequence modal
+  const getPaginatedItems = (items: any[] = [], page: number, size: number) => {
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
     return items.slice(startIndex, endIndex);
   };
+
+  // Filter assignments based on search text and active status
+  const filteredAssignments = useMemo(() => {
+    // First filter by active status
+    const activeAssignments = levelAssignments.filter(assignment => assignment.status === 'A');
+    
+    // Then filter by search text if provided
+    if (!searchText.trim()) {
+      return activeAssignments;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return activeAssignments.filter(assignment => {
+      const ciltName = assignment.ciltMstr?.ciltName?.toLowerCase() || '';
+      const ciltDescription = assignment.ciltMstr?.ciltDescription?.toLowerCase() || '';
+      
+      return ciltName.includes(searchLower) || ciltDescription.includes(searchLower);
+    });
+  }, [levelAssignments, searchText]);
 
   const renderCiltProcedures = () => {
     if (isLoading) return <Spin size="large" />;
@@ -179,77 +209,82 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         </div>
       );
     }
-    if (!levelAssignments || levelAssignments.length === 0) {
-      return <Empty description={Strings.noCiltProceduresAssigned} />;
+    
+    // Show empty state for no assignments or no search results
+    if (!filteredAssignments || filteredAssignments.length === 0) {
+      return <Empty description={searchText ? 'No se encontraron resultados para tu búsqueda' : Strings.noCiltProceduresAssigned} />;
     }
     
-    const paginatedData = getPageItems(levelAssignments);
+    const paginatedData = getPaginatedItems(filteredAssignments, currentPage, pageSize);
     
     return (
       <div>
-        <Row gutter={[16, 16]}>
-          {paginatedData.map((assignment) => (
-            <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
-              <Card
-                title={
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text strong>{assignment.ciltMstr?.ciltName}</Text>
-                    <Badge
-                      status={assignment.status === 'A' ? 'success' : 'error'}
-                      text={assignment.status === 'A' ? Strings.active : Strings.inactive}
-                    />
-                  </div>
-                }
-                extra={<Button type="link" onClick={() => showCiltDetails(assignment.ciltMstr)}>{Strings.viewDetails}</Button>}
-              >
-                <p><strong>{Strings.description}:</strong> {assignment.ciltMstr?.ciltDescription}</p>
-                <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
-                <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
-                
-                {assignment.ciltMstr?.sequences && assignment.ciltMstr.sequences.length > 0 && (
-                  <div>
-                    <Text strong>{Strings.sequences}:</Text>
-                    <ul>
-                      {assignment.ciltMstr.sequences.slice(0, 2).map((sequence: CiltSequence) => (
-                        <li key={sequence.id}>
-                          <Button 
-                            type="link" 
-                            style={{ padding: 0 }}
-                            onClick={() => showSequenceDetails(sequence)}
-                          >
-                            {sequence.secuenceList.length > 30 ? `${sequence.secuenceList.substring(0, 30)}...` : sequence.secuenceList}
-                          </Button>
-                        </li>
-                      ))}
-                      {assignment.ciltMstr.sequences.length > 2 && (
-                        <li>
-                          <Text type="secondary">{Strings.andMore} {assignment.ciltMstr.sequences.length - 2} {Strings.more}...</Text>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-                
+        {/* Single column layout */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {paginatedData.map((assignment: any) => (
+            <Card
+              key={assignment.id}
+              style={{ 
+                marginBottom: '12px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                border: '1px solid #e8e8e8'
+              }}
+              title={
+                <div>
+                  <Text strong>{assignment.ciltMstr?.ciltName}</Text>
+                </div>
+              }
+              extra={null}
+              bodyStyle={{ padding: '16px', width: '100%' }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
+                {/* Image column */}
                 {assignment.ciltMstr?.urlImgLayout && (
-                  <div style={{ marginTop: '10px' }}>
+                  <div style={{ flex: '0 0 180px' }}>
                     <Image
                       src={getImageUrl(assignment.ciltMstr.urlImgLayout)}
                       alt="Layout"
-                      style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                      style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '4px' }}
                       preview={{ src: getImageUrl(assignment.ciltMstr.urlImgLayout) }}
                     />
                   </div>
                 )}
-              </Card>
-            </Col>
+                
+                {/* Content column - expanded to use more space */}
+                <div style={{ flex: '1 1 auto', width: 'calc(100% - 200px)' }}>
+                  <p><strong>{Strings.description}:</strong> {assignment.ciltMstr?.ciltDescription}</p>
+                  <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
+                  <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
+                  
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                    <Button 
+                      type="primary" 
+                      onClick={() => showCiltDetails(assignment.ciltMstr)}
+                    >
+                      Ver detalles
+                    </Button>
+                    
+                    {assignment.ciltMstr?.sequences && assignment.ciltMstr.sequences.length > 0 && (
+                      <Button 
+                        type="primary" 
+                        onClick={() => showSequenceList(assignment.ciltMstr)}
+                      >
+                        {Strings.viewSequences}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Card>
           ))}
-        </Row>
+        </div>
         
+        {/* Pagination */}
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={levelAssignments.length}
+            total={filteredAssignments.length}
             onChange={setCurrentPage}
             showSizeChanger={false}
           />
@@ -258,7 +293,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Renderizar las tarjetas de posiciones
   const renderPositions = () => {
     if (isLoading) return <Spin size="large" />;
     if (error) {
@@ -282,11 +316,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       return <Empty description={Strings.noPositionsAssigned} />;
     }
     
-    // Filtrar asignaciones que tienen datos de posición
     const positionAssignments = levelAssignments.filter(assignment => 'position' in assignment && assignment.position);
     
-    // Calcular el rango de elementos a mostrar en la página actual
-    const paginatedData = getPageItems(positionAssignments);
+    const paginatedData = getPaginatedItems(positionAssignments, currentPage, pageSize);
     
     if (paginatedData.length === 0) {
       return <Empty description={Strings.noPositionsAssigned} />;
@@ -295,7 +327,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     return (
       <div>
         <Row gutter={[16, 16]}>
-          {paginatedData.map((assignment) => (
+          {paginatedData.map((assignment: any) => (
             <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
               <Card
                 title={
@@ -331,7 +363,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Renderizar el contenido de OPL/SOP (en desarrollo)
   const renderOplSop = () => {
     if (isLoading) return <Spin size="large" />;
     if (error) {
@@ -359,7 +390,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Modal de detalles de CILT
   const renderCiltDetailsModal = () => {
     if (!selectedCiltMstr) return null;
 
@@ -392,9 +422,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <Descriptions.Item label={Strings.ciltMstrNameLabel}>
                 {selectedCiltMstr.ciltName}
               </Descriptions.Item>
-              <Descriptions.Item label="ID">
-                {selectedCiltMstr.id}
-              </Descriptions.Item>
               <Descriptions.Item label={Strings.ciltMstrListDescriptionColumn}>
                 {selectedCiltMstr.ciltDescription || "-"}
               </Descriptions.Item>
@@ -402,22 +429,22 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 {selectedCiltMstr.creatorName || "-"}
               </Descriptions.Item>
               {selectedCiltMstr.reviewerName && (
-                <Descriptions.Item label="Reviewer">
+                <Descriptions.Item label={Strings.ciltMstrReviewerLabel}>
                   {selectedCiltMstr.reviewerName}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.approvedByName && (
-                <Descriptions.Item label="Approved By">
+                <Descriptions.Item label={Strings.ciltMstrApproverLabel}>
                   {selectedCiltMstr.approvedByName}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.standardTime !== null && (
-                <Descriptions.Item label="Standard Time">
+                <Descriptions.Item label={Strings.ciltMstrDetailsStandardTimeLabel}>
                   {selectedCiltMstr.standardTime}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.dateOfLastUsed && (
-                <Descriptions.Item label="Last Used">
+                <Descriptions.Item label={Strings.ciltMstrLastUsedLabel}>
                   {new Date(selectedCiltMstr.dateOfLastUsed).toLocaleDateString()}
                 </Descriptions.Item>
               )}
@@ -438,62 +465,117 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Modal de detalles de secuencias
-  const renderSequenceDetailsModal = () => {
+  // Get active sequences for the selected CILT master
+  const activeSequences = useMemo(() => {
+    if (!selectedCiltMstr?.sequences) return [];
+    return selectedCiltMstr.sequences.filter(seq => seq.status === 'A');
+  }, [selectedCiltMstr]);
+  
+  // Filter sequences based on search text
+  const filteredSequences = useMemo(() => {
+    if (!sequenceSearchText.trim()) {
+      return activeSequences;
+    }
+    
+    const searchLower = sequenceSearchText.toLowerCase();
+    return activeSequences.filter(sequence => {
+      const sequenceText = sequence.secuenceList.toLowerCase();
+      const typeText = sequence.ciltTypeName.toLowerCase();
+      return sequenceText.includes(searchLower) || typeText.includes(searchLower);
+    });
+  }, [activeSequences, sequenceSearchText]);
+  
+  const renderSequenceListModal = () => {
     if (!selectedCiltMstr) return null;
+    
+    const paginatedData = getPaginatedItems(filteredSequences, sequencePage, sequencePageSize);
 
     return (
       <Modal
         title={`${Strings.sequences}: ${selectedCiltMstr.ciltName}`}
-        open={sequenceDetailsModalVisible}
-        onCancel={() => setSequenceDetailsModalVisible(false)}
+        open={sequenceListModalVisible}
+        onCancel={() => setSequenceListModalVisible(false)}
         footer={null}
         width={800}
       >
-        {selectedCiltMstr.sequences && selectedCiltMstr.sequences.length > 0 ? (
+        {activeSequences.length > 0 ? (
           <div>
-            <Row gutter={[16, 16]}>
-              {selectedCiltMstr.sequences.map((sequence: CiltSequence) => (
-                <Col xs={24} sm={24} md={12} key={sequence.id}>
-                  <Card
-                    title={
-                      <div style={{ color: `#${sequence.secuenceColor || '000000'}` }}>
-                        {sequence.secuenceList}
-                      </div>
-                    }
-                    extra={
-                      <Button 
-                        type="primary" 
-                        size="small"
-                        onClick={() => showSequenceDetails(sequence)}
-                      >
-                        {Strings.details}
-                      </Button>
-                    }
-                  >
-                    <div className="mb-2">
-                      <Text strong>{Strings.ciltTypeName}: </Text>
-                      <Text>{sequence.ciltTypeName}</Text>
-                    </div>
-                    <div className="mb-2">
-                      <Text strong>{Strings.standardTime}: </Text>
-                      <Text>{sequence.standardTime} min</Text>
-                    </div>
-                    <div>
-                      <Text strong>{Strings.status}: </Text>
-                      <Badge
-                        status={sequence.status === "A" ? "success" : "error"}
-                        text={
-                          sequence.status === "A"
-                            ? Strings.ciltMstrListActiveFilter
-                            : Strings.ciltMstrListSuspendedFilter
+            <div style={{ marginBottom: '16px' }}>
+              <Input
+                placeholder={Strings.ciltCardListSearchPlaceholder}
+                prefix={<SearchOutlined />}
+                value={sequenceSearchText}
+                onChange={(e) => {
+                  setSequenceSearchText(e.target.value);
+                  setSequencePage(1); 
+                }}
+                allowClear
+              />
+            </div>
+            
+            {filteredSequences.length > 0 ? (
+              <>
+                <Row gutter={[16, 16]}>
+                  {paginatedData.map((sequence: CiltSequence) => (
+                    <Col xs={24} sm={24} md={12} key={sequence.id}>
+                      <Card
+                        style={{ 
+                          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.15)',
+                          border: '1px solid #e8e8e8',
+                          marginBottom: '8px'
+                        }}
+                        title={
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                            <div 
+                              style={{ 
+                                width: '16px', 
+                                height: '16px', 
+                                borderRadius: '50%', 
+                                backgroundColor: `#${sequence.secuenceColor || '000000'}`,
+                                flexShrink: 0
+                              }} 
+                            />
+                            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {sequence.secuenceList}
+                            </div>
+                          </div>
                         }
-                      />
-                    </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+                        extra={
+                          <Button 
+                            type="primary" 
+                            size="small"
+                            onClick={() => showSequenceDetails(sequence)}
+                          >
+                            {Strings.details}
+                          </Button>
+                        }
+                      >
+                        <div className="mb-2">
+                          <Text strong>{Strings.ciltTypeName}: </Text>
+                          <Text>{sequence.ciltTypeName}</Text>
+                        </div>
+                        <div className="mb-2">
+                          <Text strong>{Strings.standardTime}: </Text>
+                          <Text>{sequence.standardTime} min</Text>
+                        </div>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+                
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Pagination
+                    current={sequencePage}
+                    pageSize={sequencePageSize}
+                    total={filteredSequences.length}
+                    onChange={setSequencePage}
+                    showSizeChanger={false}
+                  />
+                </div>
+              </>
+            ) : (
+              <Empty description={Strings.noSequencesFound} />
+            )}
           </div>
         ) : (
           <div className="text-center p-4">
@@ -504,22 +586,30 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Modal de detalles de una secuencia específica
   const renderSingleSequenceDetailsModal = () => {
     if (!selectedSequence) return null;
 
     return (
       <Modal
         title={`${Strings.sequenceDetails}`}
-        open={sequenceDetailsModalVisible}
-        onCancel={() => setSequenceDetailsModalVisible(false)}
+        open={singleSequenceModalVisible}
+        onCancel={() => setSingleSequenceModalVisible(false)}
         footer={null}
         width={700}
       >
         <Descriptions bordered column={1} size="small">
           <Descriptions.Item label={Strings.sequence}>
-            <div style={{ color: `#${selectedSequence.secuenceColor || '000000'}` }}>
-              {selectedSequence.secuenceList}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  borderRadius: '50%', 
+                  backgroundColor: `#${selectedSequence.secuenceColor || '000000'}`,
+                  flexShrink: 0
+                }} 
+              />
+              <span>{selectedSequence.secuenceList}</span>
             </div>
           </Descriptions.Item>
           <Descriptions.Item label={Strings.ciltTypeName}>
@@ -554,6 +644,21 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
+  const renderSearchBar = () => (
+    <div style={{ marginBottom: '16px' }}>
+      <Input
+        placeholder={Strings.searchCiltMstr}
+        prefix={<SearchOutlined />}
+        value={searchText}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+          setCurrentPage(1); 
+        }}
+        allowClear
+      />
+    </div>
+  );
+
   return (
     <>
       <Drawer
@@ -575,7 +680,12 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             {
               key: 'cilt',
               label: Strings.ciltProcedures,
-              children: renderCiltProcedures()
+              children: (
+                <>
+                  {renderSearchBar()}
+                  {renderCiltProcedures()}
+                </>
+              )
             },
             {
               key: 'positions',
@@ -592,7 +702,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       </Drawer>
 
       {renderCiltDetailsModal()}
-      {renderSequenceDetailsModal()}
+      {renderSequenceListModal()}
       {renderSingleSequenceDetailsModal()}
     </>
   );
