@@ -1255,6 +1255,8 @@ class StringsBase {
   static theDays = "theDays"
   static since = "since"
   static schedule = "schedule"
+  static noSecuencesFound = "noSecuencesFound"
+  static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
