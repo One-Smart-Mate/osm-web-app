@@ -1,8 +1,11 @@
-import Strings from '../../utils/localizations/Strings';
-import { CiltMstr, CreateCiltMstrDTO } from '../../data/cilt/ciltMstr/ciltMstr';
-import { CreateCiltSequenceDTO } from '../../data/cilt/ciltSequences/ciltSequences';
+import Strings from "../../utils/localizations/Strings";
+import { CiltMstr, CreateCiltMstrDTO } from "../../data/cilt/ciltMstr/ciltMstr";
+import { CreateCiltSequenceDTO } from "../../data/cilt/ciltSequences/ciltSequences";
 import { useCreateCiltMstrMutation } from "./ciltMstrService";
-import { useGetCiltSequencesByCiltMutation, useCreateCiltSequenceMutation } from "./ciltSequencesService";
+import {
+  useGetCiltSequencesByCiltMutation,
+  useCreateCiltSequenceMutation,
+} from "./ciltSequencesService";
 import { notification } from "antd";
 
 export const useCiltCloning = () => {
@@ -12,9 +15,24 @@ export const useCiltCloning = () => {
 
   const cloneCilt = async (cilt: CiltMstr): Promise<boolean> => {
     try {
-      
-      const clonedCiltName = `${cilt.ciltName} ${Strings.copy}`;
-      
+      let clonedCiltName = cilt.ciltName || "";
+      let copyCount = 1;
+
+      const copyPattern = new RegExp(`\\s*${Strings.copy}\\s*(\\d+)?\\s*$`);
+      const copyMatch = clonedCiltName.match(copyPattern);
+
+      if (copyMatch) {
+        const currentCount = copyMatch[1] ? parseInt(copyMatch[1], 10) : 1;
+        copyCount = currentCount + 1;
+
+        clonedCiltName = clonedCiltName.replace(copyPattern, "");
+      }
+
+      clonedCiltName =
+        copyCount === 1
+          ? `${clonedCiltName} ${Strings.copy}`
+          : `${clonedCiltName} ${Strings.copy} ${copyCount}`;
+
       const ciltPayload: CreateCiltMstrDTO = {
         siteId: cilt.siteId || undefined,
         positionId: cilt.positionId || undefined,
@@ -31,17 +49,14 @@ export const useCiltCloning = () => {
         order: cilt.order || undefined,
         status: cilt.status || undefined,
         dateOfLastUsed: new Date().toISOString(),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-      
-      
+
       const newCiltMstr = await createCiltMstr(ciltPayload).unwrap();
-      
-      
+
       const ciltId = cilt.id.toString();
       const sequences = await getCiltSequencesByCilt(ciltId).unwrap();
-      
-      
+
       if (sequences && sequences.length > 0) {
         const clonePromises = sequences.map(async (sequence) => {
           const sequencePayload: CreateCiltSequenceDTO = {
@@ -50,9 +65,9 @@ export const useCiltCloning = () => {
             areaId: sequence.areaId || undefined,
             areaName: sequence.areaName || undefined,
             positionId: sequence.positionId || undefined,
-            positionName: sequence.positionName || '',
-            ciltMstrId: newCiltMstr.id, 
-            ciltMstrName: clonedCiltName || '',
+            positionName: sequence.positionName || "",
+            ciltMstrId: newCiltMstr.id,
+            ciltMstrName: clonedCiltName || "",
             levelId: sequence.levelId || undefined,
             levelName: sequence.levelName || undefined,
             order: sequence.order || undefined,
@@ -60,34 +75,35 @@ export const useCiltCloning = () => {
             secuenceColor: sequence.secuenceColor || undefined,
             ciltTypeId: sequence.ciltTypeId || undefined,
             ciltTypeName: sequence.ciltTypeName || undefined,
-            referenceOplSop: sequence.referenceOplSop || undefined,
+            referenceOplSopId: sequence.referenceOplSopId || undefined,
             standardTime: sequence.standardTime || undefined,
             standardOk: sequence.standardOk || undefined,
-            remediationOplSop: sequence.remediationOplSop || undefined,
+            remediationOplSopId: sequence.remediationOplSopId || undefined,
             toolsRequired: sequence.toolsRequired || undefined,
             stoppageReason: sequence.stoppageReason || undefined,
-            quantityPicturesCreate: sequence.quantityPicturesCreate || undefined,
+            quantityPicturesCreate:
+              sequence.quantityPicturesCreate || undefined,
             quantityPicturesClose: sequence.quantityPicturesClose || undefined,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
-          
+
           return createCiltSequence(sequencePayload).unwrap();
         });
-        
+
         await Promise.all(clonePromises);
       }
-      
+
       notification.success({
         message: Strings.success,
-        description: `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`
+        description: `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
       });
-      
+
       return true;
     } catch (error) {
-      console.error('Error cloning CILT:', error);
+      console.error("Error cloning CILT:", error);
       notification.error({
         message: Strings.error,
-        description: `${Strings.errorCloningTheLevel} ${error}`
+        description: `${Strings.errorCloningTheLevel} ${error}`,
       });
       return false;
     }

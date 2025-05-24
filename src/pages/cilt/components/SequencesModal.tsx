@@ -8,23 +8,18 @@ import {
   Row,
   Col,
   Input,
-  Typography
+  Typography,
 } from "antd";
 import { SearchOutlined, EditOutlined } from "@ant-design/icons";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
-import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
-import { CiltSequenceFrequency } from "../../../data/cilt/ciltSequencesFrequencies/ciltSequencesFrequencies";
 import Constants from "../../../utils/Constants";
-import NewFeatureModal from "./NewFeatureModal"; // Asegúrate de poner la ruta correcta
+import NewFeatureModal from "./NewFeatureModal";
 import { CreateCiltSequencesExecutionDTO } from "../../../data/cilt/ciltSequencesExecutions/ciltSequencesExecutions";
 import dayjs from "dayjs";
 import { useCreateCiltSequenceExecutionMutation } from "../../../services/cilt/ciltSequencesExecutionsService";
 import { message } from "antd";
-
-
-
 
 interface SequencesModalProps {
   visible: boolean;
@@ -38,9 +33,6 @@ interface SequencesModalProps {
   onEditSequence: (sequence: CiltSequence) => void;
 }
 
-
-
-
 const { Text } = Typography;
 
 const SequencesModal: React.FC<SequencesModalProps> = ({
@@ -52,28 +44,27 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
   onCreateSequence,
   onViewDetails,
   onViewOpl,
-  onEditSequence
+  onEditSequence,
 }) => {
   if (!currentCilt) return null;
 
-
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>(sequences);
-  // fetch all sequence-frequency associations for this CILT
-  const [getSeqFreqs, { data: allSeqFreqs = [] }] = useGetCiltSequenceFrequenciesByCiltMutation();
-  React.useEffect(() => { if (currentCilt?.id) getSeqFreqs(String(currentCilt.id)); }, [currentCilt?.id]);
+  const [filteredSequences, setFilteredSequences] =
+    useState<CiltSequence[]>(sequences);
 
   React.useEffect(() => {
-    // Filter to only show active sequences
-    const activeSequences = sequences.filter(sequence => sequence.status === Constants.STATUS_ACTIVE);
+    const activeSequences = sequences.filter(
+      (sequence) => sequence.status === Constants.STATUS_ACTIVE
+    );
     setFilteredSequences(activeSequences);
   }, [sequences]);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
 
-    // Get active sequences first
-    const activeSequences = sequences.filter(sequence => sequence.status === Constants.STATUS_ACTIVE);
+    const activeSequences = sequences.filter(
+      (sequence) => sequence.status === Constants.STATUS_ACTIVE
+    );
 
     if (!value.trim()) {
       setFilteredSequences(activeSequences);
@@ -93,12 +84,12 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
   const [scheduledData, setScheduledData] = useState<Record<number, any>>({});
 
-  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
-  
-
+  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
+    null
+  );
 
   const handleSave = async (schedule: {
-    startDate: string;   // ISO string
+    startDate: string;
     interval: number;
     frequency: string;
     selectedDays: string[];
@@ -113,8 +104,8 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
       positionId: Number(currentCilt.positionId),
       ciltId: currentCilt.id,
       ciltDetailsId: Number(selectedSequence.id),
-      secuenceStart: schedule.startDate,           // ya es string ISO
-      secuenceStop: schedule.endDate ?? undefined, // ya es string ISO o null
+      secuenceStart: schedule.startDate,
+      secuenceStop: schedule.endDate ?? undefined,
       duration: schedule.interval,
       standardOk: schedule.frequency,
       initialParameter: schedule.selectedDays.join(","),
@@ -130,8 +121,6 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
       message.error("Hubo un error al guardar la programación.");
     }
   };
-
-
 
   const [createExecution] = useCreateCiltSequenceExecutionMutation();
 
@@ -174,7 +163,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
               />
             </Col>
             <Col span={8} style={{ textAlign: "right" }}>
-              <Text>Total: {filteredSequences.length} {Strings.sequences}</Text>
+              <Text>
+                Total: {filteredSequences.length} {Strings.sequences}
+              </Text>
             </Col>
           </Row>
         </div>
@@ -182,31 +173,28 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
         <Spin spinning={loading}>
           {filteredSequences.length === 0 ? (
             sequences.length === 0 ? (
-              <Text type="secondary">
-                {Strings.noSequencesForCilt}
-              </Text>
+              <Text type="secondary">{Strings.noSequencesForCilt}</Text>
             ) : (
-              <Text type="secondary">
-                {Strings.noSequencesMatchSearch}
-              </Text>
+              <Text type="secondary">{Strings.noSequencesMatchSearch}</Text>
             )
           ) : (
             <div
               style={{ maxHeight: "60vh", overflowY: "auto", padding: "10px" }}
             >
               {filteredSequences.map((sequence) => {
-                const schedule = scheduledData[sequence.id];  // Mueve esta línea dentro del map
+                const schedule = scheduledData[sequence.id];
 
                 return (
                   <Card
                     key={sequence.id}
                     style={{
                       marginBottom: 16,
-                      borderLeft: `4px solid ${sequence.secuenceColor &&
+                      borderLeft: `4px solid ${
+                        sequence.secuenceColor &&
                         sequence.secuenceColor.startsWith("#")
-                        ? sequence.secuenceColor
-                        : `#${sequence.secuenceColor || "1890ff"}`
-                        }`,
+                          ? sequence.secuenceColor
+                          : `#${sequence.secuenceColor || "1890ff"}`
+                      }`,
                     }}
                     hoverable
                   >
@@ -222,7 +210,8 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                           <div
                             style={{
                               backgroundColor:
-                                sequence.secuenceColor && sequence.secuenceColor.startsWith("#")
+                                sequence.secuenceColor &&
+                                sequence.secuenceColor.startsWith("#")
                                   ? sequence.secuenceColor
                                   : `#${sequence.secuenceColor || "f0f0f0"}`,
                               width: "20px",
@@ -232,7 +221,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                               border: "1px solid #d9d9d9",
                             }}
                           />
-                          <Text strong>{Strings.sequence} {sequence.order}</Text>
+                          <Text strong>
+                            {Strings.sequence} {sequence.order}
+                          </Text>
                         </div>
 
                         <div style={{ marginBottom: 8 }}>
@@ -242,8 +233,10 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
                         {/* Frequencies */}
                         <div style={{ marginBottom: 8 }}>
-                          <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>{" "}
-                          <Text>{allSeqFreqs.filter((f: CiltSequenceFrequency) => f.secuencyId === sequence.id).map(f => f.frecuencyCode).join(", ") || "N/A"}</Text>
+                          <Text type="secondary">
+                            {Strings.createCiltSequenceModalFrequenciesTitle}:
+                          </Text>{" "}
+                          <Text>{sequence.frecuencyCode || "N/A"}</Text>
                         </div>
 
                         {sequence.toolsRequired && (
@@ -257,18 +250,27 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                           <Text type="secondary">{Strings.created}:</Text>{" "}
                           <Text>
                             {sequence.createdAt
-                              ? new Date(sequence.createdAt).toLocaleDateString()
+                              ? new Date(
+                                  sequence.createdAt
+                                ).toLocaleDateString()
                               : "N/A"}
                           </Text>
                         </div>
 
                         {schedule && (
                           <div style={{ marginTop: 8 }}>
-                            <Text type="secondary">Programación:</Text>{" "}
+                            <Text type="secondary">{Strings.schedule}:</Text>{" "}
                             <Text>
-                              Cada {schedule.interval} {schedule.frequency}(s) los {schedule.selectedDays.join(", ")}{" "}
-                              desde {schedule.startDate ? dayjs(schedule.startDate).format("DD/MM/YYYY") : ""}
-                              {schedule.endDate ? ` hasta ${dayjs(schedule.endDate).format("DD/MM/YYYY")}` : ""}
+                              {Strings.each} {schedule.interval} {schedule.frequency}(s)
+                              {Strings.theDays} {schedule.selectedDays.join(", ")} {Strings.since}{" "}
+                              {schedule.startDate
+                                ? dayjs(schedule.startDate).format("DD/MM/YYYY")
+                                : ""}
+                              {schedule.endDate
+                                ? ` ${Strings.until} ${dayjs(schedule.endDate).format(
+                                    "DD/MM/YYYY"
+                                  )}`
+                                : ""}
                             </Text>
                           </div>
                         )}
@@ -292,10 +294,22 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
                           <Button
                             type="default"
-                            onClick={() =>
-                              onViewOpl(sequence.referenceOplSop)
+                            onClick={() => {
+                              if (
+                                sequence.referenceOplSopId &&
+                                sequence.referenceOplSopId > 0
+                              ) {
+                                const oplId = String(
+                                  sequence.referenceOplSopId
+                                ).trim();
+                                console.log("Viewing OPL with ID:", oplId);
+                                onViewOpl(Number(oplId));
+                              }
+                            }}
+                            disabled={
+                              !sequence.referenceOplSopId ||
+                              sequence.referenceOplSopId <= 0
                             }
-                            disabled={!sequence.referenceOplSop}
                           >
                             {Strings.viewReferenceOpl}
                           </Button>
@@ -303,9 +317,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                           <Button
                             type="default"
                             onClick={() =>
-                              onViewOpl(sequence.remediationOplSop)
+                              onViewOpl(sequence.remediationOplSopId)
                             }
-                            disabled={!sequence.remediationOplSop}
+                            disabled={!sequence.remediationOplSopId}
                           >
                             {Strings.viewRemediationOpl}
                           </Button>
@@ -320,7 +334,6 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                             {Strings.scheduleSequence}
                           </Button>
 
-
                           <Button
                             type="primary"
                             icon={<EditOutlined />}
@@ -334,39 +347,37 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                   </Card>
                 );
               })}
-
             </div>
           )}
         </Spin>
       </Modal>
 
       <NewFeatureModal
-  visible={isNewFeatureModalVisible}
-  onCancel={() => setNewFeatureModalVisible(false)}
-  existingSchedule={
-    selectedSequence && scheduledData[selectedSequence.id]
-      ? {
-          ...scheduledData[selectedSequence.id],
-          startDate: dayjs(scheduledData[selectedSequence.id].startDate),
-          endDate: scheduledData[selectedSequence.id].endDate
-            ? dayjs(scheduledData[selectedSequence.id].endDate)
-            : null,
+        visible={isNewFeatureModalVisible}
+        onCancel={() => setNewFeatureModalVisible(false)}
+        existingSchedule={
+          selectedSequence && scheduledData[selectedSequence.id]
+            ? {
+                ...scheduledData[selectedSequence.id],
+                startDate: dayjs(scheduledData[selectedSequence.id].startDate),
+                endDate: scheduledData[selectedSequence.id].endDate
+                  ? dayjs(scheduledData[selectedSequence.id].endDate)
+                  : null,
+              }
+            : undefined
         }
-      : undefined
-  }
-  onSave={async (data) => {
-    if (!selectedSequence) return;
+        onSave={async (data) => {
+          if (!selectedSequence) return;
 
-    setScheduledData((prev) => ({
-      ...prev,
-      [selectedSequence.id]: data,
-    }));
+          setScheduledData((prev) => ({
+            ...prev,
+            [selectedSequence.id]: data,
+          }));
 
-    await handleSave(data);
-    setNewFeatureModalVisible(false);
-  }}
-/>
-
+          await handleSave(data);
+          setNewFeatureModalVisible(false);
+        }}
+      />
     </>
   );
 };

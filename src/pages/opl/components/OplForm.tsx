@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Select, Spin, Typography, Button } from "antd";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
+import { useLocation } from "react-router-dom";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -23,9 +24,20 @@ const OplForm: React.FC<OplFormProps> = ({
   responsibles,
   onSubmit,
 }) => {
+  const location = useLocation();
+  const siteId = location.state?.siteId || null;
+  React.useEffect(() => {
+    if (siteId) {
+      form.setFieldsValue({ siteId: Number(siteId) });
+    }
+  }, [siteId, form]);
+
   return (
     <Spin spinning={loadingUsers}>
       <Form form={form} layout="vertical" disabled={isViewMode}>
+        <Form.Item name="siteId" hidden={true}>
+          <Input type="hidden" />
+        </Form.Item>
         <Form.Item
           name="title"
           label={Strings.oplFormTitleLabel}

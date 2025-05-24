@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Alert, Select, Upload, Spin, notification, Typography, Popconfirm, Button } from 'antd';
+import { Modal, Form, Input, Alert, Select, Upload, Spin, notification, Typography, Popconfirm, Button } from 'antd';
 import { PlusOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadFileStatus, UploadProps } from 'antd/es/upload/interface';
 import { handleUploadToFirebaseStorage } from '../../../config/firebaseUpload';
@@ -243,9 +243,9 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           values.reviewerName ?? undefined,
           approvedById ?? undefined,
           values.approvedByName ?? undefined,
-          values.standardTime,
-          undefined, // Removing learnigTime from the flow as requested
-          imageUrl, // Using the properly determined image URL
+          undefined, 
+          undefined,
+          imageUrl, 
           cilt.order ?? undefined,
           values.status,
           values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined 
@@ -296,7 +296,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
       form.setFieldsValue({
         ciltName: cilt.ciltName,
         ciltDescription: cilt.ciltDescription,
-        standardTime: cilt.standardTime,
+        // standardTime removed - now calculated automatically in the database
         ciltDueDate: cilt.ciltDueDate ? cilt.ciltDueDate.split('T')[0] : null,
         status: cilt.status,
       });
@@ -336,9 +336,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         <Form.Item name="ciltDescription" label={Strings.ciltMstrDescriptionLabel}>
           <Input.TextArea rows={3} />
         </Form.Item>
-        <Form.Item name="standardTime" label={Strings.ciltMstrStandardTimeLabel} rules={[{ type: 'number', message: Strings.ciltMstrInvalidNumberMessage }]}>
-          <InputNumber min={0} style={{ width: '100%' }} />
-        </Form.Item>
+        {/* Standard time field removed - now calculated automatically in the database */}
         {/* Campo ciltDueDate agregado */}
         <Form.Item name="ciltDueDate" label={Strings.ciltDueDate}>
           <Input type="date" style={{ width: '100%' }} />

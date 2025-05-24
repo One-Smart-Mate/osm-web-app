@@ -7,6 +7,10 @@ export const oplMstrService = apiSlice.injectEndpoints({
       query: () => `/opl-mstr/all`,
       transformResponse: (response: { data: OplMstr[] }) => response.data,
     }),
+    getOplMstrBySite: builder.mutation<OplMstr[], string>({
+      query: (siteId) => `/opl-mstr/site/${siteId}`,
+      transformResponse: (response: { data: OplMstr[] }) => response.data,
+    }),
     getOplMstrByCreator: builder.mutation<OplMstr[], string>({
       query: (creatorId) => `/opl-mstr/creator/${creatorId}`,
       transformResponse: (response: { data: OplMstr[] }) => response.data,
@@ -29,6 +33,7 @@ export const oplMstrService = apiSlice.injectEndpoints({
 
 export const {
   useGetOplMstrAllMutation,
+  useGetOplMstrBySiteMutation,
   useGetOplMstrByCreatorMutation,
   useGetOplMstrByIdMutation,
   useCreateOplMstrMutation,
