@@ -23,7 +23,6 @@ import { message } from "antd";
 import { useUpdateCiltSequenceExecutionMutation } from "../../../services/cilt/ciltSequencesExecutionsService";
 import { useDeleteCiltSequenceExecutionMutation } from "../../../services/cilt/ciltSequencesExecutionsService";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useGetCiltSequenceFrequenciesByCiltMutation } from "../../../services/cilt/ciltSequencesFrequenciesService";
 
 
 
