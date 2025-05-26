@@ -401,8 +401,9 @@ const Opl = (): React.ReactElement => {
         originFileObj: file.originFileObj as File,
       };
 
+      const sitePath = currentOpl && currentOpl.siteId ? `site_${currentOpl.siteId}/opl` : FIREBASE_OPL_DIRECTORY;
       const url = await handleUploadToFirebaseStorage(
-        FIREBASE_OPL_DIRECTORY,
+        sitePath,
         uploadFile,
         fileExtension
       );

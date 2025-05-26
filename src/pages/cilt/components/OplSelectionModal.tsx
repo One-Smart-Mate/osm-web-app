@@ -292,7 +292,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           await fetchOplDetails(currentOpl.id);
         }
       } else {
-        // Para detalles de media (imagen, video, pdf)
         if (fileList.length === 0) {
           notification.error({
             message: "Error",
@@ -322,22 +321,22 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           fileExtension = file.name.split(".").pop() || "jpg";
         }
         
-        // Preparar el archivo para la carga
         const uploadFile = {
           name: file.name,
           originFileObj: file.originFileObj as File,
         };
         
-        // Subir el archivo a Firebase
+        
         console.log("Uploading file to Firebase...");
+        
+        const sitePath = currentOpl && currentOpl.siteId ? `site_${currentOpl.siteId}/opl` : `${FIREBASE_OPL_DIRECTORY}/${currentOpl.id}`;
         const url = await handleUploadToFirebaseStorage(
-          `${FIREBASE_OPL_DIRECTORY}/${currentOpl.id}`,
+          sitePath,
           uploadFile,
           fileExtension
         );
         console.log("File uploaded successfully, URL:", url);
         
-        // Crear el detalle con la URL del archivo
         const newDetail: CreateOplDetailsDTO = {
           oplId: Number(currentOpl.id),
           order: currentOplDetails.length + 1,

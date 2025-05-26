@@ -128,9 +128,9 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
     const { file, onSuccess, onError } = options;
     try {
       setUploading(true);
-      // Upload the file to Firebase storage
+      const sitePath = `site_${siteId}/cilt-procedures`;
       const url = await handleUploadToFirebaseStorage(
-        "cilt", 
+        sitePath, 
         {
           name: file.name,
           originFileObj: file
@@ -190,11 +190,11 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       reviewerName: values.reviewerName || "",
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
-      standardTime: undefined, // Standard time field removed - now calculated automatically in the database
-      learnigTime: undefined, // Campo eliminado del flujo
-      urlImgLayout: firebaseUrl, // Use the stored Firebase URL
-      order: 1, // Default order
-      status: "A", // Default status is Active
+      standardTime: undefined, 
+      learnigTime: undefined, 
+      urlImgLayout: firebaseUrl, 
+      order: 1, 
+      status: "A", 
       ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined, 
       dateOfLastUsed: new Date().toISOString(),
       createdAt: new Date().toISOString()
