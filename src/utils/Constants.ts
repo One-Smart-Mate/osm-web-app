@@ -82,7 +82,8 @@ const ROUTES_PATH = {
   opl: 'opl',
   ciltTypes: 'cilt-types',
   ciltFrecuencies: 'cilt-frecuencies',
-  ciltLevelAssignaments: 'cilt-level-assignaments'
+  ciltLevelAssignaments: 'cilt-level-assignaments',
+  usersSite: 'usersSite'
 }
 
 const ROUTES_PARAMS = {

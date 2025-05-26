@@ -1257,7 +1257,14 @@ class StringsBase {
   static schedule = "schedule"
   static noSecuencesFound = "noSecuencesFound"
   static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder"
-}
+
+
+  //usersSitePage.tsx
+  static usersSiteSB = "usersSiteSB"
+  static selectSite = "selectSite"
+  static userSiteTooltip = "userSiteTooltip"
+  static noSitesAvailable = "noSitesAvailable"
+} 
 
 // Create a Proxy object for StringsBase to intercept property access
 const Strings = new Proxy(StringsBase, {

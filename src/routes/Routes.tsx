@@ -16,6 +16,7 @@ import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
+import UsersSitePage from "../pages/usersite/UsersSitePage";
 
 const CardTypesPage = React.lazy(
   () => import("../pages/cardtypes/CardTypesPage")
@@ -176,6 +177,14 @@ const systemHealthRoute = new Route(
   Strings.technicalSupport
 );
 
+const usersSiteRoute = new Route(
+  Strings.usersSiteSB, // Nombre traducible (debe existir en `Strings.ts`)
+  Constants.ROUTES_PATH.usersSite, // Ruta URL (debe existir en `Constants.ROUTES_PATH`)
+  <UsersSitePage />, // Componente
+  <BsPeople />, // Icono (puedes usar otro, como <BsPersonPlus />)
+  Strings.accounts // Sección del menú (opcional, ej: "Administración")
+);
+
 export const tagDetailsRoute = new Route(
   Strings.cardDetailsSB,
   `${Constants.ROUTES_PATH.cardDetail}/${Constants.ROUTES_PARAMS.siteId}/${Constants.ROUTES_PARAMS.cardId}`,
@@ -201,6 +210,7 @@ const routes: Route[] = [
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
+  usersSiteRoute,
 ];
 
 const localAdminRoutesSiderOptions = (): ItemType[] => {
@@ -325,6 +335,13 @@ const localIHSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: systemHealthRoute.path,
       icon: systemHealthRoute.icon,
       section: systemHealthRoute.section,
+    }),
+
+    getItemV2({
+      label: usersSiteRoute.label, // "Usuarios del Sitio"
+      key: usersSiteRoute.path, // Ej: "users-site"
+      icon: usersSiteRoute.icon, // Icono (ej: <BsPeople />)
+      section: usersSiteRoute.section, // Sección (ej: "Accounts")
     }),
   ];
   return items;
