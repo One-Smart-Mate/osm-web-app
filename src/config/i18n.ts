@@ -1330,6 +1330,9 @@ const resources = {
       oplErrorInvalidLevelId: "The level ID is not a valid number",
       oplErrorAssigning: "An error occurred while assigning",
       selectOpl: "Select OPL",
+      noOplAssignmentsFound: "No OPL assignments found for this level",
+      searchOpls: "Search OPLs...",
+      viewDocument: "View Document",
     },
   },
   es: {
@@ -2697,6 +2700,9 @@ const resources = {
       oplErrorInvalidLevelId: "El ID del nivel no es un número válido",
       oplErrorAssigning: "Ha ocurrido un error al realizar la asignación",
       selectOpl: "Seleccionar OPL",
+      noOplAssignmentsFound: "No se encontraron asignaciones de OPL para este nivel",
+      searchOpls: "Buscar OPLs...",
+      viewDocument: "Ver Documento",
     },
   },
 };

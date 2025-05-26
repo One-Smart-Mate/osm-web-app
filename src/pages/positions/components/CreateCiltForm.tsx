@@ -312,6 +312,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.selectCreator}
               readOnly
+              value={creatorId ? responsibles.find(user => Number(user.id) === creatorId)?.name || "" : ""}
             />
             <Button 
               type="primary"
@@ -337,6 +338,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.registerCiltReviewerPlaceholer}
               readOnly
+              value={reviewerId ? responsibles.find(user => Number(user.id) === reviewerId)?.name || "" : ""}
             />
             <Button 
               type="primary"
@@ -362,6 +364,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.registerCiltApproverPlaceholer}
               readOnly
+              value={approvedById ? responsibles.find(user => Number(user.id) === approvedById)?.name || "" : ""}
             />
             <Button 
               type="primary"

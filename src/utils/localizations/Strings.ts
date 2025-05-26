@@ -1267,6 +1267,9 @@ class StringsBase {
   static oplErrorInvalidLevelId = "oplErrorInvalidLevelId"
   static oplErrorAssigning = "oplErrorAssigning"
   static selectOpl = "selectOpl"
+  static noOplAssignmentsFound = "noOplAssignmentsFound"
+  static searchOpls = "searchOpls"
+  static viewDocument = "viewDocument"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
