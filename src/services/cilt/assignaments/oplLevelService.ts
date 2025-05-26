@@ -19,10 +19,16 @@ export const oplLevelsService = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+
+    getOplLevelsByLevelId: builder.query<OplLevel[], number>({
+      query: (levelId) => `/opl-levels/level/${levelId}`,
+      transformResponse: (response: { data: OplLevel[] }) => response.data,
+    }),
   }),
 });
 
 export const {
   useCreateOplLevelMutation,
   useDeleteOplLevelMutation,
+  useGetOplLevelsByLevelIdQuery,
 } = oplLevelsService;
