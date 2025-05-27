@@ -18,10 +18,36 @@ import {
   Empty,
   Input,
 } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, FileOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
+import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
 
+
+// Extended interface for OPL with details from API response
+interface ExtendedOplLevel {
+  id: number;
+  title: string;
+  objetive: string;
+  creatorId: number;
+  creatorName: string;
+  siteId: number;
+  reviewerId: number;
+  reviewerName: string;
+  oplType: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  details: Array<{
+    id: number;
+    oplId: number;
+    order: number;
+    type: string;
+    text: string;
+    mediaUrl: string;
+    updatedAt: string;
+  }>;
+}
 
 // Interface for sequence data structure from API response
 interface CiltSequence {
@@ -202,7 +228,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>{Strings.errorLoadingData}</small>
               </span>
             }
           />
@@ -293,10 +319,15 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
+  // State for positions search
+  const [positionSearchText, setPositionSearchText] = useState('');
+  const [positionPage, setPositionPage] = useState(1);
+  const positionPageSize = 4;
+
   const renderPositions = () => {
     if (isLoading) return <Spin size="large" />;
     if (error) {
-      console.error('Error rendering CILT procedures:', error);
+      console.error('Error rendering positions:', error);
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           <Empty
@@ -305,7 +336,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>Error loading positions</small>
               </span>
             }
           />
@@ -317,15 +348,38 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     }
     
     const positionAssignments = levelAssignments.filter(assignment => 'position' in assignment && assignment.position);
+
+    // Filter positions based on search text
+    const filteredPositions = positionSearchText.trim() 
+      ? positionAssignments.filter(assignment => {
+          const positionName = assignment.position?.name?.toLowerCase() || '';
+          const positionCode = assignment.position?.code?.toLowerCase() || '';
+          const searchLower = positionSearchText.toLowerCase();
+          return positionName.includes(searchLower) || positionCode.includes(searchLower);
+        })
+      : positionAssignments;
     
-    const paginatedData = getPaginatedItems(positionAssignments, currentPage, pageSize);
+    const paginatedData = getPaginatedItems(filteredPositions, positionPage, positionPageSize);
     
-    if (paginatedData.length === 0) {
+    if (filteredPositions.length === 0) {
       return <Empty description={Strings.noPositionsAssigned} />;
     }
     
     return (
       <div>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            placeholder={Strings.searchPosition}
+            prefix={<SearchOutlined />}
+            value={positionSearchText}
+            onChange={(e) => {
+              setPositionSearchText(e.target.value);
+              setPositionPage(1); // Reset to first page on search
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+
         <Row gutter={[16, 16]}>
           {paginatedData.map((assignment: any) => (
             <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
@@ -350,23 +404,189 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           ))}
         </Row>
         
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={positionAssignments.length}
-            onChange={setCurrentPage}
-            showSizeChanger={false}
-          />
-        </div>
+        {filteredPositions.length > positionPageSize && (
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <Pagination
+              current={positionPage}
+              pageSize={positionPageSize}
+              total={filteredPositions.length}
+              onChange={setPositionPage}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
       </div>
     );
   };
 
+  // State for OPL search and pagination
+  const [oplSearchText, setOplSearchText] = useState('');
+  const [oplPage, setOplPage] = useState(1);
+  const oplPageSize = 4;
+  const [selectedOpl, setSelectedOpl] = useState<ExtendedOplLevel | null>(null);
+  const [oplDetailsModalVisible, setOplDetailsModalVisible] = useState(false);
+
+  // Using RTK Query to fetch OPL assignments for the selected level
+  const { data: oplAssignments, isLoading: isLoadingOpls, error: oplError } = 
+    useGetOplLevelsByLevelIdQuery(levelId || 0, { skip: !levelId });
+
+  // Filter OPL assignments based on search text
+  const filteredOplAssignments = useMemo(() => {
+    if (!oplAssignments) return [];
+    
+    // Cast the API response to ExtendedOplLevel array
+    const typedOplAssignments = oplAssignments as unknown as ExtendedOplLevel[];
+    
+    if (!oplSearchText.trim()) {
+      return typedOplAssignments;
+    }
+    
+    const searchLower = oplSearchText.toLowerCase();
+    return typedOplAssignments.filter(opl => {
+      const title = opl.title?.toLowerCase() || '';
+      const objective = opl.objetive?.toLowerCase() || '';
+      
+      return title.includes(searchLower) || objective.includes(searchLower);
+    });
+  }, [oplAssignments, oplSearchText]);
+
+  // Get paginated OPL data
+  const paginatedOplData = useMemo(() => {
+    return getPaginatedItems(filteredOplAssignments, oplPage, oplPageSize);
+  }, [filteredOplAssignments, oplPage, oplPageSize]);
+
+  // Show OPL details
+  const showOplDetails = (opl: any) => {
+    setSelectedOpl(opl);
+    setOplDetailsModalVisible(true);
+  };
+
+  // Get image URL helper function
+  const getOplImageUrl = (url: string | null | undefined): string => {
+    if (!url) return '';
+    
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    return url.startsWith('/') ? `https:${url}` : `https://${url}`;
+  };
+
+  // Render OPL details modal
+  const renderOplDetailsModal = () => {
+    if (!selectedOpl) return null;
+
+    return (
+      <Modal
+        title={`${Strings.oplDetails}: ${selectedOpl.title || ""}`}
+        open={oplDetailsModalVisible}
+        onCancel={() => setOplDetailsModalVisible(false)}
+        width={800}
+        zIndex={1050} // Higher z-index to appear above other elements
+        footer={[
+          <Button key="close" onClick={() => setOplDetailsModalVisible(false)}>
+            {Strings.close}
+          </Button>
+        ]}
+      >
+        <Row gutter={[16, 8]}>
+          <Col span={24}>
+            <Card size="small" title={Strings.objective}>
+              <Typography.Text>{selectedOpl.objetive || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.creator}>
+              <Typography.Text>{selectedOpl.creatorName || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.reviewer}>
+              <Typography.Text>{selectedOpl.reviewerName || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title="Created Date">
+              <Typography.Text>{new Date(selectedOpl.createdAt).toLocaleDateString()}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.type}>
+              <Typography.Text>{selectedOpl.oplType ? selectedOpl.oplType.toUpperCase() : 'OPL'}</Typography.Text>
+            </Card>
+          </Col>
+        </Row>
+
+        <div style={{ marginTop: '24px' }}>
+          <Typography.Title level={4}>{Strings.oplDetails}</Typography.Title>
+          
+          {selectedOpl.details && selectedOpl.details.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {selectedOpl.details.map((detail: any) => (
+                <Col xs={24} md={12} key={detail.id}>
+                  <Card 
+                    size="small"
+                    style={{ 
+                      height: '100%',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                      border: '1px solid #e8e8e8',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    {detail.text && (
+                      <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+                        <Typography.Paragraph>{detail.text}</Typography.Paragraph>
+                      </div>
+                    )}
+                    
+                    {detail.mediaUrl && (
+                      <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                        {detail.type === 'imagen' ? (
+                          <Image 
+                            src={getOplImageUrl(detail.mediaUrl)}
+                            alt={`Contenido ${detail.order}`}
+                            style={{ 
+                              width: '400px', 
+                              height: '300px', 
+                              objectFit: 'contain',
+                              maxWidth: '100%' 
+                            }}
+                          />
+                        ) : detail.type === 'video' ? (
+                          <video 
+                            controls 
+                            src={detail.mediaUrl} 
+                            style={{ 
+                              width: '400px', 
+                              maxWidth: '100%', 
+                              height: '300px', 
+                              objectFit: 'contain' 
+                            }}
+                          />
+                        ) : (
+                          <a href={detail.mediaUrl} target="_blank" rel="noopener noreferrer">
+                            <Button type="primary" icon={<FileOutlined />}>{Strings.viewDocument}</Button>
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Empty description={Strings.oplNoDetails} />
+          )}
+        </div>
+      </Modal>
+    );
+  };
+
   const renderOplSop = () => {
-    if (isLoading) return <Spin size="large" />;
-    if (error) {
-      console.error('Error rendering CILT procedures:', error);
+    if (isLoadingOpls) return <Spin size="large" />;
+    
+    if (oplError) {
+      console.error('Error rendering OPL assignments:', oplError);
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           <Empty
@@ -375,7 +595,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>Error loading OPL assignments</small>
               </span>
             }
           />
@@ -383,9 +603,69 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       );
     }
     
+    if (!oplAssignments || oplAssignments.length === 0) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <Empty description={Strings.noOplAssignmentsFound || "No OPL assignments found for this level"} />
+        </div>
+      );
+    }
+    
     return (
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <Text>{Strings.functionalityInDevelopment}</Text>
+      <div>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            placeholder={Strings.searchOpls || "Search OPLs..."}
+            prefix={<SearchOutlined />}
+            value={oplSearchText}
+            onChange={(e) => {
+              setOplSearchText(e.target.value);
+              setOplPage(1); // Reset to first page on search
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+        
+        <Row gutter={[16, 16]}>
+          {paginatedOplData.map((opl) => (
+            <Col xs={24} sm={12} key={opl.id}>
+              <Card
+                title={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Badge status="processing" color="blue" />
+                    <span style={{ marginLeft: '8px', fontWeight: 'bold' }}>
+                      {opl.title || 'Untitled OPL'}
+                    </span>
+                  </div>
+                }
+                style={{ height: '100%' }}
+                actions={[
+                  <Button type="primary" onClick={() => showOplDetails(opl)}>
+                    {Strings.viewDetails}
+                  </Button>
+                ]}
+              >
+                <div style={{ minHeight: '100px' }}>
+                  <p><strong>{Strings.type}:</strong> {opl.oplType ? opl.oplType.toUpperCase() : 'OPL'}</p>
+                  <p><strong>{Strings.objective}:</strong> {opl.objetive || Strings.notSpecified}</p>
+                  <p><strong>{Strings.creator}:</strong> {opl.creatorName || Strings.notSpecified}</p>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        
+        {filteredOplAssignments.length > oplPageSize && (
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <Pagination
+              current={oplPage}
+              total={filteredOplAssignments.length}
+              pageSize={oplPageSize}
+              onChange={(page) => setOplPage(page)}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -704,6 +984,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       {renderCiltDetailsModal()}
       {renderSequenceListModal()}
       {renderSingleSequenceDetailsModal()}
+      {renderOplDetailsModal()}
     </>
   );
 };

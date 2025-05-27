@@ -1257,6 +1257,19 @@ class StringsBase {
   static schedule = "schedule"
   static noSecuencesFound = "noSecuencesFound"
   static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder"
+  static selectedOplInformation = "selectedOplInformation"
+  static title = "title"
+  static objective = "objective"
+  static numberOfSteps = "numberOfSteps"
+  static oplDetails = "oplDetails"
+  static oplErrorSelectingOpl = "oplErrorSelectingOpl"
+  static oplErrorInvalidOplId = "oplErrorInvalidOplId"
+  static oplErrorInvalidLevelId = "oplErrorInvalidLevelId"
+  static oplErrorAssigning = "oplErrorAssigning"
+  static selectOpl = "selectOpl"
+  static noOplAssignmentsFound = "noOplAssignmentsFound"
+  static searchOpls = "searchOpls"
+  static viewDocument = "viewDocument"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

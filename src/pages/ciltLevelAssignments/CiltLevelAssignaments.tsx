@@ -11,8 +11,11 @@ import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
+import { useCreateOplLevelMutation } from "../../services/cilt/assignaments/oplLevelService";
+import OplAssignmentDrawer from "./components/OplAssignmentDrawer";
 
 const buildHierarchy = (data: Level[]) => {
   const map: { [key: string]: any } = {};
@@ -94,8 +97,8 @@ const CiltLevelAssignaments: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [getLevels] = useGetlevelsMutation();
-  const [createCiltMstrPositionLevel] =
-    useCreateCiltMstrPositionLevelMutation();
+  const [createCiltMstrPositionLevel] = useCreateCiltMstrPositionLevelMutation();
+  const [createOplLevel] = useCreateOplLevelMutation();
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
     const storedState = localStorage.getItem("treeExpandedState");
     return storedState === "true";
@@ -203,7 +206,7 @@ const CiltLevelAssignaments: React.FC = () => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error("Error fetching levels:", error);
+      console.error(Strings.errorOccurred, error);
     } finally {
       setIsLoading(false);
     }
@@ -287,18 +290,18 @@ const CiltLevelAssignaments: React.FC = () => {
   };
 
   const handleAssignPositionCiltMstr = () => {
-    setDrawerType("cilt-position");
-    setIsDrawerVisible(true);
     setContextMenuVisible(false);
+    setIsDrawerVisible(true);
+    setDrawerType("cilt-position");
   };
 
   const handleAssignOpl = () => {
-    setDrawerType("opl");
-    setIsDrawerVisible(true);
     setContextMenuVisible(false);
+    setIsDrawerVisible(true);
+    setDrawerType("opl");
   };
 
-  const handleAssignment = async (payload: any) => {
+  const handleCiltAssignment = async (payload: any) => {
     setIsAssigning(true);
     try {
       const validatedPayload = {
@@ -309,31 +312,44 @@ const CiltLevelAssignaments: React.FC = () => {
         status: payload.status,
       };
 
-      console.log("Payload en CiltLevelAssignaments:", validatedPayload);
-
       await createCiltMstrPositionLevel(validatedPayload).unwrap();
-      notification.success({
-        message: Strings.assignmentSuccess,
-        description: Strings.assignmentSuccess,
-      });
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
     } catch (error) {
-      console.error("Error creating assignment:", error);
+      console.error(Strings.oplErrorAssigning, error);
 
       if (error && typeof error === "object" && "data" in error) {
-        console.error("Error details:", error.data);
-        notification.error({
-          message: Strings.assignmentError,
-          description: Strings.errorOccurred,
-        });
+        console.error(Strings.oplErrorAssigning, error.data);
+        AnatomyNotification.error(notification, Strings.errorOccurred);
       } else {
-        notification.error({
-          message: Strings.assignmentError,
-          description: Strings.errorOccurred,
-        });
+        AnatomyNotification.error(notification, Strings.errorOccurred);
       }
     } finally {
       setIsAssigning(false);
+      setIsDrawerVisible(false);
+    }
+  };
 
+  const handleOplAssignment = async (payload: any) => {
+    setIsAssigning(true);
+    try {
+      const validatedPayload = {
+        oplId: Number(payload.oplId),
+        levelId: Number(payload.levelId),
+      };
+
+      await createOplLevel(validatedPayload).unwrap();
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+    } catch (error) {
+      console.error(Strings.oplErrorAssigning, error);
+
+      if (error && typeof error === "object" && "data" in error) {
+        console.error(Strings.oplErrorAssigning, error.data);
+        AnatomyNotification.error(notification, Strings.oplErrorAssigning);
+      } else {
+        AnatomyNotification.error(notification, Strings.oplErrorAssigning);
+      }
+    } finally {
+      setIsAssigning(false);
       setIsDrawerVisible(false);
     }
   };
@@ -392,17 +408,32 @@ const CiltLevelAssignaments: React.FC = () => {
               />
             </div>
 
-            {/* Assignment Drawer */}
-            <CiltAssignmentDrawer
-              isVisible={isDrawerVisible}
-              siteId={siteId}
-              placement={drawerPlacement}
-              onClose={() => setIsDrawerVisible(false)}
-              onAssign={handleAssignment}
-              selectedNode={selectedNode}
-              drawerType={drawerType}
-              isSubmitting={isAssigning}
-            />
+            {/* CILT Assignment Drawer */}
+            {drawerType === "cilt-position" && (
+              <CiltAssignmentDrawer
+                isVisible={isDrawerVisible && drawerType === "cilt-position"}
+                siteId={siteId}
+                placement={drawerPlacement}
+                onClose={() => setIsDrawerVisible(false)}
+                onAssign={handleCiltAssignment}
+                selectedNode={selectedNode}
+                drawerType={"cilt-position"}
+                isSubmitting={isAssigning}
+              />
+            )}
+            
+            {/* OPL Assignment Drawer */}
+            {drawerType === "opl" && (
+              <OplAssignmentDrawer
+                isVisible={isDrawerVisible && drawerType === "opl"}
+                siteId={siteId}
+                placement={drawerPlacement}
+                onClose={() => setIsDrawerVisible(false)}
+                onAssign={handleOplAssignment}
+                selectedNode={selectedNode}
+                isSubmitting={isAssigning}
+              />
+            )}
 
             {/* Drawer para mostrar detalles del nivel */}
             <LevelDetailsDrawer
