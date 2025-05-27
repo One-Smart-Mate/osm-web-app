@@ -11,6 +11,7 @@ import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
+import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
 
 import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
 import { useCreateOplLevelMutation } from "../../services/cilt/assignaments/oplLevelService";
@@ -205,7 +206,7 @@ const CiltLevelAssignaments: React.FC = () => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error("Error fetching levels:", error);
+      console.error(Strings.errorOccurred, error);
     } finally {
       setIsLoading(false);
     }
@@ -312,24 +313,15 @@ const CiltLevelAssignaments: React.FC = () => {
       };
 
       await createCiltMstrPositionLevel(validatedPayload).unwrap();
-      notification.success({
-        message: Strings.assignmentSuccess,
-        description: Strings.assignmentSuccess,
-      });
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
     } catch (error) {
-      console.error("Error creating CILT assignment:", error);
+      console.error(Strings.oplErrorAssigning, error);
 
       if (error && typeof error === "object" && "data" in error) {
-        console.error("Error details:", error.data);
-        notification.error({
-          message: Strings.assignmentError,
-          description: Strings.errorOccurred,
-        });
+        console.error(Strings.oplErrorAssigning, error.data);
+        AnatomyNotification.error(notification, Strings.errorOccurred);
       } else {
-        notification.error({
-          message: Strings.assignmentError,
-          description: Strings.errorOccurred,
-        });
+        AnatomyNotification.error(notification, Strings.errorOccurred);
       }
     } finally {
       setIsAssigning(false);
@@ -345,27 +337,16 @@ const CiltLevelAssignaments: React.FC = () => {
         levelId: Number(payload.levelId),
       };
 
-      console.log("OPL Assignment Payload:", validatedPayload);
-
       await createOplLevel(validatedPayload).unwrap();
-      notification.success({
-        message: "OPL Assignment Successful",
-        description: "The OPL has been successfully assigned to the level.",
-      });
+      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
     } catch (error) {
-      console.error("Error creating OPL assignment:", error);
+      console.error(Strings.oplErrorAssigning, error);
 
       if (error && typeof error === "object" && "data" in error) {
-        console.error("Error details:", error.data);
-        notification.error({
-          message: "OPL Assignment Error",
-          description: "An error occurred while assigning the OPL.",
-        });
+        console.error(Strings.oplErrorAssigning, error.data);
+        AnatomyNotification.error(notification, Strings.oplErrorAssigning);
       } else {
-        notification.error({
-          message: "OPL Assignment Error",
-          description: "An error occurred while assigning the OPL.",
-        });
+        AnatomyNotification.error(notification, Strings.oplErrorAssigning);
       }
     } finally {
       setIsAssigning(false);
