@@ -116,7 +116,8 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
         ciltMstrId: numericCiltMstrId,
         positionId: numericPositionId,
         levelId: numericLevelId,
-        status: "A"
+        status: "A",
+        createdAt: new Date().toISOString()
       };
 
       console.log("Payload enviado:", payload);

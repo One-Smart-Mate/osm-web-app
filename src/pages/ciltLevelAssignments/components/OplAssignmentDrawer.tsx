@@ -78,9 +78,17 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
         throw new Error(Strings.oplErrorInvalidLevelId);
       }
 
+      const numericSiteId = Number(siteId);
+      
+      if (isNaN(numericSiteId)) {
+        throw new Error("El ID del sitio no es un número válido");
+      }
+      
       const payload = {
         oplId: numericOplId,
         levelId: numericLevelId,
+        siteId: numericSiteId,
+        createdAt: new Date().toISOString()
       };
 
       await onAssign(payload);

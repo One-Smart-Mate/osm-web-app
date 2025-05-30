@@ -101,7 +101,6 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
 
     const payload: CreateCiltSequencesExecutionDTO = {
       siteId: Number(currentCilt.siteId),
-      positionId: Number(currentCilt.positionId),
       ciltId: currentCilt.id,
       ciltDetailsId: Number(selectedSequence.id),
       secuenceStart: schedule.startDate,
