@@ -98,16 +98,16 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       
       // Validar que todos los IDs sean números válidos
       if (isNaN(numericSiteId)) {
-        throw new Error("El ID del sitio no es un número válido");
+        throw new Error(Strings.noValidSiteId);
       }
       if (isNaN(numericCiltMstrId)) {
-        throw new Error("El ID del CILT no es un número válido");
+        throw new Error(Strings.noValidCiltMstrId);
       }
       if (isNaN(numericPositionId)) {
-        throw new Error("El ID de la posición no es un número válido");
+        throw new Error(Strings.noValidPositionId);
       }
       if (isNaN(numericLevelId)) {
-        throw new Error("El ID del nivel no es un número válido");
+        throw new Error(Strings.noValidLevelId);
       }
       
       // Crear un objeto simple en lugar de usar el constructor de la clase

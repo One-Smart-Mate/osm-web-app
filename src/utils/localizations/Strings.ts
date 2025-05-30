@@ -1270,6 +1270,10 @@ class StringsBase {
   static noOplAssignmentsFound = "noOplAssignmentsFound"
   static searchOpls = "searchOpls"
   static viewDocument = "viewDocument"
+  static noValidSiteId = "noValidSiteId"
+  static noValidCiltMstrId = "noValidCiltMstrId"
+  static noValidPositionId = "noValidPositionId"
+  static noValidLevelId = "noValidLevelId"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

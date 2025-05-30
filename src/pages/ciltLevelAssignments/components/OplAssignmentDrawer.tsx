@@ -81,7 +81,7 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
       const numericSiteId = Number(siteId);
       
       if (isNaN(numericSiteId)) {
-        throw new Error("El ID del sitio no es un número válido");
+        throw new Error(Strings.noValidSiteId);
       }
       
       const payload = {

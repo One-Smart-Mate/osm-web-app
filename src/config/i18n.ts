@@ -1333,6 +1333,10 @@ const resources = {
       noOplAssignmentsFound: "No OPL assignments found for this level",
       searchOpls: "Search OPLs...",
       viewDocument: "View Document",
+      noValidSiteId: "No valid site ID",
+      noValidCiltMstrId: "No valid CILT ID",
+      noValidPositionId: "No valid position ID",
+      noValidLevelId: "No valid level ID",
     },
   },
   es: {
@@ -2703,6 +2707,10 @@ const resources = {
       noOplAssignmentsFound: "No se encontraron asignaciones de OPL para este nivel",
       searchOpls: "Buscar OPLs...",
       viewDocument: "Ver Documento",
+      noValidSiteId: "El ID del sitio no es un número válido",
+      noValidCiltMstrId: "El ID del CILT no es un número válido",
+      noValidPositionId: "El ID de la posición no es un número válido",
+      noValidLevelId: "El ID del nivel no es un número válido",
     },
   },
 };
