@@ -380,7 +380,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
 
       {/* Sequences Modal */}
       <SequencesModal
-        visible={isSequencesModalVisible}
+        open={isSequencesModalVisible}
         currentCilt={currentCilt}
         sequences={sequences}
         loading={loadingSequences}
@@ -401,7 +401,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
 
       {/* Edit Sequence Modal */}
       <EditCiltSequenceModal
-        visible={isEditSequenceModalVisible}
+        open={isEditSequenceModalVisible}
         sequence={selectedSequence}
         onCancel={handleEditSequenceModalCancel}
         onSuccess={handleEditSequenceSuccess}

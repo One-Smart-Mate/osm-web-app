@@ -262,7 +262,7 @@ class StringsBase {
   static createUserFor = "createUserFor";
   static importUsersFor = "importUsersFor";
   static createUser = "createUser";
-  
+
   static createSite = "createSite";
   static updateSite = "updateSite";
   static createPreclassifier = "createPreclassifier";
@@ -826,7 +826,6 @@ class StringsBase {
   static errorNoSiteId = "errorNoSiteId";
   static clearFilters = "clearFilters";
 
-
   //Cilt Frequency
   static frequencyCode = "frequencyCode";
   static addNewCiltFrequency = "addNewCiltFrequency";
@@ -1051,14 +1050,17 @@ class StringsBase {
   static oplSelectionModalTypeColumn = "oplSelectionModalTypeColumn";
   static oplSelectionModalActionsColumn = "oplSelectionModalActionsColumn";
   static oplSelectionModalSelectButton = "oplSelectionModalSelectButton";
-  static oplSelectionModalMultimediaButton = "oplSelectionModalMultimediaButton";
+  static oplSelectionModalMultimediaButton =
+    "oplSelectionModalMultimediaButton";
   static oplSelectionModalMultimediaTitle = "oplSelectionModalMultimediaTitle";
   static oplSelectionModalNoContent = "oplSelectionModalNoContent";
   static oplSelectionModalCreateTitle = "oplSelectionModalCreateTitle";
   static oplSelectionModalSuccessDetail = "oplSelectionModalSuccessDetail";
-  static oplSelectionModalSuccessDescription = "oplSelectionModalSuccessDescription";
+  static oplSelectionModalSuccessDescription =
+    "oplSelectionModalSuccessDescription";
   static oplSelectionModalErrorDetail = "oplSelectionModalErrorDetail";
-  static oplSelectionModalErrorDescription = "oplSelectionModalErrorDescription";
+  static oplSelectionModalErrorDescription =
+    "oplSelectionModalErrorDescription";
   static oplSelectionModalImageTitle = "oplSelectionModalImageTitle";
   static oplSelectionModalImageAlt = "oplSelectionModalImageAlt";
   static oplSelectionModalSuccessOpl = "oplSelectionModalSuccessOpl";
@@ -1067,66 +1069,114 @@ class StringsBase {
   // EditCiltSequenceModal strings
   static editCiltSequenceModalTitle = "editCiltSequenceModalTitle";
   static editCiltSequenceModalSuccess = "editCiltSequenceModalSuccess";
-  static editCiltSequenceModalSuccessDescription = "editCiltSequenceModalSuccessDescription";
+  static editCiltSequenceModalSuccessDescription =
+    "editCiltSequenceModalSuccessDescription";
   static editCiltSequenceModalError = "editCiltSequenceModalError";
-  static editCiltSequenceModalErrorDescription = "editCiltSequenceModalErrorDescription";
-  static editCiltSequenceModalErrorLoadingTypes = "editCiltSequenceModalErrorLoadingTypes";
-  static editCiltSequenceModalPositionLabel = "editCiltSequenceModalPositionLabel";
-  static editCiltSequenceModalPositionPlaceholder = "editCiltSequenceModalPositionPlaceholder";
+  static editCiltSequenceModalErrorDescription =
+    "editCiltSequenceModalErrorDescription";
+  static editCiltSequenceModalErrorLoadingTypes =
+    "editCiltSequenceModalErrorLoadingTypes";
+  static editCiltSequenceModalPositionLabel =
+    "editCiltSequenceModalPositionLabel";
+  static editCiltSequenceModalPositionPlaceholder =
+    "editCiltSequenceModalPositionPlaceholder";
   static editCiltSequenceModalLevelLabel = "editCiltSequenceModalLevelLabel";
-  static editCiltSequenceModalLevelRequired = "editCiltSequenceModalLevelRequired";
+  static editCiltSequenceModalLevelRequired =
+    "editCiltSequenceModalLevelRequired";
   static editCiltSequenceModalSelectLevel = "editCiltSequenceModalSelectLevel";
-  static editCiltSequenceModalReferenceOplLabel = "editCiltSequenceModalReferenceOplLabel";
-  static editCiltSequenceModalReferenceOplPlaceholder = "editCiltSequenceModalReferenceOplPlaceholder";
-  static editCiltSequenceModalRemediationOplLabel = "editCiltSequenceModalRemediationOplLabel";
-  static editCiltSequenceModalRemediationOplPlaceholder = "editCiltSequenceModalRemediationOplPlaceholder";
-  static editCiltSequenceModalCiltTypeLabel = "editCiltSequenceModalCiltTypeLabel";
-  static editCiltSequenceModalCiltTypeRequired = "editCiltSequenceModalCiltTypeRequired";
-  static editCiltSequenceModalCiltTypePlaceholder = "editCiltSequenceModalCiltTypePlaceholder";
+  static editCiltSequenceModalReferenceOplLabel =
+    "editCiltSequenceModalReferenceOplLabel";
+  static editCiltSequenceModalReferenceOplPlaceholder =
+    "editCiltSequenceModalReferenceOplPlaceholder";
+  static editCiltSequenceModalRemediationOplLabel =
+    "editCiltSequenceModalRemediationOplLabel";
+  static editCiltSequenceModalRemediationOplPlaceholder =
+    "editCiltSequenceModalRemediationOplPlaceholder";
+  static editCiltSequenceModalCiltTypeLabel =
+    "editCiltSequenceModalCiltTypeLabel";
+  static editCiltSequenceModalCiltTypeRequired =
+    "editCiltSequenceModalCiltTypeRequired";
+  static editCiltSequenceModalCiltTypePlaceholder =
+    "editCiltSequenceModalCiltTypePlaceholder";
   static editCiltSequenceModalOrderLabel = "editCiltSequenceModalOrderLabel";
-  static editCiltSequenceModalOrderRequired = "editCiltSequenceModalOrderRequired";
-  static editCiltSequenceModalOrderPlaceholder = "editCiltSequenceModalOrderPlaceholder";
+  static editCiltSequenceModalOrderRequired =
+    "editCiltSequenceModalOrderRequired";
+  static editCiltSequenceModalOrderPlaceholder =
+    "editCiltSequenceModalOrderPlaceholder";
   static editCiltSequenceModalColorLabel = "editCiltSequenceModalColorLabel";
-  static editCiltSequenceModalColorPlaceholder = "editCiltSequenceModalColorPlaceholder";
-  static editCiltSequenceModalStandardTimeLabel = "editCiltSequenceModalStandardTimeLabel";
-  static editCiltSequenceModalStandardTimeRequired = "editCiltSequenceModalStandardTimeRequired";
-  static editCiltSequenceModalStandardTimePlaceholder = "editCiltSequenceModalStandardTimePlaceholder";
-  static editCiltSequenceModalSequenceListLabel = "editCiltSequenceModalSequenceListLabel";
-  static editCiltSequenceModalSequenceListRequired = "editCiltSequenceModalSequenceListRequired";
-  static editCiltSequenceModalSequenceListPlaceholder = "editCiltSequenceModalSequenceListPlaceholder";
-  static editCiltSequenceModalToolsRequiredLabel = "editCiltSequenceModalToolsRequiredLabel";
-  static editCiltSequenceModalToolsRequiredPlaceholder = "editCiltSequenceModalToolsRequiredPlaceholder";
-  static editCiltSequenceModalStandardOkLabel = "editCiltSequenceModalStandardOkLabel";
-  static editCiltSequenceModalStandardOkPlaceholder = "editCiltSequenceModalStandardOkPlaceholder";
-  static editCiltSequenceModalStoppageReasonLabel = "editCiltSequenceModalStoppageReasonLabel";
-  static editCiltSequenceModalMachineStoppedLabel = "editCiltSequenceModalMachineStoppedLabel";
+  static editCiltSequenceModalColorPlaceholder =
+    "editCiltSequenceModalColorPlaceholder";
+  static editCiltSequenceModalStandardTimeLabel =
+    "editCiltSequenceModalStandardTimeLabel";
+  static editCiltSequenceModalStandardTimeRequired =
+    "editCiltSequenceModalStandardTimeRequired";
+  static editCiltSequenceModalStandardTimePlaceholder =
+    "editCiltSequenceModalStandardTimePlaceholder";
+  static editCiltSequenceModalSequenceListLabel =
+    "editCiltSequenceModalSequenceListLabel";
+  static editCiltSequenceModalSequenceListRequired =
+    "editCiltSequenceModalSequenceListRequired";
+  static editCiltSequenceModalSequenceListPlaceholder =
+    "editCiltSequenceModalSequenceListPlaceholder";
+  static editCiltSequenceModalToolsRequiredLabel =
+    "editCiltSequenceModalToolsRequiredLabel";
+  static editCiltSequenceModalToolsRequiredPlaceholder =
+    "editCiltSequenceModalToolsRequiredPlaceholder";
+  static editCiltSequenceModalStandardOkLabel =
+    "editCiltSequenceModalStandardOkLabel";
+  static editCiltSequenceModalStandardOkPlaceholder =
+    "editCiltSequenceModalStandardOkPlaceholder";
+  static editCiltSequenceModalStoppageReasonLabel =
+    "editCiltSequenceModalStoppageReasonLabel";
+  static editCiltSequenceModalMachineStoppedLabel =
+    "editCiltSequenceModalMachineStoppedLabel";
   static editCiltSequenceModalStatusLabel = "editCiltSequenceModalStatusLabel";
-  static editCiltSequenceModalQuantityPicturesCreateLabel = "editCiltSequenceModalQuantityPicturesCreateLabel";
-  static editCiltSequenceModalQuantityPicturesCloseLabel = "editCiltSequenceModalQuantityPicturesCloseLabel";
-  static editCiltSequenceModalSelectReferenceOpl = "editCiltSequenceModalSelectReferenceOpl";
-  static editCiltSequenceModalSelectRemediationOpl = "editCiltSequenceModalSelectRemediationOpl";
-  static editCiltSequenceModalColorRequired = "editCiltSequenceModalColorRequired";
-  static editCiltSequenceModalStandardOkRequired = "editCiltSequenceModalStandardOkRequired";
-  static editCiltSequenceModalQuantityPicturesCreateRequired = "editCiltSequenceModalQuantityPicturesCreateRequired";
-  static editCiltSequenceModalQuantityPicturesCloseRequired = "editCiltSequenceModalQuantityPicturesCloseRequired";
+  static editCiltSequenceModalQuantityPicturesCreateLabel =
+    "editCiltSequenceModalQuantityPicturesCreateLabel";
+  static editCiltSequenceModalQuantityPicturesCloseLabel =
+    "editCiltSequenceModalQuantityPicturesCloseLabel";
+  static editCiltSequenceModalSelectReferenceOpl =
+    "editCiltSequenceModalSelectReferenceOpl";
+  static editCiltSequenceModalSelectRemediationOpl =
+    "editCiltSequenceModalSelectRemediationOpl";
+  static editCiltSequenceModalColorRequired =
+    "editCiltSequenceModalColorRequired";
+  static editCiltSequenceModalStandardOkRequired =
+    "editCiltSequenceModalStandardOkRequired";
+  static editCiltSequenceModalQuantityPicturesCreateRequired =
+    "editCiltSequenceModalQuantityPicturesCreateRequired";
+  static editCiltSequenceModalQuantityPicturesCloseRequired =
+    "editCiltSequenceModalQuantityPicturesCloseRequired";
 
   // CreateCiltSequenceModal strings
   static createCiltSequenceModalTitle = "createCiltSequenceModalTitle";
   static createCiltSequenceModalSuccess = "createCiltSequenceModalSuccess";
-  static createCiltSequenceModalSuccessDescription = "createCiltSequenceModalSuccessDescription";
+  static createCiltSequenceModalSuccessDescription =
+    "createCiltSequenceModalSuccessDescription";
   static createCiltSequenceModalError = "createCiltSequenceModalError";
-  static createCiltSequenceModalErrorDescription = "createCiltSequenceModalErrorDescription";
-  static createCiltSequenceModalErrorLoadingTypes = "createCiltSequenceModalErrorLoadingTypes";
-  static createCiltSequenceModalErrorLoadingFrequencies = "createCiltSequenceModalErrorLoadingFrequencies";
-  static createCiltSequenceModalErrorNoFrequency = "createCiltSequenceModalErrorNoFrequency";
-  static createCiltSequenceModalBasicInfoTitle = "createCiltSequenceModalBasicInfoTitle";
-  static createCiltSequenceModalDetailsTitle = "createCiltSequenceModalDetailsTitle";
-  static createCiltSequenceModalFrequenciesTitle = "createCiltSequenceModalFrequenciesTitle";
-  static createCiltSequenceModalFrequenciesDescription = "createCiltSequenceModalFrequenciesDescription";
-  static createCiltSequenceModalFrequenciesRequired = "createCiltSequenceModalFrequenciesRequired";
-  static createCiltSequenceModalDefaultSiteName = "createCiltSequenceModalDefaultSiteName";
+  static createCiltSequenceModalErrorDescription =
+    "createCiltSequenceModalErrorDescription";
+  static createCiltSequenceModalErrorLoadingTypes =
+    "createCiltSequenceModalErrorLoadingTypes";
+  static createCiltSequenceModalErrorLoadingFrequencies =
+    "createCiltSequenceModalErrorLoadingFrequencies";
+  static createCiltSequenceModalErrorNoFrequency =
+    "createCiltSequenceModalErrorNoFrequency";
+  static createCiltSequenceModalBasicInfoTitle =
+    "createCiltSequenceModalBasicInfoTitle";
+  static createCiltSequenceModalDetailsTitle =
+    "createCiltSequenceModalDetailsTitle";
+  static createCiltSequenceModalFrequenciesTitle =
+    "createCiltSequenceModalFrequenciesTitle";
+  static createCiltSequenceModalFrequenciesDescription =
+    "createCiltSequenceModalFrequenciesDescription";
+  static createCiltSequenceModalFrequenciesRequired =
+    "createCiltSequenceModalFrequenciesRequired";
+  static createCiltSequenceModalDefaultSiteName =
+    "createCiltSequenceModalDefaultSiteName";
   static searchBarDefaultPlaceholder = "searchBarDefaultPlaceholder";
-  static ciltLevelTreeModalCreateSequenceHere = "ciltLevelTreeModalCreateSequenceHere";
+  static ciltLevelTreeModalCreateSequenceHere =
+    "ciltLevelTreeModalCreateSequenceHere";
   static ciltProceduresSearchPlaceholder = "ciltProceduresSearchPlaceholder";
 
   static informationDetail = "informationDetail";
@@ -1135,7 +1185,7 @@ class StringsBase {
   static createSequence = "createSequence";
   static viewSequences = "viewSequences";
   static information = "information";
-  
+
   // CILT Sequences strings
   static sequences = "sequences";
   static sequence = "sequence";
@@ -1169,38 +1219,43 @@ class StringsBase {
   static browserNotSupportVideo = "browserNotSupportVideo";
   static viewReferenceOpl = "viewReferenceOpl";
   static viewRemediationOpl = "viewRemediationOpl";
-  static createCiltSequenceModalErrorNoPosition = "createCiltSequenceModalErrorNoPosition";
-  static createCiltSequenceModalErrorNoLevel = "createCiltSequenceModalErrorNoLevel";
-  static createCiltSequenceModalPositionPlaceholder = "createCiltSecuenceModalPositionPlaceholder"
-  static areaId = "areaId"
-  static createCiltSequenceModalErrorNoArea = "createCiltSequenceModalErrorNoArea"
-  static createCiltSequenceModalErrorNoCiltType = "createCiltSequenceModalErrorNoCiltType"
-  static areaSelectPlaceholder = "areaSelectPlaceholder"
-  static lastLoginWeb = "lastLoginWeb"
-  static lastLoginApp = "lastLoginApp"
-  static imageLoadSuccess = "imageLoadSuccess"
-  static imageLoadError = "imageLoadError"
-  static warningImageUpload = "warningImageUpload"
-  static scheduleSequence = "scheduleSequence"
-  static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage"
-  static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage"
-  static draft = "draft"
-  static totalUsersCreated = "totalUsersCreated"
-  static totalUsersProcessed = "totalUsersProcessed"
-  static importUsersSummary = "importUsersSummary"
-  static reason = "reason"
-  static registered = "registered" 
-  static noProceduresFound = "noProceduresFound"
+  static createCiltSequenceModalErrorNoPosition =
+    "createCiltSequenceModalErrorNoPosition";
+  static createCiltSequenceModalErrorNoLevel =
+    "createCiltSequenceModalErrorNoLevel";
+  static createCiltSequenceModalPositionPlaceholder =
+    "createCiltSecuenceModalPositionPlaceholder";
+  static areaId = "areaId";
+  static createCiltSequenceModalErrorNoArea =
+    "createCiltSequenceModalErrorNoArea";
+  static createCiltSequenceModalErrorNoCiltType =
+    "createCiltSequenceModalErrorNoCiltType";
+  static areaSelectPlaceholder = "areaSelectPlaceholder";
+  static lastLoginWeb = "lastLoginWeb";
+  static lastLoginApp = "lastLoginApp";
+  static imageLoadSuccess = "imageLoadSuccess";
+  static imageLoadError = "imageLoadError";
+  static warningImageUpload = "warningImageUpload";
+  static scheduleSequence = "scheduleSequence";
+  static confirmCloneCiltMstrMessage = "confirmCloneCiltMstrMessage";
+  static confirmCloneSecuencesMessage = "confirmCloneSecuencesMessage";
+  static draft = "draft";
+  static totalUsersCreated = "totalUsersCreated";
+  static totalUsersProcessed = "totalUsersProcessed";
+  static importUsersSummary = "importUsersSummary";
+  static reason = "reason";
+  static registered = "registered";
+  static noProceduresFound = "noProceduresFound";
 
-  //UPDATE 
-  static frequencyCodeToolTip = "frequencyCodeToolTip"
-  static descriptionToolTip = "descriptionToolTip"
-  static nameCiltTypeToolTip = "nameCiltTypeToolTip"
-  static ciltTypeColorTooltip= "ciltTypeColorTooltip"
+  //UPDATE
+  static frequencyCodeToolTip = "frequencyCodeToolTip";
+  static descriptionToolTip = "descriptionToolTip";
+  static nameCiltTypeToolTip = "nameCiltTypeToolTip";
+  static ciltTypeColorTooltip = "ciltTypeColorTooltip";
   static monthValue = "monthValue";
   static yearValue = "yearValue";
   static repeat = "repeat";
-  static repeatEach = "repeatEach"; 
+  static repeatEach = "repeatEach";
 
   static ciltDueDate = "ciltDueDate";
   static ciltDueDatePlaceholder = "ciltDueDatePlaceholder";
@@ -1213,67 +1268,102 @@ class StringsBase {
   static more = "more";
   static functionalityInDevelopment = "functionalityInDevelopment";
 
-  static editUser = "editUser"
-  static fastPassword = "fastPassword"
-  static manual = "manual"
-  static downloadUsersTemplate = "downloadUsersTemplate"
+  static editUser = "editUser";
+  static fastPassword = "fastPassword";
+  static manual = "manual";
+  static downloadUsersTemplate = "downloadUsersTemplate";
 
-    //NEW UPDATE
-  static start = "start"
-  static eachPlace = "eachPlace"
-  static quitDate = "quitDate"
-  static freqMessage = "freqMessage"
-  static referencePoint = "referencePoint"
-  static selectableWithoutProgramming = "selectableWithoutProgramming"
-  static createCiltSequenceModalErrorSelectFrequency = "createCiltSequenceModalErrorSelectFrequency"
+  //NEW UPDATE
+  static start = "start";
+  static eachPlace = "eachPlace";
+  static quitDate = "quitDate";
+  static freqMessage = "freqMessage";
+  static referencePoint = "referencePoint";
+  static selectableWithoutProgramming = "selectableWithoutProgramming";
+  static createCiltSequenceModalErrorSelectFrequency =
+    "createCiltSequenceModalErrorSelectFrequency";
 
   // Level assignaments tree
-  static assignPositionCiltMstrLevel = "assignPositionCiltMstrLevel"
-  static assignOplLevel = "assignOplLevel"
-  
+  static assignPositionCiltMstrLevel = "assignPositionCiltMstrLevel";
+  static assignOplLevel = "assignOplLevel";
+
   // Position and CILT selection modals
-  static selectPosition = "selectPosition"
-  static searchPosition = "searchPosition"
-  static errorLoadingPositions = "errorLoadingPositions"
-  static noPositionsFound = "noPositionsFound"
-  static selectCiltMstr = "selectCiltMstr"
-  static searchCiltMstr = "searchCiltMstr"
-  static errorLoadingCiltMstrs = "errorLoadingCiltMstrs"
-  static noCiltMstrsFound = "noCiltMstrsFound"
-  static assignmentSuccess = "assignmentSuccess"
-  static assignmentError = "assignmentError"
-  static to = "to"
-  static errorOccurred = "errorOccurred"
-  static featureUnderDevelopment = "featureUnderDevelopment"
-  static ciltMstr = "ciltMstr"
-  static ciltCardListViewDetailsButton = "ciltCardListViewDetailsButton"
-  static ciltCardListCreatedLabel = "ciltCardListCreatedLabel"
-  static dayValue = "dayValue"
-  static weekValue = "weekValue"
-  static until = "until"
-  static each = "eachPlace"
-  static theDays = "theDays"
-  static since = "since"
-  static schedule = "schedule"
-  static noSecuencesFound = "noSecuencesFound"
-  static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder"
-  static selectedOplInformation = "selectedOplInformation"
-  static title = "title"
-  static objective = "objective"
-  static numberOfSteps = "numberOfSteps"
-  static oplDetails = "oplDetails"
-  static oplErrorSelectingOpl = "oplErrorSelectingOpl"
-  static oplErrorInvalidOplId = "oplErrorInvalidOplId"
-  static oplErrorInvalidLevelId = "oplErrorInvalidLevelId"
-  static oplErrorAssigning = "oplErrorAssigning"
-  static selectOpl = "selectOpl"
-  static noOplAssignmentsFound = "noOplAssignmentsFound"
-  static searchOpls = "searchOpls"
-  static viewDocument = "viewDocument"
-  static noValidSiteId = "noValidSiteId"
-  static noValidCiltMstrId = "noValidCiltMstrId"
-  static noValidPositionId = "noValidPositionId"
-  static noValidLevelId = "noValidLevelId"
+  static selectPosition = "selectPosition";
+  static searchPosition = "searchPosition";
+  static errorLoadingPositions = "errorLoadingPositions";
+  static noPositionsFound = "noPositionsFound";
+  static selectCiltMstr = "selectCiltMstr";
+  static searchCiltMstr = "searchCiltMstr";
+  static errorLoadingCiltMstrs = "errorLoadingCiltMstrs";
+  static noCiltMstrsFound = "noCiltMstrsFound";
+  static assignmentSuccess = "assignmentSuccess";
+  static assignmentError = "assignmentError";
+  static to = "to";
+  static errorOccurred = "errorOccurred";
+  static featureUnderDevelopment = "featureUnderDevelopment";
+  static ciltMstr = "ciltMstr";
+  static ciltCardListViewDetailsButton = "ciltCardListViewDetailsButton";
+  static ciltCardListCreatedLabel = "ciltCardListCreatedLabel";
+  static dayValue = "dayValue";
+  static weekValue = "weekValue";
+  static until = "until";
+  static each = "eachPlace";
+  static theDays = "theDays";
+  static since = "since";
+  static schedule = "schedule";
+  static noSecuencesFound = "noSecuencesFound";
+  static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder";
+  static selectedOplInformation = "selectedOplInformation";
+  static title = "title";
+  static objective = "objective";
+  static numberOfSteps = "numberOfSteps";
+  static oplDetails = "oplDetails";
+  static oplErrorSelectingOpl = "oplErrorSelectingOpl";
+  static oplErrorInvalidOplId = "oplErrorInvalidOplId";
+  static oplErrorInvalidLevelId = "oplErrorInvalidLevelId";
+  static oplErrorAssigning = "oplErrorAssigning";
+  static selectOpl = "selectOpl";
+  static noOplAssignmentsFound = "noOplAssignmentsFound";
+  static searchOpls = "searchOpls";
+  static viewDocument = "viewDocument";
+  static noValidSiteId = "noValidSiteId";
+  static noValidCiltMstrId = "noValidCiltMstrId";
+  static noValidPositionId = "noValidPositionId";
+  static noValidLevelId = "noValidLevelId";
+  static errorForMonthlySchedule = "errorForMonthlySchedule";
+  static errorForYearlySchedule = "errorForYearlySchedule";
+  static errorSavingSchedule = "errorSavingSchedule";
+  static scheduleSavedSuccessfully = "scheduleSavedSuccessfully";
+  static errorSaveSchedule = "errorSaveSchedule";
+  static labelSchedule = "labelSchedule";
+  static requiredSchedule = "requiredSchedule";
+  static labelScheduleType = "labelScheduleType";
+  static labelEndDate = "labelEndDate";
+  static placeholderEndDate = "placeholderEndDate";
+  static labelDaysOfWeek = "labelDaysOfWeek";
+  static labelDayOfMonth = "labelDayOfMonth";
+  static or = "or";
+  static labelWeekOfMonth = "labelWeekOfMonth";
+  static labelDayOfWeek = "labelDayOfWeek";
+  static labelDateOfYear = "labelDateOfYear";
+  static placeholderDateOfYear = "placeholderDateOfYear";
+  static labelMonthOfYear = "labelMonthOfYear";
+  static labelExecutionConfiguration = "labelExecutionConfiguration";
+  static allowExecuteBefore = "allowExecuteBefore";
+  static labelAllowExecuteBeforeMinutes = "labelAllowExecuteBeforeMinutes";
+  static labelToleranceBeforeMinutes = "labelToleranceBeforeMinutes";
+  static labelToleranceAfterMinutes = "labelToleranceAfterMinutes";
+  static allowExecuteAfterDue = "allowExecuteAfterDue";
+  static update = "update";
+  static errorSelectDayOfWeek = "errorSelectDayOfWeek"
+  static errorSelectDayOfMonthOrWeekOfMonth = "errorSelectDayOfMonthOrWeekOfMonth"
+  static errorSelectDateOfYear = "errorSelectDateOfYear"
+  static successScheduleUpdated = "successScheduleUpdated"
+  static successScheduleCreated = "successScheduleCreated"
+  static allowExecuteBeforeMinutes = "allowExecuteBeforeMinutes"
+  static toleranceBeforeMinutes = "toleranceBeforeMinutes"
+  static toleranceAfterMinutes = "toleranceAfterMinutes"
+
 }
 
 // Create a Proxy object for StringsBase to intercept property access

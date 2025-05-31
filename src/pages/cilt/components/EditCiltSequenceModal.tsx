@@ -34,14 +34,14 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 interface EditCiltSequenceModalProps {
-  visible: boolean;
+  open: boolean;
   sequence: CiltSequence | null;
   onCancel: () => void;
   onSuccess: () => void;
 }
 
 const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
-  visible,
+  open,
   sequence,
   onCancel,
   onSuccess,
@@ -62,7 +62,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
   const [remediationOplName, setRemediationOplName] = useState<string>("");
 
   useEffect(() => {
-    if (visible && sequence?.siteId) {
+    if (open && sequence?.siteId) {
       getCiltTypesBySite(sequence.siteId.toString())
         .unwrap()
         .then((types) => {
@@ -141,17 +141,17 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       loadFormData();
     }
 
-    if (!visible) {
+    if (!open) {
       setReferenceOplName("");
       setRemediationOplName("");
     }
-  }, [visible, sequence, form, getCiltTypesBySite, getOplMstrById]);
+  }, [open, sequence, form, getCiltTypesBySite, getOplMstrById]);
 
   useEffect(() => {
-    if (!visible) {
+    if (!open) {
       form.resetFields();
     }
-  }, [visible, form]);
+  }, [open, form]);
 
   const handleReferenceOplSelect = (opl: OplMstr) => {
     try {
@@ -274,12 +274,12 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
   return (
     <>
       <Modal
-        title={Strings.editCiltSequenceModalTitle}
-        open={visible}
+        title={Strings.editSequence}
+        open={open}
         onCancel={onCancel}
         footer={null}
         width={1000}
-        destroyOnClose={true}
+        destroyOnHidden={true}
         maskClosable={false}
       >
         <Spin spinning={loading}>
