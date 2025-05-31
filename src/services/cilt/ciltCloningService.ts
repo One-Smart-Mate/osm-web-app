@@ -1,5 +1,5 @@
 import Strings from "../../utils/localizations/Strings";
-import { CiltMstr, CreateCiltMstrDTO } from "../../data/cilt/ciltMstr/ciltMstr";
+import { CiltMstr } from "../../data/cilt/ciltMstr/ciltMstr";
 import { CreateCiltSequenceDTO } from "../../data/cilt/ciltSequences/ciltSequences";
 import { useCreateCiltMstrMutation } from "./ciltMstrService";
 import {
@@ -33,9 +33,8 @@ export const useCiltCloning = () => {
           ? `${clonedCiltName} ${Strings.copy}`
           : `${clonedCiltName} ${Strings.copy} ${copyCount}`;
 
-      const ciltPayload: CreateCiltMstrDTO = {
+      const ciltPayload = {
         siteId: cilt.siteId || undefined,
-        positionId: cilt.positionId || undefined,
         ciltName: clonedCiltName,
         ciltDescription: cilt.ciltDescription || undefined,
         creatorId: cilt.creatorId || undefined,
@@ -48,11 +47,10 @@ export const useCiltCloning = () => {
         urlImgLayout: cilt.urlImgLayout || undefined,
         order: cilt.order || undefined,
         status: cilt.status || undefined,
-        dateOfLastUsed: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
+        ciltDueDate: cilt.ciltDueDate || undefined
       };
 
-      const newCiltMstr = await createCiltMstr(ciltPayload).unwrap();
+      const newCiltMstr = await createCiltMstr(ciltPayload as any).unwrap();
 
       const ciltId = cilt.id.toString();
       const sequences = await getCiltSequencesByCilt(ciltId).unwrap();

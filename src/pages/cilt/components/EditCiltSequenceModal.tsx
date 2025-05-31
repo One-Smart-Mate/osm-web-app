@@ -214,43 +214,31 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       values.positionName = sequence.positionName;
       values.order = sequence.order;
 
+      // Updated payload to match backend requirements - removed areaId, areaName, positionId, positionName, levelId, levelName, and route fields
       const payload = {
         id: values.id,
         siteId: Number(values.siteId),
-        siteName: values.siteName || sequence.siteName || "string",
-        areaId: Number(values.areaId),
-        areaName: values.areaName || sequence.areaName || "string",
-        positionId: Number(values.positionId),
-        positionName: values.positionName || sequence.positionName || "string",
+        siteName: values.siteName || sequence.siteName || "",
         ciltMstrId: Number(values.ciltMstrId),
-        ciltMstrName: values.ciltMstrName || sequence.ciltMstrName || "string",
+        ciltMstrName: values.ciltMstrName || sequence.ciltMstrName || "",
         frecuencyId: Number(values.frecuencyId) || sequence.frecuencyId || 0,
-        frecuencyCode:
-          values.frecuencyCode || sequence.frecuencyCode || "string",
-        levelId: Number(values.levelId),
-        levelName: values.levelName || "string",
-        route: values.route || "string",
+        frecuencyCode: values.frecuencyCode || sequence.frecuencyCode || "",
+        referencePoint: values.referencePoint || "",
         order: Number(values.order),
-        secuenceList: values.secuenceList || "string",
+        secuenceList: values.secuenceList || "",
         secuenceColor: getColorFromCiltType(values.ciltTypeId),
         ciltTypeId: Number(values.ciltTypeId),
-        ciltTypeName:
-          ciltTypes.find((type) => type.id === values.ciltTypeId)?.name ||
-          values.ciltTypeName ||
-          "string",
+        ciltTypeName: ciltTypes.find((type) => type.id === values.ciltTypeId)?.name || values.ciltTypeName || "",
         referenceOplSopId: Number(values.referenceOplSopId) || 0,
         standardTime: Number(values.standardTime) || 0,
-        standardOk: values.standardOk || "string",
+        standardOk: values.standardOk || "",
         remediationOplSopId: Number(values.remediationOplSopId) || 0,
-        toolsRequired: values.toolsRequired || "string",
+        toolsRequired: values.toolsRequired || "",
         stoppageReason: values.stoppageReason ? 1 : 0,
         machineStopped: values.machineStopped ? 1 : 0,
         quantityPicturesCreate: Number(values.quantityPicturesCreate) || 0,
         quantityPicturesClose: Number(values.quantityPicturesClose) || 0,
-        referencePoint: values.referencePoint || "",
-        selectableWithoutProgramming: values.selectableWithoutProgramming
-          ? 1
-          : 0,
+        selectableWithoutProgramming: values.selectableWithoutProgramming ? 1 : 0,
         status: values.status || "A",
         updatedAt: new Date().toISOString(),
       };

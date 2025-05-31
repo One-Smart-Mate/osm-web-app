@@ -15,40 +15,68 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
       query: (id) => `/cilt-mstr-position-levels/${id}`,
     }),
 
-    getCiltMstrPositionLevelsBySiteId: builder.query<CiltMstrPositionLevel[], number>({
+    getCiltMstrPositionLevelsBySiteId: builder.query<
+      CiltMstrPositionLevel[],
+      number
+    >({
       query: (siteId) => `/cilt-mstr-position-levels/site/${siteId}`,
     }),
 
-    getCiltMstrPositionLevelsByCiltMstrId: builder.query<CiltMstrPositionLevel[], number>({
-      query: (ciltMstrId) => `/cilt-mstr-position-levels/cilt-mstr/${ciltMstrId}`,
+    getCiltMstrPositionLevelsByCiltMstrId: builder.query<
+      CiltMstrPositionLevel[],
+      number
+    >({
+      query: (ciltMstrId) =>
+        `/cilt-mstr-position-levels/cilt-mstr/${ciltMstrId}`,
     }),
 
-    getCiltMstrPositionLevelsByPositionId: builder.query<CiltMstrPositionLevel[], number>({
-      query: (positionId) => `/cilt-mstr-position-levels/position/${positionId}?skipOpl=true`,
-    }),
-
-    getCiltMstrPositionLevelsByLevelId: builder.query<CiltMstrPositionLevel[], string | number>({
-      query: (levelId) => ({
-        url: `/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`,
-        method: 'GET',
-        headers: {
-          'Accept': '*/*',
-          'Content-Type': 'application/json',
-        },
-      }),
+    getCiltMstrPositionLevelsByPositionId: builder.query<
+      CiltMstrPositionLevel[],
+      number
+    >({
+      query: (positionId) =>
+        `/cilt-mstr-position-levels/position/${positionId}?skipOpl=true`,
       transformResponse: (response: any) => {
-        // Si la respuesta está envuelta en una propiedad data, extraerla
-        return response.data || response;
+        const data = response.data || response;
+
+        return data;
       },
-      // Add error handling
+
       transformErrorResponse: (response: { status: string | number }) => {
-        console.error('API Error:', response);
+        console.error(
+          "API Error en getCiltMstrPositionLevelsByPositionId:",
+          response
+        );
         return { error: `Error ${response.status}` };
       },
     }),
-    
 
-    createCiltMstrPositionLevel: builder.mutation<CiltMstrPositionLevel, CreateCiltMstrPositionLevelDTO>({
+    getCiltMstrPositionLevelsByLevelId: builder.query<
+      CiltMstrPositionLevel[],
+      string | number
+    >({
+      query: (levelId) => ({
+        url: `/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`,
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      }),
+      transformResponse: (response: any) => {
+        return response.data || response;
+      },
+
+      transformErrorResponse: (response: { status: string | number }) => {
+        console.error("API Error:", response);
+        return { error: `Error ${response.status}` };
+      },
+    }),
+
+    createCiltMstrPositionLevel: builder.mutation<
+      CiltMstrPositionLevel,
+      CreateCiltMstrPositionLevelDTO
+    >({
       query: (data) => ({
         url: "/cilt-mstr-position-levels/create",
         method: "POST",
@@ -56,7 +84,10 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
       }),
     }),
 
-    updateCiltMstrPositionLevel: builder.mutation<CiltMstrPositionLevel, UpdateCiltMstrPositionLevelDTO>({
+    updateCiltMstrPositionLevel: builder.mutation<
+      CiltMstrPositionLevel,
+      UpdateCiltMstrPositionLevelDTO
+    >({
       query: (data) => ({
         url: "/cilt-mstr-position-levels/update",
         method: "PUT",

@@ -16,13 +16,15 @@ export interface CiltMstrPositionLevel {
     positionId: number;
     levelId: number;
     status?: string;
+    createdAt?: string;
   
-    constructor(siteId: number, ciltMstrId: number, positionId: number, levelId: number, status: string = 'A') {
+    constructor(siteId: number, ciltMstrId: number, positionId: number, levelId: number, status: string = 'A', createdAt?: string) {
       this.siteId = siteId;
       this.ciltMstrId = ciltMstrId;
       this.positionId = positionId;
       this.levelId = levelId;
       this.status = status;
+      this.createdAt = createdAt || new Date().toISOString();
     }
   }
   

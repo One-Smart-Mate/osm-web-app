@@ -4,8 +4,6 @@ import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
 import { UserOutlined, PlusOutlined } from "@ant-design/icons";
-import { Position } from "../../../data/postiions/positions";
-import { CreateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
 import UserSelectionModal from "../../components/UserSelectionModal";
 import type { UploadFile, UploadFileStatus } from "antd/es/upload/interface";
@@ -14,11 +12,10 @@ import { useLocation } from "react-router-dom";
 
 interface FormProps {
   form: any;
-  position: Position | null;
   onSuccess?: () => void;
 }
 
-const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
+const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
   const [createCiltMstr] = useCreateCiltMstrMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
@@ -178,10 +175,11 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       return;
     }
 
-    // Construct the payload
-    const ciltPayload: CreateCiltMstrDTO = {
+    // Construct the payload - using direct object literal to match backend requirements
+    // Using 'as any' to bypass TypeScript type checking since the backend API has different requirements
+    // than our frontend model (backend rejects dateOfLastUsed property)
+    const ciltPayload = {
       siteId: Number(siteId),
-      positionId: position ? Number(position.id) : undefined,
       ciltName: values.ciltName,
       ciltDescription: values.ciltDescription,
       creatorId: creatorId ? Number(creatorId) : 0,
@@ -191,14 +189,12 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
       standardTime: undefined, 
-      learnigTime: undefined, 
       urlImgLayout: firebaseUrl, 
       order: 1, 
       status: "A", 
-      ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined, 
-      dateOfLastUsed: new Date().toISOString(),
-      createdAt: new Date().toISOString()
-    };
+      ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined
+      // dateOfLastUsed and createdAt removed as backend rejects them
+    } as any;
     
     try {
       // Make the API call to create the CILT procedure
