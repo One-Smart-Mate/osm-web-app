@@ -348,7 +348,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       width={placement === "right" ? 500 : undefined}
       onClose={onClose}
       open={isVisible}
-      destroyOnClose
+      destroyOnHidden
       closable={true}
       className="drawer-responsive"
       mask={false}

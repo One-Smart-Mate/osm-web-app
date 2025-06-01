@@ -150,7 +150,7 @@ const ProceduresModal: React.FC<ProceduresModalProps> = ({
           {Strings.close}
         </Button>,
       ]}
-      destroyOnClose={true}
+      destroyOnHidden={true}
       maskClosable={false}
       centered={true}
       width={600}
