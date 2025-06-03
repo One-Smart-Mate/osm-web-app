@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import  Constants  from "../../../utils/Constants";
 import { Spin, Typography, notification, Modal } from "antd";
 import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
@@ -30,6 +31,7 @@ interface CiltCardListProps {
 
 const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const siteId = location.state?.siteId || "";
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -62,7 +64,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   );
 
   const [sequences, setSequences] = useState<CiltSequence[]>([]);
-  const [loadingSequences, setLoadingSequences] = useState(false);
+  const [loadingSequences] = useState(false);
 
   const [selectedOpl, setSelectedOpl] = useState<OplMstr | null>(null);
   const [selectedOplDetails, setSelectedOplDetails] = useState<OplDetail[]>([]);
@@ -168,6 +170,11 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     refetch();
   };
 
+  const navigateToSequences = (cilt: CiltMstr) => {
+    const ciltId = cilt.id.toString();
+    navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/${ciltId}`);
+  };
+
   const showCreateSequenceModal = (cilt: CiltMstr) => {
     setSequenceCilt(cilt);
     setIsCreateSequenceModalVisible(true);
@@ -197,34 +204,6 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     }
   };
 
-  const showSequencesModal = async (cilt: CiltMstr) => {
-    setCurrentCilt(cilt);
-    setLoadingSequences(true);
-    setIsSequencesModalVisible(true);
-
-    try {
-      const ciltId = cilt.id.toString();
-      const sequencesData = await getCiltSequencesByCilt(ciltId).unwrap();
-
-      const sortedSequences = [...sequencesData].sort((a, b) => {
-        return (a.order || 0) - (b.order || 0);
-      });
-
-      setSequences(sortedSequences);
-
-      if (sequencesData.length === 0) {
-        notification.info({
-          message: Strings.information,
-          description: `${Strings.thisGroup} "${cilt.ciltName}" ${Strings.noSequencesYet}`,
-          duration: 5,
-        });
-      }
-    } catch (error) {
-      console.error("Error loading sequences:", error);
-    } finally {
-      setLoadingSequences(false);
-    }
-  };
 
   const handleSequencesModalCancel = () => {
     setIsSequencesModalVisible(false);
@@ -349,8 +328,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onTableChange={handleTableChange}
         onEdit={showEditModal}
         onDetails={showDetailsModal}
-        onCreateSequence={showCreateSequenceModal}
-        onViewSequences={showSequencesModal}
+        onNavigateToSequences={navigateToSequences}
         onClone={showCloneModal}
       />
 

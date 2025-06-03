@@ -17,11 +17,13 @@ import {
   Image,
   Empty,
   Input,
+  notification,
 } from "antd";
-import { SearchOutlined, FileOutlined } from "@ant-design/icons";
+import { SearchOutlined, FileOutlined, CalendarOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
+import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 
 
 // Extended interface for OPL with details from API response
@@ -106,6 +108,8 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
   const [ciltDetailsModalVisible, setCiltDetailsModalVisible] = useState(false);
   const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
+  const [scheduleSecuenceVisible, setScheduleSecuenceVisible] = useState(false);
+  const [selectedSequenceForSchedule, setSelectedSequenceForSchedule] = useState<CiltSequence | null>(null);
   const [singleSequenceModalVisible, setSingleSequenceModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sequenceSearchText, setSequenceSearchText] = useState("");
@@ -178,6 +182,25 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const showSequenceDetails = (sequence: CiltSequence) => {
     setSelectedSequence(sequence);
     setSingleSequenceModalVisible(true);
+  };
+
+  const showScheduleSequence = (sequence: CiltSequence) => {
+    setSelectedSequenceForSchedule(sequence);
+    setScheduleSecuenceVisible(true);
+  };
+
+  const handleScheduleSequenceCancel = () => {
+    setScheduleSecuenceVisible(false);
+    setSelectedSequenceForSchedule(null);
+  };
+
+  const handleScheduleSequenceSuccess = () => {
+    setScheduleSecuenceVisible(false);
+    setSelectedSequenceForSchedule(null);
+    notification.success({
+      message: Strings.success,
+      description: Strings.successScheduleCreated,
+    });
   };
 
   const getImageUrl = (url: string | null | undefined): string => {
@@ -838,6 +861,15 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                           <Text strong>{Strings.standardTime}: </Text>
                           <Text>{sequence.standardTime} min</Text>
                         </div>
+                        <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                          <Button 
+                            type="default" 
+                            icon={<CalendarOutlined />}
+                            onClick={() => showScheduleSequence(sequence)}
+                          >
+                            Programar
+                          </Button>
+                        </div>
                       </Card>
                     </Col>
                   ))}
@@ -985,6 +1017,18 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       {renderSequenceListModal()}
       {renderSingleSequenceDetailsModal()}
       {renderOplDetailsModal()}
+      
+      {/* Schedule Sequence Modal */}
+      {selectedSequenceForSchedule && (
+        <ScheduleSecuence
+          open={scheduleSecuenceVisible}
+          onCancel={handleScheduleSequenceCancel}
+          onSave={handleScheduleSequenceSuccess}
+          sequenceId={selectedSequenceForSchedule.id}
+          ciltId={selectedSequenceForSchedule.ciltMstrId || undefined}
+          siteId={selectedSequenceForSchedule.siteId || undefined}
+        />
+      )}
     </>
   );
 };

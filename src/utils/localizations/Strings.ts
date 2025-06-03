@@ -1184,6 +1184,7 @@ class StringsBase {
   // CILT Table strings
   static createSequence = "createSequence";
   static viewSequences = "viewSequences";
+  static ciltSequences = "ciltSequences";
   static information = "information";
 
   // CILT Sequences strings
@@ -1363,7 +1364,11 @@ class StringsBase {
   static allowExecuteBeforeMinutes = "allowExecuteBeforeMinutes"
   static toleranceBeforeMinutes = "toleranceBeforeMinutes"
   static toleranceAfterMinutes = "toleranceAfterMinutes"
-
+  static secuencesOf = "secuencesOf"
+  static errorLoadingOplDetails = "errorLoadingOplDetails"
+  static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences"
+  static thisCilt = "thisCilt"
+  static noSequences = "noSequences"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

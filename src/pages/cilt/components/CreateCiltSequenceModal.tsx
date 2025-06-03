@@ -67,7 +67,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   const [formattedTime, setFormattedTime] = useState<string>("");
 
   useEffect(() => {
-    if (visible && location.state?.siteId) {
+    if (visible && cilt?.siteId) {
       fetchCiltTypes();
       fetchCiltFrequencies();
     }
@@ -77,7 +77,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
     }
-  }, [visible, form, location.state]);
+  }, [visible, form, cilt]);
 
   // No need to set positionId from cilt since it's no longer part of the CiltMstr model
   useEffect(() => {
@@ -89,12 +89,12 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
   // Fetch CILT types and filter by active status
   const fetchCiltTypes = async () => {
-    if (!location.state?.siteId) return;
+    if (!cilt?.siteId) return;
 
     setLoading(true);
     try {
       const response = await getCiltTypesBySite(
-        String(location.state.siteId)
+        String(cilt.siteId)
       ).unwrap();
       // Filter CILT types to only include those with status 'A' (active)
       const activeTypes = response ? response.filter(type => type.status === 'A') : [];
@@ -176,8 +176,8 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       try {
         const combinedData = {
           ...values,
-          siteId: Number(location.state?.siteId || 0),
-          siteName: location.state?.siteName || "",
+          siteId: Number(cilt?.siteId || 0),
+          siteName: "",
           ciltMstrId: Number(cilt?.id || 0),
           ciltMstrName: cilt?.ciltName || "",
         };
