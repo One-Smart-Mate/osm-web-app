@@ -1371,6 +1371,11 @@ const resources = {
       allowExecuteBeforeMinutes: "Allow execute before minutes",
       toleranceBeforeMinutes: "Tolerance before minutes",
       toleranceAfterMinutes: "Tolerance after minutes",
+      
+      // Error logs
+      downloadErrorLogs: "Download error logs",
+      logsDownloadedSuccessfully: "Logs downloaded successfully",
+      errorGeneratingLogsFile: "Error generating logs file",
       scheduleSequence: "Schedule Sequence",
       secuencesOf: "Secuences of",
       errorLoadingCiltOrSequences: "Error loading CILT or sequences",
@@ -2767,6 +2772,11 @@ const resources = {
       labelWeekOfMonth: "Semana del mes",
       labelDayOfWeek: "Día de la semana",
       labelDateOfYear: "Fecha del año",
+      
+      // Error logs
+      downloadErrorLogs: "Descargar logs de errores",
+      logsDownloadedSuccessfully: "Logs descargados correctamente",
+      errorGeneratingLogsFile: "Error al generar archivo de logs",
       placeholderDateOfYear: "Fecha del año",
       labelMonthOfYear: "Mes del año",
       labelExecutionConfiguration: "Configuración de ejecución",

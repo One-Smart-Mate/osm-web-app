@@ -49,6 +49,11 @@ class StringsBase {
   static ciltMstrCreateModalTitle = "ciltMstrCreateModalTitle";
   static ciltMstrPositionLabel = "ciltMstrPositionLabel";
   static ciltMstrLastUpdated = "ciltMstrLastUpdated";
+  
+  // Error logs strings
+  static downloadErrorLogs = "downloadErrorLogs";
+  static logsDownloadedSuccessfully = "logsDownloadedSuccessfully";
+  static errorGeneratingLogsFile = "errorGeneratingLogsFile";
 
   // Position user selection
   static selectedUsersList = "selectedUsersList";
