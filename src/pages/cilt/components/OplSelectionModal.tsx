@@ -271,11 +271,13 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
       if (type === "texto") {
         // Para detalles de texto
         const newDetail: CreateOplDetailsDTO = {
+          siteId: Number(currentOpl.siteId || 0),
           oplId: Number(currentOpl.id),
           order: currentOplDetails.length + 1,
           type: "texto",
           text: values.text || "",
           mediaUrl: "",
+          createdAt: new Date().toISOString(),
         };
         
         console.log("Creating text detail:", newDetail);
@@ -338,11 +340,13 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         console.log("File uploaded successfully, URL:", url);
         
         const newDetail: CreateOplDetailsDTO = {
+          siteId: Number(currentOpl.siteId || 0),
           oplId: Number(currentOpl.id),
           order: currentOplDetails.length + 1,
           type,
           text: "",
           mediaUrl: url,
+          createdAt: new Date().toISOString(),
         };
         
         console.log("Creating media detail:", newDetail);
