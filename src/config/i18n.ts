@@ -43,6 +43,8 @@ const resources = {
       chartsSB: "Charts",
       positionsSB: "Positions",
       systemHealthSB: "System Health",
+      nodeResponsable: "Level Responsible",
+      selectResponsable: "Select Responsible",
 
       login: "Log in",
       companyParam: ":company",
@@ -1418,6 +1420,8 @@ const resources = {
       chartsSB: "Gráficos",
       positionsSB: "Posiciones",
       systemHealthSB: "Salud del Sistema",
+      nodeResponsable: "Responsable del Nivel",
+      selectResponsable: "Seleccionar Responsable",
 
       login: "Iniciar sesión",
       companyParam: ":company",

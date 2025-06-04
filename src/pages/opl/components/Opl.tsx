@@ -78,7 +78,6 @@ const Opl = (): React.ReactElement => {
   const fetchOpls = async () => {
     setLoading(true);
     try {
-      
       let response;
       if (siteId) {
         response = await getOplMstrBySite(String(siteId)).unwrap();
@@ -331,11 +330,13 @@ const Opl = (): React.ReactElement => {
 
     try {
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type: "texto",
         text: values.text,
         mediaUrl: "",
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();
@@ -401,7 +402,10 @@ const Opl = (): React.ReactElement => {
         originFileObj: file.originFileObj as File,
       };
 
-      const sitePath = currentOpl && currentOpl.siteId ? `site_${currentOpl.siteId}/opl` : FIREBASE_OPL_DIRECTORY;
+      const sitePath =
+        currentOpl && currentOpl.siteId
+          ? `site_${currentOpl.siteId}/opl`
+          : FIREBASE_OPL_DIRECTORY;
       const url = await handleUploadToFirebaseStorage(
         sitePath,
         uploadFile,
@@ -409,11 +413,13 @@ const Opl = (): React.ReactElement => {
       );
 
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type,
         text: "",
         mediaUrl: url,
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();
