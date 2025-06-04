@@ -26,7 +26,8 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
-    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)    ],
+    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
+    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
     [UserRoles.LOCALSYSADMIN]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
@@ -42,7 +43,8 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardTypes}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.priorities}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.users}`,
-    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)    ],
+    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
+    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
     [UserRoles.UNDEFINED]: [],
   };
 

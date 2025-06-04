@@ -1198,6 +1198,7 @@ const resources = {
       // CILT Table strings
       createSequence: "Create Sequence",
       viewSequences: "View Sequences",
+      ciltSequences: "Sequences",
       information: "Information",
       
       // CILT Sequences strings
@@ -1370,6 +1371,11 @@ const resources = {
       allowExecuteBeforeMinutes: "Allow execute before minutes",
       toleranceBeforeMinutes: "Tolerance before minutes",
       toleranceAfterMinutes: "Tolerance after minutes",
+      scheduleSequence: "Schedule Sequence",
+      secuencesOf: "Secuences of",
+      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
+      thisCilt: "This CILT",
+      noSequences: "No sequences found. You can create a new sequence using the \"Create Sequence\" button.",
     },
   },
   es: {
@@ -2565,6 +2571,7 @@ const resources = {
       ciltCardListErrorLoadingOplDetails: "Error al cargar detalles del OPL",
       ciltCardListCreateSequence: "Crear Secuencia",
       ciltCardListViewSequences: "Ver Secuencias",
+      ciltSequences: "Secuencias",
       ciltCardListObjectiveLabel: "Objetivo:",
       ciltCardListMultimediaFilesTitle: "Archivos Multimedia",
       ciltCardListImageLabel: "Imagen",
@@ -2777,6 +2784,10 @@ const resources = {
       allowExecuteBeforeMinutes: "Permitir ejecución antes de minutos",
       toleranceBeforeMinutes: "Tolerancia antes de minutos",
       toleranceAfterMinutes: "Tolerancia después de minutos",
+      secuencesOf: "Secuencias de",
+      errorLoadingCiltOrSequences: "Error al cargar CILT o secuencias",
+      thisCilt: "Este CILT",
+      noSequences: "no cuenta aún con secuencias. Puede crear una nueva secuencia utilizando el botón \"Crear Secuencia\".",
     },
   },
 };

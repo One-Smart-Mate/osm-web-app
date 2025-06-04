@@ -41,6 +41,9 @@ const PrioritiesPage = React.lazy(
 const CiltProceduresPage = React.lazy(
   () => import("../pages/cilt/CiltProceduresPage")
 );
+const CiltSequencesPage = React.lazy(
+  () => import("../pages/cilt/CiltSequencesPage")
+);
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
 const CiltTypesPage = React.lazy(
   () => import("../pages/ciltTypes/CiltTypesPage")
@@ -184,8 +187,17 @@ export const tagDetailsRoute = new Route(
   ""
 );
 
+export const ciltSequencesRoute = new Route(
+  "Secuencias",
+  `${Constants.ROUTES_PATH.ciltSequences}/${Constants.ROUTES_PARAMS.ciltId}`,
+  <CiltSequencesPage />,
+  <></>,
+  ""
+);
+
 const routes: Route[] = [
   tagDetailsRoute,
+  ciltSequencesRoute,
   siteUsersRoute,
   sitesRoute,
   tagsRoute,
