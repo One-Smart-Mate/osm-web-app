@@ -10,9 +10,10 @@ import {
   Row,
   Col,
   Checkbox,
-  Alert,
+  notification,
 } from "antd";
 import { useState, useEffect } from "react";
+import AnatomyNotification from "../../components/AnatomyNotification";
 import dayjs from "dayjs";
 import {
   ScheduleType,
@@ -65,8 +66,6 @@ export default function ScheduleSecuence({
     useUpdateScheduleMutation();
 
   const [scheduleType, setScheduleType] = useState<ScheduleType>("dai");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -171,12 +170,20 @@ export default function ScheduleSecuence({
         dayValues.fri === 0 &&
         dayValues.sat === 0
       ) {
-        setError(Strings.errorSelectDayOfWeek);
+AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.errorSelectDayOfWeek
+          }
+        });
         return;
       }
 
       if (scheduleType === "mon" && !values.dayOfMonth && !values.weekOfMonth) {
-        setError(Strings.errorSelectDayOfMonthOrWeekOfMonth);
+AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.errorSelectDayOfMonthOrWeekOfMonth
+          }
+        });
         return;
       }
 
@@ -198,7 +205,11 @@ export default function ScheduleSecuence({
                 dayValues.sat === 1)))
         ) {
         } else {
-          setError(Strings.errorSelectDateOfYear);
+AnatomyNotification.error(notification, {
+            data: {
+              message: Strings.errorSelectDateOfYear
+            }
+          });
           return;
         }
       }
@@ -209,23 +220,33 @@ export default function ScheduleSecuence({
           ...scheduleData,
           updatedAt: new Date().toISOString(),
         }).unwrap();
-        setSuccess(Strings. successScheduleUpdated);
+AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.successScheduleUpdated
+          }
+        }, "Success!");
       } else {
         await createSchedule({
           ...scheduleData,
           createdAt: new Date().toISOString(),
         }).unwrap();
-        setSuccess(Strings.successScheduleCreated);
+AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.successScheduleCreated
+          }
+        }, "Success!");
       }
-
-      setError(null);
 
       setTimeout(() => {
         onSave(scheduleData);
       }, 1500);
     } catch (error) {
       console.error(Strings.errorSaveSchedule, error);
-      setError(Strings.errorSaveSchedule);
+AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.errorSaveSchedule
+          }
+        });
     }
   };
 
@@ -238,22 +259,12 @@ export default function ScheduleSecuence({
         onCancel();
         form.resetFields();
         setScheduleType("dai");
-        setError(null);
       }}
       width={700}
       footer={null}
     >
       <Form form={form} layout="vertical">
-        {error && (
-          <Alert message={error} type="error" style={{ marginBottom: 16 }} />
-        )}
-        {success && (
-          <Alert
-            message={success}
-            type="success"
-            style={{ marginBottom: 16 }}
-          />
-        )}
+        {/* Error and success messages are now shown via AnatomyNotification */}
 
         <Form.Item
           label={Strings.labelSchedule}

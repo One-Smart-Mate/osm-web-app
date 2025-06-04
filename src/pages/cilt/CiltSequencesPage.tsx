@@ -3,6 +3,7 @@ import { Button, Space, Spin, Typography, notification, Input, Table } from "ant
 import { useParams, useNavigate } from "react-router-dom";
 import { SearchOutlined, ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
 import MainContainer from "../layouts/MainContainer";
+import AnatomyNotification from "../components/AnatomyNotification";
 import { CiltMstr } from "../../data/cilt/ciltMstr/ciltMstr";
 import { CiltSequence } from "../../data/cilt/ciltSequences/ciltSequences";
 import { OplMstr } from "../../data/cilt/oplMstr/oplMstr";
@@ -71,18 +72,18 @@ const CiltSequencesPage = () => {
         ));
         
         if (sequencesData.length === 0) {
-          notification.info({
-            message: Strings.information,
-            description: `${Strings.thisCilt} "${ciltData.ciltName}" ${Strings.noSequences}`,
-            duration: 5,
-          });
+          AnatomyNotification.error(notification, {
+            data: {
+              message: `${Strings.thisCilt} "${ciltData.ciltName}" ${Strings.noSequences}`
+            }
+          }, "Information");
         }
       } catch (error) {
         console.error(Strings.errorLoadingCiltOrSequences, error);
-        notification.error({
-          message: Strings.error,
-          description: Strings.errorLoadingCiltOrSequences,
-          duration: 5,
+        AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.errorLoadingCiltOrSequences
+          }
         });
       } finally {
         setLoading(false);
@@ -153,11 +154,11 @@ const CiltSequencesPage = () => {
 
   const showOplDetails = async (oplId: number | null) => {
     if (!oplId) {
-      notification.info({
-        message: Strings.information,
-        description: Strings.noOplAssociated,
-        duration: 5,
-      });
+      AnatomyNotification.error(notification, {
+        data: {
+          message: Strings.noOplAssociated
+        }
+      }, "Information");
       return;
     }
 
@@ -173,11 +174,11 @@ const CiltSequencesPage = () => {
       setIsOplDetailsModalVisible(true);
 
       if (details.filter((detail) => detail.type !== "texto").length === 0) {
-        notification.info({
-          message: Strings.information,
-          description: `${Strings.thisOpl} "${opl.title}" ${Strings.noMediaFiles}`,
-          duration: 5,
-        });
+        AnatomyNotification.error(notification, {
+          data: {
+            message: `${Strings.thisOpl} "${opl.title}" ${Strings.noMediaFiles}`
+          }
+        }, "Information");
       }
     } catch (error) {
       console.error(Strings.errorLoadingOplDetails, error);
