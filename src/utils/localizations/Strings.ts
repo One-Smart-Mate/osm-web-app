@@ -52,6 +52,8 @@ class StringsBase {
 
   // Position user selection
   static selectedUsersList = "selectedUsersList";
+  static nodeResponsable = "nodeResponsable";
+  static selectResponsable = "selectResponsable";
 
   // Rooutes
   static companyParam = "companyParam";
