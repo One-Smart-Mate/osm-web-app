@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Space, Spin, Typography, notification, Input, Table } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
-import { SearchOutlined, ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { SearchOutlined, ArrowLeftOutlined, PlusOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import MainContainer from "../layouts/MainContainer";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { CiltMstr } from "../../data/cilt/ciltMstr/ciltMstr";
@@ -72,11 +72,13 @@ const CiltSequencesPage = () => {
         ));
         
         if (sequencesData.length === 0) {
-          AnatomyNotification.error(notification, {
-            data: {
-              message: `${Strings.thisCilt} "${ciltData.ciltName}" ${Strings.noSequences}`
-            }
-          }, "Information");
+          // Use info notification with blue styling instead of error for a less aggressive message
+          notification.open({
+            message: Strings.information,
+            description: `${Strings.thisCilt} "${ciltData.ciltName}" ${Strings.noSequences}`,
+            className: "ant-notification-notice-info",
+            icon: <InfoCircleOutlined style={{ color: '#1890ff' }} />,
+          });
         }
       } catch (error) {
         console.error(Strings.errorLoadingCiltOrSequences, error);

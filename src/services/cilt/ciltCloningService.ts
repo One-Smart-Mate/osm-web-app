@@ -52,48 +52,73 @@ export const useCiltCloning = () => {
 
       const newCiltMstr = await createCiltMstr(ciltPayload as any).unwrap();
 
+      // Get sequences from original CILT
       const ciltId = cilt.id.toString();
       const sequences = await getCiltSequencesByCilt(ciltId).unwrap();
 
+      // Clone all sequences if they exist
       if (sequences && sequences.length > 0) {
-        const clonePromises = sequences.map(async (sequence) => {
-          const sequencePayload: CreateCiltSequenceDTO = {
-            siteId: sequence.siteId || undefined,
-            siteName: sequence.siteName || undefined,
-            areaId: sequence.areaId || undefined,
-            areaName: sequence.areaName || undefined,
-            positionId: sequence.positionId || undefined,
-            positionName: sequence.positionName || "",
-            ciltMstrId: newCiltMstr.id,
-            ciltMstrName: clonedCiltName || "",
-            levelId: sequence.levelId || undefined,
-            levelName: sequence.levelName || undefined,
-            order: sequence.order || undefined,
-            secuenceList: sequence.secuenceList || undefined,
-            secuenceColor: sequence.secuenceColor || undefined,
-            ciltTypeId: sequence.ciltTypeId || undefined,
-            ciltTypeName: sequence.ciltTypeName || undefined,
-            referenceOplSopId: sequence.referenceOplSopId || undefined,
-            standardTime: sequence.standardTime || undefined,
-            standardOk: sequence.standardOk || undefined,
-            remediationOplSopId: sequence.remediationOplSopId || undefined,
-            toolsRequired: sequence.toolsRequired || undefined,
-            stoppageReason: sequence.stoppageReason || undefined,
-            quantityPicturesCreate:
-              sequence.quantityPicturesCreate || undefined,
-            quantityPicturesClose: sequence.quantityPicturesClose || undefined,
-            createdAt: new Date().toISOString(),
-          };
+        console.log(`Clonando ${sequences.length} secuencias para el CILT ${clonedCiltName}`);
+        
+        try {
+          // Clone sequences one by one instead of using Promise.all
+          // to avoid order conflicts
+          let clonedCount = 0;
+          
+          for (const sequence of sequences) {
+            try {
+              // Create sequence payload
+              const sequencePayload: CreateCiltSequenceDTO = {
+                siteId: sequence.siteId || 0,
+                siteName: sequence.siteName || "",
+                ciltMstrId: newCiltMstr.id,
+                ciltMstrName: clonedCiltName || "",
+                // Omitimos completamente el campo order para que el backend lo asigne
+                secuenceList: sequence.secuenceList || "",
+                secuenceColor: sequence.secuenceColor || "FF0000",
+                ciltTypeId: sequence.ciltTypeId || 0,
+                ciltTypeName: sequence.ciltTypeName || "",
+                referenceOplSopId: sequence.referenceOplSopId || 0,
+                remediationOplSopId: sequence.remediationOplSopId || 0,
+                standardTime: sequence.standardTime || 0,
+                standardOk: sequence.standardOk || "",
+                toolsRequired: sequence.toolsRequired || "",
+                stoppageReason: sequence.stoppageReason || 0,
+                machineStopped: sequence.machineStopped || 0,
+                quantityPicturesCreate: sequence.quantityPicturesCreate || 1,
+                quantityPicturesClose: sequence.quantityPicturesClose || 1,
+                status: "A",
+                createdAt: new Date().toISOString(),
+                frecuencyId: sequence.frecuencyId || 0,
+                frecuencyCode: sequence.frecuencyCode || "",
+              };
 
-          return createCiltSequence(sequencePayload).unwrap();
-        });
-
-        await Promise.all(clonePromises);
+              // Create cloned sequence
+              await createCiltSequence(sequencePayload).unwrap();
+              clonedCount++;
+            } catch (individualError) {
+              console.error(`Error al clonar la secuencia ${sequence.id}:`, individualError);
+              // Continue with the next sequence instead of failing the entire process
+            }
+          }
+          
+          console.log(`Se clonaron exitosamente ${clonedCount} de ${sequences.length} secuencias`);
+          
+          if (clonedCount === 0) {
+            throw new Error("No se pudo clonar ninguna secuencia");
+          }
+        } catch (seqError) {
+          console.error("Error al clonar secuencias:", seqError);
+          throw new Error(`Error al clonar secuencias: ${seqError}`);
+        }
       }
 
+      // Show success notification with information about cloned sequences
       notification.success({
         message: Strings.success,
-        description: `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
+        description: sequences && sequences.length > 0 
+          ? `${Strings.ciltMasterCreateSuccess} ${Strings.copy} ${Strings.withSequences.replace('{count}', sequences.length.toString())}` 
+          : `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
       });
 
       return true;

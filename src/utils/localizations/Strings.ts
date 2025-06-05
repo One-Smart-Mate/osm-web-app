@@ -1,6 +1,8 @@
 import i18n from "../../config/i18n";
 
 class StringsBase {
+  // CILT Cloning
+  static withSequences = "withSequences";
   // For the Routes.tsx sidebar
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";

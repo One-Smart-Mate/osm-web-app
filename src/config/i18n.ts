@@ -850,6 +850,7 @@ const resources = {
       // CILT Master strings
       ciltMstrPageTitle: "CILT Procedures",
       ciltMstrCreateSuccess: "CILT procedure created successfully",
+      withSequences: "with {count} sequences",
       ciltMstrSelectPositionTitle: "Select a position",
       ciltMstrCreateButtonLabel: "Create CILT procedure",
       ciltMstrCreateModalTitle: "Create CILT procedure",
@@ -1515,6 +1516,7 @@ const resources = {
       requiredResponsableId: "Por favor, selecciona el responsable.",
       requiredMechanic: "Por favor, selecciona el mecánico.",
       requiredPriority: "Prioridad requerida.",
+      withSequences: "con {count} secuencias",
 
       // company
       logo: "Logo",
@@ -2251,8 +2253,7 @@ const resources = {
         obligatoryDescription: "La descripción es obligatoria",
         searchbyDescriptionOrCode: "Buscar por código o descripción",
         
-
-      // CILT Master strings
+        // CILT Master strings
       ciltMstrPageTitle: "Procedimientos CILT",
       ciltMstrCreateSuccess: "Procedimiento CILT creado exitosamente",
       ciltMstrSelectPositionTitle: "Selecciona una posición",
