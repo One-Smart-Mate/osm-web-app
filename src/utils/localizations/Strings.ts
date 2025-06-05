@@ -1,6 +1,8 @@
 import i18n from "../../config/i18n";
 
 class StringsBase {
+  // CILT Cloning
+  static withSequences = "withSequences";
   // For the Routes.tsx sidebar
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";
@@ -49,6 +51,11 @@ class StringsBase {
   static ciltMstrCreateModalTitle = "ciltMstrCreateModalTitle";
   static ciltMstrPositionLabel = "ciltMstrPositionLabel";
   static ciltMstrLastUpdated = "ciltMstrLastUpdated";
+  
+  // Error logs strings
+  static downloadErrorLogs = "downloadErrorLogs";
+  static logsDownloadedSuccessfully = "logsDownloadedSuccessfully";
+  static errorGeneratingLogsFile = "errorGeneratingLogsFile";
 
   // Position user selection
   static selectedUsersList = "selectedUsersList";
