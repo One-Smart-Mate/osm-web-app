@@ -1,4 +1,4 @@
-import { Dropdown, Avatar, Tag, Typography, theme, message } from "antd";
+import { Dropdown, Avatar, Tag, Typography, theme, App } from "antd";
 import { UserOutlined, DownloadOutlined } from "@ant-design/icons";
 import User, { getSiteName } from "../../data/user/user";
 import Logout from "../auth/Logout";
@@ -43,11 +43,16 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
    */
   const handleDownloadLogs = async () => {
     try {
+      // Get logs and sort them from newest to oldest
       const errorLogs = AnatomyNotification.getErrorLogs();
+      // Sort logs by timestamp in descending order (newest first)
+      const sortedLogs = [...errorLogs].sort((a, b) => {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      });
 
       const logContent =
-        errorLogs.length > 0
-          ? errorLogs.map((log) => `${log.timestamp}: ${log.error}`).join("\n")
+        sortedLogs.length > 0
+          ? sortedLogs.map((log) => `${log.timestamp}: ${log.error}`).join("\n")
           : "No errors found in the log. This is a sample file.";
 
       const textBlob = new Blob([logContent], { type: "text/plain" });
@@ -79,10 +84,20 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
         URL.revokeObjectURL(url);
       }
 
-      message.success(Strings.logsDownloadedSuccessfully);
+      // Use AnatomyNotification instead of message for consistency
+      const { notification } = App.useApp();
+      notification.success({
+        message: "Success!",
+        description: Strings.logsDownloadedSuccessfully,
+      });
     } catch (error) {
       console.error("Error generating logs file:", error);
-      message.error(Strings.errorGeneratingLogsFile);
+      // Use AnatomyNotification instead of message for consistency
+      const { notification } = App.useApp();
+      notification.error({
+        message: "Error!",
+        description: Strings.errorGeneratingLogsFile,
+      });
     }
   };
 
@@ -145,7 +160,7 @@ const UserProfileDropdown: React.FC<UserProfileDropdownProps> = ({ user }) => {
         >
           <DownloadOutlined
             className="mr-2"
-            color={token.colorPrimary}
+            style={{ color: token.colorPrimary }}
             size={18}
           />
           <Typography.Text style={{ color: token.colorPrimary }}>
