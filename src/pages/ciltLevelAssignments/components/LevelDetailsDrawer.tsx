@@ -20,6 +20,7 @@ import {
   notification,
 } from "antd";
 import { SearchOutlined, FileOutlined, CalendarOutlined } from "@ant-design/icons";
+import ViewSchedulesModal from "./ViewSchedulesModal";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
@@ -110,6 +111,8 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
   const [scheduleSecuenceVisible, setScheduleSecuenceVisible] = useState(false);
   const [selectedSequenceForSchedule, setSelectedSequenceForSchedule] = useState<CiltSequence | null>(null);
+  const [viewSchedulesVisible, setViewSchedulesVisible] = useState(false);
+  const [selectedSequenceForViewSchedules, setSelectedSequenceForViewSchedules] = useState<CiltSequence | null>(null);
   const [singleSequenceModalVisible, setSingleSequenceModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [sequenceSearchText, setSequenceSearchText] = useState("");
@@ -182,6 +185,18 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const showSequenceDetails = (sequence: CiltSequence) => {
     setSelectedSequence(sequence);
     setSingleSequenceModalVisible(true);
+  };
+
+  // Show view schedules modal
+  const showViewSchedules = (sequence: CiltSequence) => {
+    setSelectedSequenceForViewSchedules(sequence);
+    setViewSchedulesVisible(true);
+  };
+
+  // Handle the close of view schedules modal
+  const handleViewSchedulesCancel = () => {
+    setViewSchedulesVisible(false);
+    setSelectedSequenceForViewSchedules(null);
   };
 
   const showScheduleSequence = (sequence: CiltSequence) => {
@@ -863,13 +878,19 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                           <Text strong>{Strings.standardTime}: </Text>
                           <Text>{sequence.standardTime} min</Text>
                         </div>
-                        <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                        <div style={{ marginTop: '12px', textAlign: 'center', display: 'flex', gap: '8px', justifyContent: 'center' }}>
                           <Button 
                             type="default" 
                             icon={<CalendarOutlined />}
                             onClick={() => showScheduleSequence(sequence)}
                           >
-                            Programar
+                            {Strings.scheduleSequence}
+                          </Button>
+                          <Button 
+                            type="default" 
+                            onClick={() => showViewSchedules(sequence)}
+                          >
+                            {Strings.viewSchedules}
                           </Button>
                         </div>
                       </Card>
@@ -1029,6 +1050,16 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           sequenceId={selectedSequenceForSchedule.id}
           ciltId={selectedSequenceForSchedule.ciltMstrId || undefined}
           siteId={selectedSequenceForSchedule.siteId || undefined}
+        />
+      )}
+
+      {/* View Schedules Modal */}
+      {selectedSequenceForViewSchedules && (
+        <ViewSchedulesModal
+          visible={viewSchedulesVisible}
+          onCancel={handleViewSchedulesCancel}
+          sequenceId={selectedSequenceForViewSchedules.id}
+          sequenceName={selectedSequenceForViewSchedules.secuenceList}
         />
       )}
     </>
