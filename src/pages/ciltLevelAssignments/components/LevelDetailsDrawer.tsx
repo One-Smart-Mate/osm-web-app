@@ -799,7 +799,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         open={sequenceListModalVisible}
         onCancel={() => setSequenceListModalVisible(false)}
         footer={null}
-        width={800}
+        width={1000}
+        style={{ top: 20 }}
+        bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
       >
         {activeSequences.length > 0 ? (
           <div>
@@ -818,14 +820,14 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             
             {filteredSequences.length > 0 ? (
               <>
-                <Row gutter={[16, 16]}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   {paginatedData.map((sequence: CiltSequence) => (
-                    <Col xs={24} sm={24} md={12} key={sequence.id}>
+                    <div key={sequence.id} style={{ width: '80%', marginBottom: '16px' }}>
                       <Card
                         style={{ 
                           boxShadow: '0 1px 4px rgba(0, 0, 0, 0.15)',
                           border: '1px solid #e8e8e8',
-                          marginBottom: '8px'
+                          width: '100%'
                         }}
                         title={
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
@@ -871,9 +873,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                           </Button>
                         </div>
                       </Card>
-                    </Col>
+                    </div>
                   ))}
-                </Row>
+                </div>
                 
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
                   <Pagination

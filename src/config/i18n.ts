@@ -1384,6 +1384,7 @@ const resources = {
       errorLoadingCiltOrSequences: "Error loading CILT or sequences",
       thisCilt: "This CILT",
       noSequences: "No sequences found. You can create a new sequence using the \"Create Sequence\" button.",
+      seeAssignments: "See Assignments",
     },
   },
   es: {
@@ -2803,6 +2804,7 @@ const resources = {
       errorLoadingCiltOrSequences: "Error al cargar CILT o secuencias",
       thisCilt: "Este CILT",
       noSequences: "no cuenta aún con secuencias. Puede crear una nueva secuencia utilizando el botón \"Crear Secuencia\".",
+      seeAssignments: "Ver Asignaciones",
     },
   },
 };

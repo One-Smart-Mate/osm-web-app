@@ -1378,6 +1378,7 @@ class StringsBase {
   static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences"
   static thisCilt = "thisCilt"
   static noSequences = "noSequences"
+  static seeAssignments = "seeAssignments"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
