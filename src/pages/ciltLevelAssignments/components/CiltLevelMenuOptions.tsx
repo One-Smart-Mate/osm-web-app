@@ -11,6 +11,7 @@ interface CiltLevelContextMenuProps {
   contextMenuPos: { x: number; y: number };
   handleAssignPositionCiltMstr: () => void;
   handleAssignOpl: () => void;
+  handleSeeAssignments: () => void;
 }
 
 const CiltLevelMenuOptions: React.FC<CiltLevelContextMenuProps> = ({
@@ -19,6 +20,7 @@ const CiltLevelMenuOptions: React.FC<CiltLevelContextMenuProps> = ({
   contextMenuPos,
   handleAssignPositionCiltMstr,
   handleAssignOpl,
+  handleSeeAssignments,
 }) => {
   if (
     !isVisible ||
@@ -40,6 +42,9 @@ const CiltLevelMenuOptions: React.FC<CiltLevelContextMenuProps> = ({
         ...(isDarkMode ? { backgroundColor: token.colorBgContainer } : {}),
       }}
     >
+      <Button type="primary" onClick={handleSeeAssignments}>
+        {Strings.seeAssignments}
+      </Button>
       <Button type="primary" onClick={handleAssignPositionCiltMstr}>
         {Strings.assignPositionCiltMstrLevel}
       </Button>
