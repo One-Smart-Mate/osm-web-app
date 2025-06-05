@@ -47,33 +47,30 @@ export const useCiltCloning = () => {
         urlImgLayout: cilt.urlImgLayout || undefined,
         order: cilt.order || undefined,
         status: cilt.status || undefined,
-        ciltDueDate: cilt.ciltDueDate || undefined
+        ciltDueDate: cilt.ciltDueDate || undefined,
       };
 
       const newCiltMstr = await createCiltMstr(ciltPayload as any).unwrap();
 
-      // Get sequences from original CILT
       const ciltId = cilt.id.toString();
       const sequences = await getCiltSequencesByCilt(ciltId).unwrap();
 
-      // Clone all sequences if they exist
       if (sequences && sequences.length > 0) {
-        console.log(`Clonando ${sequences.length} secuencias para el CILT ${clonedCiltName}`);
-        
+        console.log(
+          `Clonando ${sequences.length} secuencias para el CILT ${clonedCiltName}`
+        );
+
         try {
-          // Clone sequences one by one instead of using Promise.all
-          // to avoid order conflicts
           let clonedCount = 0;
-          
+
           for (const sequence of sequences) {
             try {
-              // Create sequence payload
               const sequencePayload: CreateCiltSequenceDTO = {
                 siteId: sequence.siteId || 0,
                 siteName: sequence.siteName || "",
                 ciltMstrId: newCiltMstr.id,
                 ciltMstrName: clonedCiltName || "",
-                // Omitimos completamente el campo order para que el backend lo asigne
+
                 secuenceList: sequence.secuenceList || "",
                 secuenceColor: sequence.secuenceColor || "FF0000",
                 ciltTypeId: sequence.ciltTypeId || 0,
@@ -93,17 +90,20 @@ export const useCiltCloning = () => {
                 frecuencyCode: sequence.frecuencyCode || "",
               };
 
-              // Create cloned sequence
               await createCiltSequence(sequencePayload).unwrap();
               clonedCount++;
             } catch (individualError) {
-              console.error(`Error al clonar la secuencia ${sequence.id}:`, individualError);
-              // Continue with the next sequence instead of failing the entire process
+              console.error(
+                `Error al clonar la secuencia ${sequence.id}:`,
+                individualError
+              );
             }
           }
-          
-          console.log(`Se clonaron exitosamente ${clonedCount} de ${sequences.length} secuencias`);
-          
+
+          console.log(
+            `Se clonaron exitosamente ${clonedCount} de ${sequences.length} secuencias`
+          );
+
           if (clonedCount === 0) {
             throw new Error("No se pudo clonar ninguna secuencia");
           }
@@ -113,12 +113,17 @@ export const useCiltCloning = () => {
         }
       }
 
-      // Show success notification with information about cloned sequences
       notification.success({
         message: Strings.success,
-        description: sequences && sequences.length > 0 
-          ? `${Strings.ciltMasterCreateSuccess} ${Strings.copy} ${Strings.withSequences.replace('{count}', sequences.length.toString())}` 
-          : `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
+        description:
+          sequences && sequences.length > 0
+            ? `${Strings.ciltMasterCreateSuccess} ${
+                Strings.copy
+              } ${Strings.withSequences.replace(
+                "{count}",
+                sequences.length.toString()
+              )}`
+            : `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
       });
 
       return true;
