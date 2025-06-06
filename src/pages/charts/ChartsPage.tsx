@@ -212,7 +212,7 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <Typography.Title level={4}>
+                        <Typography.Title level={4} className="pr-10 mb-2">
                          {selectedAreaName
                             ? `${Strings.machinesOfArea}: ${selectedAreaName}`
                             : Strings.machines}
@@ -288,7 +288,7 @@ const ChartsPage = () => {
                       <div className="flex flex-col items-center">
                          <Typography.Title level={4}>
                          {selectedAreaName
-                            ? `${Strings.mechanics}: ${selectedAreaName}`
+                            ? `${Strings.mechanics}`
                             : Strings.mechanics}
                         </Typography.Title>
                       </div>
@@ -296,7 +296,7 @@ const ChartsPage = () => {
                         <ChartExpander
                           title={
                             selectedAreaName
-                              ? `${Strings.machines}: ${selectedAreaName}`
+                              ? `${Strings.machines}`
                               : Strings.mechanics
                           }
                         >

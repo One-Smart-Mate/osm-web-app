@@ -12,12 +12,14 @@ import {
 import { Weeks } from "../../../data/charts/charts";
 import { useGetWeeksChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
+import useDarkMode from "../../../utils/hooks/useDarkMode";
 
 export interface WeeksChartProps {
   siteId: string;
 }
 
 const WeeksChart = ({ siteId }: WeeksChartProps) => {
+  const isDarkMode = useDarkMode();
   const [getWeeks] = useGetWeeksChartDataMutation();
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const handleGetData = async () => {
@@ -28,24 +30,26 @@ const WeeksChart = ({ siteId }: WeeksChartProps) => {
     handleGetData();
   }, []);
 
+  const textClass = isDarkMode ? 'text-white' : '';
+
   const renderLegend = (props: any) => {
     const { payload } = props;
 
     return (
-      <div className="flex mb-2 gap-2 justify-center">
+      <div className={`flex mb-2 gap-2 justify-center ${textClass}`}>
         <div className="flex gap-1">
           <div
             className="w-5 rounded-lg"
             style={{ background: payload[0].color }}
           />
-          <h1 className="md:text-sm text-xs">{Strings.tagsIssued}</h1>
+          <h1 className={`md:text-sm text-xs ${textClass}`}>{Strings.tagsIssued}</h1>
         </div>
         <div className="flex gap-1">
           <div
             className="w-5 rounded-lg"
             style={{ background: payload[1].color }}
           />
-          <h1 className="md:text-sm text-xs">{Strings.tagsEradicated}</h1>
+          <h1 className={`md:text-sm text-xs ${textClass}`}>{Strings.tagsEradicated}</h1>
         </div>
       </div>
     );
@@ -61,12 +65,19 @@ const WeeksChart = ({ siteId }: WeeksChartProps) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="week" />
-        <YAxis tickFormatter={(value: any) => Math.round(Number(value)).toString()} />
+        <YAxis 
+          tickFormatter={(value: any) => Math.round(Number(value)).toString()}
+          allowDecimals={false}
+          domain={[0, 'dataMax']}
+          // Fix for duplicate tick values on y-axis by using a custom tick count
+          tickCount={5}
+          scale="linear"
+        />
         <Tooltip
           content={(props) => {
             if (props.active && props.payload && props.payload.length) {
               return (
-                <div className="bg-card-fields text-white py-2 px-4 rounded-md shadow-lg">
+                <div className={`bg-card-fields text-black py-2 px-4 rounded-md shadow-lg ${textClass}`}>
                   <p>
                     {Strings.year} {props.payload[0].payload.year}
                   </p>

@@ -9,7 +9,9 @@ import {
   PieLabelRenderProps,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
 } from "recharts";
+import useDarkMode from "../../../utils/hooks/useDarkMode";
 import { Methodology } from "../../../data/charts/charts";
 import { CardTypesCatalog } from "../../../data/cardtypes/cardTypes";
 
@@ -27,6 +29,10 @@ const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) 
     siteId: string;
     cardTypeName: string;
   } | null>(null);
+  
+  // Use dark mode hook to determine text color
+  const isDarkMode = useDarkMode();
+  const textClass = isDarkMode ? 'text-white' : 'text-black';
 
   
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
@@ -104,24 +110,47 @@ const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) 
             ))}
           </Pie>
           <Tooltip
-            content={({ payload }) => (
-              <div>
-                {payload?.map((item, index) => (
-                  <div
-                    className="md:text-sm text-xs w-52 md:w-auto text-white py-2 px-4 rounded-md shadow-lg"
-                    key={index}
-                    style={{backgroundColor: `#${item.payload.color ?? '000'}`}}
+            content={({ active, payload }: TooltipProps<number, string>) => {
+              if (active && payload && payload.length) {
+                const item = payload[0];
+                if (!item) return null;
+                
+                const methodology = item.payload.methodology;
+                const totalCards = item.payload.totalCards;
+                const color = item.payload.color;
+                
+                return (
+                  <div 
+                    className={`py-2 px-4 rounded-md shadow-lg ${textClass}`} 
+                    style={{ 
+                      backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+                      border: isDarkMode ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(0, 0, 0, 0.3)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                      backdropFilter: 'blur(2px)',
+                      zIndex: 9999
+                    }}
                   >
-                    <p>
-                      {Strings.cardName} {item.payload.methodology}
-                    </p>
-                    <p>
-                      {Strings.totalCards} {item.payload.totalCards}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-sm" 
+                        style={{ backgroundColor: `#${color}` }}
+                      />
+                      <p className="font-medium">{methodology}</p>
+                    </div>
+                    <p>{Strings.totalCards}: {totalCards}</p>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              }
+              return null;
+            }}
+            cursor={false}
+            isAnimationActive={false}
+            allowEscapeViewBox={{ x: true, y: true }}
+            wrapperStyle={{ 
+              zIndex: 9999, 
+              pointerEvents: 'none',
+              filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))'
+            }}
           />
         </PieChart>
       </ResponsiveContainer>
