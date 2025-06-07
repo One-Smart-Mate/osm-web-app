@@ -16,19 +16,27 @@ import useDarkMode from "../../../utils/hooks/useDarkMode";
 
 export interface WeeksChartProps {
   siteId: string;
+  cardTypeName?: string | null;
 }
 
-const WeeksChart = ({ siteId }: WeeksChartProps) => {
+const WeeksChart = ({ siteId, cardTypeName }: WeeksChartProps) => {
   const isDarkMode = useDarkMode();
   const [getWeeks] = useGetWeeksChartDataMutation();
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const handleGetData = async () => {
-    const response = await getWeeks(siteId).unwrap();
-    setWeeks(response);
+    try {
+      const response = await getWeeks(siteId).unwrap();
+      
+      setWeeks(response);
+      
+      console.log('WeeksChart - Data loaded:', response);
+    } catch (error) {
+      console.error('Error fetching weeks chart data:', error);
+    }
   };
   useEffect(() => {
     handleGetData();
-  }, []);
+  }, [siteId, cardTypeName]);
 
   const textClass = isDarkMode ? 'text-white' : '';
 
@@ -69,7 +77,6 @@ const WeeksChart = ({ siteId }: WeeksChartProps) => {
           tickFormatter={(value: any) => Math.round(Number(value)).toString()}
           allowDecimals={false}
           domain={[0, 'dataMax']}
-          // Fix for duplicate tick values on y-axis by using a custom tick count
           tickCount={5}
           scale="linear"
         />

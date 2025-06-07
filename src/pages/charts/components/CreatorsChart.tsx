@@ -24,6 +24,7 @@ export interface CreatorsChartProps {
   startDate: string;
   endDate: string;
   methodologies: Methodology[];
+  cardTypeName?: string | null;
 }
 
 const CreatorsChart = ({
@@ -31,6 +32,7 @@ const CreatorsChart = ({
   startDate,
   endDate,
   methodologies,
+  cardTypeName,
 }: CreatorsChartProps) => {
   const [getCreators] = useGetCreatorsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -49,36 +51,49 @@ const CreatorsChart = ({
   });
 
   const handleGetData = async () => {
-    const response = await getCreators({
-      siteId,
-      startDate,
-      endDate,
-    }).unwrap();
-  
-    const creatorMap: { [key: string]: any } = {};
-    response.forEach((item: any) => {
-      if (!creatorMap[item.creator]) {
-        creatorMap[item.creator] = {
-          creator: item.creator,
-          totalCards: 0,
-        };
+    try {
+      // Solo enviamos los parámetros básicos a la API
+      const response = await getCreators({
+        siteId,
+        startDate,
+        endDate,
+      }).unwrap();
+      
+      // Filtrar datos en el frontend si se ha seleccionado un tipo de tarjeta
+      let filteredResponse = response;
+      if (cardTypeName) {
+        filteredResponse = response.filter(item => 
+          item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
+        );
       }
-      const cardTypeKey = item.cardTypeName.toLowerCase();
-      const totalCards = parseInt(item.totalCards, 10);
-      creatorMap[item.creator][cardTypeKey] = totalCards;
-      creatorMap[item.creator].totalCards += totalCards;
-    });
-  
-    const transformedData = Object.values(creatorMap).sort(
-      (a: any, b: any) => b.totalCards - a.totalCards
-    );
-  
-    setTransformedData(transformedData);
+
+      const creatorMap: { [key: string]: any } = {};
+      filteredResponse.forEach((item: any) => {
+        if (!creatorMap[item.creator]) {
+          creatorMap[item.creator] = {
+            creator: item.creator,
+            totalCards: 0,
+          };
+        }
+        const cardTypeKey = item.cardTypeName.toLowerCase();
+        const totalCards = parseInt(item.totalCards, 10);
+        creatorMap[item.creator][cardTypeKey] = totalCards;
+        creatorMap[item.creator].totalCards += totalCards;
+      });
+
+      const transformedData = Object.values(creatorMap).sort(
+        (a: any, b: any) => b.totalCards - a.totalCards
+      );
+
+      setTransformedData(transformedData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, cardTypeName]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

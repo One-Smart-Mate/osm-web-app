@@ -27,6 +27,7 @@ export interface MachinesChartProps {
   endDate: string;
   methodologies: Methodology[];
   areaId?: number;
+  cardTypeName?: string | null;
 }
 
 const MachinesChart = ({
@@ -35,6 +36,7 @@ const MachinesChart = ({
   endDate,
   methodologies,
   areaId,
+  cardTypeName,
 }: MachinesChartProps) => {
   const [getMachines] = useGetMachinesByAreaIdChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -54,20 +56,36 @@ const MachinesChart = ({
   });
 
   const handleGetData = async () => {
-
-    if (areaId === undefined) {
-      return;
-    }
-  
-    const response = await getMachines({
-      siteId,
-      startDate,
-      endDate,
-      areaId,
-    }).unwrap();
-  
-    const nodeMap: { [key: string]: any } = {};
-    response.forEach((item: any) => {
+    try {
+      if (areaId === undefined) {
+        return;
+      }
+    
+      // Solo enviamos los parámetros básicos a la API
+      const response = await getMachines({
+        siteId,
+        startDate,
+        endDate,
+        areaId,
+        // Omitimos cardTypeName para el backend
+      }).unwrap();
+      
+      // Filtramos los datos en el frontend
+      let filteredResponse = response;
+      if (cardTypeName) {
+        filteredResponse = response.filter(item => 
+          item.cardTypeName && item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
+        );
+      }
+      
+      // Log de depuración
+      console.log('MachinesChart - Filtered data:', { 
+        cardTypeFilter: cardTypeName, 
+        totalItems: filteredResponse.length 
+      });
+    
+      const nodeMap: { [key: string]: any } = {};
+      filteredResponse.forEach((item: any) => {
       if (!nodeMap[item.nodeName]) {
         nodeMap[item.nodeName] = {
           nodeName: item.nodeName,
@@ -86,10 +104,13 @@ const MachinesChart = ({
     );
   
     setTransformedData(transformedData);
+    } catch (error) {
+      console.error('Error fetching machines data:', error);
+    }
   };
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate,areaId]);
+  }, [startDate, endDate, areaId, cardTypeName]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

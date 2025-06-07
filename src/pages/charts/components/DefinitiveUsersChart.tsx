@@ -24,6 +24,7 @@ export interface DefinitiveUsersChartProps {
   startDate: string;
   endDate: string;
   methodologies: Methodology[];
+  cardTypeName?: string | null;
 }
 
 const DefinitiveUsersChart = ({
@@ -31,6 +32,7 @@ const DefinitiveUsersChart = ({
   startDate,
   endDate,
   methodologies,
+  cardTypeName,
 }: DefinitiveUsersChartProps) => {
   const [getDefinitiveUsers] = useGetDefinitiveUsersChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -51,36 +53,56 @@ const DefinitiveUsersChart = ({
   });
 
   const handleGetData = async () => {
-    const response = await getDefinitiveUsers({
-      siteId,
-      startDate,
-      endDate,
-    }).unwrap();
-  
-    const definitiveUserMap: { [key: string]: any } = {};
-    response.forEach((item: any) => {
-      if (!definitiveUserMap[item.definitiveUser]) {
-        definitiveUserMap[item.definitiveUser] = {
-          definitiveUser: item.definitiveUser || Strings.noDefinitiveUser,
-          totalCards: 0,
-        };
+    try {
+      // Only send basic parameters to API
+      const response = await getDefinitiveUsers({
+        siteId,
+        startDate,
+        endDate,
+        // Remove cardTypeName from API call
+      }).unwrap();
+      
+      // Filter data in frontend if card type is selected
+      let filteredResponse = response;
+      if (cardTypeName) {
+        filteredResponse = response.filter(item => 
+          item.cardTypeName && item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
+        );
       }
-      const cardTypeKey = item.cardTypeName.toLowerCase();
-      const totalCards = parseInt(item.totalCards, 10);
-      definitiveUserMap[item.definitiveUser][cardTypeKey] = totalCards;
-      definitiveUserMap[item.definitiveUser].totalCards += totalCards;
-    });
-  
-    const transformedData = Object.values(definitiveUserMap).sort(
-      (a: any, b: any) => b.totalCards - a.totalCards
-    );
-  
-    setTransformedData(transformedData);
+      
+      // Debug log
+      console.log('DefinitiveUsersChart - Filtered data:', { 
+        cardTypeFilter: cardTypeName, 
+        totalItems: filteredResponse.length 
+      });
+
+      const definitiveUserMap: { [key: string]: any } = {};
+      filteredResponse.forEach((item: any) => {
+        if (!definitiveUserMap[item.definitiveUser]) {
+          definitiveUserMap[item.definitiveUser] = {
+            definitiveUser: item.definitiveUser,
+            totalCards: 0,
+          };
+        }
+        const cardTypeKey = item.cardTypeName.toLowerCase();
+        const totalCards = parseInt(item.totalCards, 10);
+        definitiveUserMap[item.definitiveUser][cardTypeKey] = totalCards;
+        definitiveUserMap[item.definitiveUser].totalCards += totalCards;
+      });
+
+      const transformedData = Object.values(definitiveUserMap).sort(
+        (a: any, b: any) => b.totalCards - a.totalCards
+      );
+
+      setTransformedData(transformedData);
+    } catch (error) {
+      console.error('Error fetching definitive users chart data:', error);
+    }
   };
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, cardTypeName]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

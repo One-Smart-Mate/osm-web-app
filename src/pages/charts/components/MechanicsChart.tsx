@@ -24,6 +24,7 @@ export interface MechanicsChartProps {
   startDate: string;
   endDate: string;
   methodologies: Methodology[];
+  cardTypeName?: string | null;
 }
 
 const MechanicsChart = ({
@@ -31,6 +32,7 @@ const MechanicsChart = ({
   startDate,
   endDate,
   methodologies,
+  cardTypeName,
 }: MechanicsChartProps) => {
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -51,39 +53,52 @@ const MechanicsChart = ({
   });
 
   const handleGetData = async () => {
-    const response = await getMechanics({
-      siteId,
-      startDate,
-      endDate,
-    }).unwrap();
-  
-    const mechanicMap: { [key: string]: any } = {};
-    response.forEach((item: any) => {
-      if (!mechanicMap[item.mechanic]) {
-        mechanicMap[item.mechanic] = {
-          mechanic: item.mechanic || Strings.noMechanic,
-          totalCards: 0, // Initialize totalCards for sorting
-        };
+    try {
+      // Only send basic parameters to API
+      const response = await getMechanics({
+        siteId,
+        startDate,
+        endDate,
+      }).unwrap();
+      
+      // Filter data in frontend if card type is selected
+      let filteredResponse = response;
+      if (cardTypeName) {
+        filteredResponse = response.filter(item => 
+          item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
+        );
       }
-      const cardTypeKey = item.cardTypeName.toLowerCase();
-      const totalCards = parseInt(item.totalCards, 10);
-      mechanicMap[item.mechanic][cardTypeKey] = totalCards;
   
-      // Accumulate totalCards for sorting
-      mechanicMap[item.mechanic].totalCards += totalCards;
-    });
+      const mechanicMap: { [key: string]: any } = {};
+      filteredResponse.forEach((item: any) => {
+        if (!mechanicMap[item.mechanic]) {
+          mechanicMap[item.mechanic] = {
+            mechanic: item.mechanic || Strings.noMechanic,
+            totalCards: 0, // Initialize totalCards for sorting
+          };
+        }
+        const cardTypeKey = item.cardTypeName.toLowerCase();
+        const totalCards = parseInt(item.totalCards, 10);
+        mechanicMap[item.mechanic][cardTypeKey] = totalCards;
   
-    // Transform and sort the data by totalCards in descending order
-    const transformedData = Object.values(mechanicMap).sort(
-      (a: any, b: any) => b.totalCards - a.totalCards
-    );
+        // Accumulate totalCards for sorting
+        mechanicMap[item.mechanic].totalCards += totalCards;
+      });
   
-    setTransformedData(transformedData);
+      // Transform and sort the data by totalCards in descending order
+      const transformedData = Object.values(mechanicMap).sort(
+        (a: any, b: any) => b.totalCards - a.totalCards
+      );
+  
+      setTransformedData(transformedData);
+    } catch (error) {
+      console.error('Error fetching mechanics chart data:', error);
+    }
   };
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, cardTypeName]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

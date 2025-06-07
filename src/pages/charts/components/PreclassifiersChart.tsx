@@ -22,12 +22,14 @@ export interface PreclassifiersChartProps {
   siteId: string;
   startDate: string;
   endDate: string;
+  cardTypeName?: string | null;
 }
 
 const PreclassifiersChart = ({
   siteId,
   startDate,
   endDate,
+  cardTypeName
 }: PreclassifiersChartProps) => {
   const isDarkMode = useDarkMode();
   const [getAnomalies] = useGetPreclassifiersChartDataMutation();
@@ -61,22 +63,43 @@ const PreclassifiersChart = ({
   };
 
   const handleGetData = async () => {
-    const response = await getAnomalies({
-      siteId,
-      startDate,
-      endDate,
-    }).unwrap();
+    try {
+      // Solo enviamos los parámetros básicos a la API
+      const response = await getAnomalies({
+        siteId,
+        startDate,
+        endDate,
+        // No enviamos cardTypeName porque el backend no lo procesa
+      }).unwrap();
+      
+      // Filtrar los datos en el frontend si se ha seleccionado un tipo de tarjeta
+      let filteredData = response;
+      if (cardTypeName) {
+        filteredData = response.filter(item => 
+          item.methodology && item.methodology.toLowerCase() === cardTypeName.toLowerCase()
+        );
+      }
   
-    const sortedData = [...response].sort(
-      (a: Preclassifier, b: Preclassifier) => b.totalCards - a.totalCards
-    );
-  
-    setPreclassifiers(sortedData);
+      // Ordenar después de filtrar
+      const sortedData = [...filteredData].sort(
+        (a: Preclassifier, b: Preclassifier) => b.totalCards - a.totalCards
+      );
+    
+      setPreclassifiers(sortedData);
+      
+      // Log para depuración
+      console.log('PreclassifiersChart - Filtered data:', { 
+        cardTypeFilter: cardTypeName, 
+        totalItems: filteredData.length 
+      });
+    } catch (error) {
+      console.error('Error fetching preclassifiers data:', error);
+    }
   };
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, cardTypeName]);
 
   // Define text color class based on dark mode
   const textClass = isDarkMode ? 'text-white' : 'text-black';

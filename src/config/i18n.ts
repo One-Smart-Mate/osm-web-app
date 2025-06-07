@@ -390,10 +390,12 @@ const resources = {
       downloadData: "Download data",
 
       // Rangepicker presets
-      last7days: "Last 7 Days",
-      last14days: "Last 14 Days",
-      last30days: "Last 30 Days",
-      last90days: "Last 90 Days",
+      last7days: "Last 7 days",
+      last14days: "Last 14 days",
+      last30days: "Last 30 days",
+      last90days: "Last 90 days",
+      filterByCardType: "Filter by card type",
+      allCardTypes: "All card types",
 
       failedToDownload: "Failed to download",
 
@@ -1827,6 +1829,8 @@ const resources = {
       last14days: "Últimos 14 días",
       last30days: "Últimos 30 días",
       last90days: "Últimos 90 días",
+      filterByCardType: "Filtrar por tipo de tarjeta",
+      allCardTypes: "Todos los tipos de tarjetas",
 
       failedToDownload: "Error al descargar",
 

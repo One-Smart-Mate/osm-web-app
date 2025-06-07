@@ -25,10 +25,12 @@ export interface AreasChartProps {
   endDate: string;
   methodologies: Methodology[];
   onClick?: (areaId: number, areaName?: string) => void;
+  cardTypeName?: string | null;
 }
 
 const AreasChart = ({
   siteId,
+  cardTypeName,
   startDate,
   endDate,
   methodologies,
@@ -53,10 +55,26 @@ const AreasChart = ({
 
   const handleGetData = async () => {
     try {
-      const response = await getAreas({ siteId, startDate, endDate }).unwrap();
-  
+      // Solo enviamos los parámetros básicos a la API, sin cardTypeName
+      const response = await getAreas({
+        siteId,
+        startDate,
+        endDate,
+      }).unwrap();
+      
+      // Filtrar los datos en el frontend si se ha seleccionado un tipo de tarjeta
+      let filteredResponse = response;
+      if (cardTypeName) {
+        filteredResponse = response.filter(item => 
+          item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
+        );
+      }
+      
+      // Usamos la respuesta filtrada para procesar los datos
+      console.log('AreasChart - Filtered data:', { cardTypeFilter: cardTypeName, totalItems: filteredResponse.length });
+
       const areaMap: { [key: string]: any } = {};
-      response.forEach((item: any) => {
+      filteredResponse.forEach((item: any) => {
         if (!areaMap[item.area]) {
           areaMap[item.area] = {
             area: item.area,
@@ -88,7 +106,7 @@ const AreasChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, cardTypeName]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

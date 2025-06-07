@@ -19,9 +19,14 @@ export interface MethodologiesChartProps {
   siteId: string; 
   methodologies: Methodology[];
   methodologiesCatalog: CardTypesCatalog[];
+  cardTypeName?: string | null;
 }
 
-const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) => {
+const MethodologiesChart = ({ siteId, methodologies: originalMethodologies, cardTypeName }: MethodologiesChartProps) => {
+  // Filtrar metodologías por tipo de tarjeta si está seleccionado
+  const methodologies = cardTypeName
+    ? originalMethodologies.filter(m => m.methodology.toLowerCase() === cardTypeName.toLowerCase())
+    : originalMethodologies;
   const [open, setOpen] = useState(false);
   const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
@@ -105,7 +110,7 @@ const MethodologiesChart = ({ siteId, methodologies }: MethodologiesChartProps) 
             label={renderCustomizedLabel}
             onClick={handleOnClick} 
           >
-            {methodologies.map((entry, index) => (
+            {methodologies.map((entry: Methodology, index: number) => (
               <Cell key={`cell-${index}`} fill={`#${entry.color}`} />
             ))}
           </Pie>

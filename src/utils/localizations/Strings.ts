@@ -38,6 +38,10 @@ class StringsBase {
   static domComplete = "domComplete";
   static networkLatency = "networkLatency";
 
+  // Card Type Filter strings
+  static filterByCardType = "filterByCardType";
+  static allCardTypes = "allCardTypes";
+
   // CILT related strings
   static createCiltProcedure = "createCiltProcedure";
   static createCiltProcedureForPosition = "createCiltProcedureForPosition";
