@@ -55,14 +55,13 @@ const AreasChart = ({
 
   const handleGetData = async () => {
     try {
-      // Solo enviamos los parámetros básicos a la API, sin cardTypeName
+      
       const response = await getAreas({
         siteId,
         startDate,
         endDate,
       }).unwrap();
       
-      // Filtrar los datos en el frontend si se ha seleccionado un tipo de tarjeta
       let filteredResponse = response;
       if (cardTypeName) {
         filteredResponse = response.filter(item => 
@@ -70,7 +69,6 @@ const AreasChart = ({
         );
       }
       
-      // Usamos la respuesta filtrada para procesar los datos
       console.log('AreasChart - Filtered data:', { cardTypeFilter: cardTypeName, totalItems: filteredResponse.length });
 
       const areaMap: { [key: string]: any } = {};

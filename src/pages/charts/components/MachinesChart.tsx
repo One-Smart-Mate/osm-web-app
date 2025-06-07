@@ -61,16 +61,13 @@ const MachinesChart = ({
         return;
       }
     
-      // Solo enviamos los parámetros básicos a la API
       const response = await getMachines({
         siteId,
         startDate,
         endDate,
         areaId,
-        // Omitimos cardTypeName para el backend
       }).unwrap();
       
-      // Filtramos los datos en el frontend
       let filteredResponse = response;
       if (cardTypeName) {
         filteredResponse = response.filter(item => 
@@ -78,7 +75,6 @@ const MachinesChart = ({
         );
       }
       
-      // Log de depuración
       console.log('MachinesChart - Filtered data:', { 
         cardTypeFilter: cardTypeName, 
         totalItems: filteredResponse.length 

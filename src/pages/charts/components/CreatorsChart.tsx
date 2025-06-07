@@ -52,14 +52,12 @@ const CreatorsChart = ({
 
   const handleGetData = async () => {
     try {
-      // Solo enviamos los parámetros básicos a la API
       const response = await getCreators({
         siteId,
         startDate,
         endDate,
       }).unwrap();
       
-      // Filtrar datos en el frontend si se ha seleccionado un tipo de tarjeta
       let filteredResponse = response;
       if (cardTypeName) {
         filteredResponse = response.filter(item => 
