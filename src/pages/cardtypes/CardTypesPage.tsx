@@ -124,6 +124,7 @@ const CardTypesPage = () => {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const treeRef = useRef<any>(null);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -346,12 +347,21 @@ const CardTypesPage = () => {
 
     const statusColor = getStatusColor(nodeDatum.status);
 
+    // Debug logging for Card Type nodes
+    if (nodeDatum.nodeType === "cardType") {
+      console.log('Card Type node data:', nodeDatum);
+      console.log('Card Type color property:', nodeDatum.color);
+    }
+    
+    // Get color for node based on status, type, or card type's custom color
     const fillColor = statusColor
       ? statusColor
       : nodeDatum.__rd3t?.depth === 0
       ? "#145695"
       : nodeDatum.nodeType === "preclassifier"
       ? "#FFFF00"
+      : nodeDatum.nodeType === "cardType" && nodeDatum.color
+      ? `#${nodeDatum.color}` // Add # prefix if needed
       : "#145695";
 
     const textStyles = {
@@ -655,6 +665,33 @@ const CardTypesPage = () => {
       expandAllNodes();
     }
   };
+  
+  // Center the tree when data changes or on window resize
+  useEffect(() => {
+    // Initial centering
+    if (containerRef.current && treeData.length > 0) {
+      const dimensions = containerRef.current.getBoundingClientRect();
+      setTranslate({ 
+        x: dimensions.width / 2, 
+        y: dimensions.height / 3 
+      });
+    }
+    
+    const handleResize = () => {
+      if (containerRef.current && treeData.length > 0) {
+        const dimensions = containerRef.current.getBoundingClientRect();
+        setTranslate({ 
+          x: dimensions.width / 2, 
+          y: dimensions.height / 3 
+        });
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [treeData.length]); // Only depend on treeData.length
 
   const handleCompleteCardTypeForm = async () => {
     setDrawerVisible(false);
@@ -685,12 +722,15 @@ const CardTypesPage = () => {
 
               {treeData && treeData.length > 0 && (
                 <Tree
+                  ref={treeRef}
                   data={treeData}
                   translate={translate}
                   orientation="horizontal"
                   renderCustomNodeElement={renderCustomNodeElement}
                   collapsible={true}
                   zoomable
+                  nodeSize={{ x: 200, y: 80 }} 
+                  separation={{ siblings: 1, nonSiblings: 1.2 }} 
                 />
               )}
             </>
