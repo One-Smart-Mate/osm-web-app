@@ -1447,6 +1447,7 @@ const resources = {
       createdAt: "Created at",
       updatedAt: "Updated at",
       sequenceColor: "Sequence Color",
+      executionDetails: "Execution Details",
     },
   },
   es: {
@@ -2929,6 +2930,7 @@ const resources = {
       createdAt: "Creado el",
       updatedAt: "Actualizado el",
       sequenceColor: "Color de la secuencia",
+      executionDetails: "Detalles del reporte",
     },
   },
 };

@@ -1453,6 +1453,7 @@ class StringsBase {
   static createdAt = "createdAt"
   static updatedAt = "updatedAt"
   static sequenceColor = "sequenceColor"
+  static executionDetails = "executionDetails"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

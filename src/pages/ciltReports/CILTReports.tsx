@@ -228,7 +228,7 @@ export const CILTReports = () => {
             />
           </Spin>
           <Modal
-            title={Strings.ciltCardListSequenceDetailsModalTitle}
+            title={Strings.executionDetails}
             open={isModalVisible}
             onCancel={handleModalClose}
             footer={[
