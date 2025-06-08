@@ -26,6 +26,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
     [UserRoles.LOCALSYSADMIN]: [
@@ -38,6 +39,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardTypes}`,
