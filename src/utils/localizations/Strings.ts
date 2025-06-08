@@ -46,15 +46,38 @@ class StringsBase {
   static createCiltProcedure = "createCiltProcedure";
   static createCiltProcedureForPosition = "createCiltProcedureForPosition";
   static for = "for";
+  static realDuration = "realDuration";
+  static sequenceList = "sequenceList";
+  static statusText = "statusText";
 
   // CILT Master strings
   static ciltMstrPageTitle = "ciltMstrPageTitle";
+  
+  // CILT Reports strings
+  static ciltReportsSB = "ciltReportsSB";
+  static executions = "executions";
+  static route = "route";
+  static schedule = "schedule";
+  static startTime = "startTime";
+  static endTime = "endTime";
+  static status = "status";
+  static machineStatus = "machineStatus";
+  static stopped = "stopped";
+  static running = "running";
+  static refresh = "refresh";
+  static selectSite = "selectSite";
   static ciltMstrCreateSuccess = "ciltMstrCreateSuccess";
   static ciltMstrSelectPositionTitle = "ciltMstrSelectPositionTitle";
   static ciltMstrCreateButtonLabel = "ciltMstrCreateButtonLabel";
   static ciltMstrCreateModalTitle = "ciltMstrCreateModalTitle";
   static ciltMstrPositionLabel = "ciltMstrPositionLabel";
   static ciltMstrLastUpdated = "ciltMstrLastUpdated";
+  
+  // CILT Card List strings
+  static ciltCardListSequenceDetailsModalTitle = "ciltCardListSequenceDetailsModalTitle";
+  static ciltCardListCloseButton = "ciltCardListCloseButton";
+  static ciltCardListPositionLabel = "ciltCardListPositionLabel";
+  static ciltCardListCiltTypeLabel = "ciltCardListCiltTypeLabel";
   
   // Error logs strings
   static downloadErrorLogs = "downloadErrorLogs";
@@ -301,7 +324,6 @@ class StringsBase {
 
   static tagsOf = "tagsOf";
   static filters = "filters";
-  static status = "status";
   static dueDate = "dueDate";
   static cardType = "cardType";
   static problemType = "problemType";
@@ -1324,7 +1346,6 @@ class StringsBase {
   static each = "eachPlace";
   static theDays = "theDays";
   static since = "since";
-  static schedule = "schedule";
   static noSecuencesFound = "noSecuencesFound";
   static ciltCardListSearchPlaceholder = "ciltCardListSearchPlaceholder";
   static selectedOplInformation = "selectedOplInformation";
@@ -1426,6 +1447,12 @@ class StringsBase {
   static loadingSecuenceSchedule = "loadingSecuenceSchedule"
   static errorLoadingSecuenceSchedule = "errorLoadingSecuenceSchedule"
   static thereAreNoSchedules = "thereAreNoSchedules"
+  static duration = "duration"
+  static initialParameter = "initialParameter"
+  static finalParameter = "finalParameter"
+  static createdAt = "createdAt"
+  static updatedAt = "updatedAt"
+  static sequenceColor = "sequenceColor"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

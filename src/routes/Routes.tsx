@@ -16,6 +16,7 @@ import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
+import { CILTReports } from "../pages/ciltReports/CILTReports";
 
 const CardTypesPage = React.lazy(
   () => import("../pages/cardtypes/CardTypesPage")
@@ -62,6 +63,14 @@ const ciltLevelAssignamentsRoute = new Route(
   Strings.asignamentsSB,
   Constants.ROUTES_PATH.ciltLevelAssignaments,
   <CiltLevelAssignamentsPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
+const ciltReportsRoute = new Route(
+  Strings.ciltReportsSB,
+  Constants.ROUTES_PATH.ciltReports,
+  <CILTReports />,
   <BsNodePlus />,
   Strings.cilt
 );
@@ -200,6 +209,7 @@ const routes: Route[] = [
   ciltSequencesRoute,
   siteUsersRoute,
   sitesRoute,
+  ciltReportsRoute,
   tagsRoute,
   levelsRoute,
   positionsRoute,
@@ -234,6 +244,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: positionsRoute.path,
       icon: positionsRoute.icon,
       section: positionsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;
@@ -318,6 +334,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltLevelAssignamentsRoute.path,
       icon: ciltLevelAssignamentsRoute.icon,
       section: ciltLevelAssignamentsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;

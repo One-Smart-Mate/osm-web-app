@@ -110,7 +110,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
     },
   ];
 
-  const DEFAULT_PAGE_SIZE = 10;
+  const DEFAULT_PAGE_SIZE = 50;
 
   return (
     <Table
