@@ -1449,6 +1449,9 @@ const resources = {
       sequenceColor: "Sequence Color",
       executionDetails: "Execution Details",
       sequenceList: "Sequence List",
+      sequenceSchedule: "Schedule",
+      secuenceStart: "Sequence Start",
+      secuenceStop: "Sequence Stop",
     },
   },
   es: {
@@ -2933,6 +2936,9 @@ const resources = {
       sequenceColor: "Color de la secuencia",
       executionDetails: "Detalles del reporte",
       sequenceList: "Pasos de secuencia",
+      sequenceSchedule: "Programación",
+      secuenceStart: "Inicio de secuencia",
+      secuenceStop: "Fin de secuencia",
     },
   },
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Input, Spin, Typography, Button, Tag, Modal, Descriptions } from "antd";
+import { Table, Input, Spin, Typography, Button, Tag } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useGetCiltSequenceExecutionsBySiteMutation } from "../../services/cilt/ciltSequencesExecutionsService";
 import MainContainer from "../layouts/MainContainer";
@@ -9,6 +9,7 @@ import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { format } from "date-fns";
+import ExecutionDetailsModal from "./components/ExecutionDetailsModal";
 
 const { Text } = Typography;
 
@@ -245,70 +246,11 @@ export const CILTReports = () => {
               scroll={{ x: 1500 }}
             />
           </Spin>
-          <Modal
-            title={Strings.executionDetails}
-            open={isModalVisible}
-            onCancel={handleModalClose}
-            footer={[
-              <Button key="close" onClick={handleModalClose}>
-                {Strings.close}
-              </Button>
-            ]}
-            width={800}
-          >
-            {selectedExecution && (
-              <Descriptions bordered column={2} size="middle">
-                <Descriptions.Item label={Strings.route}>{selectedExecution.route || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.ciltTypeName}>{selectedExecution.ciltTypeName || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.sequenceList}>
-                  <div style={{ whiteSpace: 'pre-wrap' }}>{selectedExecution.secuenceList || Strings.oplFormNotAssigned}</div>
-                </Descriptions.Item>
-                <Descriptions.Item label={Strings.schedule}>{formatDate(selectedExecution.secuenceSchedule)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.startTime}>{formatDate(selectedExecution.secuenceStart)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.endTime}>{formatDate(selectedExecution.secuenceStop)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.duration}>{formatDuration(selectedExecution.duration)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.realDuration}>{formatDuration(selectedExecution.realDuration)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.standardOk}>{selectedExecution.standardOk || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.initialParameter}>{selectedExecution.initialParameter || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.finalParameter}>{selectedExecution.finalParameter || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.machineStatus}>
-                  {selectedExecution.machineStopped === null || selectedExecution.machineStopped === undefined ? (
-                    Strings.oplFormNotAssigned
-                  ) : selectedExecution.machineStopped ? (
-                    <Tag color="red">{Strings.stopped}</Tag>
-                  ) : (
-                    <Tag color="green">{Strings.running}</Tag>
-                  )}
-                </Descriptions.Item>
-                <Descriptions.Item label={Strings.status}>
-                  {!selectedExecution.status ? (
-                    Strings.oplFormNotAssigned
-                  ) : selectedExecution.status === "A" ? (
-                    <Tag color="green">{Strings.active}</Tag>
-                  ) : (
-                    <Tag color="red">{Strings.inactive}</Tag>
-                  )}
-                </Descriptions.Item>
-                <Descriptions.Item label={Strings.ciltMstrPositionLabel+":"}>{ selectedExecution.positionId || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.referencePoint+":"}>{selectedExecution.referencePoint || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.sequenceColor+":"}>
-                  {selectedExecution.secuenceColor ? (
-                    <div style={{ 
-                      backgroundColor: `#${selectedExecution.secuenceColor}`, 
-                      width: '20px', 
-                      height: '20px', 
-                      display: 'inline-block',
-                      marginRight: '8px',
-                      verticalAlign: 'middle'
-                    }} />
-                  ) : null}
-                </Descriptions.Item>
-                <Descriptions.Item label={Strings.createdAt}>{formatDate(selectedExecution.createdAt)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.updatedAt}>{formatDate(selectedExecution.updatedAt)}</Descriptions.Item>
-                <Descriptions.Item label={Strings.editCiltSequenceModalToolsRequiredLabel} span={2}>{selectedExecution.toolsRequiered || Strings.oplFormNotAssigned}</Descriptions.Item>
-              </Descriptions>
-            )}
-          </Modal>
+          <ExecutionDetailsModal
+            isVisible={isModalVisible}
+            execution={selectedExecution}
+            onClose={handleModalClose}
+          />
         </div>
       }
     />
