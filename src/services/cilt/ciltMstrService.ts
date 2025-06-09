@@ -5,6 +5,8 @@ import {
   UpdateCiltMstrDTO,
 } from "../../data/cilt/ciltMstr/ciltMstr";
 import { CiltDetails, CiltDetailsResponse } from "../../data/cilt/ciltMstr/cilt.master.detail";
+import { notification } from "antd";
+import Strings from "../../utils/localizations/Strings";
 
 export const ciltMstrService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -44,6 +46,13 @@ export const ciltMstrService = apiSlice.injectEndpoints({
       query: (ciltId) => `/cilt-mstr/details/${ciltId}`,
       transformResponse: (response: CiltDetailsResponse) => response.data,
     }),
+    cloneCiltMstr: builder.mutation<CiltMstr, string>({
+      query: (id) => ({
+        url: `/cilt-mstr/clone/${id}`,
+        method: "POST",
+      }),
+      transformResponse: (response: { data: CiltMstr }) => response.data,
+    }),
   }),
 });
 
@@ -54,5 +63,42 @@ export const {
   useGetCiltMstrByIdMutation,
   useCreateCiltMstrMutation,
   useUpdateCiltMstrMutation,
-  useGetCiltDetailsMutation
+  useGetCiltDetailsMutation,
+  useCloneCiltMstrMutation
 } = ciltMstrService;
+
+/**
+ * Custom hook for cloning a CILT master with its sequences using backend endpoint
+ */
+export const useCiltCloning = () => {
+  const [cloneCiltMstrApi] = useCloneCiltMstrMutation();
+
+  /**
+   * Clone a CILT master with its sequences using the backend endpoint
+   * @param cilt The CILT master to clone
+   * @returns Promise<boolean> Indicates if the operation was successful
+   */
+  const cloneCilt = async (cilt: CiltMstr): Promise<boolean> => {
+    try {
+      // Call the backend endpoint to clone the CILT master with its sequences
+      await cloneCiltMstrApi(cilt.id.toString()).unwrap();
+
+      // Show success notification
+      notification.success({
+        message: Strings.success,
+        description: `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error cloning CILT:", error);
+      notification.error({
+        message: Strings.error,
+        description: `${Strings.errorCloningTheLevel} ${error}`,
+      });
+      return false;
+    }
+  };
+
+  return { cloneCilt };
+};

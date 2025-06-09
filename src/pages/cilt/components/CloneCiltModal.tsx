@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button, Spin, Typography } from 'antd';
 import { CiltMstr } from '../../../data/cilt/ciltMstr/ciltMstr';
 import Strings from '../../../utils/localizations/Strings';
-import { useCiltCloning } from '../../../services/cilt/ciltCloningService';
+import { useCiltCloning } from '../../../services/cilt/ciltMstrService';
 
 interface CloneCiltModalProps {
   visible: boolean;
