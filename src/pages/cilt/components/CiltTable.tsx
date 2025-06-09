@@ -40,8 +40,13 @@ const CiltTable: React.FC<CiltTableProps> = ({
       title: Strings.ciltMstrListDescriptionColumn,
       dataIndex: "ciltDescription",
       key: "ciltDescription",
-      render: (text) => text || Strings.ciltMstrNA,
-      ellipsis: true,
+      ellipsis: false,
+      width: 350,
+      render: (text) => (
+        <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+          {text || Strings.ciltMstrNA}
+        </div>
+      ),
     },
     {
       title: Strings.ciltMstrListCreatorColumn,

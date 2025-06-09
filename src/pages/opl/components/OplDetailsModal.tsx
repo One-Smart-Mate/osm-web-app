@@ -120,7 +120,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           title={<Space><FileTextOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsTextType}</Text></Space>}
           bordered={true}
         >
-          <Paragraph>{detail.text}</Paragraph>
+          <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{detail.text}</Paragraph>
         </Card>
       );
     } else if (detail.type === "imagen" && detail.mediaUrl) {

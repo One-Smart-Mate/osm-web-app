@@ -54,7 +54,7 @@ const OplDetailsList: React.FC<OplDetailsListProps> = ({
           render: (_, record) => {
             if (record.type === "texto") {
               return (
-                <Paragraph ellipsis={{ rows: 2 }}>{record.text}</Paragraph>
+                <Paragraph ellipsis={{ rows: 2 }} style={{ whiteSpace: 'pre-line' }}>{record.text}</Paragraph>
               );
             } else if (record.mediaUrl) {
               return (

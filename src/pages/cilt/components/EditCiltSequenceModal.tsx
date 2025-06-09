@@ -635,6 +635,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               isVisible={true}
               onClose={() => setReferenceOplModalVisible(false)}
               onSelect={handleReferenceOplSelect}
+              siteId={sequence && sequence.siteId ? Number(sequence.siteId) : undefined}
             />
           )}
 
@@ -643,6 +644,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               isVisible={true}
               onClose={() => setRemediationOplModalVisible(false)}
               onSelect={handleRemediationOplSelect}
+              siteId={sequence && sequence.siteId ? Number(sequence.siteId) : undefined}
             />
           )}
         </>,

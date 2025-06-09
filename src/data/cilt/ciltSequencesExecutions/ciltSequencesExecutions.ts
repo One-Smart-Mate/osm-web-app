@@ -1,6 +1,7 @@
 export interface CiltSequenceExecution {
   id: number;
   siteId: number | null;
+  siteExecutionId: number | null;
   positionId: number | null;
   ciltId: number | null;
   ciltSecuenceId: number | null;
@@ -25,6 +26,7 @@ export interface CiltSequenceExecution {
   evidenceAtFinal: boolean | null;
   nok: boolean | null;
   stoppageReason: boolean | null;
+  machineStatus: string | null;
   machineStopped: boolean | null;
   amTagId: number | null;
   referencePoint: string | null;
@@ -45,6 +47,7 @@ export interface CiltSequenceExecution {
 
 export class CreateCiltSequencesExecutionDTO {
   siteId?: number;
+  siteExecutionId?: number;
   positionId?: number;
   ciltId?: number;
   ciltDetailsId?: number;
@@ -57,6 +60,7 @@ export class CreateCiltSequencesExecutionDTO {
   finalParameter?: string;
   evidenceAtFinal?: number;
   stoppageReason?: number;
+  machineStatus?: string;
   amTag?: number;
   runSecuenceSchedule?: string;  // NUEVO
   createdAt: string;
@@ -64,6 +68,7 @@ export class CreateCiltSequencesExecutionDTO {
   constructor(
     createdAt: string,
     siteId?: number,
+    siteExecutionId?: number,
     positionId?: number,
     ciltId?: number,
     ciltDetailsId?: number,
@@ -76,10 +81,12 @@ export class CreateCiltSequencesExecutionDTO {
     finalParameter?: string,
     evidenceAtFinal?: number,
     stoppageReason?: number,
+    machineStatus?: string,
     amTag?: number,
     runSecuenceSchedule?: string, // NUEVO
   ) {
     this.siteId = siteId;
+    this.siteExecutionId = siteExecutionId;
     this.positionId = positionId;
     this.ciltId = ciltId;
     this.ciltDetailsId = ciltDetailsId;
@@ -92,6 +99,7 @@ export class CreateCiltSequencesExecutionDTO {
     this.finalParameter = finalParameter;
     this.evidenceAtFinal = evidenceAtFinal;
     this.stoppageReason = stoppageReason;
+    this.machineStatus = machineStatus;
     this.amTag = amTag;
     this.runSecuenceSchedule = runSecuenceSchedule;  // NUEVO
     this.createdAt = createdAt;
@@ -101,6 +109,7 @@ export class CreateCiltSequencesExecutionDTO {
 export class UpdateCiltSequencesExecutionDTO {
   id: number;
   siteId?: number;
+  siteExecutionId?: number;
   positionId?: number;
   ciltId?: number;
   ciltDetailsId?: number;
@@ -113,6 +122,7 @@ export class UpdateCiltSequencesExecutionDTO {
   finalParameter?: string;
   evidenceAtFinal?: number;
   stoppageReason?: number;
+  machineStatus?: string;
   amTag?: number;
   runSecuenceSchedule?: string;  // NUEVO
   updatedAt: string;
@@ -121,6 +131,7 @@ export class UpdateCiltSequencesExecutionDTO {
     id: number,
     updatedAt: string,
     siteId?: number,
+    siteExecutionId?: number,
     positionId?: number,
     ciltId?: number,
     ciltDetailsId?: number,
@@ -133,11 +144,13 @@ export class UpdateCiltSequencesExecutionDTO {
     finalParameter?: string,
     evidenceAtFinal?: number,
     stoppageReason?: number,
+    machineStatus?: string,
     amTag?: number,
     runSecuenceSchedule?: string, // NUEVO
   ) {
     this.id = id;
     this.siteId = siteId;
+    this.siteExecutionId = siteExecutionId;
     this.positionId = positionId;
     this.ciltId = ciltId;
     this.ciltDetailsId = ciltDetailsId;
@@ -150,6 +163,7 @@ export class UpdateCiltSequencesExecutionDTO {
     this.finalParameter = finalParameter;
     this.evidenceAtFinal = evidenceAtFinal;
     this.stoppageReason = stoppageReason;
+    this.machineStatus = machineStatus;
     this.amTag = amTag;
     this.runSecuenceSchedule = runSecuenceSchedule;  // NUEVO
     this.updatedAt = updatedAt;

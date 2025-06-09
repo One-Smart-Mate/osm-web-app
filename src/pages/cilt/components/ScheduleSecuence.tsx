@@ -220,21 +220,11 @@ AnatomyNotification.error(notification, {
           ...scheduleData,
           updatedAt: new Date().toISOString(),
         }).unwrap();
-AnatomyNotification.error(notification, {
-          data: {
-            message: Strings.successScheduleUpdated
-          }
-        }, "Success!");
       } else {
         await createSchedule({
           ...scheduleData,
           createdAt: new Date().toISOString(),
         }).unwrap();
-AnatomyNotification.error(notification, {
-          data: {
-            message: Strings.successScheduleCreated
-          }
-        }, "Success!");
       }
 
       setTimeout(() => {
@@ -297,7 +287,6 @@ AnatomyNotification.error(notification, {
           />
         </Form.Item>
 
-        {/* Opciones específicas para cada tipo de programación */}
         {scheduleType === "wee" && (
           <Form.Item label={Strings.labelDaysOfWeek}>
             <Row gutter={[8, 8]}>
@@ -408,7 +397,6 @@ AnatomyNotification.error(notification, {
           </>
         )}
 
-        {/* Opciones avanzadas */}
         <Form.Item label={Strings.labelExecutionConfiguration}>
           <Form.Item name="allowExecuteBefore" valuePropName="checked">
             <Checkbox>{Strings.allowExecuteBefore}</Checkbox>
@@ -440,7 +428,6 @@ AnatomyNotification.error(notification, {
           </Form.Item>
         </Form.Item>
 
-        {/* Botones de acción */}
         <div
           style={{
             display: "flex",

@@ -810,7 +810,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
 
     return (
       <Modal
-        title={`${Strings.sequences}: ${selectedCiltMstr.ciltName}`}
+        title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{`${Strings.sequences}: ${selectedCiltMstr.ciltName}`}</div>}
         open={sequenceListModalVisible}
         onCancel={() => setSequenceListModalVisible(false)}
         footer={null}
@@ -840,6 +840,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                     <div key={sequence.id} style={{ width: '80%', marginBottom: '16px' }}>
                       <Card
                         style={{ 
+                          paddingTop: '16px',
                           boxShadow: '0 1px 4px rgba(0, 0, 0, 0.15)',
                           border: '1px solid #e8e8e8',
                           width: '100%'
@@ -855,7 +856,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                                 flexShrink: 0
                               }} 
                             />
-                            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'pre-wrap' }}>
                               {sequence.secuenceList}
                             </div>
                           </div>
@@ -926,7 +927,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
 
     return (
       <Modal
-        title={`${Strings.sequenceDetails}`}
+        title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{Strings.sequenceDetails}</div>}
         open={singleSequenceModalVisible}
         onCancel={() => setSingleSequenceModalVisible(false)}
         footer={null}
@@ -937,14 +938,14 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div 
                 style={{ 
-                  width: '16px', 
-                  height: '16px', 
+                  width: '20px', 
+                  height: '20px', 
                   borderRadius: '50%', 
                   backgroundColor: `#${selectedSequence.secuenceColor || '000000'}`,
                   flexShrink: 0
                 }} 
               />
-              <span>{selectedSequence.secuenceList}</span>
+              <span style={{ whiteSpace: 'pre-wrap' }}>{selectedSequence.secuenceList}</span>
             </div>
           </Descriptions.Item>
           <Descriptions.Item label={Strings.ciltTypeName}>
