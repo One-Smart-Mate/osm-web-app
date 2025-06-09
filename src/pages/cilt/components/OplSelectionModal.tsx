@@ -48,15 +48,18 @@ interface OplSelectionModalProps {
   isVisible: boolean;
   onClose: () => void;
   onSelect: (opl: OplMstr) => void;
+  siteId?: string | number; // Add siteId prop
 }
 
 const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   isVisible,
   onClose,
   onSelect,
+  siteId: propSiteId, // Accept the siteId prop
 }) => {
   const location = useLocation();
-  const currentSiteId = location.state?.siteId || null;
+  const currentSiteId = location.state?.siteId;
+
   const [getOplMstrAll] = useGetOplMstrAllMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
@@ -173,9 +176,37 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           )
         : null;
 
-      // Usar el siteId de la ubicación actual o del formulario
-      const siteIdToUse = values.siteId ? Number(values.siteId) : (currentSiteId ? Number(currentSiteId) : null);
+      // Usar el siteId con prioridad: 1) valor del form, 2) prop desde el padre, 3) location.state
+      let siteIdToUse;
       
+      try {
+        if (values.siteId && values.siteId !== 'undefined' && values.siteId !== 'null') {
+          siteIdToUse = Number(values.siteId);
+        } else if (propSiteId && propSiteId !== 'undefined' && propSiteId !== 'null') {
+          siteIdToUse = Number(propSiteId);
+        } else if (currentSiteId && currentSiteId !== 'undefined' && currentSiteId !== 'null') {
+          siteIdToUse = Number(currentSiteId);
+        } else {
+          siteIdToUse = null;
+        }
+        
+        // Verificar si tenemos un siteId válido antes de continuar
+        if (!siteIdToUse || isNaN(siteIdToUse)) {
+          notification.warning({
+            message: Strings.oplSelectionModalErrorOpl,
+            description: Strings.requiredPosition
+          });
+          throw new Error("Se requiere un ID de sitio válido");
+        }
+      } catch (error) {
+        console.error("Error al procesar siteId:", error);
+        notification.error({
+          message: Strings.oplSelectionModalErrorOpl,
+          description: Strings.oplSelectionModalErrorDescription
+        });
+        throw error;
+      }
+
       const createPayload = {
         title: values.title,
         objetive: values.objetive || "", // Provide empty string as default
@@ -185,7 +216,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         reviewerName: reviewer?.name || "", // Provide empty string as default
         oplType: values.oplType || "opl", // Default to 'opl'
         createdAt: new Date().toISOString(),
-        siteId: siteIdToUse, // Usar el siteId obtenido
+        siteId: siteIdToUse, // Usar el siteId obtenido y validado
       };
       
       console.log("Creating OPL with payload:", createPayload);

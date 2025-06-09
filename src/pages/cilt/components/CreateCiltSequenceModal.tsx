@@ -36,6 +36,7 @@ interface CreateCiltSequenceModalProps {
   cilt: CiltMstr | null;
   onCancel: () => void;
   onSuccess: () => void;
+  siteId?: string | number; // Add siteId prop
 }
 
 const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
@@ -43,6 +44,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   cilt,
   onCancel,
   onSuccess,
+  siteId,
 }) => {
   const location = useLocation();
   const [form] = Form.useForm();
@@ -67,17 +69,25 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   const [formattedTime, setFormattedTime] = useState<string>("");
 
   useEffect(() => {
-    if (visible && cilt?.siteId) {
+    if (visible && (cilt?.siteId || siteId)) {
       fetchCiltTypes();
       fetchCiltFrequencies();
     }
 
     if (visible) {
       form.resetFields();
+      
+      // Inicializar el formulario con el siteId
+      if (siteId) {
+        form.setFieldsValue({ siteId: Number(siteId) });
+      } else if (cilt?.siteId) {
+        form.setFieldsValue({ siteId: Number(cilt.siteId) });
+      }
+      
       setSelectedReferenceOpl(null);
       setSelectedRemediationOpl(null);
     }
-  }, [visible, form, cilt]);
+  }, [visible, form, cilt, siteId]);
 
   // No need to set positionId from cilt since it's no longer part of the CiltMstr model
   useEffect(() => {
@@ -89,12 +99,14 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
   // Fetch CILT types and filter by active status
   const fetchCiltTypes = async () => {
-    if (!cilt?.siteId) return;
+    // Usar siteId del prop o del cilt
+    const siteIdToUse = siteId || cilt?.siteId;
+    if (!siteIdToUse) return;
 
     setLoading(true);
     try {
       const response = await getCiltTypesBySite(
-        String(cilt.siteId)
+        String(siteIdToUse)
       ).unwrap();
       // Filter CILT types to only include those with status 'A' (active)
       const activeTypes = response ? response.filter(type => type.status === 'A') : [];
@@ -678,12 +690,14 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         isVisible={referenceOplModalVisible}
         onClose={() => setReferenceOplModalVisible(false)}
         onSelect={handleReferenceOplSelect}
+        siteId={siteId || (cilt?.siteId ? Number(cilt.siteId) : undefined)}
       />
 
       <OplSelectionModal
         isVisible={remediationOplModalVisible}
         onClose={() => setRemediationOplModalVisible(false)}
         onSelect={handleRemediationOplSelect}
+        siteId={siteId || (cilt?.siteId ? Number(cilt.siteId) : undefined)}
       />
     </Modal>
   );

@@ -32,7 +32,7 @@ interface CiltCardListProps {
 const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const siteId = location.state?.siteId || "";
+  const siteId = location.state?.siteId ? Number(location.state.siteId) : undefined;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [ciltProcedures, setCiltProcedures] = useState<CiltMstr[]>([]);
@@ -80,7 +80,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
 
   const { data, isLoading, isError, error, refetch } =
-    useGetCiltMstrBySiteQuery(siteId, {
+    useGetCiltMstrBySiteQuery(siteId ? String(siteId) : "", {
       skip: !siteId,
       pollingInterval: 30000,
 
@@ -354,6 +354,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         cilt={sequenceCilt}
         onCancel={handleCreateSequenceCancel}
         onSuccess={handleCreateSequenceSuccess}
+        siteId={siteId}
       />
 
       {/* Sequences Modal */}
