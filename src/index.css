@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 /*Applying these styles to the menu was the only solution*/
 .ant-menu-item, 
 .ant-menu-submenu-title, 
