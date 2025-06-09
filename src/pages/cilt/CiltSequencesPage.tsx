@@ -195,10 +195,6 @@ const CiltSequencesPage = () => {
     setSelectedOplDetails([]);
   };
 
-  const showScheduleSequence = (sequence: CiltSequence) => {
-    setSelectedSequence(sequence);
-    setScheduleSecuenceVisible(true);
-  };
 
   const handleScheduleSequenceCancel = () => {
     setScheduleSecuenceVisible(false);
@@ -226,31 +222,32 @@ const CiltSequencesPage = () => {
             height: "20px",
             borderRadius: "50%",
             border: "1px solid #d9d9d9",
+            margin: "auto",
           }}
         />
       ),
-      width: 80,
+      width: 20,
     },
     {
       title: Strings.standardTime,
       dataIndex: "standardTime",
       key: "standardTime",
       render: (time) => formatSecondsToNaturalTime(time) || "N/A",
-      width: 150,
+      width: 60,
     },
     {
       title: Strings.frequencyCode,
       dataIndex: "frecuencyCode",
       key: "frecuencyCode",
       render: (text) => text || "N/A",
-      width: 120,
+      width: 30,
     },
     {
       title: Strings.ciltType,
       dataIndex: "ciltTypeName",
       key: "ciltTypeName",
       render: (text) => text || "N/A",
-      width: 120,
+      width: 60,
     },
     {
       title: Strings.actions,
@@ -259,6 +256,9 @@ const CiltSequencesPage = () => {
         <Space size="small" wrap>
           <Button type="primary" size="small" onClick={() => showSequenceDetails(record)}>
             {Strings.viewDetails}
+          </Button>
+          <Button type="primary" size="small" onClick={() => showEditSequenceModal(record)}>
+            {Strings.editSequence}
           </Button>
           <Button 
             type="default" 
@@ -276,15 +276,9 @@ const CiltSequencesPage = () => {
           >
             {Strings.viewRemediationOpl}
           </Button>
-          <Button type="primary" size="small" onClick={() => showEditSequenceModal(record)}>
-            {Strings.editSequence}
-          </Button>
-          <Button type="default" size="small" onClick={() => showScheduleSequence(record)}>
-            {Strings.scheduleSequence}
-          </Button>
         </Space>
       ),
-      width: 500,
+      width: 250,
     },
   ];
 

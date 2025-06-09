@@ -586,7 +586,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Typography.Paragraph style={{ maxWidth: '400px', margin: '0 auto' }}>
+            <Typography.Paragraph style={{ maxWidth: '400px', margin: '0 auto', whiteSpace: 'pre-wrap' }}>
               {detail.text}
             </Typography.Paragraph>
           </Card>

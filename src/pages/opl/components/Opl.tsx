@@ -175,10 +175,17 @@ const Opl = (): React.ReactElement => {
       }
     } catch (error) {
       console.error("Error fetching OPL details for view:", error);
-      notification.error({
-        message: "Error",
-        description: Strings.oplErrorLoadingDetails,
-      });
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        error.status !== 404
+      ) {
+        notification.error({
+          message: "Error",
+          description: Strings.oplErrorLoadingDetails,
+        });
+      }
       setViewDetails([]);
     }
   };

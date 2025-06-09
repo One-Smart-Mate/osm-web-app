@@ -106,13 +106,13 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
     {
       title: Strings.description,
       key: 'description',
-      render: (record: any) => getScheduleDescription(record),
+      render: (record: any) => <div style={{ whiteSpace: 'pre-wrap' }}>{getScheduleDescription(record)}</div>,
     },
   ];
 
   return (
     <Modal
-      title={`${Strings.schedulesSecuence}: ${sequenceName}`}
+      title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{`${Strings.schedulesSecuence}: ${sequenceName}`}</div>}
       open={visible}
       onCancel={onCancel}
       footer={[

@@ -122,6 +122,24 @@ export const CILTReports = () => {
       ellipsis: { showTitle: true },
     },
     {
+      title: Strings.color,
+      dataIndex: "secuenceColor",
+      key: "secuenceColor",
+      render: (color) => (
+        <div
+          style={{
+            backgroundColor: color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
+            width: "20px",
+            height: "20px",
+            borderRadius: "50%",
+            border: "1px solid #d9d9d9",
+            margin: "auto",
+          }}
+        />
+      ),
+      width: 50,
+    },
+    {
       title: "CILT Type",
       dataIndex: "ciltTypeName",
       key: "ciltTypeName",
@@ -242,7 +260,9 @@ export const CILTReports = () => {
               <Descriptions bordered column={2} size="middle">
                 <Descriptions.Item label={Strings.route}>{selectedExecution.route || Strings.oplFormNotAssigned}</Descriptions.Item>
                 <Descriptions.Item label={Strings.ciltTypeName}>{selectedExecution.ciltTypeName || Strings.oplFormNotAssigned}</Descriptions.Item>
-                <Descriptions.Item label={Strings.sequenceList}>{selectedExecution.secuenceList || Strings.oplFormNotAssigned}</Descriptions.Item>
+                <Descriptions.Item label={Strings.sequenceList}>
+                  <div style={{ whiteSpace: 'pre-wrap' }}>{selectedExecution.secuenceList || Strings.oplFormNotAssigned}</div>
+                </Descriptions.Item>
                 <Descriptions.Item label={Strings.schedule}>{formatDate(selectedExecution.secuenceSchedule)}</Descriptions.Item>
                 <Descriptions.Item label={Strings.startTime}>{formatDate(selectedExecution.secuenceStart)}</Descriptions.Item>
                 <Descriptions.Item label={Strings.endTime}>{formatDate(selectedExecution.secuenceStop)}</Descriptions.Item>

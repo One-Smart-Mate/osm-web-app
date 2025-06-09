@@ -98,7 +98,7 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
           title={<Space><FileTextOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplTextType}</Text></Space>}
           bordered={true}
         >
-          <Paragraph>{detail.text}</Paragraph>
+          <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{detail.text}</Paragraph>
         </Card>
       );
     } else if (detail.type === "imagen" && detail.mediaUrl) {
@@ -205,7 +205,7 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
             {currentOpl?.title || '-'}
           </Descriptions.Item>
           <Descriptions.Item label={Strings.oplObjective}>
-            {currentOpl?.objetive || '-'}
+            <div style={{ whiteSpace: 'pre-wrap' }}>{currentOpl?.objetive || '-'}</div>
           </Descriptions.Item>
           <Descriptions.Item label={Strings.oplCreatedBy}>
             {currentOpl?.creatorName || '-'}
