@@ -117,9 +117,11 @@ const OplViewerModal: React.FC<OplViewerModalProps> = ({ open, oplData, onClose,
       onCancel={onClose}
       width={800}
       footer={null}
+      bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto', paddingRight: 20 }}
+      style={{ top: 20 }}
     >
       {oplData ? (
-        <div className="px-4">
+        <div className="px-4 overflow-visible">
           <div className="mb-6">
             <Title level={4} className="mb-2">{oplData.title}</Title>
             <Text className="block mb-4 text-gray-500">{Strings.objective}: {oplData.objetive}</Text>

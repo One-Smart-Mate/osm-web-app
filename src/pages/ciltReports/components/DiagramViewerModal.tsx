@@ -62,6 +62,8 @@ const DiagramViewerModal: React.FC<DiagramViewerModalProps> = ({
       width={900}
       footer={null}
       centered
+      bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto', paddingRight: 20 }}
+      style={{ top: 20 }}
     >
       {isLoading ? (
         <div className="flex justify-center items-center py-12">
@@ -72,7 +74,7 @@ const DiagramViewerModal: React.FC<DiagramViewerModalProps> = ({
           <Text type="danger">{Strings.errorOnLoadingData}</Text>
         </div>
       ) : imageUrl ? (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center overflow-visible">
           <Image 
             src={imageUrl} 
             alt={title} 

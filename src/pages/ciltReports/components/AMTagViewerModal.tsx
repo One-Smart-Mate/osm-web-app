@@ -61,6 +61,8 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
       onCancel={handleClose}
       width={800}
       footer={null}
+      bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto', paddingRight: 20 }}
+      style={{ top: 20 }}
     >
       {isLoading ? (
         <div className="flex justify-center items-center py-12">
@@ -71,7 +73,7 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
           <Text type="danger">{Strings.errorOnLoadingData}</Text>
         </div>
       ) : cardData && cardData.card ? (
-        <div className="px-4">
+        <div className="px-4 overflow-visible">
           {/* Header with card type and status */}
           <div className="mb-5 flex justify-between">
             <div className="flex items-center">

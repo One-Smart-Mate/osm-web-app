@@ -130,14 +130,16 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
         open={isVisible}
         onCancel={onClose}
         footer={[
-          <Button key="close" onClick={onClose} type="primary" style={{ float: 'right', top: '-40px' }}>
+          <Button key="close" onClick={onClose} type="primary">
             {Strings.close}
           </Button>
         ]}
         width={800}
+        bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto', paddingRight: 20 }}
+        style={{ top: 20 }}
       >
         {execution && (
-        <div>
+        <div className="overflow-visible">
           {/* ID and route section */}
           <Row gutter={[16, 16]}>
             <Col span={12}>
