@@ -100,26 +100,23 @@ export const CILTReports = () => {
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
   
-  // Mostrar modal con detalles de la ejecución
   const showDetailsModal = (execution: CiltSequenceExecution) => {
     setSelectedExecution(execution);
     setIsModalVisible(true);
   };
 
-  // Cerrar modal
   const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedExecution(null);
   };
 
-  // Table columns - Solo mostramos los campos con datos relevantes
   const columns: ColumnsType<CiltSequenceExecution> = [
     {
       title: Strings.route,
       dataIndex: "route",
       key: "route",
       render: (text) => text || Strings.oplFormNotAssigned,
-      width: 250,
+      width: 210,
       ellipsis: { showTitle: true },
     },
     {
@@ -145,14 +142,14 @@ export const CILTReports = () => {
       dataIndex: "ciltTypeName",
       key: "ciltTypeName",
       render: (text) => text || Strings.oplFormNotAssigned,
-      width: 120,
+      width: 80,
     },
     {
       title: Strings.schedule,
       dataIndex: "secuenceSchedule",
       key: "secuenceSchedule",
       render: (text) => formatDate(text),
-      width: 150,
+      width: 100,
     },
     {
       title: Strings.duration,
