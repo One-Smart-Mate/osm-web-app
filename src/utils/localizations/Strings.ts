@@ -1457,6 +1457,19 @@ class StringsBase {
   static sequenceSchedule = "sequenceSchedule"
   static secuenceStart = "secuenceStart"
   static secuenceStop = "secuenceStop"
+  static ciltCardListReferenceOplLabel = "ciltCardListReferenceOplLabel"
+  static ciltCardListRemediationOplLabel = "ciltCardListRemediationOplLabel"
+  static seeDiagram = "seeDiagram"
+  static amCard = "amCard"
+  static execitionId = "execitionId"
+  static cardId = "cardId"
+  static cardDueDate = "cardDueDate"
+  static cardLocation = "cardLocation"
+  static errorOnLoadingData = "errorOnLoadingData"
+  static noDataAvailable = "noDataAvailable"
+  static noCommentsAvailable = "noCommentsAvailable"
+  static tagCardEvidenceTitle = "tagCardEvidenceTitle"
+  static noEvidencesAvailable = "noEvidencesAvailable"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -298,9 +298,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         throw new Error("No se ha seleccionado un OPL");
       }
       
-      // Manejar texto y media de manera separada
       if (type === "texto") {
-        // Para detalles de texto
         const newDetail: CreateOplDetailsDTO = {
           siteId: Number(currentOpl.siteId || 0),
           oplId: Number(currentOpl.id),
@@ -321,7 +319,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           });
           
           detailForm.resetFields();
-          setActiveDetailTab("1"); // Volver a la lista
+          setActiveDetailTab("1");
           await fetchOplDetails(currentOpl.id);
         }
       } else {
@@ -344,7 +342,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           return;
         }
         
-        // Determinar la extensión del archivo
         let fileExtension = "jpg";
         if (type === "video") {
           fileExtension = "mp4";
