@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
   Button,
@@ -16,10 +16,41 @@ import {
   Descriptions,
   Image,
   Empty,
+  Input,
+  notification,
 } from "antd";
+import { SearchOutlined, FileOutlined, CalendarOutlined } from "@ant-design/icons";
+import ViewSchedulesModal from "./ViewSchedulesModal";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
+import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
+import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 
+
+// Extended interface for OPL with details from API response
+interface ExtendedOplLevel {
+  id: number;
+  title: string;
+  objetive: string;
+  creatorId: number;
+  creatorName: string;
+  siteId: number;
+  reviewerId: number;
+  reviewerName: string;
+  oplType: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  details: Array<{
+    id: number;
+    oplId: number;
+    order: number;
+    type: string;
+    text: string;
+    mediaUrl: string;
+    updatedAt: string;
+  }>;
+}
 
 // Interface for sequence data structure from API response
 interface CiltSequence {
@@ -58,7 +89,6 @@ interface CiltSequence {
 }
 
 const { Text } = Typography;
-// Tabs ahora usa items en lugar de TabPane
 
 interface LevelDetailsDrawerProps {
   visible: boolean;
@@ -74,13 +104,21 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState("cilt");
-  // Estados para los modales
+  const [searchText, setSearchText] = useState("");
   const [selectedCiltMstr, setSelectedCiltMstr] = useState<ExtendedCiltMstr | null>(null);
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
   const [ciltDetailsModalVisible, setCiltDetailsModalVisible] = useState(false);
-  const [sequenceDetailsModalVisible, setSequenceDetailsModalVisible] = useState(false);
+  const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
+  const [scheduleSecuenceVisible, setScheduleSecuenceVisible] = useState(false);
+  const [selectedSequenceForSchedule, setSelectedSequenceForSchedule] = useState<CiltSequence | null>(null);
+  const [viewSchedulesVisible, setViewSchedulesVisible] = useState(false);
+  const [selectedSequenceForViewSchedules, setSelectedSequenceForViewSchedules] = useState<CiltSequence | null>(null);
+  const [singleSequenceModalVisible, setSingleSequenceModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sequenceSearchText, setSequenceSearchText] = useState("");
+  const [sequencePage, setSequencePage] = useState(1);
   const pageSize = 4;
+  const sequencePageSize = 4;
 
   const [levelAssignments, setLevelAssignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -138,10 +176,46 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     setCiltDetailsModalVisible(true);
   };
 
+  const showSequenceList = (ciltMstr: CiltMstr) => {
+    setSelectedCiltMstr(ciltMstr);
+    setSequenceListModalVisible(true);
+  };
     
+  // Show details of a specific sequence
   const showSequenceDetails = (sequence: CiltSequence) => {
     setSelectedSequence(sequence);
-    setSequenceDetailsModalVisible(true);
+    setSingleSequenceModalVisible(true);
+  };
+
+  // Show view schedules modal
+  const showViewSchedules = (sequence: CiltSequence) => {
+    setSelectedSequenceForViewSchedules(sequence);
+    setViewSchedulesVisible(true);
+  };
+
+  // Handle the close of view schedules modal
+  const handleViewSchedulesCancel = () => {
+    setViewSchedulesVisible(false);
+    setSelectedSequenceForViewSchedules(null);
+  };
+
+  const showScheduleSequence = (sequence: CiltSequence) => {
+    setSelectedSequenceForSchedule(sequence);
+    setScheduleSecuenceVisible(true);
+  };
+
+  const handleScheduleSequenceCancel = () => {
+    setScheduleSecuenceVisible(false);
+    setSelectedSequenceForSchedule(null);
+  };
+
+  const handleScheduleSequenceSuccess = () => {
+    setScheduleSecuenceVisible(false);
+    setSelectedSequenceForSchedule(null);
+    notification.success({
+      message: Strings.success,
+      description: Strings.successScheduleCreated,
+    });
   };
 
   const getImageUrl = (url: string | null | undefined): string => {
@@ -154,11 +228,31 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     return url.startsWith('/') ? `https:${url}` : `https://${url}`;
   };
 
-  const getPageItems = (items: any[] = []) => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+  // Helper function to get paginated items - used by both main component and sequence modal
+  const getPaginatedItems = (items: any[] = [], page: number, size: number) => {
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
     return items.slice(startIndex, endIndex);
   };
+
+  // Filter assignments based on search text and active status
+  const filteredAssignments = useMemo(() => {
+    // First filter by active status
+    const activeAssignments = levelAssignments.filter(assignment => assignment.status === 'A');
+    
+    // Then filter by search text if provided
+    if (!searchText.trim()) {
+      return activeAssignments;
+    }
+    
+    const searchLower = searchText.toLowerCase();
+    return activeAssignments.filter(assignment => {
+      const ciltName = assignment.ciltMstr?.ciltName?.toLowerCase() || '';
+      const ciltDescription = assignment.ciltMstr?.ciltDescription?.toLowerCase() || '';
+      
+      return ciltName.includes(searchLower) || ciltDescription.includes(searchLower);
+    });
+  }, [levelAssignments, searchText]);
 
   const renderCiltProcedures = () => {
     if (isLoading) return <Spin size="large" />;
@@ -172,84 +266,89 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>{Strings.errorLoadingData}</small>
               </span>
             }
           />
         </div>
       );
     }
-    if (!levelAssignments || levelAssignments.length === 0) {
-      return <Empty description={Strings.noCiltProceduresAssigned} />;
+    
+    // Show empty state for no assignments or no search results
+    if (!filteredAssignments || filteredAssignments.length === 0) {
+      return <Empty description={searchText ? 'No se encontraron resultados para tu búsqueda' : Strings.noCiltProceduresAssigned} />;
     }
     
-    const paginatedData = getPageItems(levelAssignments);
+    const paginatedData = getPaginatedItems(filteredAssignments, currentPage, pageSize);
     
     return (
       <div>
-        <Row gutter={[16, 16]}>
-          {paginatedData.map((assignment) => (
-            <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
-              <Card
-                title={
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text strong>{assignment.ciltMstr?.ciltName}</Text>
-                    <Badge
-                      status={assignment.status === 'A' ? 'success' : 'error'}
-                      text={assignment.status === 'A' ? Strings.active : Strings.inactive}
-                    />
-                  </div>
-                }
-                extra={<Button type="link" onClick={() => showCiltDetails(assignment.ciltMstr)}>{Strings.viewDetails}</Button>}
-              >
-                <p><strong>{Strings.description}:</strong> {assignment.ciltMstr?.ciltDescription}</p>
-                <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
-                <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
-                
-                {assignment.ciltMstr?.sequences && assignment.ciltMstr.sequences.length > 0 && (
-                  <div>
-                    <Text strong>{Strings.sequences}:</Text>
-                    <ul>
-                      {assignment.ciltMstr.sequences.slice(0, 2).map((sequence: CiltSequence) => (
-                        <li key={sequence.id}>
-                          <Button 
-                            type="link" 
-                            style={{ padding: 0 }}
-                            onClick={() => showSequenceDetails(sequence)}
-                          >
-                            {sequence.secuenceList.length > 30 ? `${sequence.secuenceList.substring(0, 30)}...` : sequence.secuenceList}
-                          </Button>
-                        </li>
-                      ))}
-                      {assignment.ciltMstr.sequences.length > 2 && (
-                        <li>
-                          <Text type="secondary">{Strings.andMore} {assignment.ciltMstr.sequences.length - 2} {Strings.more}...</Text>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-                
+        {/* Single column layout */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {paginatedData.map((assignment: any) => (
+            <Card
+              key={assignment.id}
+              style={{ 
+                marginBottom: '12px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                border: '1px solid #e8e8e8'
+              }}
+              title={
+                <div>
+                  <Text strong>{assignment.ciltMstr?.ciltName}</Text>
+                </div>
+              }
+              extra={null}
+              bodyStyle={{ padding: '16px', width: '100%' }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
+                {/* Image column */}
                 {assignment.ciltMstr?.urlImgLayout && (
-                  <div style={{ marginTop: '10px' }}>
+                  <div style={{ flex: '0 0 180px' }}>
                     <Image
                       src={getImageUrl(assignment.ciltMstr.urlImgLayout)}
                       alt="Layout"
-                      style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }}
+                      style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '4px' }}
                       preview={{ src: getImageUrl(assignment.ciltMstr.urlImgLayout) }}
                     />
                   </div>
                 )}
-              </Card>
-            </Col>
+                
+                {/* Content column - expanded to use more space */}
+                <div style={{ flex: '1 1 auto', width: 'calc(100% - 200px)' }}>
+                  <p><strong>{Strings.description}:</strong> {assignment.ciltMstr?.ciltDescription}</p>
+                  <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
+                  <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
+                  
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                    <Button 
+                      type="primary" 
+                      onClick={() => showCiltDetails(assignment.ciltMstr)}
+                    >
+                      Ver detalles
+                    </Button>
+                    
+                    {assignment.ciltMstr?.sequences && assignment.ciltMstr.sequences.length > 0 && (
+                      <Button 
+                        type="primary" 
+                        onClick={() => showSequenceList(assignment.ciltMstr)}
+                      >
+                        {Strings.viewSequences}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Card>
           ))}
-        </Row>
+        </div>
         
+        {/* Pagination */}
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={levelAssignments.length}
+            total={filteredAssignments.length}
             onChange={setCurrentPage}
             showSizeChanger={false}
           />
@@ -258,11 +357,15 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Renderizar las tarjetas de posiciones
+  // State for positions search
+  const [positionSearchText, setPositionSearchText] = useState('');
+  const [positionPage, setPositionPage] = useState(1);
+  const positionPageSize = 4;
+
   const renderPositions = () => {
     if (isLoading) return <Spin size="large" />;
     if (error) {
-      console.error('Error rendering CILT procedures:', error);
+      console.error('Error rendering positions:', error);
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           <Empty
@@ -271,7 +374,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>Error loading positions</small>
               </span>
             }
           />
@@ -282,20 +385,41 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       return <Empty description={Strings.noPositionsAssigned} />;
     }
     
-    // Filtrar asignaciones que tienen datos de posición
     const positionAssignments = levelAssignments.filter(assignment => 'position' in assignment && assignment.position);
+
+    // Filter positions based on search text
+    const filteredPositions = positionSearchText.trim() 
+      ? positionAssignments.filter(assignment => {
+          const positionName = assignment.position?.name?.toLowerCase() || '';
+          const positionCode = assignment.position?.code?.toLowerCase() || '';
+          const searchLower = positionSearchText.toLowerCase();
+          return positionName.includes(searchLower) || positionCode.includes(searchLower);
+        })
+      : positionAssignments;
     
-    // Calcular el rango de elementos a mostrar en la página actual
-    const paginatedData = getPageItems(positionAssignments);
+    const paginatedData = getPaginatedItems(filteredPositions, positionPage, positionPageSize);
     
-    if (paginatedData.length === 0) {
+    if (filteredPositions.length === 0) {
       return <Empty description={Strings.noPositionsAssigned} />;
     }
     
     return (
       <div>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            placeholder={Strings.searchPosition}
+            prefix={<SearchOutlined />}
+            value={positionSearchText}
+            onChange={(e) => {
+              setPositionSearchText(e.target.value);
+              setPositionPage(1); // Reset to first page on search
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+
         <Row gutter={[16, 16]}>
-          {paginatedData.map((assignment) => (
+          {paginatedData.map((assignment: any) => (
             <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
               <Card
                 title={
@@ -318,24 +442,189 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           ))}
         </Row>
         
-        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={positionAssignments.length}
-            onChange={setCurrentPage}
-            showSizeChanger={false}
-          />
-        </div>
+        {filteredPositions.length > positionPageSize && (
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <Pagination
+              current={positionPage}
+              pageSize={positionPageSize}
+              total={filteredPositions.length}
+              onChange={setPositionPage}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
       </div>
     );
   };
 
-  // Renderizar el contenido de OPL/SOP (en desarrollo)
+  // State for OPL search and pagination
+  const [oplSearchText, setOplSearchText] = useState('');
+  const [oplPage, setOplPage] = useState(1);
+  const oplPageSize = 4;
+  const [selectedOpl, setSelectedOpl] = useState<ExtendedOplLevel | null>(null);
+  const [oplDetailsModalVisible, setOplDetailsModalVisible] = useState(false);
+
+  // Using RTK Query to fetch OPL assignments for the selected level
+  const { data: oplAssignments, isLoading: isLoadingOpls, error: oplError } = 
+    useGetOplLevelsByLevelIdQuery(levelId || 0, { skip: !levelId });
+
+  // Filter OPL assignments based on search text
+  const filteredOplAssignments = useMemo(() => {
+    if (!oplAssignments) return [];
+    
+    // Cast the API response to ExtendedOplLevel array
+    const typedOplAssignments = oplAssignments as unknown as ExtendedOplLevel[];
+    
+    if (!oplSearchText.trim()) {
+      return typedOplAssignments;
+    }
+    
+    const searchLower = oplSearchText.toLowerCase();
+    return typedOplAssignments.filter(opl => {
+      const title = opl.title?.toLowerCase() || '';
+      const objective = opl.objetive?.toLowerCase() || '';
+      
+      return title.includes(searchLower) || objective.includes(searchLower);
+    });
+  }, [oplAssignments, oplSearchText]);
+
+  // Get paginated OPL data
+  const paginatedOplData = useMemo(() => {
+    return getPaginatedItems(filteredOplAssignments, oplPage, oplPageSize);
+  }, [filteredOplAssignments, oplPage, oplPageSize]);
+
+  // Show OPL details
+  const showOplDetails = (opl: any) => {
+    setSelectedOpl(opl);
+    setOplDetailsModalVisible(true);
+  };
+
+  // Get image URL helper function
+  const getOplImageUrl = (url: string | null | undefined): string => {
+    if (!url) return '';
+    
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    return url.startsWith('/') ? `https:${url}` : `https://${url}`;
+  };
+
+  // Render OPL details modal
+  const renderOplDetailsModal = () => {
+    if (!selectedOpl) return null;
+
+    return (
+      <Modal
+        title={`${Strings.oplDetails}: ${selectedOpl.title || ""}`}
+        open={oplDetailsModalVisible}
+        onCancel={() => setOplDetailsModalVisible(false)}
+        width={800}
+        zIndex={1050} // Higher z-index to appear above other elements
+        footer={[
+          <Button key="close" onClick={() => setOplDetailsModalVisible(false)}>
+            {Strings.close}
+          </Button>
+        ]}
+      >
+        <Row gutter={[16, 8]}>
+          <Col span={24}>
+            <Card size="small" title={Strings.objective}>
+              <Typography.Text>{selectedOpl.objetive || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.creator}>
+              <Typography.Text>{selectedOpl.creatorName || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.reviewer}>
+              <Typography.Text>{selectedOpl.reviewerName || Strings.notSpecified}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title="Created Date">
+              <Typography.Text>{new Date(selectedOpl.createdAt).toLocaleDateString()}</Typography.Text>
+            </Card>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Card size="small" title={Strings.type}>
+              <Typography.Text>{selectedOpl.oplType ? selectedOpl.oplType.toUpperCase() : 'OPL'}</Typography.Text>
+            </Card>
+          </Col>
+        </Row>
+
+        <div style={{ marginTop: '24px' }}>
+          <Typography.Title level={4}>{Strings.oplDetails}</Typography.Title>
+          
+          {selectedOpl.details && selectedOpl.details.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {selectedOpl.details.map((detail: any) => (
+                <Col xs={24} md={12} key={detail.id}>
+                  <Card 
+                    size="small"
+                    style={{ 
+                      height: '100%',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                      border: '1px solid #e8e8e8',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    {detail.text && (
+                      <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+                        <Typography.Paragraph>{detail.text}</Typography.Paragraph>
+                      </div>
+                    )}
+                    
+                    {detail.mediaUrl && (
+                      <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                        {detail.type === 'imagen' ? (
+                          <Image 
+                            src={getOplImageUrl(detail.mediaUrl)}
+                            alt={`Contenido ${detail.order}`}
+                            style={{ 
+                              width: '400px', 
+                              height: '300px', 
+                              objectFit: 'contain',
+                              maxWidth: '100%' 
+                            }}
+                          />
+                        ) : detail.type === 'video' ? (
+                          <video 
+                            controls 
+                            src={detail.mediaUrl} 
+                            style={{ 
+                              width: '400px', 
+                              maxWidth: '100%', 
+                              height: '300px', 
+                              objectFit: 'contain' 
+                            }}
+                          />
+                        ) : (
+                          <a href={detail.mediaUrl} target="_blank" rel="noopener noreferrer">
+                            <Button type="primary" icon={<FileOutlined />}>{Strings.viewDocument}</Button>
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Empty description={Strings.oplNoDetails} />
+          )}
+        </div>
+      </Modal>
+    );
+  };
+
   const renderOplSop = () => {
-    if (isLoading) return <Spin size="large" />;
-    if (error) {
-      console.error('Error rendering CILT procedures:', error);
+    if (isLoadingOpls) return <Spin size="large" />;
+    
+    if (oplError) {
+      console.error('Error rendering OPL assignments:', oplError);
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           <Empty
@@ -344,7 +633,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <span>
                 {Strings.errorLoadingData}
                 <br />
-                <small style={{ color: 'gray' }}>Error en la base de datos: Columna 'reference_opl_sop' no encontrada</small>
+                <small style={{ color: 'gray' }}>Error loading OPL assignments</small>
               </span>
             }
           />
@@ -352,14 +641,73 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       );
     }
     
+    if (!oplAssignments || oplAssignments.length === 0) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <Empty description={Strings.noOplAssignmentsFound || "No OPL assignments found for this level"} />
+        </div>
+      );
+    }
+    
     return (
-      <div style={{ textAlign: 'center', padding: '20px' }}>
-        <Text>{Strings.functionalityInDevelopment}</Text>
+      <div>
+        <div style={{ marginBottom: '16px' }}>
+          <Input
+            placeholder={Strings.searchOpls || "Search OPLs..."}
+            prefix={<SearchOutlined />}
+            value={oplSearchText}
+            onChange={(e) => {
+              setOplSearchText(e.target.value);
+              setOplPage(1); // Reset to first page on search
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+        
+        <Row gutter={[16, 16]}>
+          {paginatedOplData.map((opl) => (
+            <Col xs={24} sm={12} key={opl.id}>
+              <Card
+                title={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Badge status="processing" color="blue" />
+                    <span style={{ marginLeft: '8px', fontWeight: 'bold' }}>
+                      {opl.title || 'Untitled OPL'}
+                    </span>
+                  </div>
+                }
+                style={{ height: '100%' }}
+                actions={[
+                  <Button type="primary" onClick={() => showOplDetails(opl)}>
+                    {Strings.viewDetails}
+                  </Button>
+                ]}
+              >
+                <div style={{ minHeight: '100px' }}>
+                  <p><strong>{Strings.type}:</strong> {opl.oplType ? opl.oplType.toUpperCase() : 'OPL'}</p>
+                  <p><strong>{Strings.objective}:</strong> {opl.objetive || Strings.notSpecified}</p>
+                  <p><strong>{Strings.creator}:</strong> {opl.creatorName || Strings.notSpecified}</p>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+        
+        {filteredOplAssignments.length > oplPageSize && (
+          <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <Pagination
+              current={oplPage}
+              total={filteredOplAssignments.length}
+              pageSize={oplPageSize}
+              onChange={(page) => setOplPage(page)}
+              showSizeChanger={false}
+            />
+          </div>
+        )}
       </div>
     );
   };
 
-  // Modal de detalles de CILT
   const renderCiltDetailsModal = () => {
     if (!selectedCiltMstr) return null;
 
@@ -392,9 +740,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               <Descriptions.Item label={Strings.ciltMstrNameLabel}>
                 {selectedCiltMstr.ciltName}
               </Descriptions.Item>
-              <Descriptions.Item label="ID">
-                {selectedCiltMstr.id}
-              </Descriptions.Item>
               <Descriptions.Item label={Strings.ciltMstrListDescriptionColumn}>
                 {selectedCiltMstr.ciltDescription || "-"}
               </Descriptions.Item>
@@ -402,22 +747,22 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 {selectedCiltMstr.creatorName || "-"}
               </Descriptions.Item>
               {selectedCiltMstr.reviewerName && (
-                <Descriptions.Item label="Reviewer">
+                <Descriptions.Item label={Strings.ciltMstrReviewerLabel}>
                   {selectedCiltMstr.reviewerName}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.approvedByName && (
-                <Descriptions.Item label="Approved By">
+                <Descriptions.Item label={Strings.ciltMstrApproverLabel}>
                   {selectedCiltMstr.approvedByName}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.standardTime !== null && (
-                <Descriptions.Item label="Standard Time">
+                <Descriptions.Item label={Strings.ciltMstrDetailsStandardTimeLabel}>
                   {selectedCiltMstr.standardTime}
                 </Descriptions.Item>
               )}
               {selectedCiltMstr.dateOfLastUsed && (
-                <Descriptions.Item label="Last Used">
+                <Descriptions.Item label={Strings.ciltMstrLastUsedLabel}>
                   {new Date(selectedCiltMstr.dateOfLastUsed).toLocaleDateString()}
                 </Descriptions.Item>
               )}
@@ -438,62 +783,135 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Modal de detalles de secuencias
-  const renderSequenceDetailsModal = () => {
+  // Get active sequences for the selected CILT master
+  const activeSequences = useMemo(() => {
+    if (!selectedCiltMstr?.sequences) return [];
+    return selectedCiltMstr.sequences.filter(seq => seq.status === 'A');
+  }, [selectedCiltMstr]);
+  
+  // Filter sequences based on search text
+  const filteredSequences = useMemo(() => {
+    if (!sequenceSearchText.trim()) {
+      return activeSequences;
+    }
+    
+    const searchLower = sequenceSearchText.toLowerCase();
+    return activeSequences.filter(sequence => {
+      const sequenceText = sequence.secuenceList.toLowerCase();
+      const typeText = sequence.ciltTypeName.toLowerCase();
+      return sequenceText.includes(searchLower) || typeText.includes(searchLower);
+    });
+  }, [activeSequences, sequenceSearchText]);
+  
+  const renderSequenceListModal = () => {
     if (!selectedCiltMstr) return null;
+    
+    const paginatedData = getPaginatedItems(filteredSequences, sequencePage, sequencePageSize);
 
     return (
       <Modal
-        title={`${Strings.sequences}: ${selectedCiltMstr.ciltName}`}
-        open={sequenceDetailsModalVisible}
-        onCancel={() => setSequenceDetailsModalVisible(false)}
+        title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{`${Strings.sequences}: ${selectedCiltMstr.ciltName}`}</div>}
+        open={sequenceListModalVisible}
+        onCancel={() => setSequenceListModalVisible(false)}
         footer={null}
-        width={800}
+        width={1000}
+        style={{ top: 20 }}
+        bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
       >
-        {selectedCiltMstr.sequences && selectedCiltMstr.sequences.length > 0 ? (
+        {activeSequences.length > 0 ? (
           <div>
-            <Row gutter={[16, 16]}>
-              {selectedCiltMstr.sequences.map((sequence: CiltSequence) => (
-                <Col xs={24} sm={24} md={12} key={sequence.id}>
-                  <Card
-                    title={
-                      <div style={{ color: `#${sequence.secuenceColor || '000000'}` }}>
-                        {sequence.secuenceList}
-                      </div>
-                    }
-                    extra={
-                      <Button 
-                        type="primary" 
-                        size="small"
-                        onClick={() => showSequenceDetails(sequence)}
-                      >
-                        {Strings.details}
-                      </Button>
-                    }
-                  >
-                    <div className="mb-2">
-                      <Text strong>{Strings.ciltTypeName}: </Text>
-                      <Text>{sequence.ciltTypeName}</Text>
-                    </div>
-                    <div className="mb-2">
-                      <Text strong>{Strings.standardTime}: </Text>
-                      <Text>{sequence.standardTime} min</Text>
-                    </div>
-                    <div>
-                      <Text strong>{Strings.status}: </Text>
-                      <Badge
-                        status={sequence.status === "A" ? "success" : "error"}
-                        text={
-                          sequence.status === "A"
-                            ? Strings.ciltMstrListActiveFilter
-                            : Strings.ciltMstrListSuspendedFilter
+            <div style={{ marginBottom: '16px' }}>
+              <Input
+                placeholder={Strings.ciltCardListSearchPlaceholder}
+                prefix={<SearchOutlined />}
+                value={sequenceSearchText}
+                onChange={(e) => {
+                  setSequenceSearchText(e.target.value);
+                  setSequencePage(1); 
+                }}
+                allowClear
+              />
+            </div>
+            
+            {filteredSequences.length > 0 ? (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {paginatedData.map((sequence: CiltSequence) => (
+                    <div key={sequence.id} style={{ width: '80%', marginBottom: '16px' }}>
+                      <Card
+                        style={{ 
+                          paddingTop: '16px',
+                          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.15)',
+                          border: '1px solid #e8e8e8',
+                          width: '100%'
+                        }}
+                        title={
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                            <div 
+                              style={{ 
+                                width: '16px', 
+                                height: '16px', 
+                                borderRadius: '50%', 
+                                backgroundColor: `#${sequence.secuenceColor || '000000'}`,
+                                flexShrink: 0
+                              }} 
+                            />
+                            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'pre-wrap' }}>
+                              {sequence.secuenceList}
+                            </div>
+                          </div>
                         }
-                      />
+                        extra={
+                          <Button 
+                            type="primary" 
+                            size="small"
+                            onClick={() => showSequenceDetails(sequence)}
+                          >
+                            {Strings.details}
+                          </Button>
+                        }
+                      >
+                        <div className="mb-2">
+                          <Text strong>{Strings.ciltTypeName}: </Text>
+                          <Text>{sequence.ciltTypeName}</Text>
+                        </div>
+                        <div className="mb-2">
+                          <Text strong>{Strings.standardTime}: </Text>
+                          <Text>{sequence.standardTime} min</Text>
+                        </div>
+                        <div style={{ marginTop: '12px', textAlign: 'center', display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                          <Button 
+                            type="default" 
+                            icon={<CalendarOutlined />}
+                            onClick={() => showScheduleSequence(sequence)}
+                          >
+                            {Strings.scheduleSequence}
+                          </Button>
+                          <Button 
+                            type="default" 
+                            onClick={() => showViewSchedules(sequence)}
+                          >
+                            {Strings.viewSchedules}
+                          </Button>
+                        </div>
+                      </Card>
                     </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+                  ))}
+                </div>
+                
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Pagination
+                    current={sequencePage}
+                    pageSize={sequencePageSize}
+                    total={filteredSequences.length}
+                    onChange={setSequencePage}
+                    showSizeChanger={false}
+                  />
+                </div>
+              </>
+            ) : (
+              <Empty description={Strings.noSequencesFound} />
+            )}
           </div>
         ) : (
           <div className="text-center p-4">
@@ -504,22 +922,30 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
-  // Modal de detalles de una secuencia específica
   const renderSingleSequenceDetailsModal = () => {
     if (!selectedSequence) return null;
 
     return (
       <Modal
-        title={`${Strings.sequenceDetails}`}
-        open={sequenceDetailsModalVisible}
-        onCancel={() => setSequenceDetailsModalVisible(false)}
+        title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{Strings.sequenceDetails}</div>}
+        open={singleSequenceModalVisible}
+        onCancel={() => setSingleSequenceModalVisible(false)}
         footer={null}
         width={700}
       >
         <Descriptions bordered column={1} size="small">
           <Descriptions.Item label={Strings.sequence}>
-            <div style={{ color: `#${selectedSequence.secuenceColor || '000000'}` }}>
-              {selectedSequence.secuenceList}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div 
+                style={{ 
+                  width: '20px', 
+                  height: '20px', 
+                  borderRadius: '50%', 
+                  backgroundColor: `#${selectedSequence.secuenceColor || '000000'}`,
+                  flexShrink: 0
+                }} 
+              />
+              <span style={{ whiteSpace: 'pre-wrap' }}>{selectedSequence.secuenceList}</span>
             </div>
           </Descriptions.Item>
           <Descriptions.Item label={Strings.ciltTypeName}>
@@ -554,6 +980,21 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     );
   };
 
+  const renderSearchBar = () => (
+    <div style={{ marginBottom: '16px' }}>
+      <Input
+        placeholder={Strings.searchCiltMstr}
+        prefix={<SearchOutlined />}
+        value={searchText}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+          setCurrentPage(1); 
+        }}
+        allowClear
+      />
+    </div>
+  );
+
   return (
     <>
       <Drawer
@@ -575,7 +1016,12 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             {
               key: 'cilt',
               label: Strings.ciltProcedures,
-              children: renderCiltProcedures()
+              children: (
+                <>
+                  {renderSearchBar()}
+                  {renderCiltProcedures()}
+                </>
+              )
             },
             {
               key: 'positions',
@@ -592,8 +1038,31 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       </Drawer>
 
       {renderCiltDetailsModal()}
-      {renderSequenceDetailsModal()}
+      {renderSequenceListModal()}
       {renderSingleSequenceDetailsModal()}
+      {renderOplDetailsModal()}
+      
+      {/* Schedule Sequence Modal */}
+      {selectedSequenceForSchedule && (
+        <ScheduleSecuence
+          open={scheduleSecuenceVisible}
+          onCancel={handleScheduleSequenceCancel}
+          onSave={handleScheduleSequenceSuccess}
+          sequenceId={selectedSequenceForSchedule.id}
+          ciltId={selectedSequenceForSchedule.ciltMstrId || undefined}
+          siteId={selectedSequenceForSchedule.siteId || undefined}
+        />
+      )}
+
+      {/* View Schedules Modal */}
+      {selectedSequenceForViewSchedules && (
+        <ViewSchedulesModal
+          visible={viewSchedulesVisible}
+          onCancel={handleViewSchedulesCancel}
+          sequenceId={selectedSequenceForViewSchedules.id}
+          sequenceName={selectedSequenceForViewSchedules.secuenceList}
+        />
+      )}
     </>
   );
 };

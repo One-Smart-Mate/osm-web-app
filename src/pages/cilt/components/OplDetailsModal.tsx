@@ -181,7 +181,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
             }
             bordered={true}
           >
-            <Paragraph>{detail.text}</Paragraph>
+            <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{detail.text}</Paragraph>
           </Card>
         );
       default:

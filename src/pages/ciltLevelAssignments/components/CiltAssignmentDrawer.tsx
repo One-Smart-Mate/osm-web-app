@@ -90,33 +90,56 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
     }
 
     try {
-      // Asegurarse de que todos los campos numéricos sean números válidos
+      if (!selectedNode || !selectedNode.id) {
+        console.error("No hay un nodo seleccionado o el nodo no tiene ID", selectedNode);
+        throw new Error(Strings.noValidLevelId);
+      }
+
+      console.log("selectedNode en handleSubmit:", selectedNode);
+
+      
       const numericSiteId = Number(siteId);
       const numericCiltMstrId = Number(selectedCiltMstr.id);
       const numericPositionId = Number(selectedPosition.id);
-      const numericLevelId = Number(selectedNode.id);
       
-      // Validar que todos los IDs sean números válidos
-      if (isNaN(numericSiteId)) {
-        throw new Error("El ID del sitio no es un número válido");
-      }
-      if (isNaN(numericCiltMstrId)) {
-        throw new Error("El ID del CILT no es un número válido");
-      }
-      if (isNaN(numericPositionId)) {
-        throw new Error("El ID de la posición no es un número válido");
-      }
-      if (isNaN(numericLevelId)) {
-        throw new Error("El ID del nivel no es un número válido");
+      
+      let nodeId = String(selectedNode.id);
+      let levelIdValue = nodeId.replace(/[^0-9]/g, '');
+      
+      if (!levelIdValue) {
+        levelIdValue = selectedNode.levelId || selectedNode.realId || "0";
+        console.warn("No se pudo extraer un ID numérico válido, usando alternativa:", levelIdValue);
       }
       
-      // Crear un objeto simple en lugar de usar el constructor de la clase
+      const numericLevelId = Number(levelIdValue);
+      
+      
+      console.log("Datos del nodo seleccionado completo:", JSON.stringify(selectedNode));
+      console.log("ID original del nodo:", nodeId);
+      console.log("ID del nivel limpio:", levelIdValue);
+      console.log("ID del nivel convertido a número:", numericLevelId);
+      
+      
+      if (isNaN(numericSiteId) || numericSiteId <= 0) {
+        throw new Error(Strings.noValidSiteId);
+      }
+      if (isNaN(numericCiltMstrId) || numericCiltMstrId <= 0) {
+        throw new Error(Strings.noValidCiltMstrId);
+      }
+      if (isNaN(numericPositionId) || numericPositionId <= 0) {
+        throw new Error(Strings.noValidPositionId);
+      }
+      if (isNaN(numericLevelId) || numericLevelId <= 0) {
+        throw new Error(Strings.noValidLevelId);
+      }
+      
       const payload = {
         siteId: numericSiteId,
         ciltMstrId: numericCiltMstrId,
         positionId: numericPositionId,
         levelId: numericLevelId,
-        status: "A"
+        status: "A",
+        createdAt: new Date().toISOString()
       };
 
       console.log("Payload enviado:", payload);
@@ -130,13 +153,12 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
     } catch (error) {
       console.error("Error in assignment:", error);
       
-      // Mostrar un mensaje de error más específico
       let errorMessage = Strings.errorOccurred;
       
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object') {
-        // Intentar extraer el mensaje de error de la respuesta de la API
+        
         const data = error.data as any;
         if (data.message) {
           errorMessage = data.message;
@@ -347,7 +369,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       width={placement === "right" ? 500 : undefined}
       onClose={onClose}
       open={isVisible}
-      destroyOnClose
+      destroyOnHidden
       closable={true}
       className="drawer-responsive"
       mask={false}

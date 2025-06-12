@@ -78,7 +78,6 @@ const Opl = (): React.ReactElement => {
   const fetchOpls = async () => {
     setLoading(true);
     try {
-      
       let response;
       if (siteId) {
         response = await getOplMstrBySite(String(siteId)).unwrap();
@@ -176,10 +175,17 @@ const Opl = (): React.ReactElement => {
       }
     } catch (error) {
       console.error("Error fetching OPL details for view:", error);
-      notification.error({
-        message: "Error",
-        description: Strings.oplErrorLoadingDetails,
-      });
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        error.status !== 404
+      ) {
+        notification.error({
+          message: "Error",
+          description: Strings.oplErrorLoadingDetails,
+        });
+      }
       setViewDetails([]);
     }
   };
@@ -331,11 +337,13 @@ const Opl = (): React.ReactElement => {
 
     try {
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type: "texto",
         text: values.text,
         mediaUrl: "",
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();
@@ -401,18 +409,24 @@ const Opl = (): React.ReactElement => {
         originFileObj: file.originFileObj as File,
       };
 
+      const sitePath =
+        currentOpl && currentOpl.siteId
+          ? `site_${currentOpl.siteId}/opl`
+          : FIREBASE_OPL_DIRECTORY;
       const url = await handleUploadToFirebaseStorage(
-        FIREBASE_OPL_DIRECTORY,
+        sitePath,
         uploadFile,
         fileExtension
       );
 
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type,
         text: "",
         mediaUrl: url,
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();

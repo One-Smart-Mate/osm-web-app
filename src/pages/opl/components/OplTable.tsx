@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Space, Button, Badge } from "antd";
-import { EyeOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import type { ColumnsType } from "antd/es/table";
 import Strings from "../../../utils/localizations/Strings";
@@ -31,10 +31,16 @@ const OplTable: React.FC<OplTableProps> = ({
       title: Strings.oplTableObjectiveColumn,
       dataIndex: "objetive",
       key: "objetive",
-      ellipsis: true,
+      ellipsis: false,
       responsive: ['lg'],
+      width: 400,
+      render: (text) => (
+        <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+          {text}
+        </div>
+      ),
     },
-    {
+    { 
       title: Strings.oplTableTypeColumn,
       dataIndex: "oplType",
       key: "oplType",
@@ -62,7 +68,6 @@ const OplTable: React.FC<OplTableProps> = ({
             type="default"
             size="small"
             onClick={() => onView(record)}
-            icon={<EyeOutlined />}
           >
             {Strings.oplTableViewButtonText}
           </Button>
@@ -70,7 +75,6 @@ const OplTable: React.FC<OplTableProps> = ({
             type="primary"
             size="small"
             onClick={() => onEdit(record)}
-            icon={<EditOutlined />}
           >
             {Strings.oplTableEditButtonText}
           </Button>

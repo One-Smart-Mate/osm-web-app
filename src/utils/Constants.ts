@@ -82,12 +82,15 @@ const ROUTES_PATH = {
   opl: 'opl',
   ciltTypes: 'cilt-types',
   ciltFrecuencies: 'cilt-frecuencies',
-  ciltLevelAssignaments: 'cilt-level-assignaments'
+  ciltLevelAssignaments: 'cilt-level-assignaments',
+  ciltSequences: 'cilt-sequences',
+  ciltReports: 'cilt-reports'
 }
 
 const ROUTES_PARAMS = {
   siteId: ':siteId',
-  cardId: ':cardId'
+  cardId: ':cardId',
+  ciltId: ':ciltId'
 }
 
 const SESSION_KEYS = {

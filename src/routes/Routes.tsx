@@ -16,6 +16,7 @@ import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
+import { CILTReports } from "../pages/ciltReports/CILTReports";
 
 const CardTypesPage = React.lazy(
   () => import("../pages/cardtypes/CardTypesPage")
@@ -41,6 +42,9 @@ const PrioritiesPage = React.lazy(
 const CiltProceduresPage = React.lazy(
   () => import("../pages/cilt/CiltProceduresPage")
 );
+const CiltSequencesPage = React.lazy(
+  () => import("../pages/cilt/CiltSequencesPage")
+);
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
 const CiltTypesPage = React.lazy(
   () => import("../pages/ciltTypes/CiltTypesPage")
@@ -59,6 +63,14 @@ const ciltLevelAssignamentsRoute = new Route(
   Strings.asignamentsSB,
   Constants.ROUTES_PATH.ciltLevelAssignaments,
   <CiltLevelAssignamentsPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
+const ciltReportsRoute = new Route(
+  Strings.ciltReportsSB,
+  Constants.ROUTES_PATH.ciltReports,
+  <CILTReports />,
   <BsNodePlus />,
   Strings.cilt
 );
@@ -184,10 +196,20 @@ export const tagDetailsRoute = new Route(
   ""
 );
 
+export const ciltSequencesRoute = new Route(
+  "Secuencias",
+  `${Constants.ROUTES_PATH.ciltSequences}/${Constants.ROUTES_PARAMS.ciltId}`,
+  <CiltSequencesPage />,
+  <></>,
+  ""
+);
+
 const routes: Route[] = [
   tagDetailsRoute,
+  ciltSequencesRoute,
   siteUsersRoute,
   sitesRoute,
+  ciltReportsRoute,
   tagsRoute,
   levelsRoute,
   positionsRoute,
@@ -222,6 +244,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: positionsRoute.path,
       icon: positionsRoute.icon,
       section: positionsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;
@@ -306,6 +334,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltLevelAssignamentsRoute.path,
       icon: ciltLevelAssignamentsRoute.icon,
       section: ciltLevelAssignamentsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;

@@ -9,14 +9,12 @@ import {
   List,
   Typography,
   Card,
-  Modal,
 } from "antd";
 import {
   UserOutlined,
 } from "@ant-design/icons";
 import RegisterPositionForm from "./components/RegisterPositionForm";
 import UpdatePositionForm from "./components/UpdatePositionForm";
-import CreateCiltForm from "./components/CreateCiltForm";
 import { useGetSiteMutation } from "../../services/siteService";
 import {
   useGetPositionsBySiteIdQuery,
@@ -38,14 +36,12 @@ const PositionsPage = () => {
   const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
   const [isPositionFormVisible, setIsPositionFormVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(
     null
   );
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
   const [positionForm] = Form.useForm();
   const [updateForm] = Form.useForm();
-  const [ciltForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
   const { isIhAdmin } = useCurrentUser();
 
@@ -119,16 +115,6 @@ const PositionsPage = () => {
     setSelectedPosition(null);
     updateForm.resetFields();
     refetchPositions();
-  };
-
-  const handleCreateCilt = (position: Position) => {
-    setSelectedPosition(position);
-    setIsCiltFormVisible(true);
-  };
-
-  const handleCiltFormCancel = () => {
-    setIsCiltFormVisible(false);
-    setSelectedPosition(null);
   };
 
   const handlePopoverVisibleChange = (visible: boolean, positionId: string) => {
@@ -225,15 +211,6 @@ const PositionsPage = () => {
                         type="primary"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCreateCilt(item);
-                        }}
-                        style={{ width: '100%', marginBottom: '8px' }}
-                      >
-                        {Strings.createCiltProcedure}
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
                           setSelectedPosition(item);
                           setIsProceduresModalOpen(true);
                         }}
@@ -305,7 +282,7 @@ const PositionsPage = () => {
             levelData={{
               siteId: siteId,
               siteName: siteName,
-              siteType: 'site', // Valor predeterminado si no se conoce el tipo
+              siteType: 'site', 
               id: null,
               name: null,
               levelLocation: null
@@ -323,25 +300,6 @@ const PositionsPage = () => {
             onSuccess={handleUpdateSuccess}
           />
 
-          {/* CILT Form Modal */}
-          <Modal
-            title={`${Strings.createCiltProcedureForPosition}: ${selectedPosition?.name || ''}`}
-            open={isCiltFormVisible}
-            onCancel={handleCiltFormCancel}
-            footer={null}
-            width={800}
-            destroyOnHidden
-          >
-            {selectedPosition && (
-              <div className="p-4">
-                <CreateCiltForm 
-                  form={ciltForm} 
-                  position={selectedPosition}
-                  onSuccess={handleCiltFormCancel}
-                />
-              </div>
-            )}
-          </Modal>
 
           <ProceduresModal
             isOpen={isProceduresModalOpen}

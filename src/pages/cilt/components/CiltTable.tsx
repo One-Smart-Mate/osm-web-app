@@ -14,8 +14,7 @@ interface CiltTableProps {
   onTableChange: (pagination: TablePaginationConfig) => void;
   onEdit: (cilt: CiltMstr) => void;
   onDetails: (cilt: CiltMstr) => void;
-  onCreateSequence: (cilt: CiltMstr) => void;
-  onViewSequences: (cilt: CiltMstr) => void;
+  onNavigateToSequences: (cilt: CiltMstr) => void;
   onClone: (cilt: CiltMstr) => void;
 }
 
@@ -26,8 +25,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
   onTableChange,
   onEdit,
   onDetails,
-  onCreateSequence,
-  onViewSequences,
+  onNavigateToSequences,
   onClone,
 }) => {
   const columns: ColumnsType<CiltMstr> = [
@@ -42,8 +40,13 @@ const CiltTable: React.FC<CiltTableProps> = ({
       title: Strings.ciltMstrListDescriptionColumn,
       dataIndex: "ciltDescription",
       key: "ciltDescription",
-      render: (text) => text || Strings.ciltMstrNA,
-      ellipsis: true,
+      ellipsis: false,
+      width: 350,
+      render: (text) => (
+        <div style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
+          {text || Strings.ciltMstrNA}
+        </div>
+      ),
     },
     {
       title: Strings.ciltMstrListCreatorColumn,
@@ -93,18 +96,11 @@ const CiltTable: React.FC<CiltTableProps> = ({
             {Strings.details}
           </Button>
           <Button
-            type="default"
+            type="primary"
             size="small"
-            onClick={() => onCreateSequence(record)}
+            onClick={() => onNavigateToSequences(record)}
           >
-            {Strings.createSequence}
-          </Button>
-          <Button
-            type="default"
-            size="small"
-            onClick={() => onViewSequences(record)}
-          >
-            {Strings.viewSequences}
+            {Strings.ciltSequences}
           </Button>
           <Button
             type="default"
@@ -119,7 +115,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
     },
   ];
 
-  const DEFAULT_PAGE_SIZE = 10;
+  const DEFAULT_PAGE_SIZE = 50;
 
   return (
     <Table

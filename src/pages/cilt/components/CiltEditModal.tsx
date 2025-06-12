@@ -138,9 +138,10 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
       const timestamp = new Date().getTime();
       const fileName = `cilt_${timestamp}`;
       
-      // Upload the file to Firebase storage
+      // Upload the file to Firebase storage with site-specific path
+      const sitePath = cilt && cilt.siteId ? `site_${cilt.siteId}/cilt-procedures` : 'cilt';
       const url = await handleUploadToFirebaseStorage(
-        "cilt", 
+        sitePath, 
         {
           name: fileName,
           originFileObj: file
@@ -234,7 +235,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           dateOfLastUsed,
           updatedAt,
           cilt.siteId ?? undefined,
-          cilt.positionId ?? undefined,
           values.ciltName,
           values.ciltDescription,
           creatorId ?? undefined,
@@ -243,8 +243,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           values.reviewerName ?? undefined,
           approvedById ?? undefined,
           values.approvedByName ?? undefined,
-          undefined, 
-          undefined,
+          values.standardTime ?? undefined,
           imageUrl, 
           cilt.order ?? undefined,
           values.status,
