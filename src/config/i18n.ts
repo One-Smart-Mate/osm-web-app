@@ -380,6 +380,29 @@ const resources = {
       updatePreclassifier: "Update preclassifier",
       levelsof: "Levels of",
 
+
+      // CILT Sequences Page
+      ciltSequencesPageTitle: "CILT Sequences: {{ciltName}}",
+      loadingText: "Loading...",
+      ciltNoSequencesAssociated: "This CILT \"{{ciltName}}\" has no associated sequences.",
+      notificationInfoTitle: "Information",
+      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
+      noOplAssociatedWithSequence: "No OPL associated with this sequence.",
+      oplNoMultimediaFiles: "The OPL \"{{oplTitle}}\" has no multimedia files.",
+      errorTargetSequenceInvalidOrder: "Error: The target sequence does not have a valid order number.",
+      errorReorderingSequencesWillRestore: "Error reordering sequences. The previous order will be restored.",
+      columnOrder: "Order",
+      columnSequence: "Sequence",
+      columnStandardTimeSeconds: "Standard Time (Seconds)",
+      columnStandardTime: "Standard Time",
+      columnToolsRequired: "Tools Required",
+      columnAssociatedOpl: "Associated OPL",
+      buttonSchedule: "Schedule",
+      buttonViewOpl: "View OPL",
+      searchSequencesPlaceholder: "Search sequences...",
+      buttonCreateSequence: "Create Sequence",
+      totalSequencesCount: "Total: {{count}} Sequences",
+
       // Errors pages
       notFoundPageTitle: "404",
       notFoundPageSubTitle: "Sorry, the page you visited does not exist.",
@@ -1383,7 +1406,6 @@ const resources = {
       errorGeneratingLogsFile: "Error generating logs file",
       scheduleSequence: "Schedule Sequence",
       secuencesOf: "Secuences of",
-      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
       thisCilt: "This CILT",
       noSequences: "No sequences found. You can create a new sequence using the \"Create Sequence\" button.",
       seeAssignments: "See Assignments",

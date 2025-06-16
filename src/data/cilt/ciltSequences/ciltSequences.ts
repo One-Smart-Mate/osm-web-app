@@ -105,3 +105,7 @@ export interface UpdateCiltSequenceDTO {
   updatedAt: string;
 }
 
+export interface UpdateSequenceOrderDTO {
+  sequenceId: number;
+  newOrder: number;
+}

@@ -49,6 +49,7 @@ class StringsBase {
   static realDuration = "realDuration";
   static sequenceList = "sequenceList";
   static statusText = "statusText";
+  static ciltSequenceDragError = "ciltSequenceDragError";
 
   // CILT Master strings
   static ciltMstrPageTitle = "ciltMstrPageTitle";
@@ -416,6 +417,36 @@ class StringsBase {
   static preclassifier = "preclassifier";
   static updatePreclassifier = "updatePreclassifier";
   static levelsof = "levelsof";
+
+  // CILT Sequences Page
+  static ciltSequencesPageTitle = "ciltSequencesPageTitle";
+  static loadingText = "loadingText";
+  static ciltNoSequencesAssociated = "ciltNoSequencesAssociated";
+  static notificationInfoTitle = "notificationInfoTitle";
+  static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences";
+  static noOplAssociatedWithSequence = "noOplAssociatedWithSequence";
+  static oplNoMultimediaFiles = "oplNoMultimediaFiles";
+  static errorTargetSequenceInvalidOrder = "errorTargetSequenceInvalidOrder";
+  static errorReorderingSequencesWillRestore = "errorReorderingSequencesWillRestore";
+  static columnOrder = "columnOrder";
+  static columnSequence = "columnSequence";
+  static columnStandardTimeSeconds = "columnStandardTimeSeconds";
+  static columnStandardTime = "columnStandardTime";
+  static columnToolsRequired = "columnToolsRequired";
+  static columnAssociatedOpl = "columnAssociatedOpl";
+  static buttonSchedule = "buttonSchedule";
+  static buttonViewOpl = "buttonViewOpl";
+  static searchSequencesPlaceholder = "searchSequencesPlaceholder";
+  static buttonCreateSequence = "buttonCreateSequence";
+  static totalSequencesCount = "totalSequencesCount";
+  static columnColor = "columnColor";
+  static columnFrequency = "columnFrequency";
+  static columnCiltType = "columnCiltType";
+  static columnActions = "columnActions";
+  static buttonViewDetails = "buttonViewDetails";
+  static buttonEdit = "buttonEdit";
+  static buttonViewOplRef = "buttonViewOplRef";
+  static buttonViewOplRem = "buttonViewOplRem";
 
   // Páginas de error
   static notFoundPageTitle = "notFoundPageTitle";
@@ -1400,7 +1431,6 @@ class StringsBase {
   static toleranceAfterMinutes = "toleranceAfterMinutes"
   static secuencesOf = "secuencesOf"
   static errorLoadingOplDetails = "errorLoadingOplDetails"
-  static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences"
   static thisCilt = "thisCilt"
   static noSequences = "noSequences"
   static seeAssignments = "seeAssignments"
