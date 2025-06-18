@@ -172,7 +172,14 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
 
   const navigateToSequences = (cilt: CiltMstr) => {
     const ciltId = cilt.id.toString();
-    navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/${ciltId}`);
+    // Pasar la información del sitio en el estado de navegación para mantener la consistencia en el SideBar
+    navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/${ciltId}`, {
+      state: {
+        siteId: location.state?.siteId,
+        siteName: location.state?.siteName,
+        siteLogo: location.state?.siteLogo
+      }
+    });
   };
 
   const showCreateSequenceModal = (cilt: CiltMstr) => {

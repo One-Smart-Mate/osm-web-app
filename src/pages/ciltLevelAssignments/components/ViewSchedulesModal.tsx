@@ -138,7 +138,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
           pagination={false}
         />
       ) : (
-        <Empty description={Strings.thereAreNoSchedules} />
+        <Empty description={Strings.noSchedulesFound} />
       )}
     </Modal>
   );

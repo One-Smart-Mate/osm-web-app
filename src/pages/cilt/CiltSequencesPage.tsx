@@ -17,7 +17,7 @@ import {
   Input,
   Table,
 } from "antd";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   SearchOutlined,
   ArrowLeftOutlined,
@@ -217,6 +217,7 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
 const CiltSequencesPage = () => {
   const { ciltId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
   const [sequences, setSequences] = useState<CiltSequence[]>([]);
@@ -444,6 +445,7 @@ const CiltSequencesPage = () => {
   };
 
   const goBack = () => {
+    // Navegar hacia atrás preservando la información del sitio en el estado
     navigate(-1);
   };
 
@@ -787,6 +789,7 @@ const CiltSequencesPage = () => {
             cilt={currentCilt}
             onCancel={handleCreateSequenceCancel}
             onSuccess={handleCreateSequenceSuccess}
+            siteId={location.state?.siteId}
           />
         )}
 

@@ -1480,6 +1480,9 @@ const resources = {
       seeDiagram: "See Diagram",
       amCard: "AM Tag",
       execitionId: "Execution ID",
+      noOplSopAssigned: "This level doesn't have OPL/SOP assigned.",
+      noSchedulesFound: "No schedules found.",
+      positionsAssignedSuccessfully: "Positions assigned successfully.",
     },
   },
   es: {
@@ -2973,6 +2976,9 @@ const resources = {
       seeDiagram: "Ver Diagrama",
       amCard: "Tarjeta AM",
       execitionId: "Id de la ejecución",
+      noOplSopAssigned: "No hay OPL/SOP asignados a este nivel",
+      noSchedulesFound: "Sin calendarizaciones",
+      positionsAssignedSuccessfully: "Posiciones asignadas correctamente",
     },
   },
 };

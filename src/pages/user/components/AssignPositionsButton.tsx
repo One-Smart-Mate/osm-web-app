@@ -4,7 +4,6 @@ import { Button } from "antd";
 import {
   handleErrorNotification,
   handleSucccessNotification,
-  NotificationSuccess,
 } from "../../../utils/Notifications";
 import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
 import { Position } from "../../../data/postiions/positions";
@@ -99,14 +98,22 @@ const AssignPositionsButton = ({
 
       // Combine all positions that need updates
       const positionsToUpdate = [
-        ...positionsToAdd.map((p) => ({
-          ...p,
-          userIds: [...p.userIds, userIdNumber],
-        })),
-        ...positionsToRemove.map((p) => ({
-          ...p,
-          userIds: p.userIds.filter((id) => id !== userIdNumber),
-        })),
+        ...positionsToAdd.map((p) => {
+          // Create a new object without the 'order' property
+          const { order, ...positionWithoutOrder } = p;
+          return {
+            ...positionWithoutOrder,
+            userIds: [...p.userIds, userIdNumber],
+          };
+        }),
+        ...positionsToRemove.map((p) => {
+          // Create a new object without the 'order' property
+          const { order, ...positionWithoutOrder } = p;
+          return {
+            ...positionWithoutOrder,
+            userIds: p.userIds.filter((id) => id !== userIdNumber),
+          };
+        }),
       ];
 
       // Update all positions that need changes
@@ -118,8 +125,8 @@ const AssignPositionsButton = ({
         await Promise.all(updatePromises);
       }
 
-      // Notify success and trigger refresh
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      // Notify success with a specific message for position assignment
+      handleSucccessNotification(Strings.positionsAssignedSuccessfully);
       onPositionsUpdated();
     } catch (error) {
       console.error("Error updating positions:", error);

@@ -1503,6 +1503,9 @@ class StringsBase {
   static tagCardEvidenceTitle = "tagCardEvidenceTitle"
   static noEvidencesAvailable = "noEvidencesAvailable"
   static errorUpdatingOrder = "errorUpdatingOrder"
+  static noOplSopAssigned = "noOplSopAssigned"
+  static noSchedulesFound = "noSchedulesFound"
+  static positionsAssignedSuccessfully = "positionsAssignedSuccessfully"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

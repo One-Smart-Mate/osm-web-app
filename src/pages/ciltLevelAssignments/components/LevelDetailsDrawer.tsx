@@ -18,12 +18,16 @@ import {
   Empty,
   Input,
   notification,
+  List,
 } from "antd";
-import { SearchOutlined, FileOutlined, CalendarOutlined } from "@ant-design/icons";
+import { SearchOutlined, FileOutlined, CalendarOutlined, UserOutlined } from "@ant-design/icons";
 import ViewSchedulesModal from "./ViewSchedulesModal";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
+import { useGetPositionUsersQuery } from "../../../services/positionService";
+import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
+import { Responsible } from "../../../data/user/user";
 import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 
 
@@ -89,6 +93,65 @@ interface CiltSequence {
 }
 
 const { Text } = Typography;
+
+// Componente para el botón de calendarizaciones
+interface ScheduleButtonProps {
+  sequence: CiltSequence;
+  onViewSchedules: (sequence: CiltSequence) => void;
+}
+
+const ScheduleButton = ({ sequence, onViewSchedules }: ScheduleButtonProps) => {
+  const { data: schedules = [], isLoading } = useGetSchedulesBySequenceQuery(sequence.id, {
+    refetchOnMountOrArgChange: true,
+    skip: !sequence.id
+  });
+
+  if (isLoading) {
+    return <Button type="default" loading>{Strings.viewSchedules}</Button>;
+  }
+
+  if (!schedules.length) {
+    return <Button type="default" disabled>{Strings.noSchedulesFound}</Button>;
+  }
+
+  return (
+    <Button 
+      type="default" 
+      onClick={() => onViewSchedules(sequence)}
+    >
+      {Strings.viewSchedules}
+    </Button>
+  );
+};
+
+// Componente para mostrar los usuarios de una posición
+const PositionUsers = ({ positionId }: { positionId: string }) => {
+  const { data: users = [], isLoading } = useGetPositionUsersQuery(positionId, {
+    refetchOnMountOrArgChange: true
+  });
+
+  if (isLoading) {
+    return <Spin size="small" />;
+  }
+
+  if (!users.length) {
+    return <Text type="secondary">{Strings.noAssignedUsers || "No hay usuarios asignados"}</Text>;
+  }
+
+  return (
+    <List
+      size="small"
+      bordered
+      className="shadow-md rounded-md bg-white max-w-xs"
+      dataSource={users}
+      renderItem={(user: Responsible) => (
+        <List.Item>
+          <UserOutlined className="mr-2" /> {user.name}
+        </List.Item>
+      )}
+    />
+  );
+};
 
 interface LevelDetailsDrawerProps {
   visible: boolean;
@@ -437,6 +500,27 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 <p><strong>{Strings.level}:</strong> {assignment.position?.levelName}</p>
                 <p><strong>{Strings.description}:</strong> {assignment.position?.description}</p>
                 <p><strong>Ruta:</strong> {assignment.position?.route || 'N/A'}</p>
+                
+                <div style={{ marginTop: '10px' }}>
+                  <Button 
+                    type="default" 
+                    size="small"
+                    onClick={(e) => {
+                      const button = e.currentTarget;
+                      const usersList = button.nextElementSibling as HTMLElement;
+                      if (usersList) {
+                        const isVisible = usersList.style.display !== 'none';
+                        usersList.style.display = isVisible ? 'none' : 'block';
+                        button.classList.toggle('text-blue-500', !isVisible);
+                      }
+                    }}
+                  >
+                    {Strings.users || "Usuarios"}
+                  </Button>
+                  <div style={{ marginTop: '8px', display: 'none' }}>
+                    <PositionUsers positionId={assignment.position?.id.toString()} />
+                  </div>
+                </div>
               </Card>
             </Col>
           ))}
@@ -631,9 +715,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={
               <span>
-                {Strings.errorLoadingData}
-                <br />
-                <small style={{ color: 'gray' }}>Error loading OPL assignments</small>
+                {Strings.noOplSopAssigned}
               </span>
             }
           />
@@ -644,7 +726,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     if (!oplAssignments || oplAssignments.length === 0) {
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <Empty description={Strings.noOplAssignmentsFound || "No OPL assignments found for this level"} />
+          <Empty description={Strings.noOplAssignmentsFound} />
         </div>
       );
     }
@@ -887,12 +969,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                           >
                             {Strings.scheduleSequence}
                           </Button>
-                          <Button 
-                            type="default" 
-                            onClick={() => showViewSchedules(sequence)}
-                          >
-                            {Strings.viewSchedules}
-                          </Button>
+                          <ScheduleButton sequence={sequence} onViewSchedules={showViewSchedules} />
                         </div>
                       </Card>
                     </div>

@@ -6,6 +6,7 @@ import { Avatar, theme, Tooltip } from "antd";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { buildRoute, getUserSiderOptions, navigateWithState } from "../../routes/RoutesExtensions";
+import { useLocation } from "react-router-dom";
 
 interface SideBarProps {
   collapsed: boolean;
@@ -18,6 +19,7 @@ const SideBar: React.FC<SideBarProps> = ({
 }) => {
   const { token } = theme.useToken();
   const navigate = navigateWithState();
+  const location = useLocation();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
@@ -104,10 +106,10 @@ const SideBar: React.FC<SideBarProps> = ({
             padding: "0 24px",
           }}
         >
-          <Avatar src={<img src={user?.logo} alt="avatar" />} size={"large"} />
+          <Avatar src={<img src={location.state?.siteLogo || user?.logo} alt="avatar" />} size={"large"} />
           {!collapsed && (
             <span style={{ fontSize: 12, fontWeight: 500, marginLeft: 8 }}>
-              {user?.companyName}
+              {location.state?.siteName || user?.companyName}
             </span>
           )}
         </div>
