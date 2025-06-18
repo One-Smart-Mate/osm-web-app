@@ -1405,6 +1405,11 @@ class StringsBase {
   static errorSavingSchedule = "errorSavingSchedule";
   static scheduleSavedSuccessfully = "scheduleSavedSuccessfully";
   static errorSaveSchedule = "errorSaveSchedule";
+  static addSchedule = "addSchedule";
+  static removeSchedule = "removeSchedule";
+  static labelOrder = "labelOrder";
+  static requiredOrder = "requiredOrder";
+  static errorNoSchedules = "errorNoSchedules";
   static labelSchedule = "labelSchedule";
   static requiredSchedule = "requiredSchedule";
   static labelScheduleType = "labelScheduleType";
