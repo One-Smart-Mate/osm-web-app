@@ -934,7 +934,7 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspended",
       ciltMstrListCanceledFilter: "Canceled",
       ciltMstrCreateSequenceButton: "Create Sequence",
-      addFiles: "Add Files",
+      addFiles: "Add/Remove Files",
 
       // OPL related strings
       oplViewModalTitle: "OPL Details",
@@ -1486,6 +1486,16 @@ const resources = {
       noOplSopAssigned: "This level doesn't have OPL/SOP assigned.",
       noSchedulesFound: "No schedules found.",
       positionsAssignedSuccessfully: "Positions assigned successfully.",
+      errorUpdatingSequenceOrder: "Error while updating sequence order.",
+      removeFile: "Remove File",
+      removeFileConfirm: "Are you sure you want to remove this file?",
+      fileDeletedSuccessfully: "File removed successfully.",
+      errorDeletingFile: "Error removing file.",
+      notificationSuccessTitle: "Success",
+      notificationErrorTitle: "Error",
+      removeText: "Remove Text",
+      removeTextConfirm: "Are you sure you want to remove this text?",
+
     },
   },
   es: {
@@ -2421,7 +2431,7 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspendido",
       ciltMstrListCanceledFilter: "Cancelado",
       ciltMstrCreateSequenceButton: "Crear Secuencia",
-      addFiles: "Agregar archivos",
+      addFiles: "Agregar/Quitar archivos",
 
       // OPL related strings
       oplViewModalTitle: "Detalles del OPL",
@@ -2985,6 +2995,16 @@ const resources = {
       noOplSopAssigned: "No hay OPL/SOP asignados a este nivel",
       noSchedulesFound: "Sin calendarizaciones",
       positionsAssignedSuccessfully: "Posiciones asignadas correctamente",
+      errorUpdatingSequenceOrder: "Error al actualizar el orden en el servidor. Se recargará la tabla.",
+      removeFile: "Quitar Archivo",
+      removeFileConfirm: "¿Estás seguro de que quieres quitar este archivo?",
+      fileDeletedSuccessfully: "Archivo eliminado correctamente.",
+      errorDeletingFile: "Error al eliminar el archivo.",
+      notificationSuccessTitle: "Éxito",
+      notificationErrorTitle: "Error",
+      removeText: "Quitar Texto",
+      removeTextConfirm: "¿Estás seguro de que quieres quitar este texto?",
+
     },
   },
 };

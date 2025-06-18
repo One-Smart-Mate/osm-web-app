@@ -60,6 +60,13 @@ export const oplDetailsService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: OplDetail }) => response.data,
     }),
+    // DELETE /opl-details/:id
+    deleteOplDetail: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/opl-details/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -71,4 +78,5 @@ export const {
   useCreateOplDetailMutation,
   useUpdateOplDetailMutation,
   useUpdateOplDetailOrderMutation,
+  useDeleteOplDetailMutation,
 } = oplDetailsService;

@@ -47,6 +47,7 @@ import { formatSecondsToNaturalTime } from "../../utils/timeUtils";
 import type { ColumnsType } from "antd/es/table";
 // import Strings from "../../utils/localizations/Strings"; // Using direct Spanish strings as per user request
 import { MdDragHandle } from "react-icons/md";
+import Strings from "../../utils/localizations/Strings";
 
 const { Text } = Typography;
 
@@ -470,101 +471,76 @@ const CiltSequencesPage = () => {
       if (draggedItem.originalIndex === draggedItem.index) return;
       if (draggedItem.recordId < 0) return;
 
-      // Use the ref to get the most up-to-date sequences
-      const currentSequences = [...sequencesRef.current];
-      
-      // Double check that we have sequences
-      if (!currentSequences || currentSequences.length === 0) {
-        console.error("No sequences available", { draggedItem });
-        setRefreshTrigger(prev => prev + 1);
-        return;
-      }
-
-      const finalIndex = draggedItem.index;
-      
-      // Safety checks for index bounds
-      if (finalIndex < 0 || finalIndex >= currentSequences.length) {
-        console.error("Invalid drop index", { finalIndex, length: currentSequences.length });
-        setRefreshTrigger(prev => prev + 1);
-        return;
-      }
-      
-      // For safety, try to find using final position first, then fall back to ID matching
-      let draggedSequence: CiltSequence | undefined = currentSequences[finalIndex];
-      
-      // If not found by position or if IDs don't match, try to find by ID
-      if (!draggedSequence || draggedSequence.id !== draggedItem.recordId) {
-        const foundSequence = currentSequences.find(seq => seq.id === draggedItem.recordId);
-        if (foundSequence) {
-          draggedSequence = foundSequence;
-        }
-      }
-      
-      // Check if we have valid sequences
-      if (!draggedSequence) {
-        notification.error({ message: "Error al reordenar", description: "No se pudo encontrar la secuencia arrastrada." });
-        setRefreshTrigger(prev => prev + 1);
-        return;
-      }
-
-      // Get adjacent sequences to calculate new order
-      const sequenceBefore = finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
-      const sequenceAfter = finalIndex < currentSequences.length - 1 ? currentSequences[finalIndex + 1] : null;
-
-      // Find the order values for adjacent sequences
-      const orderBefore = typeof sequenceBefore?.order === "number" ? sequenceBefore.order : null;
-      const orderAfter = typeof sequenceAfter?.order === "number" ? sequenceAfter.order : null;
-
-      // Determine the new order value
-      let newOrder: number;
-
-      if (orderBefore !== null && orderAfter !== null) {
-        // If between two sequences, find a value between them
-        if (orderAfter - orderBefore > 1) {
-          // If there's space between the orders, calculate a middle value
-          newOrder = Math.floor(orderBefore + (orderAfter - orderBefore) / 2);
-        } else {
-          // If no gap, use one of the existing orders and let backend handle swapping
-          newOrder = orderAfter;
-        }
-      } else if (orderBefore !== null) {
-        // If at the end of the list
-        newOrder = orderBefore + 1;
-      } else if (orderAfter !== null) {
-        // If at the beginning of the list
-        newOrder = orderAfter > 1 ? orderAfter - 1 : 1;
-      } else {
-        // Only one item
-        newOrder = 1;
-      }
-
-      // Final validation to ensure we never send invalid values to the backend
-      if (isNaN(newOrder) || newOrder < 1) {
-        console.error("Calculated order is invalid, using fallback value");
-        newOrder = 1000; // Safe fallback that meets the @Min(1) constraint
-      }
-
-      // Ensure we're only sending integers since the backend doesn't handle decimals well
-      newOrder = Math.floor(newOrder);
-
       try {
-        // Log the values we're sending to help with debugging
-        console.log("Sending reorder request:", {
-          sequenceId: draggedSequence.id,
-          newOrder: newOrder,
-          draggedItemId: draggedItem.recordId,
-          originalIndex: draggedItem.originalIndex,
-          finalIndex: finalIndex,
-          orderBefore: orderBefore,
-          orderAfter: orderAfter,
-          currentSequencesLength: currentSequences.length
-        });
+        // Use the ref to get the most up-to-date sequences
+        const currentSequences = [...sequencesRef.current];
+        
+        // Double check that we have sequences
+        if (!currentSequences || currentSequences.length === 0) {
+          console.error("No sequences available", { draggedItem });
+          setRefreshTrigger(prev => prev + 1);
+          return;
+        }
+
+        const finalIndex = draggedItem.index;
+        
+        // Safety checks for index bounds
+        if (finalIndex < 0 || finalIndex >= currentSequences.length) {
+          console.error("Invalid drop index", { finalIndex, length: currentSequences.length });
+          setRefreshTrigger(prev => prev + 1);
+          return;
+        }
+        
+        // For safety, try to find using final position first, then fall back to ID matching
+        let draggedSequence: CiltSequence | undefined = currentSequences[finalIndex];
+        
+        // If not found by position or if IDs don't match, try to find by ID
+        if (!draggedSequence || draggedSequence.id !== draggedItem.recordId) {
+          const foundSequence = currentSequences.find(seq => seq.id === draggedItem.recordId);
+          if (foundSequence) {
+            draggedSequence = foundSequence;
+          }
+        }
+        
+        // Check if we have valid sequences
+        if (!draggedSequence) {
+          notification.error({ message: "Error al reordenar", description: "No se pudo encontrar la secuencia arrastrada." });
+          setRefreshTrigger(prev => prev + 1);
+          return;
+        }
+
+        // Get adjacent sequences to calculate new order
+        const sequenceBefore = finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
+        const sequenceAfter = finalIndex < currentSequences.length - 1 ? currentSequences[finalIndex + 1] : null;
+
+        // Get the order values of adjacent sequences
+        const orderBefore = sequenceBefore ? sequenceBefore.order : null;
+        const orderAfter = sequenceAfter ? sequenceAfter.order : null;
+
+        // Calculate new order based on adjacent sequences
+        let newOrder: number;
+        if (orderBefore !== null && orderAfter !== null) {
+          // If between two sequences, take the average
+          newOrder = orderBefore + (orderAfter - orderBefore) / 2;
+        } else if (orderBefore !== null) {
+          // If at the end of the list
+          newOrder = orderBefore + 1;
+        } else if (orderAfter !== null) {
+          // If at the beginning of the list
+          newOrder = orderAfter > 1 ? orderAfter - 1 : 1;
+        } else {
+          // Only one item
+          newOrder = 1;
+        }
+
+        // Ensure we're only sending integers since the backend doesn't handle decimals well
+        newOrder = Math.floor(newOrder);
 
         // Ensure we're sending valid data to the API
-        if (!draggedSequence || !draggedSequence.id || isNaN(newOrder)) {
+        if (!draggedSequence.id || isNaN(newOrder)) {
           throw new Error("Invalid data for sequence update");
         }
-
+        
         // Simple visual feedback  
         const reorderedRow = document.querySelector(
           `tr[data-row-key="${draggedSequence.id}"]`
@@ -576,20 +552,38 @@ const CiltSequencesPage = () => {
           }, 1500);
         }
         
-        // Send the update to the backend
-        await updateCiltSequenceOrder({ 
+        const updatedSequence = { ...draggedSequence, order: newOrder };
+        
+        const updatedSequences = currentSequences.map(seq => 
+          seq.id === updatedSequence.id ? updatedSequence : seq
+        ).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        
+        
+        setSequences(updatedSequences);
+        setFilteredSequences(updatedSequences);
+        sequencesRef.current = updatedSequences;
+        
+        // Send the update to the backend sin esperar a que termine
+        updateCiltSequenceOrder({ 
           sequenceId: draggedSequence.id, 
           newOrder: Math.max(1, newOrder) 
+        }).then(() => {
+          console.log("Reorder successful");
+        }).catch(error => {
+          console.error("Error updating order in backend:", error);
+          AnatomyNotification.error(notification, {
+            data: {
+              message: Strings.errorUpdatingSequenceOrder,
+            },
+          });
+          setRefreshTrigger(prev => prev + 1);
         });
-
-        console.log("Reorder successful");
-        setRefreshTrigger(prev => prev + 1);
       } catch (error) {
-        console.error("Error al reordenar secuencias:", error);
+        console.error(Strings.errorUpdatingSequenceOrder, error);
         AnatomyNotification.error(notification, {
           data: {
             message:
-              "Error al reordenar las secuencias. Se restaurará el orden anterior.",
+              Strings.errorUpdatingSequenceOrder,
           },
         });
         setRefreshTrigger((p) => p + 1);
@@ -597,6 +591,7 @@ const CiltSequencesPage = () => {
     },
     [updateCiltSequenceOrder, notification, setRefreshTrigger]
   );
+  
   const columns: ColumnsType<CiltSequence> = [
     {
       title: "",

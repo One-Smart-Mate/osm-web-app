@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Upload, Button, Image } from "antd";
-import { InboxOutlined, EyeOutlined } from "@ant-design/icons";
+import { Upload, Button, Image, Popconfirm, Tooltip, Space } from "antd";
+import { InboxOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 
@@ -29,6 +29,8 @@ interface OplMediaUploaderProps {
   onPreview: (file: UploadFile) => void;
   onUpload: () => void;
   onCancel: () => void;
+  onRemoveExistingFile?: (file: UploadFile) => void; // For deleting files already on server
+  isDeletingExistingFile?: boolean; // To disable remove button during API call
 }
 
 const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
@@ -39,6 +41,8 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
   onPreview,
   onUpload,
   onCancel,
+  onRemoveExistingFile,
+  isDeletingExistingFile,
 }) => {
   
   const getAcceptType = () => {
@@ -160,6 +164,60 @@ const OplMediaUploader: React.FC<OplMediaUploaderProps> = ({
         }}
         style={{ marginBottom: fileType === 'text' ? 16 : 0 }}
         showUploadList={fileType !== 'imagen' || fileList.length === 0}
+        itemRender={(originNode: React.ReactElement<any>, file, _currFileList, actions) => {
+          // Only show remove button for files that are already uploaded (e.g., have a URL)
+          // and if the onRemoveExistingFile callback is provided.
+          const isExistingFile = !!file.url && onRemoveExistingFile;
+
+          return (
+            <div 
+              className="ant-upload-list-item ant-upload-list-item-done ant-upload-list-item-list-type-text"
+              style={{
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                padding: '8px',
+                // Prevent image previews from showing the default list item here
+                ...(fileType === 'imagen' && fileList.length > 0 && fileList[0].uid === file.uid && { display: 'none' })
+              }}
+            >
+              <div className="ant-upload-list-item-info" onClick={() => handlePreview(file)} style={{cursor: 'pointer'}}>
+                {originNode.props.children[0]} {/* Icon */}
+                <span className="ant-upload-list-item-name" title={file.name}>{file.name}</span>
+              </div>
+              <Space>
+                {isExistingFile && (
+                  <Popconfirm
+                    title={Strings.removeFileConfirm}
+                    onConfirm={() => onRemoveExistingFile(file)}
+                    okText={Strings.yes}
+                    cancelText={Strings.no}
+                    disabled={isDeletingExistingFile}
+                  >
+                    <Tooltip title={Strings.removeFile}>
+                      <Button 
+                        type="text" 
+                        danger 
+                        icon={<DeleteOutlined />} 
+                        loading={isDeletingExistingFile} 
+                        disabled={isDeletingExistingFile}
+                      />
+                    </Tooltip>
+                  </Popconfirm>
+                )}
+                {!isExistingFile && file.status !== 'uploading' && (
+                   // Default Ant Design remove button for newly added files (not yet uploaded to server)
+                  <Button 
+                    type="text" 
+                    danger 
+                    icon={<DeleteOutlined />} 
+                    onClick={actions.remove} 
+                  />
+                )}
+              </Space>
+            </div>
+          );
+        }}
       >
         <p className="ant-upload-drag-icon">
           <InboxOutlined />

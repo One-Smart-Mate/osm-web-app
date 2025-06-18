@@ -1508,6 +1508,15 @@ class StringsBase {
   static noOplSopAssigned = "noOplSopAssigned"
   static noSchedulesFound = "noSchedulesFound"
   static positionsAssignedSuccessfully = "positionsAssignedSuccessfully"
+  static removeFile = "removeFile"
+  static removeFileConfirm = "removeFileConfirm"
+  static fileDeletedSuccessfully = "fileDeletedSuccessfully"
+  static errorDeletingFile = "errorDeletingFile"
+  static notificationSuccessTitle = "notificationSuccessTitle"
+  static notificationErrorTitle = "notificationErrorTitle"
+  static removeText = "removeText"
+  static removeTextConfirm = "removeTextConfirm"
+  static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

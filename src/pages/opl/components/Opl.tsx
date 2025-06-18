@@ -312,6 +312,12 @@ const Opl = (): React.ReactElement => {
     setFileList([]);
   };
 
+  const handleDetailDeleted = async (_detailId: number) => {
+    if (currentOpl?.id) {
+      await fetchOplDetails(String(currentOpl.id));
+    }
+  };
+
   const handleDetailTabChange = (key: string) => {
     setActiveDetailTab(key);
     detailForm.resetFields();
@@ -569,6 +575,7 @@ const Opl = (): React.ReactElement => {
         onAddMedia={(type) =>
           handleAddMediaDetail(type as "imagen" | "video" | "pdf")
         }
+        onDetailDeleted={handleDetailDeleted}
       />
     </div>
   );
