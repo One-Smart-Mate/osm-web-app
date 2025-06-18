@@ -113,7 +113,7 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
       siteId: Number(currentCilt.siteId),
       ciltId: currentCilt.id,
       secuenceId: Number(selectedSequence.id),
-      schedule: schedule.schedule,
+      schedules: [schedule.schedule],
       scheduleType: schedule.scheduleType,
       createdAt: now,
       status: "A"

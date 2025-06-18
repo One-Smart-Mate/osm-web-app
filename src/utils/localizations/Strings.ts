@@ -3,7 +3,11 @@ import i18n from "../../config/i18n";
 class StringsBase {
   // CILT Cloning
   static withSequences = "withSequences";
+  // Special Warning field
+  static specialWarning = "specialWarning";
   // For the Routes.tsx sidebar
+  static dragToReorder = "dragToReorder";
+  static oplDetailsContentItem = "oplDetailsContentItem";
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";
   static prioritiesSB = "prioritiesSB";
@@ -49,6 +53,7 @@ class StringsBase {
   static realDuration = "realDuration";
   static sequenceList = "sequenceList";
   static statusText = "statusText";
+  static ciltSequenceDragError = "ciltSequenceDragError";
 
   // CILT Master strings
   static ciltMstrPageTitle = "ciltMstrPageTitle";
@@ -416,6 +421,36 @@ class StringsBase {
   static preclassifier = "preclassifier";
   static updatePreclassifier = "updatePreclassifier";
   static levelsof = "levelsof";
+
+  // CILT Sequences Page
+  static ciltSequencesPageTitle = "ciltSequencesPageTitle";
+  static loadingText = "loadingText";
+  static ciltNoSequencesAssociated = "ciltNoSequencesAssociated";
+  static notificationInfoTitle = "notificationInfoTitle";
+  static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences";
+  static noOplAssociatedWithSequence = "noOplAssociatedWithSequence";
+  static oplNoMultimediaFiles = "oplNoMultimediaFiles";
+  static errorTargetSequenceInvalidOrder = "errorTargetSequenceInvalidOrder";
+  static errorReorderingSequencesWillRestore = "errorReorderingSequencesWillRestore";
+  static columnOrder = "columnOrder";
+  static columnSequence = "columnSequence";
+  static columnStandardTimeSeconds = "columnStandardTimeSeconds";
+  static columnStandardTime = "columnStandardTime";
+  static columnToolsRequired = "columnToolsRequired";
+  static columnAssociatedOpl = "columnAssociatedOpl";
+  static buttonSchedule = "buttonSchedule";
+  static buttonViewOpl = "buttonViewOpl";
+  static searchSequencesPlaceholder = "searchSequencesPlaceholder";
+  static buttonCreateSequence = "buttonCreateSequence";
+  static totalSequencesCount = "totalSequencesCount";
+  static columnColor = "columnColor";
+  static columnFrequency = "columnFrequency";
+  static columnCiltType = "columnCiltType";
+  static columnActions = "columnActions";
+  static buttonViewDetails = "buttonViewDetails";
+  static buttonEdit = "buttonEdit";
+  static buttonViewOplRef = "buttonViewOplRef";
+  static buttonViewOplRem = "buttonViewOplRem";
 
   // Páginas de error
   static notFoundPageTitle = "notFoundPageTitle";
@@ -1370,6 +1405,11 @@ class StringsBase {
   static errorSavingSchedule = "errorSavingSchedule";
   static scheduleSavedSuccessfully = "scheduleSavedSuccessfully";
   static errorSaveSchedule = "errorSaveSchedule";
+  static addSchedule = "addSchedule";
+  static removeSchedule = "removeSchedule";
+  static labelOrder = "labelOrder";
+  static requiredOrder = "requiredOrder";
+  static errorNoSchedules = "errorNoSchedules";
   static labelSchedule = "labelSchedule";
   static requiredSchedule = "requiredSchedule";
   static labelScheduleType = "labelScheduleType";
@@ -1400,7 +1440,6 @@ class StringsBase {
   static toleranceAfterMinutes = "toleranceAfterMinutes"
   static secuencesOf = "secuencesOf"
   static errorLoadingOplDetails = "errorLoadingOplDetails"
-  static errorLoadingCiltOrSequences = "errorLoadingCiltOrSequences"
   static thisCilt = "thisCilt"
   static noSequences = "noSequences"
   static seeAssignments = "seeAssignments"
@@ -1470,6 +1509,19 @@ class StringsBase {
   static noCommentsAvailable = "noCommentsAvailable"
   static tagCardEvidenceTitle = "tagCardEvidenceTitle"
   static noEvidencesAvailable = "noEvidencesAvailable"
+  static errorUpdatingOrder = "errorUpdatingOrder"
+  static noOplSopAssigned = "noOplSopAssigned"
+  static noSchedulesFound = "noSchedulesFound"
+  static positionsAssignedSuccessfully = "positionsAssignedSuccessfully"
+  static removeFile = "removeFile"
+  static removeFileConfirm = "removeFileConfirm"
+  static fileDeletedSuccessfully = "fileDeletedSuccessfully"
+  static errorDeletingFile = "errorDeletingFile"
+  static notificationSuccessTitle = "notificationSuccessTitle"
+  static notificationErrorTitle = "notificationErrorTitle"
+  static removeText = "removeText"
+  static removeTextConfirm = "removeTextConfirm"
+  static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -17,16 +17,20 @@ export const CILTReports = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [executions, setExecutions] = useState<CiltSequenceExecution[]>([]);
-  const [filteredExecutions, setFilteredExecutions] = useState<CiltSequenceExecution[]>([]);
+  const [filteredExecutions, setFilteredExecutions] = useState<
+    CiltSequenceExecution[]
+  >([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedExecution, setSelectedExecution] = useState<CiltSequenceExecution | null>(null);
-  
-  const [getCiltSequenceExecutionsBySite] = useGetCiltSequenceExecutionsBySiteMutation();
+  const [selectedExecution, setSelectedExecution] =
+    useState<CiltSequenceExecution | null>(null);
+
+  const [getCiltSequenceExecutionsBySite] =
+    useGetCiltSequenceExecutionsBySiteMutation();
   const location = useLocation();
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
   const siteId = location?.state?.siteId || Strings.empty;
-  
+
   // Load executions when component mounts
   useEffect(() => {
     if (!location.state) {
@@ -35,14 +39,16 @@ export const CILTReports = () => {
     }
     loadExecutions();
   }, [location.state]);
-  
+
   // Load executions
   const loadExecutions = async () => {
     if (!siteId) return;
-    
+
     setLoading(true);
     try {
-      const executionsData = await getCiltSequenceExecutionsBySite(siteId).unwrap();
+      const executionsData = await getCiltSequenceExecutionsBySite(
+        siteId
+      ).unwrap();
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -51,7 +57,7 @@ export const CILTReports = () => {
       setLoading(false);
     }
   };
-  
+
   // Filter executions based on search term
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -62,21 +68,34 @@ export const CILTReports = () => {
           // Filter by any searchable field
           String(execution.id).includes(searchTerm) ||
           String(execution.ciltId).includes(searchTerm) ||
-          (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
-          (execution.secuenceList?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
-          (execution.ciltTypeName?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
-          (execution.secuenceStart?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
-          (execution.secuenceStop?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
+          (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.secuenceList
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.ciltTypeName
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.secuenceStart
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.secuenceStop
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false)
       );
       setFilteredExecutions(filtered);
     }
   }, [executions, searchTerm]);
-  
+
   // Handle refresh
   const handleRefresh = () => {
     loadExecutions();
   };
-  
+
   // Format date
   const formatDate = (dateString: string | null) => {
     if (!dateString) return Strings.oplFormNotAssigned;
@@ -86,20 +105,21 @@ export const CILTReports = () => {
       return Strings.oplFormNotAssigned;
     }
   };
-  
+
   // Format duration
   const formatDuration = (seconds: number | null) => {
-    if (seconds === null || seconds === undefined) return Strings.oplFormNotAssigned;
-    
+    if (seconds === null || seconds === undefined)
+      return Strings.oplFormNotAssigned;
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
-    
+
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
-  
+
   const showDetailsModal = (execution: CiltSequenceExecution) => {
     setSelectedExecution(execution);
     setIsModalVisible(true);
@@ -118,6 +138,8 @@ export const CILTReports = () => {
       render: (text) => text || Strings.oplFormNotAssigned,
       width: 210,
       ellipsis: { showTitle: true },
+      sorter: (a, b) => (a.route || "").localeCompare(b.route || ""),
+      filterSearch: true,
     },
     {
       title: Strings.color,
@@ -126,7 +148,8 @@ export const CILTReports = () => {
       render: (color) => (
         <div
           style={{
-            backgroundColor: color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
+            backgroundColor:
+              color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
             width: "20px",
             height: "20px",
             borderRadius: "50%",
@@ -143,6 +166,11 @@ export const CILTReports = () => {
       key: "ciltTypeName",
       render: (text) => text || Strings.oplFormNotAssigned,
       width: 80,
+      sorter: (a, b) => (a.ciltTypeName || "").localeCompare(b.ciltTypeName || ""),
+      filterSearch: true,
+      filters: Array.from(new Set(executions.map(item => item.ciltTypeName || "").filter(Boolean)))
+        .map(type => ({ text: type, value: type })),
+      onFilter: (value, record) => record.ciltTypeName === value as string,
     },
     {
       title: Strings.schedule,
@@ -150,6 +178,12 @@ export const CILTReports = () => {
       key: "secuenceSchedule",
       render: (text) => formatDate(text),
       width: 100,
+      sorter: (a, b) => {
+        if (!a.secuenceSchedule && !b.secuenceSchedule) return 0;
+        if (!a.secuenceSchedule) return -1;
+        if (!b.secuenceSchedule) return 1;
+        return new Date(a.secuenceSchedule).getTime() - new Date(b.secuenceSchedule).getTime();
+      },
     },
     {
       title: Strings.duration,
@@ -157,6 +191,12 @@ export const CILTReports = () => {
       key: "duration",
       render: (duration) => formatDuration(duration),
       width: 70,
+      sorter: (a, b) => {
+        if (a.duration === null && b.duration === null) return 0;
+        if (a.duration === null) return -1;
+        if (b.duration === null) return 1;
+        return a.duration - b.duration;
+      },
     },
     {
       title: Strings.standardOk,
@@ -164,6 +204,7 @@ export const CILTReports = () => {
       key: "standardOk",
       render: (text) => text || Strings.oplFormNotAssigned,
       width: 120,
+      filterSearch: true,
     },
     {
       title: Strings.status,
@@ -178,20 +219,22 @@ export const CILTReports = () => {
         );
       },
       width: 80,
+      filters: [
+        { text: Strings.active, value: "A" },
+        { text: Strings.inactive, value: "I" },
+      ],
+      onFilter: (value, record) => record.status === value as string,
     },
     {
       title: Strings.actions,
       key: "actions",
       render: (_, record) => (
-        <Button 
-          type="primary" 
-          onClick={() => showDetailsModal(record)}
-        >
+        <Button type="primary" onClick={() => showDetailsModal(record)}>
           {Strings.ciltCardListViewDetailsButton || "Ver Detalles"}
         </Button>
       ),
       width: 90,
-      fixed: 'right',
+      fixed: "right",
     },
   ];
 
@@ -202,7 +245,13 @@ export const CILTReports = () => {
       content={
         <div>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+            >
               <div>
                 <Text strong>{siteName}</Text>
               </div>
@@ -216,8 +265,15 @@ export const CILTReports = () => {
                 </Button>
               </div>
             </div>
-            
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 16,
+              }}
+            >
               <Input
                 placeholder={Strings.searchBarDefaultPlaceholder}
                 value={searchTerm}
@@ -227,7 +283,8 @@ export const CILTReports = () => {
                 style={{ width: 300 }}
               />
               <Text style={{ marginLeft: "auto" }}>
-                {Strings.total}: {filteredExecutions.length} {Strings.executions}
+                {Strings.total}: {filteredExecutions.length}{" "}
+                {Strings.executions}
               </Text>
             </div>
           </div>
@@ -237,7 +294,11 @@ export const CILTReports = () => {
               dataSource={filteredExecutions}
               columns={columns}
               rowKey={(record) => String(record.id)}
-              pagination={{ pageSize: 10, showSizeChanger: true, pageSizeOptions: ["10", "20", "50"] }}
+              pagination={{
+                pageSize: 100,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "50"],
+              }}
               bordered
               size="middle"
               scroll={{ x: 1500 }}

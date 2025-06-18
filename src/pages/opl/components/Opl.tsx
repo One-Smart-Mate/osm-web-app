@@ -11,6 +11,7 @@ import {
 import {
   useGetOplDetailsByOplMutation,
   useCreateOplDetailMutation,
+  useUpdateOplDetailOrderMutation,
 } from "../../../services/cilt/oplDetailsService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { OplMstr, CreateOplMstrDTO } from "../../../data/cilt/oplMstr/oplMstr";
@@ -67,6 +68,7 @@ const Opl = (): React.ReactElement => {
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplDetail] = useCreateOplDetailMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
+  const [updateOplDetailOrder] = useUpdateOplDetailOrderMutation();
 
   useEffect(() => {
     fetchOpls();
@@ -193,6 +195,31 @@ const Opl = (): React.ReactElement => {
   const handleViewCancel = () => {
     setViewModalVisible(false);
     setViewDetails([]);
+    setCurrentOpl(null);
+  };
+
+  // Handle updating the order of OPL details
+  const handleUpdateDetailOrder = async (detailId: number, newOrder: number) => {
+    try {
+      // Call the API to update the order
+      await updateOplDetailOrder({ detailId, newOrder }).unwrap();
+      
+      // If the current OPL is still selected, refresh details to get the updated order
+      if (currentOpl?.id) {
+        const details = await getOplDetailsByOpl(String(currentOpl.id)).unwrap();
+        // Update the view details with the new ordered data
+        if (details) {
+          const sortedDetails = [...details].sort((a, b) => a.order - b.order);
+          setViewDetails(sortedDetails);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating OPL detail order:', error);
+      notification.error({
+        message: "Error",
+        description: "Error updating order",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -283,6 +310,12 @@ const Opl = (): React.ReactElement => {
     detailForm.resetFields();
     setCurrentDetails([]);
     setFileList([]);
+  };
+
+  const handleDetailDeleted = async (_detailId: number) => {
+    if (currentOpl?.id) {
+      await fetchOplDetails(String(currentOpl.id));
+    }
   };
 
   const handleDetailTabChange = (key: string) => {
@@ -523,6 +556,7 @@ const Opl = (): React.ReactElement => {
         currentOpl={currentOpl}
         currentDetails={viewDetails}
         onCancel={handleViewCancel}
+        onUpdateDetailOrder={handleUpdateDetailOrder}
       />
 
       <OplDetailsModal
@@ -541,6 +575,7 @@ const Opl = (): React.ReactElement => {
         onAddMedia={(type) =>
           handleAddMediaDetail(type as "imagen" | "video" | "pdf")
         }
+        onDetailDeleted={handleDetailDeleted}
       />
     </div>
   );

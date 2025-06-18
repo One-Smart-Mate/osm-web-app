@@ -11,7 +11,9 @@ import {
   Col,
   Checkbox,
   notification,
+  Space,
 } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import AnatomyNotification from "../../components/AnatomyNotification";
 import dayjs from "dayjs";
@@ -70,11 +72,13 @@ export default function ScheduleSecuence({
   useEffect(() => {
     if (open) {
       if (existingSchedule) {
+        const initialSchedules = existingSchedule.schedules && Array.isArray(existingSchedule.schedules) && existingSchedule.schedules.length > 0
+          ? existingSchedule.schedules.map(s => dayjs(s, "HH:mm:ss"))
+          : [dayjs("08:00:00", "HH:mm:ss")];
         form.setFieldsValue({
+          schedules: initialSchedules,
           scheduleType: existingSchedule.scheduleType,
-          schedule: existingSchedule.schedule
-            ? dayjs(existingSchedule.schedule, "HH:mm:ss")
-            : dayjs("08:00:00", "HH:mm:ss"),
+          
           endDate: existingSchedule.endDate
             ? dayjs(existingSchedule.endDate)
             : null,
@@ -101,8 +105,8 @@ export default function ScheduleSecuence({
         setScheduleType(existingSchedule.scheduleType || "dai");
       } else {
         form.setFieldsValue({
+          schedules: [dayjs("08:00:00", "HH:mm:ss")],
           scheduleType: "dai",
-          schedule: dayjs("08:00:00", "HH:mm:ss"),
           endDate: null,
           sun: false,
           mon: true,
@@ -145,13 +149,26 @@ export default function ScheduleSecuence({
         sat: values.sat ? 1 : 0,
       };
 
+      const schedulesArray = Array.isArray(values.schedules) ? values.schedules.map((s: any) => s ? s.format("HH:mm:ss") : null).filter((s: any) => s !== null) : [];
+
+      if (schedulesArray.length === 0) {
+        AnatomyNotification.error(notification, {
+          data: {
+            message: Strings.errorNoSchedules
+          }
+        });
+        return;
+      }
+
       const scheduleData = {
         ...values,
         ...dayValues,
         siteId,
         ciltId,
         secuenceId: sequenceId,
-        schedule: values.schedule ? values.schedule.format("HH:mm:ss") : null,
+        schedules: schedulesArray, // Use the new array of schedules
+        order: existingSchedule?.order || 1, // Set default order or use existing
+        
         endDate: values.endDate ? values.endDate.format("YYYY-MM-DD") : null,
         dateOfYear: values.dateOfYear
           ? values.dateOfYear.format("YYYY-MM-DD")
@@ -244,7 +261,7 @@ AnatomyNotification.error(notification, {
     <Modal
       title={Strings.title}
       open={open}
-      destroyOnHidden={true}
+      destroyOnClose={true}
       onCancel={() => {
         onCancel();
         form.resetFields();
@@ -253,16 +270,37 @@ AnatomyNotification.error(notification, {
       width={700}
       footer={null}
     >
-      <Form form={form} layout="vertical">
+      <Form form={form} layout="vertical" initialValues={{ schedules: [undefined] }}>
         {/* Error and success messages are now shown via AnatomyNotification */}
 
-        <Form.Item
-          label={Strings.labelSchedule}
-          name="schedule"
-          rules={[{ required: true, message: Strings.requiredSchedule }]} 
-        >
-          <TimePicker format="HH:mm:ss" style={{ width: "100%" }} />
-        </Form.Item>
+        <Form.List name="schedules">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, ...restField }) => (
+                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                  <Form.Item
+                    {...restField}
+                    name={[name]}
+                    label={`${Strings.labelSchedule} ${key + 1}`}
+                    rules={[{ required: true, message: Strings.requiredSchedule }]}
+                  >
+                    <TimePicker format="HH:mm:ss" style={{ width: '150px' }} />
+                  </Form.Item>
+                  {fields.length > 1 ? (
+                    <MinusCircleOutlined onClick={() => remove(name)} style={{ fontSize: '16px', color: 'red' }} title={Strings.removeSchedule}/>
+                  ) : null}
+                </Space>
+              ))}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  {Strings.addSchedule}
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+
+
 
         <Form.Item
           label={Strings.labelScheduleType}

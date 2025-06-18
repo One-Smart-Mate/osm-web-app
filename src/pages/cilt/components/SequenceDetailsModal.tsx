@@ -21,6 +21,9 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
   onCancel,
 }) => {
   if (!sequence) return null;
+  
+  // Debug to check if specialWarning exists in the sequence object
+  console.log("Sequence object in details:", sequence);
 
   
 
@@ -146,6 +149,12 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.quantityPicturesClose}:</Text>
             <div>
               <Text>{sequence.quantityPicturesClose || "0"}</Text>
+            </div>
+          </Col>
+          <Col span={24}>
+            <Text type="secondary">{Strings.specialWarning}:</Text>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              <Text>{sequence.specialWarning || Strings.oplFormNotAssigned}</Text>
             </div>
           </Col>
         </Row>

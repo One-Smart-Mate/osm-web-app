@@ -92,6 +92,8 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     if (isVisible) {
       fetchOpls();
       fetchResponsibles();
+    } else {
+      setSearchText("");
     }
   }, [isVisible]);
 
@@ -256,21 +258,10 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
 
   const handleFileChange = (info: any) => {
     let fileList = [...info.fileList];
-
     fileList = fileList.slice(-1);
-
+    
     setFileList(fileList);
     
-    // If file is selected and it's not a text file, trigger upload automatically
-    if (fileList.length > 0 && activeDetailTab !== "2") {
-      const fileType = activeDetailTab === "3" ? "imagen" : 
-                      activeDetailTab === "4" ? "video" : 
-                      activeDetailTab === "5" ? "pdf" : "";
-      
-      if (fileType && !uploadLoading) {
-        handleAddMedia(fileType as "imagen" | "video" | "pdf");
-      }
-    }
   };
 
   const handlePreview = (file: any) => {
@@ -387,7 +378,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           });
           
           setFileList([]);
-          setActiveDetailTab("1"); // Volver a la lista
+          setActiveDetailTab("1"); 
           await fetchOplDetails(currentOpl.id);
         }
       }
@@ -677,7 +668,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   return (
     <>
       <Modal
-        title="Seleccionar OPL/SOP"
+        title={Strings.oplSelectionModalTitle}
         open={isVisible}
         onCancel={onClose}
         footer={null}
@@ -695,7 +686,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           }}
         >
           <Input
-            placeholder="Buscar por título"
+            placeholder={Strings.searchBarDefaultPlaceholder}
             prefix={<SearchOutlined />}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -707,8 +698,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             icon={<PlusOutlined />}
             onClick={() => setCreateOplModalVisible(true)}
             style={{ cursor: "pointer" }}
+            className="ml-3"
           >
-            Crear OPL
+            {Strings.oplSelectionModalCreateTitle}
           </Button>
         </div>
 

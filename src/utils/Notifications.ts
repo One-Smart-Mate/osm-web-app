@@ -24,10 +24,10 @@ export const handleWarningNotification = (value: string) => {
   });
 };
 
-export const handleSucccessNotification = (value: NotificationSuccess) => {
+export const handleSucccessNotification = (value: NotificationSuccess | string) => {
   notification.open({
     message: "Success!",
-    description: getSuccessMessage(value),
+    description: typeof value === 'string' ? value : getSuccessMessage(value),
     type: "success",
   });
 };

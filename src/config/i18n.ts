@@ -380,6 +380,29 @@ const resources = {
       updatePreclassifier: "Update preclassifier",
       levelsof: "Levels of",
 
+
+      // CILT Sequences Page
+      ciltSequencesPageTitle: "CILT Sequences: {{ciltName}}",
+      loadingText: "Loading...",
+      ciltNoSequencesAssociated: "This CILT \"{{ciltName}}\" has no associated sequences.",
+      notificationInfoTitle: "Information",
+      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
+      noOplAssociatedWithSequence: "No OPL associated with this sequence.",
+      oplNoMultimediaFiles: "The OPL \"{{oplTitle}}\" has no multimedia files.",
+      errorTargetSequenceInvalidOrder: "Error: The target sequence does not have a valid order number.",
+      errorReorderingSequencesWillRestore: "Error reordering sequences. The previous order will be restored.",
+      columnOrder: "Order",
+      columnSequence: "Sequence",
+      columnStandardTimeSeconds: "Standard Time (Seconds)",
+      columnStandardTime: "Standard Time",
+      columnToolsRequired: "Tools Required",
+      columnAssociatedOpl: "Associated OPL",
+      buttonSchedule: "Schedule",
+      buttonViewOpl: "View OPL",
+      searchSequencesPlaceholder: "Search sequences...",
+      buttonCreateSequence: "Create Sequence",
+      totalSequencesCount: "Total: {{count}} Sequences",
+
       // Errors pages
       notFoundPageTitle: "404",
       notFoundPageSubTitle: "Sorry, the page you visited does not exist.",
@@ -403,7 +426,8 @@ const resources = {
       restrictedAccessMessage:
         "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.",
 
-      // Árbol de niveles
+      // Common strings
+      dragToReorder: "Drag to reorder",
       close: "Close",
       createLevelBtn: "Create Level",
       updateLevelTree: "Update Level",
@@ -910,7 +934,7 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspended",
       ciltMstrListCanceledFilter: "Canceled",
       ciltMstrCreateSequenceButton: "Create Sequence",
-      addFiles: "Add Files",
+      addFiles: "Add/Remove Files",
 
       // OPL related strings
       oplViewModalTitle: "OPL Details",
@@ -932,6 +956,9 @@ const resources = {
       oplPdfPreviewTitle: "PDF Preview",
       oplVideoPreviewTitle: "Video Preview",
       oplClose: "Close",
+      
+      // Special Warning field
+      specialWarning: "Special Warning",
 
       // OplTable strings
       oplTableTitleColumn: "Title",
@@ -995,7 +1022,8 @@ const resources = {
       // OplDetailsModal strings
       oplDetailsModalTitle: "OPL Details: {title}",
       oplDetailsContentPreview: "Content Preview",
-      oplDetailsNoContent: "No details to display.",
+      oplDetailsNoContent: "No content has been added yet",
+      oplDetailsContentItem: "Content Item",
       oplDetailsAddContent: "Add Content",
       oplDetailsTextType: "Text",
       oplDetailsImageType: "Image",
@@ -1011,6 +1039,7 @@ const resources = {
       oplDetailsPdfPreviewTitle: "PDF Preview",
       oplDetailsVideoPreviewTitle: "Video Preview",
       oplDetailsClose: "Close",
+      errorUpdatingOrder: "Error updating details order",
       oplDetailsOpenInNewTab: "Open in New Tab",
 
       // OplDetailsList strings
@@ -1087,7 +1116,7 @@ const resources = {
       editCiltSequenceModalStandardOkLabel: "Standard OK",
       editCiltSequenceModalStandardOkRequired: "Standard OK is required",
       editCiltSequenceModalStoppageReasonLabel: "Is it a stoppage reason?",
-      editCiltSequenceModalMachineStoppedLabel: "Machine stopped?",
+      editCiltSequenceModalMachineStoppedLabel: "Execute with stopped machine",
       editCiltSequenceModalStatusLabel: "Status",
       editCiltSequenceModalQuantityPicturesCreateLabel: "Fotos al inicio",
       editCiltSequenceModalQuantityPicturesCreateRequired:
@@ -1376,14 +1405,12 @@ const resources = {
       allowExecuteBeforeMinutes: "Allow execute before minutes",
       toleranceBeforeMinutes: "Tolerance before minutes",
       toleranceAfterMinutes: "Tolerance after minutes",
-      
-      // Error logs
-      downloadErrorLogs: "Download error logs",
-      logsDownloadedSuccessfully: "Logs downloaded successfully",
-      errorGeneratingLogsFile: "Error generating logs file",
-      scheduleSequence: "Schedule Sequence",
+      addSchedule: "Add hour",
+      removeSchedule: "Remove hour",
+      labelOrder: "Order",
+      requiredOrder: "Please input the order!",
+      errorNoSchedules: "Please add at least one schedule.",
       secuencesOf: "Secuences of",
-      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
       thisCilt: "This CILT",
       noSequences: "No sequences found. You can create a new sequence using the \"Create Sequence\" button.",
       seeAssignments: "See Assignments",
@@ -1414,18 +1441,18 @@ const resources = {
       unknownSchedule: "Unknown schedule",
       of: "of",
       ofEachYear: "of each year",
-      january: "enero",
-      february: "febrero",
-      march: "marzo",
-      april: "abril",
-      may: "mayo",
-      june: "junio",
-      july: "julio",
-      august: "agosto",
-      september: "septiembre",
-      october: "octubre",
-      november: "noviembre",
-      december: "diciembre",
+      january: "January",
+      february: "February",
+      march: "March",
+      april: "April",
+      may: "May",
+      june: "June",
+      july: "July",
+      august: "August",
+      september: "September",
+      october: "October",
+      november: "November",
+      december: "December",
       schedulesSecuence: "Schedules",
       loadingSecuenceSchedule: "Loading sequence schedule",
       errorLoadingSecuenceSchedule: "Error loading sequence schedule",
@@ -1455,6 +1482,20 @@ const resources = {
       seeDiagram: "See Diagram",
       amCard: "AM Tag",
       execitionId: "Execution ID",
+      noOplSopAssigned: "This level doesn't have OPL/SOP assigned.",
+      noSchedulesFound: "No schedules found.",
+      positionsAssignedSuccessfully: "Positions assigned successfully.",
+      errorUpdatingSequenceOrder: "Error while updating sequence order.",
+      removeFile: "Remove File",
+      removeFileConfirm: "Are you sure you want to remove this file?",
+      fileDeletedSuccessfully: "File removed successfully.",
+      errorDeletingFile: "Error removing file.",
+      notificationSuccessTitle: "Success",
+      notificationErrorTitle: "Error",
+      removeText: "Remove Text",
+      removeTextConfirm: "Are you sure you want to remove this text?",
+      scheduleSequence: "Schedule Sequence",
+      
     },
   },
   es: {
@@ -1656,7 +1697,7 @@ const resources = {
       siteType: "Tipo de sitio",
       monthlyPayment: "Pago mensual",
       currency: "Moneda",
-      appHistoryDays: "Días del historial de la app",
+      appHistoryDays: "Días del historial de la aplicación",
       userLicense: "Licencia de usuario",
       concurrent: "Concurrente",
       named: "Nombrado",
@@ -1864,6 +1905,7 @@ const resources = {
         "Acceso denegado: Tu rol está limitado a la aplicación y no te permite acceder al sitio. Por favor, contacta al administrador si crees que esto es un error.",
 
       // Árbol de niveles
+      dragToReorder: "Arrastra para reordenar",
       close: "Cerrar",
       createLevelBtn: "Crear nivel",
       updateLevelTree: "Actualizar nivel",
@@ -2389,7 +2431,7 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspendido",
       ciltMstrListCanceledFilter: "Cancelado",
       ciltMstrCreateSequenceButton: "Crear Secuencia",
-      addFiles: "Agregar archivos",
+      addFiles: "Agregar/Quitar archivos",
 
       // OPL related strings
       oplViewModalTitle: "Detalles del OPL",
@@ -2447,6 +2489,9 @@ const resources = {
       oplMediaDefaultButton: "Subir Archivo",
       oplErrorInvalidFileType: "El archivo seleccionado no es un archivo válido de tipo {type}",
 
+      // Special Warning field
+      specialWarning: "Advertencia Especial",
+
       // OplFormModal strings
       oplFormModalViewTitle: "Ver OPL",
       oplFormModalEditTitle: "Editar OPL",
@@ -2474,9 +2519,10 @@ const resources = {
       oplFormCreateButton: "Crear",
 
       // OplDetailsModal strings
-      oplDetailsModalTitle: "Detalles del OPL: {title}",
+      oplDetailsModalTitle: "Detalles de OPL: {title}",
       oplDetailsContentPreview: "Vista previa del contenido",
-      oplDetailsNoContent: "No hay detalles disponibles para este OPL.",
+      oplDetailsNoContent: "No hay detalles para mostrar.",
+      oplDetailsContentItem: "Elemento de contenido",
       oplDetailsAddContent: "Agregar contenido",
       oplDetailsTextType: "Texto",
       oplDetailsImageType: "Imagen",
@@ -2492,6 +2538,7 @@ const resources = {
       oplDetailsPdfPreviewTitle: "Vista previa de PDF",
       oplDetailsVideoPreviewTitle: "Vista previa de video",
       oplDetailsClose: "Cerrar",
+      errorUpdatingOrder: "Error al actualizar el orden de los detalles",
       oplDetailsOpenInNewTab: "Abrir en una nueva pestaña",
 
       // OplDetailsList strings
@@ -2574,7 +2621,7 @@ const resources = {
       editCiltSequenceModalStandardOkLabel: "Estándar OK",
       editCiltSequenceModalStandardOkRequired: "El estándar OK es requerido",
       editCiltSequenceModalStoppageReasonLabel: "Razón de Parada",
-      editCiltSequenceModalMachineStoppedLabel: "¿Máquina detenida?",
+      editCiltSequenceModalMachineStoppedLabel: "Ejecutar con máquina detenida",
       editCiltSequenceModalStatusLabel: "Estado",
       editCiltSequenceModalQuantityPicturesCreateLabel:
         "Cantidad de Imágenes al Crear",
@@ -2736,7 +2783,7 @@ const resources = {
       imageLoadSuccess: "Imagen cargada exitosamente",
       imageLoadError: "Error al cargar imagen",
       warningImageUpload: "Advertencia: la imagen no se cargó correctamente",
-      scheduleSequence: "Calendarizar",
+      scheduleSecuence: "Calendarizar",
       errorNoSiteId: "El id del site es obligatorio",
       clearFilters: "Limpiar filtros",
       confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento CILT?",
@@ -2760,7 +2807,7 @@ const resources = {
       ciltDueDate: "Fecha de vencimiento CILT",
       ciltDueDatePlaceholder: "Fecha de vencimiento CILT",
       
-      // LevelDetailsDrawer translations
+      // Level Details Drawer
       errorLoadingData: "Error al cargar datos",
       noCiltProceduresAssigned: "No hay procedimientos CILT asignados a este nivel",
       noPositionsAssigned: "No hay posiciones asignadas a este nivel",
@@ -2945,6 +2992,22 @@ const resources = {
       seeDiagram: "Ver Diagrama",
       amCard: "Tarjeta AM",
       execitionId: "Id de la ejecución",
+      noOplSopAssigned: "No hay OPL/SOP asignados a este nivel",
+      noSchedulesFound: "Sin calendarizaciones",
+      positionsAssignedSuccessfully: "Posiciones asignadas correctamente",
+      errorUpdatingSequenceOrder: "Error al actualizar el orden en el servidor. Se recargará la tabla.",
+      removeFile: "Quitar Archivo",
+      removeFileConfirm: "¿Estás seguro de que quieres quitar este archivo?",
+      fileDeletedSuccessfully: "Archivo eliminado correctamente.",
+      errorDeletingFile: "Error al eliminar el archivo.",
+      notificationSuccessTitle: "Éxito",
+      notificationErrorTitle: "Error",
+      removeText: "Quitar Texto",
+      removeTextConfirm: "¿Estás seguro de que quieres quitar este texto?",
+      scheduleSequence: "Calendarizar",
+      addSchedule: "Agregar horario",
+      removeSchedule: "Eliminar horario",
+
     },
   },
 };

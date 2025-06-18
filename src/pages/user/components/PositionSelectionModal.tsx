@@ -38,6 +38,7 @@ const PositionSelectionModal = ({
       // Set those as initially selected
       setSelectedPositionIds(userPositionIds);
     }
+    
   }, [isVisible, userPositions]);
 
   // Filter positions based on search text

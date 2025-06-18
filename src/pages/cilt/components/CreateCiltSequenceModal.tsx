@@ -11,11 +11,10 @@ import {
   notification,
   Tooltip,
 } from "antd";
-import { useLocation } from "react-router-dom";
 import { useCreateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
 import { useGetCiltFrequenciesAllMutation } from "../../../services/cilt/ciltFrequenciesService";
-import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
+// Removed position service import that was causing 400 errors
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencies";
@@ -46,14 +45,11 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
   onSuccess,
   siteId,
 }) => {
-  const location = useLocation();
   const [form] = Form.useForm();
   const [createCiltSequence] = useCreateCiltSequenceMutation();
   const [getCiltTypesBySite] = useGetCiltTypesBySiteMutation();
   const [getCiltFrequenciesAll] = useGetCiltFrequenciesAllMutation();
-  const { data: positions } = useGetPositionsBySiteIdQuery(
-    location.state?.siteId || ""
-  );
+  // Removed position service query that was causing 400 errors
 
   const [ciltTypes, setCiltTypes] = useState<CiltType[]>([]);
   const [ciltFrequencies, setCiltFrequencies] = useState<CiltFrequency[]>([]);
@@ -77,7 +73,6 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     if (visible) {
       form.resetFields();
       
-      // Inicializar el formulario con el siteId
       if (siteId) {
         form.setFieldsValue({ siteId: Number(siteId) });
       } else if (cilt?.siteId) {
@@ -95,11 +90,10 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
     if (cilt && visible) {
       // Form initialization if needed
     }
-  }, [cilt, form, visible, positions]);
+  }, [cilt, form, visible]);
 
   // Fetch CILT types and filter by active status
   const fetchCiltTypes = async () => {
-    // Usar siteId del prop o del cilt
     const siteIdToUse = siteId || cilt?.siteId;
     if (!siteIdToUse) return;
 
@@ -234,6 +228,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             quantityPicturesCreate: Number(combinedData.quantityPicturesCreate) || 1,
             quantityPicturesClose: Number(combinedData.quantityPicturesClose) || 1,
             selectableWithoutProgramming: combinedData.selectableWithoutProgramming ? 1 : 0,
+            specialWarning: combinedData.specialWarning || null,
             status: "A",
             createdAt: new Date().toISOString(),
           };
@@ -562,6 +557,19 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Ingrese las herramientas requeridas"
                     style={{ whiteSpace: 'pre-wrap' }}
+                  />
+                </Form.Item>
+
+                {/* Special Warning */}
+                <Form.Item
+                  name="specialWarning"
+                  label={Strings.specialWarning}
+                  getValueFromEvent={(e) => e.target.value}
+                >
+                  <Input
+                    placeholder="Material peligroso, área peligrosa, etc."
+                    className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    maxLength={100}
                   />
                 </Form.Item>
               </div>

@@ -2,24 +2,56 @@ import React, { useState } from "react";
 import {
   Drawer,
   Button,
-  Spin,
-  Select,
   Space,
-  Typography,
-  notification,
+  Select,
   Row,
   Col,
+  Typography,
+  Spin,
+  List,
+  notification,
 } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 import { Position } from "../../../data/postiions/positions";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
-import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
+import { useGetPositionsBySiteIdQuery, useGetPositionUsersQuery } from "../../../services/positionService";
+import { Responsible } from "../../../data/user/user";
 import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import Strings from "../../../utils/localizations/Strings";
 import PositionDetailsModal from "./PositionDetailsModal";
 import CiltMstrDetailsModal from "./CiltMstrDetailsModal";
 
 const { Text } = Typography;
+
+// Componente para mostrar los usuarios de una posición
+const PositionUsers = ({ positionId }: { positionId: string }) => {
+  const { data: users = [], isLoading } = useGetPositionUsersQuery(positionId, {
+    refetchOnMountOrArgChange: true
+  });
+
+  if (isLoading) {
+    return <Spin size="small" />;
+  }
+
+  if (!users.length) {
+    return <Text type="secondary">{Strings.noAssignedUsers || "No hay usuarios asignados"}</Text>;
+  }
+
+  return (
+    <List
+      size="small"
+      bordered
+      className="shadow-md rounded-md bg-white max-w-xs"
+      dataSource={users}
+      renderItem={(user: Responsible) => (
+        <List.Item>
+          <UserOutlined className="mr-2" /> {user.name}
+        </List.Item>
+      )}
+    />
+  );
+};
 
 interface CiltAssignmentDrawerProps {
   isVisible: boolean;
@@ -50,8 +82,10 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   );
 
   const [positionDetailsVisible, setPositionDetailsVisible] = useState(false);
-  const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [positionToView, setPositionToView] = useState<Position | null>(null);
+  const [showPositionUsers, setShowPositionUsers] = useState(false);
+
+  const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [ciltMstrToView, setCiltMstrToView] = useState<CiltMstr | null>(null);
 
   const [positionDropdownOpen, setPositionDropdownOpen] = useState(false);
@@ -182,6 +216,14 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
               <div className="p-2 border border-gray-300 rounded mt-1">
                 {selectedNode?.name || Strings.level}
               </div>
+              {showPositionUsers && selectedPosition && (
+                <div className="mt-3 border-t pt-2">
+                  <div className="font-medium text-blue-600 mb-2">
+                    {Strings.assignedUsers || "Usuarios asignados"}
+                  </div>
+                  <PositionUsers positionId={selectedPosition.id.toString()} />
+                </div>
+              )}
             </div>
 
             <div>
@@ -240,16 +282,26 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                 </Col>
                 {selectedPosition && (
                   <Col flex="none">
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={() => {
-                        setPositionToView(selectedPosition);
-                        setPositionDetailsVisible(true);
-                      }}
-                    >
-                      {Strings.ciltCardListViewDetailsButton}
-                    </Button>
+                    <Space>
+                      <Button
+                        type="primary"
+                        size="small"
+                        onClick={() => {
+                          setPositionToView(selectedPosition);
+                          setPositionDetailsVisible(true);
+                        }}
+                      >
+                        {Strings.ciltCardListViewDetailsButton}
+                      </Button>
+                      <Button
+                        type="default"
+                        size="small"
+                        onClick={() => setShowPositionUsers(!showPositionUsers)}
+                        className={showPositionUsers ? "text-blue-500" : ""}
+                      >
+                        {Strings.users || "Usuarios"}
+                      </Button>
+                    </Space>
                   </Col>
                 )}
               </Row>
