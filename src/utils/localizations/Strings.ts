@@ -4,6 +4,8 @@ class StringsBase {
   // CILT Cloning
   static withSequences = "withSequences";
   // For the Routes.tsx sidebar
+  static dragToReorder = "dragToReorder";
+  static oplDetailsContentItem = "oplDetailsContentItem";
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";
   static prioritiesSB = "prioritiesSB";
@@ -1500,6 +1502,7 @@ class StringsBase {
   static noCommentsAvailable = "noCommentsAvailable"
   static tagCardEvidenceTitle = "tagCardEvidenceTitle"
   static noEvidencesAvailable = "noEvidencesAvailable"
+  static errorUpdatingOrder = "errorUpdatingOrder"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

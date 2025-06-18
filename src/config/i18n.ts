@@ -426,7 +426,8 @@ const resources = {
       restrictedAccessMessage:
         "Access Denied: Your role is limited to the app and does not grant permission to access the site. Please contact the administrator if you believe this is an error.",
 
-      // Árbol de niveles
+      // Common strings
+      dragToReorder: "Drag to reorder",
       close: "Close",
       createLevelBtn: "Create Level",
       updateLevelTree: "Update Level",
@@ -1018,7 +1019,8 @@ const resources = {
       // OplDetailsModal strings
       oplDetailsModalTitle: "OPL Details: {title}",
       oplDetailsContentPreview: "Content Preview",
-      oplDetailsNoContent: "No details to display.",
+      oplDetailsNoContent: "No content has been added yet",
+      oplDetailsContentItem: "Content Item",
       oplDetailsAddContent: "Add Content",
       oplDetailsTextType: "Text",
       oplDetailsImageType: "Image",
@@ -1034,6 +1036,7 @@ const resources = {
       oplDetailsPdfPreviewTitle: "PDF Preview",
       oplDetailsVideoPreviewTitle: "Video Preview",
       oplDetailsClose: "Close",
+      errorUpdatingOrder: "Error updating details order",
       oplDetailsOpenInNewTab: "Open in New Tab",
 
       // OplDetailsList strings
@@ -1110,7 +1113,7 @@ const resources = {
       editCiltSequenceModalStandardOkLabel: "Standard OK",
       editCiltSequenceModalStandardOkRequired: "Standard OK is required",
       editCiltSequenceModalStoppageReasonLabel: "Is it a stoppage reason?",
-      editCiltSequenceModalMachineStoppedLabel: "Machine stopped?",
+      editCiltSequenceModalMachineStoppedLabel: "Execute with stopped machine",
       editCiltSequenceModalStatusLabel: "Status",
       editCiltSequenceModalQuantityPicturesCreateLabel: "Fotos al inicio",
       editCiltSequenceModalQuantityPicturesCreateRequired:
@@ -1886,6 +1889,7 @@ const resources = {
         "Acceso denegado: Tu rol está limitado a la aplicación y no te permite acceder al sitio. Por favor, contacta al administrador si crees que esto es un error.",
 
       // Árbol de niveles
+      dragToReorder: "Arrastra para reordenar",
       close: "Cerrar",
       createLevelBtn: "Crear nivel",
       updateLevelTree: "Actualizar nivel",
@@ -2496,9 +2500,10 @@ const resources = {
       oplFormCreateButton: "Crear",
 
       // OplDetailsModal strings
-      oplDetailsModalTitle: "Detalles del OPL: {title}",
+      oplDetailsModalTitle: "Detalles de OPL: {title}",
       oplDetailsContentPreview: "Vista previa del contenido",
-      oplDetailsNoContent: "No hay detalles disponibles para este OPL.",
+      oplDetailsNoContent: "No hay detalles para mostrar.",
+      oplDetailsContentItem: "Elemento de contenido",
       oplDetailsAddContent: "Agregar contenido",
       oplDetailsTextType: "Texto",
       oplDetailsImageType: "Imagen",
@@ -2514,6 +2519,7 @@ const resources = {
       oplDetailsPdfPreviewTitle: "Vista previa de PDF",
       oplDetailsVideoPreviewTitle: "Vista previa de video",
       oplDetailsClose: "Cerrar",
+      errorUpdatingOrder: "Error al actualizar el orden de los detalles",
       oplDetailsOpenInNewTab: "Abrir en una nueva pestaña",
 
       // OplDetailsList strings
@@ -2596,7 +2602,7 @@ const resources = {
       editCiltSequenceModalStandardOkLabel: "Estándar OK",
       editCiltSequenceModalStandardOkRequired: "El estándar OK es requerido",
       editCiltSequenceModalStoppageReasonLabel: "Razón de Parada",
-      editCiltSequenceModalMachineStoppedLabel: "¿Máquina detenida?",
+      editCiltSequenceModalMachineStoppedLabel: "Ejecutar con máquina detenida",
       editCiltSequenceModalStatusLabel: "Estado",
       editCiltSequenceModalQuantityPicturesCreateLabel:
         "Cantidad de Imágenes al Crear",

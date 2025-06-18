@@ -23,20 +23,41 @@ export const oplDetailsService = apiSlice.injectEndpoints({
         // Ensure oplId is a string and is not empty
         const id = String(oplId).trim();
         if (!id) {
-          throw new Error('OPL ID is required');
+          throw new Error("OPL ID is required");
         }
         return `/opl-details/by-opl/${id}`;
       },
-      transformResponse: (response: { data: OplDetail[] }) => response.data || [],
+      transformResponse: (response: { data: OplDetail[] }) =>
+        response.data || [],
     }),
     // POST /opl-details/create
     createOplDetail: builder.mutation<OplDetail, CreateOplDetailsDTO>({
-      query: (payload) => ({ url: `/opl-details/create`, method: "POST", body: { ...payload } }),
+      query: (payload) => ({
+        url: `/opl-details/create`,
+        method: "POST",
+        body: { ...payload },
+      }),
       transformResponse: (response: { data: OplDetail }) => response.data,
     }),
     // PUT /opl-details/update
     updateOplDetail: builder.mutation<OplDetail, UpdateOplDetailsDTO>({
-      query: (payload) => ({ url: `/opl-details/update`, method: "PUT", body: { ...payload } }),
+      query: (payload) => ({
+        url: `/opl-details/update`,
+        method: "PUT",
+        body: { ...payload },
+      }),
+      transformResponse: (response: { data: OplDetail }) => response.data,
+    }),
+    // Dentro de oplDetailsService
+    updateOplDetailOrder: builder.mutation<
+      OplDetail,
+      { detailId: number; newOrder: number }
+    >({
+      query: (payload) => ({
+        url: `/opl-details/update-order`,
+        method: "PUT",
+        body: payload,
+      }),
       transformResponse: (response: { data: OplDetail }) => response.data,
     }),
   }),
@@ -49,4 +70,5 @@ export const {
   useGetOplDetailsByOplMutation,
   useCreateOplDetailMutation,
   useUpdateOplDetailMutation,
+  useUpdateOplDetailOrderMutation,
 } = oplDetailsService;

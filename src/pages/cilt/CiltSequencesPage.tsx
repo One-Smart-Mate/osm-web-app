@@ -1,10 +1,29 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { createContext, useContext } from 'react';
-import { DndProvider, useDrag, useDrop, ConnectDragSource, DropTargetMonitor } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Button, Space, Spin, Typography, notification, Input, Table } from "antd";
+import { createContext, useContext } from "react";
+import {
+  DndProvider,
+  useDrag,
+  useDrop,
+  ConnectDragSource,
+  DropTargetMonitor,
+} from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import {
+  Button,
+  Space,
+  Spin,
+  Typography,
+  notification,
+  Input,
+  Table,
+} from "antd";
 import { useParams, useNavigate } from "react-router-dom";
-import { SearchOutlined, ArrowLeftOutlined, PlusOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  ArrowLeftOutlined,
+  PlusOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import MainContainer from "../layouts/MainContainer";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { CiltMstr } from "../../data/cilt/ciltMstr/ciltMstr";
@@ -12,7 +31,10 @@ import { CiltSequence } from "../../data/cilt/ciltSequences/ciltSequences";
 import { OplMstr } from "../../data/cilt/oplMstr/oplMstr";
 import { OplDetail } from "../../data/cilt/oplDetails/oplDetails";
 import { useGetCiltMstrByIdMutation } from "../../services/cilt/ciltMstrService";
-import { useGetCiltSequencesByCiltMutation, useUpdateCiltSequenceOrderMutation } from "../../services/cilt/ciltSequencesService";
+import {
+  useGetCiltSequencesByCiltMutation,
+  useUpdateCiltSequenceOrderMutation,
+} from "../../services/cilt/ciltSequencesService";
 import { useGetOplMstrByIdMutation } from "../../services/cilt/oplMstrService";
 import { useGetOplDetailsByOplMutation } from "../../services/cilt/oplDetailsService";
 import CreateCiltSequenceModal from "./components/CreateCiltSequenceModal";
@@ -24,7 +46,7 @@ import Constants from "../../utils/Constants";
 import { formatSecondsToNaturalTime } from "../../utils/timeUtils";
 import type { ColumnsType } from "antd/es/table";
 // import Strings from "../../utils/localizations/Strings"; // Using direct Spanish strings as per user request
-import { MdDragHandle } from 'react-icons/md';
+import { MdDragHandle } from "react-icons/md";
 
 const { Text } = Typography;
 
@@ -35,27 +57,27 @@ const DragHandleContext = createContext<{ drag: ConnectDragSource }>({
 const DragHandle = () => {
   const { drag } = useContext(DragHandleContext);
   return (
-    <span 
-      ref={drag as any} 
-      style={{ 
-        cursor: 'move',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '4px',
-        borderRadius: '4px',
-        transition: 'all 0.2s ease'
-      }} 
+    <span
+      ref={drag as any}
+      style={{
+        cursor: "move",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "4px",
+        borderRadius: "4px",
+        transition: "all 0.2s ease",
+      }}
       className="drag-handle"
       onMouseDown={(e) => e.stopPropagation()}
       title="Arrastrar para reordenar"
     >
-      <MdDragHandle style={{ fontSize: '18px' }} />
+      <MdDragHandle style={{ fontSize: "18px" }} />
     </span>
   );
 };
 
-const DRAG_TYPE = 'CILT_SEQUENCE_ROW';
+const DRAG_TYPE = "CILT_SEQUENCE_ROW";
 
 interface DragItem {
   id: number;
@@ -64,8 +86,9 @@ interface DragItem {
   record: CiltSequence;
 }
 
-interface DraggableBodyRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-  index?: number; 
+interface DraggableBodyRowProps
+  extends React.HTMLAttributes<HTMLTableRowElement> {
+  index?: number;
   record: CiltSequence;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
   onDropRow: (draggedItem: DragItem) => void;
@@ -73,7 +96,7 @@ interface DraggableBodyRowProps extends React.HTMLAttributes<HTMLTableRowElement
 
 const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
   record,
-  index, 
+  index,
   moveRow,
   onDropRow,
   className,
@@ -81,7 +104,7 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
   ...restProps
 }) => {
   const ref = useRef<HTMLTableRowElement>(null);
-  const safeIndex = typeof index === 'number' ? index : -1;
+  const safeIndex = typeof index === "number" ? index : -1;
 
   const [{ handlerId, isDragging }, drag] = useDrag({
     type: DRAG_TYPE,
@@ -98,13 +121,17 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
     }),
   });
 
-  const [{ isOver, dropCanDrop }, drop] = useDrop<DragItem, void, { isOver: boolean; dropCanDrop: boolean }>({
-    accept: DRAG_TYPE, 
+  const [{ isOver, dropCanDrop }, drop] = useDrop<
+    DragItem,
+    void,
+    { isOver: boolean; dropCanDrop: boolean }
+  >({
+    accept: DRAG_TYPE,
     collect: (monitor: DropTargetMonitor<DragItem, void>) => ({
       isOver: monitor.isOver(),
       dropCanDrop: monitor.canDrop(),
     }),
-    canDrop: () => safeIndex !== -1, 
+    canDrop: () => safeIndex !== -1,
     hover: (item: DragItem, monitor: DropTargetMonitor<DragItem, void>) => {
       if (!ref.current || safeIndex === -1 || item.index === -1) {
         return;
@@ -119,37 +146,43 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
 
       // Get rectangle on screen
       const hoverBoundingRect = ref.current.getBoundingClientRect();
-      
+
       // Get rectangle height instead of middle Y (since we use percentage thresholds)
-      
+
       // Determine mouse position
       const clientOffset = monitor.getClientOffset();
       if (!clientOffset) return;
-      
+
       // Get pixels to the top
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-      
+
       // For more precision and responsiveness, adjust the threshold based on distance
       const longDistanceMove = Math.abs(dragIndex - hoverIndex) > 5;
       const threshold = longDistanceMove ? 0.1 : 0.5; // More sensitive for long-distance moves
-      
+
       // Only perform the move when the mouse has crossed threshold percentage of the item's height
       // When dragging downwards, only move when the cursor is below threshold% of the item's height
       // When dragging upwards, only move when the cursor is above threshold% of the item's height
-      
+
       // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverBoundingRect.height * threshold) {
+      if (
+        dragIndex < hoverIndex &&
+        hoverClientY < hoverBoundingRect.height * threshold
+      ) {
         return;
       }
-      
+
       // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverBoundingRect.height * (1 - threshold)) {
+      if (
+        dragIndex > hoverIndex &&
+        hoverClientY > hoverBoundingRect.height * (1 - threshold)
+      ) {
         return;
       }
-      
+
       // Time to actually perform the action
       moveRow(dragIndex, hoverIndex);
-      
+
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
@@ -161,13 +194,15 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
     },
   });
 
-    drop(ref);
+  drop(ref);
 
   return (
     <DragHandleContext.Provider value={{ drag }}>
       <tr
         ref={ref}
-        className={`${className || ''}${isOver && dropCanDrop ? ' hover-over' : ''}${isDragging ? ' dragging-row' : ''}`}
+        className={`${className || ""}${
+          isOver && dropCanDrop ? " hover-over" : ""
+        }${isDragging ? " dragging-row" : ""}`}
         style={{
           ...style,
           opacity: isDragging ? 0.5 : 1,
@@ -185,103 +220,125 @@ const CiltSequencesPage = () => {
 
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
   const [sequences, setSequences] = useState<CiltSequence[]>([]);
-    const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>([]);
+  const [filteredSequences, setFilteredSequences] = useState<CiltSequence[]>(
+    []
+  );
   const sequencesRef = useRef(filteredSequences);
   useEffect(() => {
     sequencesRef.current = filteredSequences;
   }, [filteredSequences]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  const [isCreateSequenceModalVisible, setIsCreateSequenceModalVisible] = useState(false);
-  const [isSequenceDetailModalVisible, setIsSequenceDetailModalVisible] = useState(false);
-  const [isEditSequenceModalVisible, setIsEditSequenceModalVisible] = useState(false);
-  const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] = useState(false);
-  const [isScheduleSecuenceVisible, setScheduleSecuenceVisible] = useState(false);
-  
-  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
+
+  const [isCreateSequenceModalVisible, setIsCreateSequenceModalVisible] =
+    useState(false);
+  const [isSequenceDetailModalVisible, setIsSequenceDetailModalVisible] =
+    useState(false);
+  const [isEditSequenceModalVisible, setIsEditSequenceModalVisible] =
+    useState(false);
+  const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] =
+    useState(false);
+  const [isScheduleSecuenceVisible, setScheduleSecuenceVisible] =
+    useState(false);
+
+  const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
+    null
+  );
   const [selectedOpl, setSelectedOpl] = useState<OplMstr | null>(null);
   const [selectedOplDetails, setSelectedOplDetails] = useState<OplDetail[]>([]);
   const [loadingOplDetails, setLoadingOplDetails] = useState(false);
-  
+
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
-  
+
   const [getCiltById] = useGetCiltMstrByIdMutation();
   const [getCiltSequencesByCilt] = useGetCiltSequencesByCiltMutation();
   const [getOplMstrById] = useGetOplMstrByIdMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
-  const [updateCiltSequenceOrder, { isLoading: isUpdatingOrder }] = useUpdateCiltSequenceOrderMutation();
+  const [updateCiltSequenceOrder, { isLoading: isUpdatingOrder }] =
+    useUpdateCiltSequenceOrderMutation();
 
   useEffect(() => {
     if (!ciltId) return;
-    
+
     const loadCiltAndSequences = async () => {
       setLoading(true);
       try {
         const ciltData = await getCiltById(ciltId).unwrap();
         setCurrentCilt(ciltData);
-        
+
         const sequencesData = await getCiltSequencesByCilt(ciltId).unwrap();
         const sortedSequencesFromServer = [...sequencesData].sort((a, b) => {
           return (a.order || 0) - (b.order || 0);
         });
-        
+
         setSequences(sortedSequencesFromServer);
         // Initial filtering logic based on active status and searchTerm
         // This will also be covered by the filtering useEffect, but good for initial load.
-        const activeSequences = sortedSequencesFromServer.filter(seq => seq.status === Constants.STATUS_ACTIVE);
+        const activeSequences = sortedSequencesFromServer.filter(
+          (seq) => seq.status === Constants.STATUS_ACTIVE
+        );
         if (!searchTerm.trim()) {
           setFilteredSequences(activeSequences);
         } else {
-           const furtherFiltered = activeSequences.filter(
-             (sequence) =>
-               sequence.secuenceList?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               sequence.order?.toString().includes(searchTerm) ||
-               sequence.standardTime?.toString().includes(searchTerm) ||
-               sequence.toolsRequired?.toLowerCase().includes(searchTerm.toLowerCase())
-           );
-           setFilteredSequences(furtherFiltered);
+          const furtherFiltered = activeSequences.filter(
+            (sequence) =>
+              sequence.secuenceList
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              sequence.order?.toString().includes(searchTerm) ||
+              sequence.standardTime?.toString().includes(searchTerm) ||
+              sequence.toolsRequired
+                ?.toLowerCase()
+                .includes(searchTerm.toLowerCase())
+          );
+          setFilteredSequences(furtherFiltered);
         }
-        
+
         if (sequencesData.length === 0) {
-          notification.info({ 
-            message: "Información", 
-            description: `Este CILT "${ciltData.ciltName}" no tiene secuencias asociadas.`, 
+          notification.info({
+            message: "Información",
+            description: `Este CILT "${ciltData.ciltName}" no tiene secuencias asociadas.`,
             className: "ant-notification-notice-info",
-            icon: <InfoCircleOutlined style={{ color: '#1890ff' }} />,
+            icon: <InfoCircleOutlined style={{ color: "#1890ff" }} />,
           });
         }
       } catch (error) {
-        console.error("Error al cargar CILT o secuencias:", error); 
+        console.error("Error al cargar CILT o secuencias:", error);
         AnatomyNotification.error(notification, {
           data: {
-            message: "Error al cargar CILT o secuencias" 
-          }
+            message: "Error al cargar CILT o secuencias",
+          },
         });
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadCiltAndSequences();
   }, [ciltId, getCiltById, getCiltSequencesByCilt, refreshTrigger]);
 
   useEffect(() => {
     // Ensure sequences are sorted by order before filtering
-    const sortedSequences = [...sequences].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const sortedSequences = [...sequences].sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0)
+    );
     const activeOnlySequences = sortedSequences.filter(
       (sequence) => sequence.status === Constants.STATUS_ACTIVE
     );
-    
+
     if (!searchTerm.trim()) {
       setFilteredSequences(activeOnlySequences);
     } else {
       const furtherFiltered = activeOnlySequences.filter(
         (sequence) =>
-          sequence.secuenceList?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          sequence.secuenceList
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
           sequence.order?.toString().includes(searchTerm) ||
           sequence.standardTime?.toString().includes(searchTerm) ||
-          sequence.toolsRequired?.toLowerCase().includes(searchTerm.toLowerCase())
+          sequence.toolsRequired
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
       setFilteredSequences(furtherFiltered);
     }
@@ -329,11 +386,15 @@ const CiltSequencesPage = () => {
 
   const showOplDetails = async (oplId: number | null) => {
     if (!oplId) {
-      AnatomyNotification.error(notification, {
-        data: {
-          message: "No hay OPL asociado a esta secuencia."
-        }
-      }, "Information");
+      AnatomyNotification.error(
+        notification,
+        {
+          data: {
+            message: "No hay OPL asociado a esta secuencia.",
+          },
+        },
+        "Information"
+      );
       return;
     }
 
@@ -349,11 +410,15 @@ const CiltSequencesPage = () => {
       setIsOplDetailsModalVisible(true);
 
       if (details.filter((detail) => detail.type !== "texto").length === 0) {
-        AnatomyNotification.error(notification, {
-          data: {
-            message: `El OPL "${opl.title}" no tiene archivos multimedia.`
-          }
-        }, "Información");
+        AnatomyNotification.error(
+          notification,
+          {
+            data: {
+              message: `El OPL "${opl.title}" no tiene archivos multimedia.`,
+            },
+          },
+          "Información"
+        );
       }
     } catch (error) {
       console.error("Error al cargar detalles de OPL:", error);
@@ -367,7 +432,6 @@ const CiltSequencesPage = () => {
     setSelectedOpl(null);
     setSelectedOplDetails([]);
   };
-
 
   const handleScheduleSequenceCancel = () => {
     setScheduleSecuenceVisible(false);
@@ -383,7 +447,7 @@ const CiltSequencesPage = () => {
     navigate(-1);
   };
 
-    const moveRow = useCallback(
+  const moveRow = useCallback(
     (dragIndex: number, hoverIndex: number) => {
       const newSequences = [...filteredSequences];
       const [draggedItem] = newSequences.splice(dragIndex, 1);
@@ -393,7 +457,7 @@ const CiltSequencesPage = () => {
     [filteredSequences]
   );
 
-                      const handleReorderOnDrop = useCallback(
+  const handleReorderOnDrop = useCallback(
     async (draggedItem: DragItem) => {
       if (draggedItem.originalIndex === draggedItem.index) return;
 
@@ -403,17 +467,25 @@ const CiltSequencesPage = () => {
 
       // Defensive check for state consistency
       if (!draggedSequence || draggedSequence.id !== draggedItem.record.id) {
-        AnatomyNotification.error(notification, { data: { message: "Error de consistencia. Se restaurará el orden." } });
-        setRefreshTrigger(p => p + 1);
+        AnatomyNotification.error(notification, {
+          data: { message: "Error de consistencia. Se restaurará el orden." },
+        });
+        setRefreshTrigger((p) => p + 1);
         return;
       }
 
-      const itemBefore = finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
-      const itemAfter = finalIndex < currentSequences.length - 1 ? currentSequences[finalIndex + 1] : null;
+      const itemBefore =
+        finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
+      const itemAfter =
+        finalIndex < currentSequences.length - 1
+          ? currentSequences[finalIndex + 1]
+          : null;
 
       // Ensure we have valid numeric orders
-      const orderBefore = typeof itemBefore?.order === 'number' ? itemBefore.order : null;
-      const orderAfter = typeof itemAfter?.order === 'number' ? itemAfter.order : null;
+      const orderBefore =
+        typeof itemBefore?.order === "number" ? itemBefore.order : null;
+      const orderAfter =
+        typeof itemAfter?.order === "number" ? itemAfter.order : null;
 
       let newOrder: number;
 
@@ -422,12 +494,15 @@ const CiltSequencesPage = () => {
         // Case 1: Dropped between two items.
         if (orderAfter - orderBefore > 1) {
           // Integer gap exists - calculate midpoint, ensuring it's at least 1
-          newOrder = Math.max(1, Math.floor(orderBefore + ((orderAfter - orderBefore) / 2)));
+          newOrder = Math.max(
+            1,
+            Math.floor(orderBefore + (orderAfter - orderBefore) / 2)
+          );
         } else {
           // No integer gap - just use the next order position
           // Use the orderAfter value directly since the backend will swap them
           newOrder = orderAfter;
-          
+
           // Backend logic handles this by swapping the existing item with this order
           // with our current item, so we don't need to calculate a new unique value
         }
@@ -448,56 +523,61 @@ const CiltSequencesPage = () => {
         // Case 4: The list was empty or has only one item.
         newOrder = 1;
       }
-      
+
       // Final validation to ensure we never send invalid values to the backend
       if (isNaN(newOrder) || newOrder < 1) {
         console.error("Calculated order is invalid, using fallback value");
         newOrder = 1000; // Safe fallback that meets the @Min(1) constraint
       }
-      
+
       // Ensure we're only sending integers since the backend doesn't handle decimals well
       newOrder = Math.floor(newOrder);
 
       try {
         // Log the values we're sending to help with debugging
-        console.log("Sending reorder request:", { 
-          sequenceId: draggedSequence.id, 
+        console.log("Sending reorder request:", {
+          sequenceId: draggedSequence.id,
           newOrder: newOrder,
-          isNaN: isNaN(newOrder)
+          isNaN: isNaN(newOrder),
         });
-        
+
         // Apply visual feedback before the server call
-        const reorderedRow = document.querySelector(`tr[data-row-key="${draggedSequence.id}"]`);
+        const reorderedRow = document.querySelector(
+          `tr[data-row-key="${draggedSequence.id}"]`
+        );
         if (reorderedRow) {
-          reorderedRow.classList.add('reordered-row');
+          reorderedRow.classList.add("reordered-row");
           setTimeout(() => {
-            reorderedRow.classList.remove('reordered-row');
+            reorderedRow.classList.remove("reordered-row");
           }, 1500);
         }
-        
+
         await updateCiltSequenceOrder({
           sequenceId: draggedSequence.id,
           newOrder: newOrder,
         }).unwrap();
-        
+
         console.log("Reorder successful");
-        setRefreshTrigger(p => p + 1);
+        setRefreshTrigger((p) => p + 1);
       } catch (error) {
         console.error("Error al reordenar secuencias:", error);
         AnatomyNotification.error(notification, {
-          data: { message: "Error al reordenar las secuencias. Se restaurará el orden anterior." },
+          data: {
+            message:
+              "Error al reordenar las secuencias. Se restaurará el orden anterior.",
+          },
         });
-        setRefreshTrigger(p => p + 1);
+        setRefreshTrigger((p) => p + 1);
       }
     },
     [updateCiltSequenceOrder, notification, setRefreshTrigger]
   );
   const columns: ColumnsType<CiltSequence> = [
     {
-      title: 'Orden',
-      dataIndex: 'order',
-      key: 'order',
-      align: 'center' as const,
+      title: "Orden",
+      dataIndex: "order",
+      key: "order",
+      align: "center" as const,
       width: 50,
       render: () => <DragHandle />,
     },
@@ -508,7 +588,8 @@ const CiltSequencesPage = () => {
       render: (color: string | null) => (
         <div
           style={{
-            backgroundColor: color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
+            backgroundColor:
+              color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
             width: "20px",
             height: "20px",
             borderRadius: "50%",
@@ -545,23 +626,36 @@ const CiltSequencesPage = () => {
       key: "actions",
       render: (_, record) => (
         <Space size="small" wrap>
-          <Button type="primary" size="small" onClick={() => showSequenceDetails(record)}>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => showSequenceDetails(record)}
+          >
             {"Ver Detalles"}
           </Button>
-          <Button type="primary" size="small" onClick={() => showEditSequenceModal(record)}>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => showEditSequenceModal(record)}
+          >
             {"Editar"}
           </Button>
-          <Button 
-            type="default" 
-            size="small" 
-            onClick={() => record.referenceOplSopId && showOplDetails(record.referenceOplSopId)}
-            disabled={!record.referenceOplSopId || record.referenceOplSopId <= 0}
+          <Button
+            type="default"
+            size="small"
+            onClick={() =>
+              record.referenceOplSopId &&
+              showOplDetails(record.referenceOplSopId)
+            }
+            disabled={
+              !record.referenceOplSopId || record.referenceOplSopId <= 0
+            }
           >
             {"Ver OPL Ref."}
           </Button>
-          <Button 
-            type="default" 
-            size="small" 
+          <Button
+            type="default"
+            size="small"
             onClick={() => showOplDetails(record.remediationOplSopId)}
             disabled={!record.remediationOplSopId}
           >
@@ -575,9 +669,9 @@ const CiltSequencesPage = () => {
 
   return (
     <>
-    <DndProvider backend={HTML5Backend}>
-      <style>
-        {`
+      <DndProvider backend={HTML5Backend}>
+        <style>
+          {`
           .hover-over > td {
             background-color: #e6f7ff !important;
             transition: all 0.3s ease;
@@ -612,105 +706,120 @@ const CiltSequencesPage = () => {
             animation: highlight 1.5s ease;
           }
         `}
-      </style>
-      <MainContainer
-        title={currentCilt ? `Secuencias de ${currentCilt.ciltName}` : "Secuencias"}
-        description=""
-        content={
-          <div>
-            <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16 }}>
-              <Button icon={<ArrowLeftOutlined />} onClick={goBack}>
-                  {"Volver"} {/* Direct Spanish string */}
-              </Button>
-              
-              <Input
-                placeholder={"Buscar secuencias..."} 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                prefix={<SearchOutlined />}
-                allowClear
-                style={{ width: 300 }}
-              />
-              
-              <Button 
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={showCreateSequenceModal}
-                disabled={Boolean(!currentCilt)}
-              >
-                {"Crear Secuencia"} 
-              </Button>
-              
-              <Text style={{ marginLeft: "auto" }}>
-                {"Total"}: {filteredSequences.length} {"Secuencias"} {/* Direct Spanish string */}
-              </Text>
-            </div>
-
-            <Spin spinning={loading || isUpdatingOrder}>
-              <Table
-                dataSource={filteredSequences}
-                columns={columns} // Use the restored columns constant
-                rowKey={(record) => String(record.id)}
-                pagination={{ pageSize: 10, showSizeChanger: true, pageSizeOptions: ["10", "20", "50"] }}
-                bordered
-                size="middle"
-                scroll={{ x: 1300 }} // Increased width to accommodate new 'Order' column
-                components={{
-                  body: {
-                    row: DraggableBodyRow,
-                  },
+        </style>
+        <MainContainer
+          title={
+            currentCilt ? `Secuencias de ${currentCilt.ciltName}` : "Secuencias"
+          }
+          description=""
+          content={
+            <div>
+              <div
+                style={{
+                  marginBottom: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
                 }}
-                onRow={(record: CiltSequence, index?: number) => ({
-                  index,
-                  record,
-                  moveRow: moveRow,
-                  onDropRow: handleReorderOnDrop,
-                }) as any}
-              />
-            </Spin>
-          </div>
-        }
-      />
-      {currentCilt && (
-        <CreateCiltSequenceModal
-          visible={isCreateSequenceModalVisible}
-          cilt={currentCilt}
-          onCancel={handleCreateSequenceCancel}
-          onSuccess={handleCreateSequenceSuccess}
+              >
+                <Button icon={<ArrowLeftOutlined />} onClick={goBack}>
+                  {"Volver"} {/* Direct Spanish string */}
+                </Button>
+
+                <Input
+                  placeholder={"Buscar secuencias..."}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  prefix={<SearchOutlined />}
+                  allowClear
+                  style={{ width: 300 }}
+                />
+
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={showCreateSequenceModal}
+                  disabled={Boolean(!currentCilt)}
+                >
+                  {"Crear Secuencia"}
+                </Button>
+
+                <Text style={{ marginLeft: "auto" }}>
+                  {"Total"}: {filteredSequences.length} {"Secuencias"}{" "}
+                  {/* Direct Spanish string */}
+                </Text>
+              </div>
+
+              <Spin spinning={loading || isUpdatingOrder}>
+                <Table
+                  dataSource={filteredSequences}
+                  columns={columns} // Use the restored columns constant
+                  rowKey={(record) => String(record.id)}
+                  pagination={{
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["10", "20", "50"],
+                  }}
+                  bordered
+                  size="middle"
+                  scroll={{ x: 1300 }} // Increased width to accommodate new 'Order' column
+                  components={{
+                    body: {
+                      row: DraggableBodyRow,
+                    },
+                  }}
+                  onRow={(record: CiltSequence, index?: number) =>
+                    ({
+                      index,
+                      record,
+                      moveRow: moveRow,
+                      onDropRow: handleReorderOnDrop,
+                    } as any)
+                  }
+                />
+              </Spin>
+            </div>
+          }
         />
-      )}
-      
-      <SequenceDetailsModal
-        visible={isSequenceDetailModalVisible}
-        sequence={selectedSequence}
-        onCancel={handleSequenceDetailModalCancel}
-        onViewOpl={showOplDetails}
-      />
-      
-      <EditCiltSequenceModal
-        open={isEditSequenceModalVisible}
-        sequence={selectedSequence}
-        onCancel={handleEditSequenceModalCancel}
-        onSuccess={handleEditSequenceSuccess}
-      />
-      
-      <OplDetailsModal
-        visible={isOplDetailsModalVisible}
-        opl={selectedOpl}
-        details={selectedOplDetails}
-        loading={loadingOplDetails}
-        onCancel={handleOplDetailsModalCancel}
-      />
-      
-      <ScheduleSecuence
-        open={isScheduleSecuenceVisible}
-        onCancel={handleScheduleSequenceCancel}
-        onSave={handleScheduleSequenceSuccess}
-      />
-    </DndProvider>
+        {currentCilt && (
+          <CreateCiltSequenceModal
+            visible={isCreateSequenceModalVisible}
+            cilt={currentCilt}
+            onCancel={handleCreateSequenceCancel}
+            onSuccess={handleCreateSequenceSuccess}
+          />
+        )}
+
+        <SequenceDetailsModal
+          visible={isSequenceDetailModalVisible}
+          sequence={selectedSequence}
+          onCancel={handleSequenceDetailModalCancel}
+          onViewOpl={showOplDetails}
+        />
+
+        <EditCiltSequenceModal
+          open={isEditSequenceModalVisible}
+          sequence={selectedSequence}
+          onCancel={handleEditSequenceModalCancel}
+          onSuccess={handleEditSequenceSuccess}
+        />
+
+        <OplDetailsModal
+          visible={isOplDetailsModalVisible}
+          opl={selectedOpl}
+          details={selectedOplDetails}
+          loading={loadingOplDetails}
+          onCancel={handleOplDetailsModalCancel}
+        />
+
+        <ScheduleSecuence
+          open={isScheduleSecuenceVisible}
+          onCancel={handleScheduleSequenceCancel}
+          onSave={handleScheduleSequenceSuccess}
+        />
+      </DndProvider>
     </>
   );
 };
 
 export default CiltSequencesPage;
-
