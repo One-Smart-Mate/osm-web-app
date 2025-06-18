@@ -1042,7 +1042,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           )}
           {/* Special Warning field */}
           <Descriptions.Item label={Strings.specialWarning}>
-            {selectedSequence.specialWarning || "N/A"}
+            {selectedSequence.specialWarning || Strings.oplFormNotAssigned}
           </Descriptions.Item>
           <Descriptions.Item label={Strings.machineStopped}>
             {selectedSequence.machineStopped ? Strings.yes : Strings.no}

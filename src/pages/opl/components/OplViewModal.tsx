@@ -20,26 +20,33 @@ const DragHandle = () => {
     <div
       ref={drag}
       style={{
-        cursor: "move",
+        cursor: "grab",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "6px",
+        padding: "8px",
         borderRadius: "4px",
         transition: "all 0.2s ease, background-color 0.2s ease, transform 0.2s ease",
         marginRight: "8px",
         backgroundColor: "#e6f7ff", 
         border: "1px solid #91d5ff",
         transform: "scale(1)",
-        boxShadow: "0 0 0 rgba(24, 144, 255, 0.2)",
-        // Los estilos hover se manejan con CSS estándar
-        // ya que los estilos inline no soportan :hover
+        boxShadow: "0 2px 4px rgba(24, 144, 255, 0.3)",
       }}
       className="drag-handle"
-      onMouseDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        // Change cursor to grabbing when dragging
+        const target = e.currentTarget as HTMLDivElement;
+        target.style.cursor = "grabbing";
+      }}
+      onMouseUp={(e) => {
+        const target = e.currentTarget as HTMLDivElement;
+        target.style.cursor = "grab";
+      }}
       title={Strings.dragToReorder}
     >
-      <MdDragHandle style={{ fontSize: "20px", color: "#1890ff" }} />
+      <MdDragHandle style={{ fontSize: "22px", color: "#1890ff" }} />
     </div>
   );
 };
@@ -139,14 +146,16 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
         ref={ref}
         className={`draggable-card ${isOver && canDrop ? "hover-over" : ""} ${isDragging ? "dragging" : ""}`}
         style={{ 
-          opacity: isDragging ? 0.5 : 1,
-          transition: "opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease",
-          transform: isOver ? "scale(1.03)" : isDragging ? "scale(0.98)" : "scale(1)",
-          marginBottom: "16px",
-          cursor: isDragging ? "grabbing" : "grab",
-          boxShadow: isOver ? "0 6px 16px rgba(0, 120, 255, 0.3)" : isDragging ? "0 0 8px rgba(24, 144, 255, 0.5)" : "0 2px 8px rgba(0, 0, 0, 0.15)",
+          opacity: isDragging ? 0.6 : 1,
+          transition: "opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease",
+          transform: isOver ? "scale(1.02)" : isDragging ? "scale(0.98)" : "scale(1)",
+          marginBottom: "12px",
+          cursor: isDragging ? "grabbing" : "default",
+          boxShadow: isOver ? "0 6px 16px rgba(0, 120, 255, 0.35)" : isDragging ? "0 0 8px rgba(24, 144, 255, 0.6)" : "0 2px 6px rgba(0, 0, 0, 0.12)",
           borderRadius: "8px",
-          border: isOver ? "1px solid #1890ff" : isDragging ? "1px dashed #1890ff" : "none"
+          border: isOver ? "2px solid #1890ff" : isDragging ? "1px dashed #1890ff" : "1px solid #eee",
+          position: "relative",
+          zIndex: isDragging ? 1000 : 1
         }}
         data-handler-id={handlerId}
       >
@@ -369,10 +378,10 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
               src={detail.mediaUrl} 
               alt="Image" 
               style={{ 
-                width: '350px', 
-                height: '250px', 
+                width: '100%', 
+                height: '180px', 
                 objectFit: 'contain',
-                maxWidth: '100%' 
+                maxWidth: '350px' 
               }} 
               fallback="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
             />
@@ -397,9 +406,9 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
               src={detail.mediaUrl} 
               controls 
               style={{ 
-                width: '350px', 
-                maxWidth: '100%', 
-                height: '250px', 
+                width: '100%', 
+                maxWidth: '350px', 
+                height: '180px', 
                 objectFit: 'contain' 
               }}
             />
@@ -446,6 +455,9 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
         onCancel={onCancel}
         width={1100}
         style={{ top: 20 }}
+        bodyStyle={{ padding: '24px' }}
+        className="opl-view-modal"
+        destroyOnClose
         footer={[
           <Button key="close" onClick={onCancel}>
             {Strings.oplClose}
@@ -474,16 +486,20 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
         
         {sortedDetails && sortedDetails.length > 0 && (
           <div style={{
-            padding: '8px',
+            padding: '10px',
             marginBottom: '16px',
             backgroundColor: '#e6f7ff',
             borderRadius: '4px',
             border: '1px dashed #1890ff',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            boxShadow: '0 2px 6px rgba(24, 144, 255, 0.15)'
           }}>
-            <MdDragHandle style={{ fontSize: "20px", color: "#1890ff", marginRight: "8px" }} />
-            <Text type="secondary">{Strings.dragToReorder}</Text>
+            <MdDragHandle style={{ fontSize: "22px", color: "#1890ff", marginRight: "10px" }} />
+            <div>
+              <Text strong style={{ display: 'block', color: '#1890ff' }}>{Strings.dragToReorder}</Text>
+              <Text type="secondary" style={{ fontSize: '12px' }}>Drag the items to arrange their order</Text>
+            </div>
           </div>
         )}
 

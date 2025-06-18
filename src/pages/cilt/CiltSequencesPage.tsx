@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createContext, useContext } from "react";
 import {
   DndProvider,
@@ -66,7 +66,6 @@ const DragHandle = () => {
         justifyContent: "center",
         padding: "4px",
         borderRadius: "4px",
-        transition: "all 0.2s ease",
       }}
       className="drag-handle"
       onMouseDown={(e) => e.stopPropagation()}
@@ -79,15 +78,14 @@ const DragHandle = () => {
 
 const DRAG_TYPE = "CILT_SEQUENCE_ROW";
 
-interface DragItem {
-  id: number;
-  originalIndex: number;
+export interface DragItem {
   index: number;
-  record: CiltSequence;
+  originalIndex: number;
+  recordId: number;
+  type: string;
 }
 
-interface DraggableBodyRowProps
-  extends React.HTMLAttributes<HTMLTableRowElement> {
+interface DraggableBodyRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   index?: number;
   record: CiltSequence;
   moveRow: (dragIndex: number, hoverIndex: number) => void;
@@ -95,41 +93,44 @@ interface DraggableBodyRowProps
 }
 
 const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
-  record,
   index,
+  record,
   moveRow,
   onDropRow,
   className,
   style,
   ...restProps
 }) => {
+  // Use the drag handle context
+  useContext(DragHandleContext);
   const ref = useRef<HTMLTableRowElement>(null);
   const safeIndex = typeof index === "number" ? index : -1;
 
-  const [{ handlerId, isDragging }, drag] = useDrag({
+  const [{ isDragging, handlerId }, drag] = useDrag({
     type: DRAG_TYPE,
-    item: (): DragItem => ({
-      id: record.id,
-      originalIndex: safeIndex,
-      index: safeIndex,
-      record,
-    }),
-    canDrag: safeIndex !== -1,
+    item: () => {
+      return {
+        type: DRAG_TYPE,
+        index: safeIndex,
+        originalIndex: safeIndex,
+        recordId: record?.id || -1,
+      };
+    },
+    canDrag: record && safeIndex !== -1,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
       handlerId: monitor.getHandlerId(),
     }),
   });
 
-  const [{ isOver, dropCanDrop }, drop] = useDrop<
+  const [{ isOver }, drop] = useDrop<
     DragItem,
     void,
-    { isOver: boolean; dropCanDrop: boolean }
+    { isOver: boolean }
   >({
     accept: DRAG_TYPE,
     collect: (monitor: DropTargetMonitor<DragItem, void>) => ({
       isOver: monitor.isOver(),
-      dropCanDrop: monitor.canDrop(),
     }),
     canDrop: () => safeIndex !== -1,
     hover: (item: DragItem, monitor: DropTargetMonitor<DragItem, void>) => {
@@ -147,8 +148,6 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
       // Get rectangle on screen
       const hoverBoundingRect = ref.current.getBoundingClientRect();
 
-      // Get rectangle height instead of middle Y (since we use percentage thresholds)
-
       // Determine mouse position
       const clientOffset = monitor.getClientOffset();
       if (!clientOffset) return;
@@ -156,37 +155,22 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
       // Get pixels to the top
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-      // For more precision and responsiveness, adjust the threshold based on distance
-      const longDistanceMove = Math.abs(dragIndex - hoverIndex) > 5;
-      const threshold = longDistanceMove ? 0.1 : 0.5; // More sensitive for long-distance moves
+      // Get the middle Y position
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
-      // Only perform the move when the mouse has crossed threshold percentage of the item's height
-      // When dragging downwards, only move when the cursor is below threshold% of the item's height
-      // When dragging upwards, only move when the cursor is above threshold% of the item's height
-
-      // Dragging downwards
-      if (
-        dragIndex < hoverIndex &&
-        hoverClientY < hoverBoundingRect.height * threshold
-      ) {
+      // Simple threshold - more predictable behavior
+      // Dragging downwards - must move past the middle for the next row
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
 
-      // Dragging upwards
-      if (
-        dragIndex > hoverIndex &&
-        hoverClientY > hoverBoundingRect.height * (1 - threshold)
-      ) {
+      // Dragging upwards - must move above the middle for the previous row
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
 
       // Time to actually perform the action
       moveRow(dragIndex, hoverIndex);
-
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
       item.index = hoverIndex;
     },
     drop: (item: DragItem) => {
@@ -196,20 +180,27 @@ const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({
 
   drop(ref);
 
+  // Only render if we have a valid record
+  if (!record) {
+    return null;
+  }
+
   return (
     <DragHandleContext.Provider value={{ drag }}>
       <tr
         ref={ref}
-        className={`${className || ""}${
-          isOver && dropCanDrop ? " hover-over" : ""
-        }${isDragging ? " dragging-row" : ""}`}
+        className={`${className || ""} ${isOver ? " ant-table-row-hover" : ""} ${isDragging ? " dragging-row" : ""}`}
         style={{
           ...style,
-          opacity: isDragging ? 0.5 : 1,
+          opacity: isDragging ? 0.4 : 1,
+          cursor: isDragging ? "grabbing" : "default"
         }}
         data-handler-id={handlerId}
+        data-row-key={record.id}
         {...restProps}
-      />
+      >
+        {restProps.children}
+      </tr>
     </DragHandleContext.Provider>
   );
 };
@@ -451,78 +442,99 @@ const CiltSequencesPage = () => {
 
   const moveRow = useCallback(
     (dragIndex: number, hoverIndex: number) => {
-      const newSequences = [...filteredSequences];
+      // Safety check for valid indices
+      if (dragIndex < 0 || hoverIndex < 0 || 
+          dragIndex >= sequencesRef.current.length || 
+          hoverIndex >= sequencesRef.current.length) {
+        console.error('Invalid indices for moveRow', { dragIndex, hoverIndex, length: sequencesRef.current.length });
+        return;
+      }
+      
+      // Create a new array to maintain immutability
+      const newSequences = [...sequencesRef.current];
+      
+      // Move the item
       const [draggedItem] = newSequences.splice(dragIndex, 1);
       newSequences.splice(hoverIndex, 0, draggedItem);
+      
+      // Update both state and ref
       setFilteredSequences(newSequences);
+      sequencesRef.current = newSequences;
     },
-    [filteredSequences]
+    []
   );
 
   const handleReorderOnDrop = useCallback(
     async (draggedItem: DragItem) => {
+      // If item wasn't moved, do nothing
       if (draggedItem.originalIndex === draggedItem.index) return;
+      if (draggedItem.recordId < 0) return;
 
-      const currentSequences = sequencesRef.current;
-      const finalIndex = draggedItem.index;
-      const draggedSequence = currentSequences[finalIndex];
-
-      // Defensive check for state consistency
-      if (!draggedSequence || draggedSequence.id !== draggedItem.record.id) {
-        AnatomyNotification.error(notification, {
-          data: { message: "Error de consistencia. Se restaurará el orden." },
-        });
-        setRefreshTrigger((p) => p + 1);
+      // Use the ref to get the most up-to-date sequences
+      const currentSequences = [...sequencesRef.current];
+      
+      // Double check that we have sequences
+      if (!currentSequences || currentSequences.length === 0) {
+        console.error("No sequences available", { draggedItem });
+        setRefreshTrigger(prev => prev + 1);
         return;
       }
 
-      const itemBefore =
-        finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
-      const itemAfter =
-        finalIndex < currentSequences.length - 1
-          ? currentSequences[finalIndex + 1]
-          : null;
+      const finalIndex = draggedItem.index;
+      
+      // Safety checks for index bounds
+      if (finalIndex < 0 || finalIndex >= currentSequences.length) {
+        console.error("Invalid drop index", { finalIndex, length: currentSequences.length });
+        setRefreshTrigger(prev => prev + 1);
+        return;
+      }
+      
+      // For safety, try to find using final position first, then fall back to ID matching
+      let draggedSequence: CiltSequence | undefined = currentSequences[finalIndex];
+      
+      // If not found by position or if IDs don't match, try to find by ID
+      if (!draggedSequence || draggedSequence.id !== draggedItem.recordId) {
+        const foundSequence = currentSequences.find(seq => seq.id === draggedItem.recordId);
+        if (foundSequence) {
+          draggedSequence = foundSequence;
+        }
+      }
+      
+      // Check if we have valid sequences
+      if (!draggedSequence) {
+        notification.error({ message: "Error al reordenar", description: "No se pudo encontrar la secuencia arrastrada." });
+        setRefreshTrigger(prev => prev + 1);
+        return;
+      }
 
-      // Ensure we have valid numeric orders
-      const orderBefore =
-        typeof itemBefore?.order === "number" ? itemBefore.order : null;
-      const orderAfter =
-        typeof itemAfter?.order === "number" ? itemAfter.order : null;
+      // Get adjacent sequences to calculate new order
+      const sequenceBefore = finalIndex > 0 ? currentSequences[finalIndex - 1] : null;
+      const sequenceAfter = finalIndex < currentSequences.length - 1 ? currentSequences[finalIndex + 1] : null;
 
+      // Find the order values for adjacent sequences
+      const orderBefore = typeof sequenceBefore?.order === "number" ? sequenceBefore.order : null;
+      const orderAfter = typeof sequenceAfter?.order === "number" ? sequenceAfter.order : null;
+
+      // Determine the new order value
       let newOrder: number;
 
-      // Check for NaN prevention at each calculation point
       if (orderBefore !== null && orderAfter !== null) {
-        // Case 1: Dropped between two items.
+        // If between two sequences, find a value between them
         if (orderAfter - orderBefore > 1) {
-          // Integer gap exists - calculate midpoint, ensuring it's at least 1
-          newOrder = Math.max(
-            1,
-            Math.floor(orderBefore + (orderAfter - orderBefore) / 2)
-          );
+          // If there's space between the orders, calculate a middle value
+          newOrder = Math.floor(orderBefore + (orderAfter - orderBefore) / 2);
         } else {
-          // No integer gap - just use the next order position
-          // Use the orderAfter value directly since the backend will swap them
+          // If no gap, use one of the existing orders and let backend handle swapping
           newOrder = orderAfter;
-
-          // Backend logic handles this by swapping the existing item with this order
-          // with our current item, so we don't need to calculate a new unique value
         }
       } else if (orderBefore !== null) {
-        // Case 2: Dropped at the end of the list.
+        // If at the end of the list
         newOrder = orderBefore + 1;
       } else if (orderAfter !== null) {
-        // Case 3: Dropped at the beginning of the list.
-        if (orderAfter > 1) {
-          // If there's room before the first item
-          newOrder = Math.max(1, orderAfter - 1);
-        } else {
-          // If the first item is already at 1, use its value
-          // The backend will handle the swap
-          newOrder = 1;
-        }
+        // If at the beginning of the list
+        newOrder = orderAfter > 1 ? orderAfter - 1 : 1;
       } else {
-        // Case 4: The list was empty or has only one item.
+        // Only one item
         newOrder = 1;
       }
 
@@ -540,10 +552,20 @@ const CiltSequencesPage = () => {
         console.log("Sending reorder request:", {
           sequenceId: draggedSequence.id,
           newOrder: newOrder,
-          isNaN: isNaN(newOrder),
+          draggedItemId: draggedItem.recordId,
+          originalIndex: draggedItem.originalIndex,
+          finalIndex: finalIndex,
+          orderBefore: orderBefore,
+          orderAfter: orderAfter,
+          currentSequencesLength: currentSequences.length
         });
 
-        // Apply visual feedback before the server call
+        // Ensure we're sending valid data to the API
+        if (!draggedSequence || !draggedSequence.id || isNaN(newOrder)) {
+          throw new Error("Invalid data for sequence update");
+        }
+
+        // Simple visual feedback  
         const reorderedRow = document.querySelector(
           `tr[data-row-key="${draggedSequence.id}"]`
         );
@@ -553,14 +575,15 @@ const CiltSequencesPage = () => {
             reorderedRow.classList.remove("reordered-row");
           }, 1500);
         }
-
-        await updateCiltSequenceOrder({
-          sequenceId: draggedSequence.id,
-          newOrder: newOrder,
-        }).unwrap();
+        
+        // Send the update to the backend
+        await updateCiltSequenceOrder({ 
+          sequenceId: draggedSequence.id, 
+          newOrder: Math.max(1, newOrder) 
+        });
 
         console.log("Reorder successful");
-        setRefreshTrigger((p) => p + 1);
+        setRefreshTrigger(prev => prev + 1);
       } catch (error) {
         console.error("Error al reordenar secuencias:", error);
         AnatomyNotification.error(notification, {
@@ -576,12 +599,16 @@ const CiltSequencesPage = () => {
   );
   const columns: ColumnsType<CiltSequence> = [
     {
-      title: "Orden",
+      title: "",
       dataIndex: "order",
       key: "order",
       align: "center" as const,
       width: 50,
-      render: () => <DragHandle />,
+      render: () => (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <DragHandle />
+        </div>
+      ),
     },
     {
       title: "Color",
@@ -674,36 +701,32 @@ const CiltSequencesPage = () => {
       <DndProvider backend={HTML5Backend}>
         <style>
           {`
-          .hover-over > td {
-            background-color: #e6f7ff !important;
-            transition: all 0.3s ease;
-            border-left: 3px solid #1890ff !important;
-          }
-          .ant-table-row.drop-target > td {
-            border-top: 2px dashed #1890ff;
-          }
-          .drop-over-downward > td {
-            border-bottom: 2px dashed #1890ff;
-          }
-          .drop-over-upward > td {
-            border-top: 2px dashed #1890ff;
-          }
-          tr.ant-table-row:hover {
-            cursor: default;
-          }
+          /* Simpler styles for better compatibility with Ant Design */
           tr.ant-table-row td:first-child {
             cursor: move;
           }
+          
           .dragging-row td {
-            background-color: #f0f8ff !important;
-            opacity: 0.7;
+            background-color: #f5f5f5 !important;
           }
-          /* Animation for row reordering */
+          
+          .drag-handle {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-right: 4px;
+          }
+          
+          .drag-handle:hover {
+            background-color: #e6f7ff;
+          }
+          
+          /* Simple highlight animation */
           @keyframes highlight {
             0% { background-color: #ffffff; }
-            50% { background-color: #e6f7ff; }
+            50% { background-color: #bae7ff; }
             100% { background-color: #ffffff; }
           }
+          
           .reordered-row td {
             animation: highlight 1.5s ease;
           }

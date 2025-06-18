@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Descriptions, Badge, Image, Row, Col, Typography, Table, Button, Space, notification } from "antd";
+import { Modal, Descriptions, Badge, Image, Row, Col, Typography, Table, notification } from "antd";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import { useGetCiltSequencesByCiltMutation } from "../../../services/cilt/ciltSequencesService";
@@ -48,11 +48,6 @@ const CiltMstrDetailsModal: React.FC<CiltMstrDetailsModalProps> = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const showScheduleSequence = (sequence: CiltSequence) => {
-    setSelectedSequence(sequence);
-    setScheduleSecuenceVisible(true);
   };
 
   const handleScheduleSequenceCancel = () => {
@@ -204,18 +199,6 @@ const CiltMstrDetailsModal: React.FC<CiltMstrDetailsModalProps> = ({
                 key: "ciltTypeName",
                 render: (text) => text || "N/A",
                 width: 120,
-              },
-              {
-                title: Strings.actions,
-                key: "actions",
-                render: (_, record) => (
-                  <Space size="small">
-                    <Button type="default" size="small" onClick={() => showScheduleSequence(record)}>
-                      {Strings.scheduleSequence}
-                    </Button>
-                  </Space>
-                ),
-                width: 150,
               },
             ]}
             rowKey="id"
