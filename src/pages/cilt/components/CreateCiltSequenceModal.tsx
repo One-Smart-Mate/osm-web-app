@@ -228,6 +228,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
             quantityPicturesCreate: Number(combinedData.quantityPicturesCreate) || 1,
             quantityPicturesClose: Number(combinedData.quantityPicturesClose) || 1,
             selectableWithoutProgramming: combinedData.selectableWithoutProgramming ? 1 : 0,
+            specialWarning: combinedData.specialWarning || null,
             status: "A",
             createdAt: new Date().toISOString(),
           };
@@ -556,6 +557,19 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     placeholder="Ingrese las herramientas requeridas"
                     style={{ whiteSpace: 'pre-wrap' }}
+                  />
+                </Form.Item>
+
+                {/* Special Warning */}
+                <Form.Item
+                  name="specialWarning"
+                  label={Strings.specialWarning}
+                  getValueFromEvent={(e) => e.target.value}
+                >
+                  <Input
+                    placeholder="Material peligroso, área peligrosa, etc."
+                    className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    maxLength={100}
                   />
                 </Form.Item>
               </div>

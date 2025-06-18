@@ -62,15 +62,19 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
   const [remediationOplName, setRemediationOplName] = useState<string>("");
 
   useEffect(() => {
-    if (open && sequence?.siteId) {
-      getCiltTypesBySite(sequence.siteId.toString())
-        .unwrap()
-        .then((types) => {
-          setCiltTypes(types);
-        })
-        .catch((error) => {
-          console.error("Error fetching CILT types:", error);
-        });
+    if (open && sequence) {
+      // Debug to check if specialWarning exists in the sequence object
+      console.log("Sequence object in edit modal:", sequence);
+      if (sequence?.siteId) {
+        getCiltTypesBySite(sequence.siteId.toString())
+          .unwrap()
+          .then((types) => {
+            setCiltTypes(types);
+          })
+          .catch((error) => {
+            console.error("Error fetching CILT types:", error);
+          });
+      }
 
       const loadFormData = async () => {
         if (!sequence) return;
@@ -135,6 +139,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
           referencePoint: sequence.referencePoint,
           selectableWithoutProgramming:
             sequence.selectableWithoutProgramming === 1,
+          specialWarning: sequence.specialWarning,
         });
       };
 
@@ -215,6 +220,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       values.order = sequence.order;
 
       // Updated payload to match backend requirements - removed areaId, areaName, positionId, positionName, levelId, levelName, and route fields
+      // Log para ver los valores del formulario antes de crear el payload
+      console.log("Form values before creating payload:", values);
+      console.log("Special Warning value from form:", values.specialWarning);
+      
       const payload = {
         id: values.id,
         siteId: Number(values.siteId),
@@ -239,9 +248,13 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         quantityPicturesCreate: Number(values.quantityPicturesCreate) || 0,
         quantityPicturesClose: Number(values.quantityPicturesClose) || 0,
         selectableWithoutProgramming: values.selectableWithoutProgramming ? 1 : 0,
+        specialWarning: values.specialWarning || null,
         status: values.status || "A",
         updatedAt: new Date().toISOString(),
       };
+      
+      // Log para ver el payload final que se enviará al backend
+      console.log("Final payload to be sent:", payload);
 
       delete (values as any).referenceOplName;
       delete (values as any).remediationOplName;
@@ -253,7 +266,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         payload.frecuencyCode = sequence.frecuencyCode;
       }
 
-      await updateCiltSequence(payload).unwrap();
+      const response = await updateCiltSequence(payload).unwrap();
+      
+      // Log para ver la respuesta del backend
+      console.log("Backend response after update:", response);
 
       notification.success({
         message: Strings.editCiltSequenceModalSuccess,
@@ -515,6 +531,17 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 placeholder={
                   Strings.editCiltSequenceModalToolsRequiredPlaceholder
                 }
+              />
+            </Form.Item>
+            
+            {/* Special Warning */}
+            <Form.Item
+              label={Strings.specialWarning}
+              name="specialWarning"
+            >
+              <Input
+                placeholder="Material peligroso, área peligrosa, etc."
+                maxLength={100}
               />
             </Form.Item>
 

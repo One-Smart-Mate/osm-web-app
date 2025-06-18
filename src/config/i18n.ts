@@ -956,6 +956,9 @@ const resources = {
       oplPdfPreviewTitle: "PDF Preview",
       oplVideoPreviewTitle: "Video Preview",
       oplClose: "Close",
+      
+      // Special Warning field
+      specialWarning: "Special Warning",
 
       // OplTable strings
       oplTableTitleColumn: "Title",
@@ -2475,6 +2478,9 @@ const resources = {
       oplMediaDefaultHint: "Admite varios formatos de archivo",
       oplMediaDefaultButton: "Subir Archivo",
       oplErrorInvalidFileType: "El archivo seleccionado no es un archivo válido de tipo {type}",
+
+      // Special Warning field
+      specialWarning: "Advertencia Especial",
 
       // OplFormModal strings
       oplFormModalViewTitle: "Ver OPL",

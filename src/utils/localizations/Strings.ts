@@ -3,6 +3,8 @@ import i18n from "../../config/i18n";
 class StringsBase {
   // CILT Cloning
   static withSequences = "withSequences";
+  // Special Warning field
+  static specialWarning = "specialWarning";
   // For the Routes.tsx sidebar
   static dragToReorder = "dragToReorder";
   static oplDetailsContentItem = "oplDetailsContentItem";

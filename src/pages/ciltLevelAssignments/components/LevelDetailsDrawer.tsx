@@ -80,6 +80,7 @@ interface CiltSequence {
   standardOk: string;
   remediationOplSop?: number;
   toolsRequired: string | null;
+  specialWarning: string | null;
   stoppageReason?: number;
   machineStopped: number;
   quantityPicturesCreate?: number;
@@ -1039,6 +1040,10 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
               {selectedSequence.toolsRequired}
             </Descriptions.Item>
           )}
+          {/* Special Warning field */}
+          <Descriptions.Item label={Strings.specialWarning}>
+            {selectedSequence.specialWarning || "N/A"}
+          </Descriptions.Item>
           <Descriptions.Item label={Strings.machineStopped}>
             {selectedSequence.machineStopped ? Strings.yes : Strings.no}
           </Descriptions.Item>
