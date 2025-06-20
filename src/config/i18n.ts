@@ -288,6 +288,18 @@ const resources = {
       location: "Location ",
       createdBy: "Created by ",
       problemDescription: "Problem description ",
+      
+      // Sorting and filtering
+      noSort: "No sorting",
+      ascending: "Ascending",
+      descending: "Descending",
+      sortBy: "Sort by",
+      enterCardNumber: "Enter card number",
+      enterLocation: "Enter location",
+      dateRange: "Date range",
+      creationDateFilter: "Creation date",
+      dueDateFilter: "Due date",
+      selectDates: "Select dates",
 
       // Tags details re-design
       tagStatusCanceled: "Canceled",
@@ -414,6 +426,8 @@ const resources = {
 
       // Rangepicker presets
       last7days: "Last 7 days",
+      startDate: "Start date",
+      endDate: "End date",
       last14days: "Last 14 days",
       last30days: "Last 30 days",
       last90days: "Last 90 days",
@@ -1782,15 +1796,27 @@ const resources = {
       noDueDate: "Sin fecha de vencimiento",
 
       // Tags re-design
-      tagsOf: "Tarjetas de",
+      tagsOf: "Etiquetas de",
       filters: "Filtros",
-      status: "Estado",
-      dueDate: "Fecha de vencimiento",
-      cardType: "Tipo de Tarjeta",
-      problemType: "Tipo de problema",
-      location: "Ubicación",
-      createdBy: "Creado por",
-      problemDescription: "Descripción del problema",
+      status: "Estado ",
+      dueDate: "Fecha de vencimiento ",
+      cardType: "Tipo de etiqueta ",
+      problemType: "Tipo de problema ",
+      location: "Ubicación ",
+      createdBy: "Creado por ",
+      problemDescription: "Descripción del problema ",
+
+      // Sorting and filtering
+      noSort: "Sin ordenar",
+      ascending: "Ascendente",
+      descending: "Descendente",
+      sortBy: "Ordenar por",
+      enterCardNumber: "Ingrese número de tarjeta",
+      enterLocation: "Ingrese ubicación",
+      dateRange: "Rango de fechas",
+      creationDateFilter: "Fecha de creación",
+      dueDateFilter: "Fecha de vencimiento",
+      selectDates: "Seleccionar fechas",
 
       // Tags details re-design
       tagStatusCanceled: "Cancelado",
@@ -2743,6 +2769,8 @@ const resources = {
       // CILT Sequences strings
       sequences: "Secuencias",
       sequence: "Secuencia",
+      startDate: "Fecha de inicio",
+      endDate: "Fecha final",
       createNewSequence: "Crear Nueva Secuencia",
       searchByDescriptionOrderOrTime: "Buscar por descripción, orden o tiempo",
       noSequencesForCilt: "No hay secuencias asociadas a este CILT.",

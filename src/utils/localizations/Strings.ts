@@ -335,6 +335,18 @@ class StringsBase {
   static location = "location";
   static createdBy = "createdBy";
   static problemDescription = "problemDescription";
+  
+  // Sorting and filtering
+  static noSort = "noSort";
+  static ascending = "ascending";
+  static descending = "descending";
+  static sortBy = "sortBy";
+  static enterCardNumber = "enterCardNumber";
+  static enterLocation = "enterLocation";
+  static dateRange = "dateRange";
+  static creationDateFilter = "creationDateFilter";
+  static dueDateFilter = "dueDateFilter";
+  static selectDates = "selectDates";
 
   static tagStatusCanceled = "tagStatusCanceled";
   static tagDate = "tagDate";
@@ -466,6 +478,8 @@ class StringsBase {
   static last14days = "last14days";
   static last30days = "last30days";
   static last90days = "last90days";
+  static startDate = "startDate";
+  static endDate = "endDate";
 
   static failedToDownload = "failedToDownload";
 
