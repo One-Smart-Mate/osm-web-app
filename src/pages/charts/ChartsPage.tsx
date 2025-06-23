@@ -401,7 +401,12 @@ const ChartsPage = () => {
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.tagMonitoring}>
-                          <WeeksChart siteId={siteId} cardTypeName={selectedCardType} />
+                          <WeeksChart 
+                            siteId={siteId} 
+                            startDate={startDate}
+                            endDate={endDate}
+                            cardTypeName={selectedCardType} 
+                          />
                         </ChartExpander>
                       </div>
                     </div>
@@ -409,7 +414,12 @@ const ChartsPage = () => {
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
                 >
                   <div className="w-full h-60">
-                    <WeeksChart siteId={siteId} cardTypeName={selectedCardType} />
+                    <WeeksChart 
+                      siteId={siteId} 
+                      startDate={startDate}
+                      endDate={endDate}
+                      cardTypeName={selectedCardType} 
+                    />
                   </div>
                 </Card>
               </div>

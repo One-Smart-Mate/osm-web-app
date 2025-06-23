@@ -1509,7 +1509,11 @@ const resources = {
       removeText: "Remove Text",
       removeTextConfirm: "Are you sure you want to remove this text?",
       scheduleSequence: "Schedule Sequence",
-      
+      openTags: "Open Tags",
+      closedTags: "Closed Tags",
+      totalTags: "Total Tags",
+      filterTag: "Filter",
+      tagType: "Type",
     },
   },
   es: {
@@ -3035,7 +3039,10 @@ const resources = {
       scheduleSequence: "Calendarizar",
       addSchedule: "Agregar horario",
       removeSchedule: "Eliminar horario",
-
+      openTags: "Abiertas",
+      closedTags: "Cerradas",
+      filterTag: "Filtro",
+      tagType: "Tipo",
     },
   },
 };

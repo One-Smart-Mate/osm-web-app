@@ -1536,6 +1536,10 @@ class StringsBase {
   static removeText = "removeText"
   static removeTextConfirm = "removeTextConfirm"
   static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
+  static openTags = "openTags"
+  static closedTags = "closedTags"
+  static filterTag = "filter"
+  static tagType = "tagType"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
