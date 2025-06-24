@@ -21,3 +21,9 @@ export class UpdateCardMechanic {
     this.idOfUpdatedBy = idOfUpdatedBy;
   }
 }
+
+export interface DiscardCardDto {
+  cardId: number;
+  amDiscardReasonId: number;
+  discardReason?: string;
+}

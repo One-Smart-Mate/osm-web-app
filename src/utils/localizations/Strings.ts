@@ -1540,6 +1540,15 @@ class StringsBase {
   static closedTags = "closedTags"
   static filterTag = "filter"
   static tagType = "tagType"
+  
+  // Discarded Cards Chart strings
+  static discardedCardsUser = "discardedCardsUser"
+  static discardedCardsCards = "discardedCardsCards"
+  static discardedCardsAllReasons = "discardedCardsAllReasons"
+  static discardedCardsBreakdownByReason = "discardedCardsBreakdownByReason"
+  static discardedCardsErrorLoading = "discardedCardsErrorLoading"
+  static discardedCardsNoData = "discardedCardsNoData"
+  static discardedCardslCardsTitle = "discardedCardslCardsTitle"
 }
 
 // Create a Proxy object for StringsBase to intercept property access

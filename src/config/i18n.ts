@@ -1514,6 +1514,15 @@ const resources = {
       totalTags: "Total Tags",
       filterTag: "Filter",
       tagType: "Type",
+      
+      // Discarded Cards Chart strings
+      discardedCardsUser: "User",
+      discardedCardsCards: "tags",
+      discardedCardsAllReasons: "All reasons",
+      discardedCardsBreakdownByReason: "Breakdown by reason",
+      discardedCardsErrorLoading: "Error loading discarded tags data",
+      discardedCardsNoData: "No discarded tags data available",
+      discardedCardslCardsTitle: "Discarded Tags",
     },
   },
   es: {
@@ -3043,6 +3052,15 @@ const resources = {
       closedTags: "Cerradas",
       filterTag: "Filtro",
       tagType: "Tipo",
+      
+      // Discarded Cards Chart strings
+      discardedCardsUser: "Usuario",
+      discardedCardsCards: "tarjetas",
+      discardedCardsAllReasons: "Todos los motivos",
+      discardedCardsBreakdownByReason: "Desglose por motivo",
+      discardedCardsErrorLoading: "Error al cargar datos de tarjetas descartadas",
+      discardedCardsNoData: "No hay datos de tarjetas descartadas disponibles",
+      discardedCardslCardsTitle: "Tarjetas Descartadas",
     },
   },
 };
