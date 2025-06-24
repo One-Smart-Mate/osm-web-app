@@ -376,7 +376,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         </Form.Item>
         {/* Standard time field removed - now calculated automatically in the database */}
         {/* Campo ciltDueDate agregado */}
-        <Form.Item name="ciltDueDate" label={Strings.ciltDueDate}>
+        <Form.Item name="ciltDueDate" label={Strings.ciltDueDate} rules={[{ required: true, message: Strings.requiredDueDate }]}>
           <Input type="date" style={{ width: '100%' }} />
         </Form.Item>
         {/* Campo learnigTime eliminado del flujo */}
