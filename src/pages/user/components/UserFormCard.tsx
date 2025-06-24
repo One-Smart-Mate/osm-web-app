@@ -1,13 +1,14 @@
-import { Checkbox, Form, FormInstance, Input, Select } from "antd";
+import { Checkbox, Form, FormInstance, Input, Select, Button, App as AntApp } from "antd";
 import { Role, UserCardInfo } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyTooltip from "../../components/AnatomyTooltip";
-import { BsLock, BsMailbox, BsPerson } from "react-icons/bs";
+import { BsLock, BsMailbox, BsPerson, BsCopy, BsKey } from "react-icons/bs";
 import { validateEmailPromise } from "../../../utils/Extensions";
 import { useEffect, useState } from "react";
 import { useGetRolesMutation } from "../../../services/roleService";
 import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 import Constants from "../../../utils/Constants";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 interface UserFormCardProps {
   form: FormInstance;
@@ -26,6 +27,9 @@ const UserFormCard = ({
   const [roles, setRoles] = useState<Role[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const { user } = useCurrentUser();
+  const { notification } = AntApp.useApp();
+  const [fastPassword, setFastPassword] = useState<string>("");
+  const [isGeneratingFastPassword, setIsGeneratingFastPassword] = useState(false);
 
   useEffect(() => {
     handleGetRoles();
@@ -62,6 +66,51 @@ const UserFormCard = ({
     { value: Strings.activeStatus, label: Strings.active, key: 1 },
     { value: Strings.inactiveValue, label: Strings.inactive, key: 2 },
   ];
+
+  const handleGenerateFastPassword = () => {
+    setIsGeneratingFastPassword(true);
+    try {
+      // Generate a random 4-letter password
+      const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let result = '';
+      for (let i = 0; i < 4; i++) {
+        result += letters.charAt(Math.floor(Math.random() * letters.length));
+      }
+      setFastPassword(result);
+      form.setFieldsValue({ fastPassword: result });
+      
+      notification.success({
+        message: Strings.success,
+        description: Strings.fastPasswordGenerated,
+      });
+    } catch (error) {
+      AnatomyNotification.error(notification, error);
+    } finally {
+      setIsGeneratingFastPassword(false);
+    }
+  };
+
+  const handleCopyFastPassword = async () => {
+    if (fastPassword) {
+      try {
+        await navigator.clipboard.writeText(fastPassword);
+        notification.success({
+          message: Strings.success,
+          description: Strings.fastPasswordCopied,
+        });
+      } catch (error) {
+        AnatomyNotification.error(notification, error);
+      }
+    }
+  };
+
+  // Clear fast password when modal is opened/closed
+  useEffect(() => {
+    if (!initialValues) {
+      setFastPassword("");
+      form.setFieldsValue({ fastPassword: "" });
+    }
+  }, [initialValues, form]);
 
   return (
     <Form form={form} onFinish={onSubmit} layout="vertical">
@@ -156,6 +205,56 @@ const UserFormCard = ({
           </Form.Item>
           <AnatomyTooltip title={Strings.userConfirmPasswordTooltip} />
         </div>
+
+        {/* Fast Password Section - Only show for update mode */}
+        {enableStatus && (
+          <div className="flex flex-row flex-wrap">
+            <Form.Item
+              name="fastPassword"
+              label={Strings.fastPassword}
+              className="flex-1"
+                              rules={[
+                  {
+                    pattern: /^[a-zA-Z]{4}$/,
+                    message: Strings.fastPasswordValidation,
+                  },
+                ]}
+            >
+              <Input
+                value={fastPassword}
+                onChange={(e) => setFastPassword(e.target.value)}
+                addonBefore={<BsKey />}
+                placeholder={Strings.fastPassword}
+                maxLength={4}
+                readOnly
+                addonAfter={
+                  <div className="flex gap-1">
+                    <Button
+                      type="text"
+                      icon={<BsCopy />}
+                      onClick={handleCopyFastPassword}
+                      disabled={!fastPassword}
+                      size="small"
+                      title={Strings.copy}
+                    />
+                  </div>
+                }
+              />
+            </Form.Item>
+            <div className="flex items-end pb-6">
+              <Button
+                type="primary"
+                onClick={handleGenerateFastPassword}
+                loading={isGeneratingFastPassword}
+                className="ml-2"
+              >
+                {Strings.generateFastPassword}
+              </Button>
+            </div>
+            <AnatomyTooltip title={Strings.fastPasswordTooltip} />
+          </div>
+        )}
+
         <div className="flex flex-wrap">
           <div className="flex items-center gap-2">
             <Form.Item

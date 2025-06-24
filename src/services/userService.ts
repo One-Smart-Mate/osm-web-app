@@ -63,12 +63,13 @@ export const userService = apiSlice.injectEndpoints({
       query: (id) => `/users/user/${id}`,
       transformResponse: (response: { data: UserUpdateForm }) => response.data,
     }),
-    updateUser: builder.mutation<void, UpdateUser>({
+    updateUser: builder.mutation<any, UpdateUser>({
       query: (user) => ({
         url: "/users/update",
         method: "PUT",
         body: { ...user },
       }),
+      transformResponse: (response: { data: any }) => response.data,
     }),
     sendCodeToEmail: builder.mutation<void, string>({
       query: (email) => {

@@ -1355,6 +1355,11 @@ class StringsBase {
 
   static editUser = "editUser";
   static fastPassword = "fastPassword";
+  static generateFastPassword = "generateFastPassword";
+  static fastPasswordGenerated = "fastPasswordGenerated";
+  static fastPasswordCopied = "fastPasswordCopied";
+  static fastPasswordValidation = "fastPasswordValidation";
+  static fastPasswordTooltip = "fastPasswordTooltip";
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 

@@ -12,7 +12,7 @@ import {
   notification,
   Row,
   Col,
-} from "antd";
+} from "antd";  
 import { SearchOutlined } from "@ant-design/icons";
 import { useUpdateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";

@@ -1353,6 +1353,11 @@ const resources = {
       featureUnderDevelopment: "Feature under development",
       editUser:"Update user",
       fastPassword: "Fast password",
+      generateFastPassword: "Generate Fast Password",
+      fastPasswordGenerated: "Fast password generated successfully",
+      fastPasswordCopied: "Fast password copied successfully",
+      fastPasswordValidation: "Fast password must be 4 letters",
+      fastPasswordTooltip: "Fast password for quick access (4 letters)",
       manual: "User manual",
       downloadUsersTemplate: "Download users template",
 
@@ -2885,6 +2890,11 @@ const resources = {
       select: "Seleccionar",
       editUser:"Editar usuario",
       fastPassword: "Password rápido",
+      generateFastPassword: "Generar Password Rápido",
+      fastPasswordGenerated: "Password rápido generado exitosamente",
+      fastPasswordCopied: "Password rápido copiado exitosamente",
+      fastPasswordValidation: "El password rápido debe tener 4 letras",
+      fastPasswordTooltip: "Password rápido para acceso rápido (4 letras)",
       manual: "Manual de usuario",
       downloadUsersTemplate: "Descargar plantilla de usuarios",
 

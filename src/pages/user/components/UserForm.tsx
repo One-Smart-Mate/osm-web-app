@@ -103,14 +103,16 @@ const UserForm = ({
           enableEvidences,
           enableEvidences,
           values.roles,
-          values.status
+          values.status,
+          values.fastPassword
         )
       ).unwrap();
+      
       setModalOpen(false);
       onComplete?.();
       AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
     } catch (error) {
-      console.error("Error updating company:", error);
+      console.error("Error updating user:", error);
       AnatomyNotification.error(notification, error);
     } finally {
       setIsLoading(false);
@@ -140,6 +142,7 @@ const UserForm = ({
             onSubmit={handleOnSubmit}
             initialValues={data}
             enableStatus={formType == UserFormType.UPDATE}
+
           />
         )}
       />
