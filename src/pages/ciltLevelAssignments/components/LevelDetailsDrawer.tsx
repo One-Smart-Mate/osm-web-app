@@ -227,8 +227,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     fetchData();
   }, [levelId]);
   
-  console.log('LevelDetailsDrawer - levelId:', levelId);
-  console.log('LevelDetailsDrawer - levelAssignments:', levelAssignments);
   
   interface ExtendedCiltMstr extends CiltMstr {
     sequences?: CiltSequence[];

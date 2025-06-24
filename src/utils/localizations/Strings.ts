@@ -1561,6 +1561,10 @@ class StringsBase {
   static levelName = "levelName"
   static readOnly = "readOnly"
   static levelsConsultation = "levelsConsultation"
+  static assignmentSuccessful = "assignmentSuccessful";
+  static selectPositionAndCilt = "selectPositionAndCilt";
+  static warning = "warning";
+  static assign = "assign";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

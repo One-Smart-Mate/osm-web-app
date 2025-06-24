@@ -5,6 +5,7 @@ import LevelDetailsCard from "../level/components/LevelDetailsCard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
+
 import { Level } from "../../data/level/level";
 import { Drawer, Spin, Button } from "antd";
 import { useAppDispatch } from "../../core/store";
@@ -40,7 +41,7 @@ const buildHierarchy = (data: Level[]) => {
 };
 
 // Read-only Node Component
-const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCounts = {} }: any) => {
+const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCounts = {}, assignmentCounts = {} }: any) => {
   const { token } = theme.useToken();
 
   const getCollapsedState = (nodeId: string): boolean => {
@@ -61,8 +62,34 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
   nodeDatum.__rd3t.collapsed = isCollapsed;
 
   const isLeafNode = !nodeDatum.children || nodeDatum.children.length === 0;
-  const fillColor = isLeafNode ? "#FFFF00" : "#145695";
 
+  // Helper functions for assignments (similar to cards)
+  const hasAssignments = (node: any, assignmentCounts: { [key: string]: number }) => {
+    if (node.id !== "0" && assignmentCounts[node.id] && assignmentCounts[node.id] > 0) {
+      return true;
+    }
+
+    if (node.children && node.children.length > 0) {
+      return node.children.some((child: any) => hasAssignments(child, assignmentCounts));
+    }
+
+    return false;
+  };
+
+  const calculateTotalAssignments = (node: any, assignmentCounts: { [key: string]: number }): number => {
+    const ownAssignments = node.id !== "0" && assignmentCounts[node.id] ? assignmentCounts[node.id] : 0;
+
+    if (!node.children || node.children.length === 0) {
+      return ownAssignments;
+    }
+
+    const childrenAssignments = node.children.reduce(
+      (total: number, child: any) => total + calculateTotalAssignments(child, assignmentCounts),
+      0
+    );
+
+    return ownAssignments + childrenAssignments;
+  };
 
   const calculateTotalCards = (node: any, cardCounts: { [key: string]: number }): number => {
     const ownCards = node.id !== "0" && cardCounts[node.id] ? cardCounts[node.id] : 0;
@@ -79,9 +106,39 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
     return ownCards + childrenCards;
   };
 
+  // Get counts
+  const assignmentCount = nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] : null;
+  const totalAssignmentCount = nodeDatum.id !== "0" ? calculateTotalAssignments(nodeDatum, assignmentCounts) : null;
   const totalCardCount = nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
 
-  const displayText = nodeDatum.name + (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
+  // Check if node or children have assignments
+  const nodeHasOwnAssignments = assignmentCount && assignmentCount > 0;
+  const nodeChildrenHaveAssignments = 
+    nodeDatum.children &&
+    nodeDatum.children.length > 0 &&
+    nodeDatum.children.some((child: any) => hasAssignments(child, assignmentCounts));
+
+  // Show split colors if node has assignments (own or children)
+  const showSplitColors = nodeDatum.id !== "0" && (nodeHasOwnAssignments || nodeChildrenHaveAssignments);
+
+  // Default fill color
+  const fillColor = isLeafNode ? "#FFFF00" : "#145695";
+
+  // Display text with both assignments and cards count
+  let displayText = nodeDatum.name;
+  const counts = [];
+  
+  if (totalAssignmentCount && totalAssignmentCount > 0) {
+    counts.push(`${totalAssignmentCount} asign`);
+  }
+  
+  if (totalCardCount && totalCardCount > 0) {
+    counts.push(`${totalCardCount} cards`);
+  }
+  
+  if (counts.length > 0) {
+    displayText += ` (${counts.join(', ')})`;
+  }
 
   const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
     e.stopPropagation();
@@ -99,7 +156,20 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
 
   return (
     <g onClick={handleLeftClick} style={{ cursor: "pointer" }}>
-      <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      {showSplitColors ? (
+        <>
+          {/* Base circle in yellow (represents cards or leaf nodes) */}
+          <circle r={15} fill="#FFFF00" stroke="none" />
+          {/* Top half in blue (represents CILT/OPL assignments) */}
+          <path
+            d="M -15,0 A 15,15 0 0,1 15,0 L -15,0 Z"
+            fill="#145695"
+            stroke="none"
+          />
+        </>
+      ) : (
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      )}
       <text
         fill={token.colorText}
         strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
@@ -121,6 +191,7 @@ const LevelsReadOnly = () => {
   const [isLoading, setLoading] = useState(false);
   const [treeData, setTreeData] = useState<any[]>([]);
   const [levelCardCounts, setLevelCardCounts] = useState<{ [key: string]: number }>({});
+  const [assignmentCounts, setAssignmentCounts] = useState<{ [key: string]: number }>({});
   const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
     const storedState = localStorage.getItem("treeExpandedStateReadOnly");
     return storedState === "true";
@@ -199,16 +270,18 @@ const LevelsReadOnly = () => {
         applyExpandState(hierarchyData);
       }
 
-      // Fetch card counts for each level
-      const cardCountsObj: { [key: string]: number } = {};
-
+      // Fetch card counts and assignment counts for each level
+      const cardCountsObj: {[key: string]: number} = {};
+      const assignmentCountsObj: {[key: string]: number} = {};
+      
+      // Create an array of promises for fetching card counts
       const countPromises = response.map(async (level) => {
         try {
-          const cards = await getCardsByLevel({
-            levelId: level.id,
-            siteId: location.state.siteId,
+          const cards = await getCardsByLevel({ 
+            levelId: level.id, 
+            siteId: location.state.siteId 
           }).unwrap();
-
+          
           cardCountsObj[level.id] = cards.length;
         } catch (error) {
           console.error(`Error fetching cards for level ${level.id}:`, error);
@@ -216,8 +289,61 @@ const LevelsReadOnly = () => {
         }
       });
 
-      await Promise.all(countPromises);
+      // Create promises for fetching assignment counts
+      const assignmentPromises = response.map(async (level) => {
+        try {
+          // Fetch CILT assignments for this level
+          const ciltAssignmentsResponse = await fetch(
+            `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
+            {
+              method: 'GET',
+              headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          
+          let ciltCount = 0;
+          if (ciltAssignmentsResponse.ok) {
+            const ciltData = await ciltAssignmentsResponse.json();
+            const ciltAssignments = ciltData.data || ciltData;
+            ciltCount = Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === 'A').length : 0;
+          }
+
+          // Fetch OPL assignments for this level
+          const oplAssignmentsResponse = await fetch(
+            `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
+            {
+              method: 'GET',
+              headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json'
+              }
+            }
+          );
+          
+          let oplCount = 0;
+          if (oplAssignmentsResponse.ok) {
+            const oplData = await oplAssignmentsResponse.json();
+            const oplAssignments = oplData.data || oplData;
+            oplCount = Array.isArray(oplAssignments) ? oplAssignments.length : 0;
+          }
+
+          // Total assignments for this level
+          assignmentCountsObj[level.id] = ciltCount + oplCount;
+        } catch (error) {
+          console.error(`Error fetching assignments for level ${level.id}:`, error);
+          assignmentCountsObj[level.id] = 0;
+        }
+      });
+      
+      // Wait for all card count and assignment requests to complete
+      await Promise.all([...countPromises, ...assignmentPromises]);
+      
+      // Update state with counts
       setLevelCardCounts(cardCountsObj);
+      setAssignmentCounts(assignmentCountsObj);
 
       setTreeData([
         {
@@ -345,6 +471,7 @@ const LevelsReadOnly = () => {
                         toggleNode={rd3tProps.toggleNode}
                         handleShowDetails={handleShowDetails}
                         cardCounts={levelCardCounts}
+                        assignmentCounts={assignmentCounts}
                       />
                     )}
                     collapsible={true}

@@ -40,14 +40,43 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
   const [approverModalVisible, setApproverModalVisible] = useState(false);
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
-  const [creatorId, setCreatorId] = useState<number | undefined>(cilt?.creatorId ? Number(cilt.creatorId) : undefined);
-  const [reviewerId, setReviewerId] = useState<number | undefined>(cilt?.reviewerId ? Number(cilt.reviewerId) : undefined);
-  const [approvedById, setApprovedById] = useState<number | undefined>(cilt?.approvedById ? Number(cilt.approvedById) : undefined);
+  const [creatorId, setCreatorId] = useState<number | undefined>(undefined);
+  const [reviewerId, setReviewerId] = useState<number | undefined>(undefined);
+  const [approvedById, setApprovedById] = useState<number | undefined>(undefined);
+  
+  // Update user IDs whenever cilt changes
+  useEffect(() => {
+    if (cilt) {
+      setCreatorId(cilt.creatorId ? Number(cilt.creatorId) : undefined);
+      setReviewerId(cilt.reviewerId ? Number(cilt.reviewerId) : undefined);
+      setApprovedById(cilt.approvedById ? Number(cilt.approvedById) : undefined);
+    } else {
+      setCreatorId(undefined);
+      setReviewerId(undefined);
+      setApprovedById(undefined);
+    }
+  }, [cilt]);
   
   useEffect(() => {
     fetchResponsibles();
   }, [cilt, getSiteResponsibles]);
   
+  // Debug effect to track cilt changes
+  useEffect(() => {
+    if (cilt) {
+      console.log('CILT data changed:', {
+        id: cilt.id,
+        ciltName: cilt.ciltName,
+        creatorId: cilt.creatorId,
+        creatorName: cilt.creatorName,
+        reviewerId: cilt.reviewerId,
+        reviewerName: cilt.reviewerName,
+        approvedById: cilt.approvedById,
+        approvedByName: cilt.approvedByName,
+        siteId: cilt.siteId
+      });
+    }
+  }, [cilt]);
 
   const fetchResponsibles = async () => {
     if (cilt && cilt.siteId) {
@@ -57,17 +86,22 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         setResponsibles(response || []);
       } catch (error) {
         console.error("Error fetching responsibles:", error);
+        setResponsibles([]);
       } finally {
         setLoading(false);
       }
+    } else {
+      console.log('No cilt or siteId available for fetching responsibles');
+      setResponsibles([]);
     }
   };
 
   const handleCreatorSelection = (userIds: number[]) => {
     if (userIds.length > 0) {
-      setCreatorId(userIds[0]);
+      const selectedUserId = userIds[0];
+      setCreatorId(selectedUserId);
       // Find the user by comparing with the same type
-      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      const selectedUser = responsibles.find(user => Number(user.id) === selectedUserId);
       form.setFieldsValue({ creatorName: selectedUser?.name || "" });
     } else {
       setCreatorId(undefined);
@@ -78,9 +112,10 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   
   const handleReviewerSelection = (userIds: number[]) => {
     if (userIds.length > 0) {
-      setReviewerId(userIds[0]);
+      const selectedUserId = userIds[0];
+      setReviewerId(selectedUserId);
       // Find the user by comparing with the same type
-      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      const selectedUser = responsibles.find(user => Number(user.id) === selectedUserId);
       form.setFieldsValue({ reviewerName: selectedUser?.name || "" });
     } else {
       setReviewerId(undefined);
@@ -91,9 +126,10 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   
   const handleApproverSelection = (userIds: number[]) => {
     if (userIds.length > 0) {
-      setApprovedById(userIds[0]);
+      const selectedUserId = userIds[0];
+      setApprovedById(selectedUserId);
       // Find the user by comparing with the same type
-      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
+      const selectedUser = responsibles.find(user => Number(user.id) === selectedUserId);
       form.setFieldsValue({ approvedByName: selectedUser?.name || "" });
     } else {
       setApprovedById(undefined);
@@ -298,6 +334,9 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         // standardTime removed - now calculated automatically in the database
         ciltDueDate: cilt.ciltDueDate ? cilt.ciltDueDate.split('T')[0] : null,
         status: cilt.status,
+        creatorName: cilt.creatorName || '',
+        reviewerName: cilt.reviewerName || '',
+        approvedByName: cilt.approvedByName || '',
       });
       
       // If there's an existing image, add it to the fileList

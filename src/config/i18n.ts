@@ -1535,6 +1535,10 @@ const resources = {
       levelName: "Level Name",
       readOnly: "Read Only",
       levelsConsultation: "Levels Consultation",
+      assignmentSuccessful: "Assignment completed successfully",
+      selectPositionAndCilt: "Please select both a position and a CILT procedure",
+      warning: "Warning",
+      assign: "Assign",
     },
   },
   es: {
@@ -3085,6 +3089,10 @@ const resources = {
       levelName: "Nombre del Nivel",
       readOnly: "Solo Lectura",
       levelsConsultation: "Consulta de Niveles",
+      assignmentSuccessful: "Asignación completada exitosamente",
+      selectPositionAndCilt: "Por favor, seleccione tanto una posición como un procedimiento CILT",
+      warning: "Advertencia",
+      assign: "Asignar",
     },
   },
 };

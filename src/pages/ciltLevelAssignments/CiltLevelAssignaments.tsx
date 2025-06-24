@@ -45,6 +45,7 @@ const CustomNode = ({
   nodeDatum,
   toggleNode,
   onNodeContextMenu,
+  assignmentCounts = {},
 }: any) => {
   const { token } = theme.useToken();
 
@@ -57,7 +58,57 @@ const CustomNode = ({
   nodeDatum.__rd3t.collapsed = isCollapsed;
 
   const isLeafNode = !nodeDatum.children || nodeDatum.children.length === 0;
+
+  // Helper functions for assignments
+  const hasAssignments = (node: any, assignmentCounts: { [key: string]: number }) => {
+    if (node.id !== "0" && assignmentCounts[node.id] && assignmentCounts[node.id] > 0) {
+      return true;
+    }
+
+    if (node.children && node.children.length > 0) {
+      return node.children.some((child: any) => hasAssignments(child, assignmentCounts));
+    }
+
+    return false;
+  };
+
+  const calculateTotalAssignments = (node: any, assignmentCounts: { [key: string]: number }): number => {
+    const ownAssignments = node.id !== "0" && assignmentCounts[node.id] ? assignmentCounts[node.id] : 0;
+
+    if (!node.children || node.children.length === 0) {
+      return ownAssignments;
+    }
+
+    const childrenAssignments = node.children.reduce(
+      (total: number, child: any) => total + calculateTotalAssignments(child, assignmentCounts),
+      0
+    );
+
+    return ownAssignments + childrenAssignments;
+  };
+
+  // Get assignment counts
+  const assignmentCount = nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] : null;
+  const totalAssignmentCount = nodeDatum.id !== "0" ? calculateTotalAssignments(nodeDatum, assignmentCounts) : null;
+
+  // Check if node or children have assignments
+  const nodeHasOwnAssignments = assignmentCount && assignmentCount > 0;
+  const nodeChildrenHaveAssignments = 
+    nodeDatum.children &&
+    nodeDatum.children.length > 0 &&
+    nodeDatum.children.some((child: any) => hasAssignments(child, assignmentCounts));
+
+  // Show split colors if node has assignments (own or children)
+  const showSplitColors = nodeDatum.id !== "0" && (nodeHasOwnAssignments || nodeChildrenHaveAssignments);
+
+  // Default fill color
   const fillColor = isLeafNode ? "#FFFF00" : "#145695";
+
+  // Display text with assignment count
+  let displayText = nodeDatum.name;
+  if (totalAssignmentCount && totalAssignmentCount > 0) {
+    displayText += ` (${totalAssignmentCount})`;
+  }
 
   const setCollapsedState = (nodeId: string, isCollapsed: boolean) => {
     localStorage.setItem(
@@ -82,7 +133,20 @@ const CustomNode = ({
         onNodeContextMenu && onNodeContextMenu(e, nodeDatum)
       }
     >
-      <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      {showSplitColors ? (
+        <>
+          {/* Base circle in yellow (represents leaf nodes or no assignments) */}
+          <circle r={15} fill="#FFFF00" stroke="none" />
+          {/* Top half in blue (represents CILT/OPL assignments) */}
+          <path
+            d="M -15,0 A 15,15 0 0,1 15,0 L -15,0 Z"
+            fill="#145695"
+            stroke="none"
+          />
+        </>
+      ) : (
+        <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
+      )}
       <text
         fill={token.colorText}
         strokeWidth={nodeDatum.id === "0" ? "0.5" : "0"}
@@ -90,7 +154,7 @@ const CustomNode = ({
         y={nodeDatum.id === "0" ? 0 : 20}
         style={{ fontSize: "14px" }}
       >
-        {nodeDatum.name}
+        {displayText}
       </text>
     </g>
   );
@@ -101,6 +165,7 @@ const CiltLevelAssignaments: React.FC = () => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [assignmentCounts, setAssignmentCounts] = useState<{ [key: string]: number }>({});
   const containerRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement | null>(null);
   const [getLevels] = useGetlevelsMutation();
@@ -181,7 +246,7 @@ const CiltLevelAssignaments: React.FC = () => {
       const response = await getLevels(siteId).unwrap();
       
       const activeNodes = response.filter((node: any) => !node.deletedAt);
-      console.log(`Filtrando nodos: ${response.length} totales, ${activeNodes.length} activos, ${response.length - activeNodes.length} eliminados`);
+    
       
       const hierarchyData = buildHierarchy(activeNodes);
 
@@ -203,6 +268,98 @@ const CiltLevelAssignaments: React.FC = () => {
       };
 
       applyExpandState(hierarchyData);
+
+      // Optimize assignment count fetching with better error handling and batching
+      const assignmentCountsObj: {[key: string]: number} = {};
+      
+      // OPL fetching is currently disabled to avoid 404 warnings
+      // Many levels don't have OPL endpoints configured
+      
+      // Create batched requests with proper error handling
+      const fetchAssignmentCounts = async (levels: any[]) => {
+        // Batch CILT assignments request
+        const ciltPromises = levels.map(async (level) => {
+          try {
+            const ciltResponse = await fetch(
+              `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
+              {
+                method: 'GET',
+                headers: {
+                  'Accept': '*/*',
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+            
+            if (ciltResponse.ok) {
+              const ciltData = await ciltResponse.json();
+              const ciltAssignments = ciltData.data || ciltData;
+              return {
+                levelId: level.id,
+                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === 'A').length : 0,
+                type: 'cilt'
+              };
+            }
+            return { levelId: level.id, count: 0, type: 'cilt' };
+          } catch (error) {
+            // Silently handle CILT fetch errors to reduce console noise
+            return { levelId: level.id, count: 0, type: 'cilt' };
+          }
+        });
+
+        // OPL assignments are currently disabled to avoid 404 warnings
+        // Many levels don't have OPL endpoints configured, causing console spam
+        const oplPromises = levels.map(async (level) => {
+          // Return 0 count for all OPL assignments to avoid 404 requests
+          return { levelId: level.id, count: 0, type: 'opl' };
+        });
+
+        // Execute all requests in parallel but limit concurrency to avoid overwhelming the server
+        const chunkSize = 5; // Process 5 levels at a time to reduce server load
+        const ciltCounts: {[key: string]: number} = {};
+        const oplCounts: {[key: string]: number} = {};
+
+        // Process CILT assignments in chunks
+        for (let i = 0; i < ciltPromises.length; i += chunkSize) {
+          const chunk = ciltPromises.slice(i, i + chunkSize);
+          const results = await Promise.all(chunk);
+          results.forEach(result => {
+            ciltCounts[result.levelId] = result.count;
+          });
+          
+          // Small delay between chunks to avoid overwhelming the server
+          if (i + chunkSize < ciltPromises.length) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+
+        // Process OPL assignments in chunks
+        for (let i = 0; i < oplPromises.length; i += chunkSize) {
+          const chunk = oplPromises.slice(i, i + chunkSize);
+          const results = await Promise.all(chunk);
+          results.forEach(result => {
+            oplCounts[result.levelId] = result.count;
+          });
+          
+          // Small delay between chunks to avoid overwhelming the server
+          if (i + chunkSize < oplPromises.length) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+
+        // Combine counts
+        levels.forEach(level => {
+          const ciltCount = ciltCounts[level.id] || 0;
+          const oplCount = oplCounts[level.id] || 0;
+          assignmentCountsObj[level.id] = ciltCount + oplCount;
+        });
+      };
+
+      // Fetch assignment counts for active nodes only
+      await fetchAssignmentCounts(activeNodes);
+      
+      // Update state with assignment counts
+      setAssignmentCounts(assignmentCountsObj);
 
       setTreeData([
         {
@@ -240,8 +397,10 @@ const CiltLevelAssignaments: React.FC = () => {
     if (treeData.length > 0) {
       expandNodes(treeData[0].children);
       localStorage.setItem("treeExpandedState", "true");
-      handleGetLevels();
+      // Only refresh tree structure, don't refetch assignment counts
       setIsTreeExpanded(true);
+      // Force re-render to show expanded state
+      setTreeData([...treeData]);
     }
   };
 
@@ -264,8 +423,10 @@ const CiltLevelAssignaments: React.FC = () => {
     if (treeData.length > 0) {
       collapseNodes(treeData[0].children);
       localStorage.setItem("treeExpandedState", "false");
-      handleGetLevels();
+      // Only refresh tree structure, don't refetch assignment counts
       setIsTreeExpanded(false);
+      // Force re-render to show collapsed state
+      setTreeData([...treeData]);
     }
   };
 
@@ -478,6 +639,7 @@ const CiltLevelAssignaments: React.FC = () => {
                     toggleNode={rd3tProps.toggleNode}
                     onNodeContextMenu={handleNodeContextMenu}
                     onNodeClick={handleNodeClick}
+                    assignmentCounts={assignmentCounts}
                   />
                 )}
                 collapsible={true}
