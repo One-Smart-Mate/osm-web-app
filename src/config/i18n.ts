@@ -1533,6 +1533,8 @@ const resources = {
       ciltPositionsLevelsLoadingDetails: "Loading level details...",
       ciltPositionsLevelsErrorLoadingDetails: "Error loading level details",
       levelName: "Level Name",
+      readOnly: "Read Only",
+      levelsConsultation: "Levels Consultation",
     },
   },
   es: {
@@ -3081,6 +3083,8 @@ const resources = {
       ciltPositionsLevelsLoadingDetails: "Cargando detalles de niveles...",
       ciltPositionsLevelsErrorLoadingDetails: "Error al cargar detalles de niveles",
       levelName: "Nombre del Nivel",
+      readOnly: "Solo Lectura",
+      levelsConsultation: "Consulta de Niveles",
     },
   },
 };

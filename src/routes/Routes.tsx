@@ -27,6 +27,7 @@ const TagDetailsPage = React.lazy(
 );
 const UsersPage = React.lazy(() => import("../pages/user/UsersPage"));
 const LevelsPage = React.lazy(() => import("../pages/level/LevelsPage"));
+const LevelsReadOnly = React.lazy(() => import("../pages/levelReadOnly/LevelReadOnly"));
 const SystemHealth = React.lazy(
   () => import("../pages/systemhealth/SystemHealth")
 );
@@ -88,6 +89,14 @@ const levelsRoute = new Route(
   Strings.levelsSB,
   Constants.ROUTES_PATH.levels,
   <LevelsPage />,
+  <BsDiagram3 />,
+  Strings.catalogs
+);
+
+const levelsReadOnlyRoute = new Route(
+  Strings.levelsConsultation,
+  Constants.ROUTES_PATH.levelsReadOnly,
+  <LevelsReadOnly />,
   <BsDiagram3 />,
   Strings.catalogs
 );
@@ -212,6 +221,7 @@ const routes: Route[] = [
   ciltReportsRoute,
   tagsRoute,
   levelsRoute,
+  levelsReadOnlyRoute,
   positionsRoute,
   prioritiesRoute,
   cardTypesRoute,
@@ -238,6 +248,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
+    }),
+    getItemV2({
+      label: levelsReadOnlyRoute.label,
+      key: levelsReadOnlyRoute.path,
+      icon: levelsReadOnlyRoute.icon,
+      section: levelsReadOnlyRoute.section,
     }),
     getItemV2({
       label: positionsRoute.label,
@@ -268,6 +284,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
+    }),
+    getItemV2({
+      label: levelsReadOnlyRoute.label,
+      key: levelsReadOnlyRoute.path,
+      icon: levelsReadOnlyRoute.icon,
+      section: levelsReadOnlyRoute.section,
     }),
     getItemV2({
       label: sitesRoute.label,

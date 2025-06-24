@@ -27,6 +27,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
     [UserRoles.LOCALSYSADMIN]: [
@@ -42,12 +43,16 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardTypes}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.priorities}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.users}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
-    [UserRoles.UNDEFINED]: [],
+    [UserRoles.UNDEFINED]: [
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
+    new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)    ],
   };
 
   // Check if the current route is accessible for the user's role

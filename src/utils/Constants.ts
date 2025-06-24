@@ -74,6 +74,7 @@ const ROUTES_PATH = {
   priorities: 'priorities',
   cardTypes: 'cardtypes',
   levels:'levels',
+  levelsReadOnly: 'levels-readonly',
   companies: 'companies',
   cardDetail: 'card-detail',
   positions:'positions',

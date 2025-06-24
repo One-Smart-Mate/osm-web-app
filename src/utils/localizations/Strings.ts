@@ -1559,6 +1559,8 @@ class StringsBase {
   static ciltPositionsLevelsLoadingDetails = "ciltPositionsLevelsLoadingDetails"
   static ciltPositionsLevelsErrorLoadingDetails = "ciltPositionsLevelsErrorLoadingDetails"
   static levelName = "levelName"
+  static readOnly = "readOnly"
+  static levelsConsultation = "levelsConsultation"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
