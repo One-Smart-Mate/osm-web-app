@@ -87,8 +87,6 @@ const MechanicsChart = ({
         endDate,
       }).unwrap();
 
-      console.log("AAAAAAAAAAAAAAAAAAAAAA", response);
-
       // Cast response to the new structure since the API now returns the new format
       const chartData = response as any as {
         categories: string[];

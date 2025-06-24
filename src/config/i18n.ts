@@ -1523,6 +1523,16 @@ const resources = {
       discardedCardsErrorLoading: "Error loading discarded tags data",
       discardedCardsNoData: "No discarded tags data available",
       discardedCardslCardsTitle: "Discarded Tags",
+      
+      // CILT Positions Levels Modal strings
+      ciltPositionsLevelsTitle: "Positions / Levels",
+      ciltPositionsLevelsButton: "View Positions / Levels",
+      ciltPositionsLevelsAssignments: "assignments",
+      ciltPositionsLevelsNoData: "No positions/levels assigned to this CILT",
+      ciltPositionsLevelsNoAssignments: "No assignments found",
+      ciltPositionsLevelsLoadingDetails: "Loading level details...",
+      ciltPositionsLevelsErrorLoadingDetails: "Error loading level details",
+      levelName: "Level Name",
     },
   },
   es: {
@@ -3061,6 +3071,16 @@ const resources = {
       discardedCardsErrorLoading: "Error al cargar datos de tarjetas descartadas",
       discardedCardsNoData: "No hay datos de tarjetas descartadas disponibles",
       discardedCardslCardsTitle: "Tarjetas Descartadas",
+      
+      // CILT Positions Levels Modal strings
+      ciltPositionsLevelsTitle: "Posiciones / Niveles",
+      ciltPositionsLevelsButton: "Ver Posiciones / Niveles",
+      ciltPositionsLevelsAssignments: "asignaciones",
+      ciltPositionsLevelsNoData: "No hay posiciones/niveles asignados a este CILT",
+      ciltPositionsLevelsNoAssignments: "No se encontraron asignaciones",
+      ciltPositionsLevelsLoadingDetails: "Cargando detalles de niveles...",
+      ciltPositionsLevelsErrorLoadingDetails: "Error al cargar detalles de niveles",
+      levelName: "Nombre del Nivel",
     },
   },
 };

@@ -28,6 +28,12 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
     >({
       query: (ciltMstrId) =>
         `/cilt-mstr-position-levels/cilt-mstr/${ciltMstrId}`,
+      transformResponse: (response: any) => {
+        return response.data || response;
+      },
+      transformErrorResponse: (response: { status: string | number }) => {
+        return { error: `Error ${response.status}` };
+      },
     }),
 
     getCiltMstrPositionLevelsByPositionId: builder.query<

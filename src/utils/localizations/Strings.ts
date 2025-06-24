@@ -1549,6 +1549,16 @@ class StringsBase {
   static discardedCardsErrorLoading = "discardedCardsErrorLoading"
   static discardedCardsNoData = "discardedCardsNoData"
   static discardedCardslCardsTitle = "discardedCardslCardsTitle"
+  
+  // CILT Positions Levels Modal strings
+  static ciltPositionsLevelsTitle = "ciltPositionsLevelsTitle"
+  static ciltPositionsLevelsButton = "ciltPositionsLevelsButton"
+  static ciltPositionsLevelsAssignments = "ciltPositionsLevelsAssignments"
+  static ciltPositionsLevelsNoData = "ciltPositionsLevelsNoData"
+  static ciltPositionsLevelsNoAssignments = "ciltPositionsLevelsNoAssignments"
+  static ciltPositionsLevelsLoadingDetails = "ciltPositionsLevelsLoadingDetails"
+  static ciltPositionsLevelsErrorLoadingDetails = "ciltPositionsLevelsErrorLoadingDetails"
+  static levelName = "levelName"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
