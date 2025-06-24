@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useGetRolesMutation } from "../../../services/roleService";
 import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 import Constants from "../../../utils/Constants";
-import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
+import AnatomyNotification from "../../components/AnatomyNotification";
 
 interface UserFormCardProps {
   form: FormInstance;
