@@ -1,5 +1,6 @@
 import { CardDetailsInterface, CardInterface } from "../data/card/card";
 import {
+  DiscardCardDto,
   UpdateCardMechanic,
   UpdateCardPriority,
 } from "../data/card/card.request";
@@ -31,8 +32,7 @@ export const cardService = apiSlice.injectEndpoints({
     }),
     getCardDetailByUUID: builder.mutation<CardInterface, string>({
       query: (uuid) => `/card/uuid/${uuid}`,
-      transformResponse: (response: { data: CardInterface }) =>
-        response.data,
+      transformResponse: (response: { data: CardInterface }) => response.data,
     }),
     getCardNotes: builder.mutation<Note[], string>({
       query: (cardId) => `/card/notes/${cardId}`,
@@ -99,6 +99,26 @@ export const cardService = apiSlice.injectEndpoints({
       },
       transformResponse: (response: { data: CardInterface[] }) => response.data,
     }),
+    getDiscardedCardsByUser: builder.query<
+      any[], 
+      { siteId: number; startDate?: string; endDate?: string }
+    >({
+      query: ({ siteId, startDate, endDate }) => {
+        const params = new URLSearchParams();
+        if (startDate) params.append("startDate", startDate);
+        if (endDate) params.append("endDate", endDate);
+        return `/card/site/discarded-cards/${siteId}?${params.toString()}`;
+      },
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
+    discardCard: builder.mutation<void, DiscardCardDto>({
+      query: (dto) => ({
+        url: "/card/discard",
+        method: "POST",
+        body: dto,
+      }),
+    }),
+    
   }),
 });
 
@@ -111,5 +131,7 @@ export const {
   useUpdateCardMechanicMutation,
   useSearchCardsQuery,
   useGetCardDetailByUUIDMutation,
-  useGetCardNotesByUUIDMutation
+  useGetCardNotesByUUIDMutation,
+  useGetDiscardedCardsByUserQuery,
+  useDiscardCardMutation,
 } = cardService;

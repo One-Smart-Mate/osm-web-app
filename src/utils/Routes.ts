@@ -6,6 +6,7 @@ const CardTypes = "/card-types";
 const Preclassifiers = "/preclassifiers";
 const Users = "/users";
 const Levels = "/levels";
+const LevelsReadOnly = "/levels-readonly";
 const Cards = "/cards";
 const Positions = "/positions";
 export const ResetPasswordRoute = "/reset-password";
@@ -32,6 +33,7 @@ export default {
   Preclassifiers,
   Users,
   Levels,
+  LevelsReadOnly,
   Cards,
   Login,
   CardDetails,

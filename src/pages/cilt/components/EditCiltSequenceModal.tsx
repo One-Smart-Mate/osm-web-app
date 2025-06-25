@@ -7,13 +7,12 @@ import {
   Button,
   Select,
   InputNumber,
-  Switch,
+  Radio,
   Spin,
   notification,
   Row,
   Col,
-  Tooltip,
-} from "antd";
+} from "antd";  
 import { SearchOutlined } from "@ant-design/icons";
 import { useUpdateCiltSequenceMutation } from "../../../services/cilt/ciltSequencesService";
 import { useGetCiltTypesBySiteMutation } from "../../../services/cilt/ciltTypesService";
@@ -25,7 +24,6 @@ import Strings from "../../../utils/localizations/Strings";
 import OplSelectionModal from "./OplSelectionModal";
 import {
   formatSecondsToNaturalTime,
-  parseNaturalTimeToSeconds,
 } from "../../../utils/timeUtils";
 import Constants from "../../../utils/Constants";
 import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
@@ -60,6 +58,9 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
   const [formattedTime, setFormattedTime] = useState<string>("");
   const [referenceOplName, setReferenceOplName] = useState<string>("");
   const [remediationOplName, setRemediationOplName] = useState<string>("");
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
 
   useEffect(() => {
     if (open && sequence) {
@@ -81,6 +82,19 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
         if (sequence.standardTime) {
           setFormattedTime(formatSecondsToNaturalTime(sequence.standardTime));
+          // Convert seconds to hours, minutes, seconds
+          const totalSeconds = sequence.standardTime;
+          const h = Math.floor(totalSeconds / 3600);
+          const m = Math.floor((totalSeconds % 3600) / 60);
+          const s = totalSeconds % 60;
+          setHours(h);
+          setMinutes(m);
+          setSeconds(s);
+        } else {
+          setFormattedTime("");
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
         }
 
         if (sequence.referenceOplSopId) {
@@ -137,8 +151,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
           quantityPicturesCreate: sequence.quantityPicturesCreate,
           quantityPicturesClose: sequence.quantityPicturesClose,
           referencePoint: sequence.referencePoint,
-          selectableWithoutProgramming:
-            sequence.selectableWithoutProgramming === 1,
+          selectableWithoutProgramming: sequence.selectableWithoutProgramming === 1,
           specialWarning: sequence.specialWarning,
         });
       };
@@ -149,6 +162,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
     if (!open) {
       setReferenceOplName("");
       setRemediationOplName("");
+      setHours(0);
+      setMinutes(0);
+      setSeconds(0);
+      setFormattedTime("");
     }
   }, [open, sequence, form, getCiltTypesBySite, getOplMstrById]);
 
@@ -387,20 +404,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  label={
-                    <div className="flex items-center">
-                      <span>
-                        {Strings.editCiltSequenceModalStandardTimeLabel}
-                      </span>
-                      {formattedTime && (
-                        <Tooltip title="Time in HH:MM:SS format">
-                          <span className="ml-2 text-primary">
-                            ({formattedTime})
-                          </span>
-                        </Tooltip>
-                      )}
-                    </div>
-                  }
+                  label={`${Strings.editCiltSequenceModalStandardTimeLabel} (HH:MM:SS)`}
                   name="standardTime"
                   rules={[
                     {
@@ -410,39 +414,56 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                     },
                   ]}
                 >
-                  <div className="relative">
-                    <InputNumber
-                      min={1}
-                      className="w-full"
-                      placeholder={
-                        Strings.editCiltSequenceModalStandardTimePlaceholder
-                      }
-                      onChange={(value) => {
-                        if (value) {
-                          setFormattedTime(
-                            formatSecondsToNaturalTime(Number(value))
-                          );
-                        } else {
-                          setFormattedTime("");
-                        }
-                      }}
-                      onBlur={(e) => {
-                        const inputValue = e.target.value;
-                        if (inputValue && inputValue.includes(":")) {
-                          const seconds = parseNaturalTimeToSeconds(inputValue);
-                          if (seconds !== null) {
-                            form.setFieldsValue({ standardTime: seconds });
-                            setFormattedTime(
-                              formatSecondsToNaturalTime(seconds)
-                            );
-                          }
-                        }
-                      }}
-                      value={form.getFieldValue("standardTime")}
-                    />
-                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-                      <small>sec</small>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <InputNumber
+                        min={0}
+                        max={23}
+                        value={hours}
+                        onChange={(value) => {
+                          const h = value || 0;
+                          setHours(h);
+                          const totalSeconds = h * 3600 + minutes * 60 + seconds;
+                          form.setFieldsValue({ standardTime: totalSeconds });
+                          setFormattedTime(formatSecondsToNaturalTime(totalSeconds));
+                        }}
+                        className="w-16"
+                        placeholder="HH"
+                      />
+                      <span>:</span>
+                      <InputNumber
+                        min={0}
+                        max={59}
+                        value={minutes}
+                        onChange={(value) => {
+                          const m = value || 0;
+                          setMinutes(m);
+                          const totalSeconds = hours * 3600 + m * 60 + seconds;
+                          form.setFieldsValue({ standardTime: totalSeconds });
+                          setFormattedTime(formatSecondsToNaturalTime(totalSeconds));
+                        }}
+                        className="w-16"
+                        placeholder="MM"
+                      />
+                      <span>:</span>
+                      <InputNumber
+                        min={0}
+                        max={59}
+                        value={seconds}
+                        onChange={(value) => {
+                          const s = value || 0;
+                          setSeconds(s);
+                          const totalSeconds = hours * 3600 + minutes * 60 + s;
+                          form.setFieldsValue({ standardTime: totalSeconds });
+                          setFormattedTime(formatSecondsToNaturalTime(totalSeconds));
+                        }}
+                        className="w-16"
+                        placeholder="SS"
+                      />
                     </div>
+                    <span className="text-gray-500 text-sm">
+                      {formattedTime && `(${formattedTime})`}
+                    </span>
                   </div>
                 </Form.Item>
               </Col>
@@ -540,7 +561,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               name="specialWarning"
             >
               <Input
-                placeholder="Material peligroso, área peligrosa, etc."
+                placeholder={Strings.specialWarning}
                 maxLength={100}
               />
             </Form.Item>
@@ -560,9 +581,11 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalStoppageReasonLabel}
                   name="stoppageReason"
-                  valuePropName="checked"
                 >
-                  <Switch />
+                  <Radio.Group>
+                    <Radio value={true}>{Strings.yes}</Radio>
+                    <Radio value={false}>{Strings.no}</Radio>
+                  </Radio.Group>
                 </Form.Item>
               </Col>
 
@@ -570,9 +593,11 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 <Form.Item
                   label={Strings.editCiltSequenceModalMachineStoppedLabel}
                   name="machineStopped"
-                  valuePropName="checked"
                 >
-                  <Switch />
+                  <Radio.Group>
+                    <Radio value={true}>{Strings.yes}</Radio>
+                    <Radio value={false}>{Strings.no}</Radio>
+                  </Radio.Group>
                 </Form.Item>
               </Col>
 
@@ -622,21 +647,23 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
 
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item label="Punto de referencia" name="referencePoint">
+                <Form.Item label={Strings.referencePoint} name="referencePoint">
                   <Input
                     maxLength={10}
-                    placeholder="Ingrese el punto de referencia"
+                    placeholder={Strings.referencePoint}
                   />
                 </Form.Item>
               </Col>
 
               <Col span={12}>
                 <Form.Item
-                  label="Seleccionable sin programación"
+                  label={Strings.selectableWithoutProgramming}
                   name="selectableWithoutProgramming"
-                  valuePropName="checked"
                 >
-                  <Switch />
+                  <Radio.Group>
+                    <Radio value={true}>{Strings.yes}</Radio>
+                    <Radio value={false}>{Strings.no}</Radio>
+                  </Radio.Group>
                 </Form.Item>
               </Col>
             </Row>

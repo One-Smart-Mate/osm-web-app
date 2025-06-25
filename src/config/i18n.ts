@@ -288,6 +288,18 @@ const resources = {
       location: "Location ",
       createdBy: "Created by ",
       problemDescription: "Problem description ",
+      
+      // Sorting and filtering
+      noSort: "No sorting",
+      ascending: "Ascending",
+      descending: "Descending",
+      sortBy: "Sort by",
+      enterCardNumber: "Enter card number",
+      enterLocation: "Enter location",
+      dateRange: "Date range",
+      creationDateFilter: "Creation date",
+      dueDateFilter: "Due date",
+      selectDates: "Select dates",
 
       // Tags details re-design
       tagStatusCanceled: "Canceled",
@@ -414,6 +426,8 @@ const resources = {
 
       // Rangepicker presets
       last7days: "Last 7 days",
+      startDate: "Start date",
+      endDate: "End date",
       last14days: "Last 14 days",
       last30days: "Last 30 days",
       last90days: "Last 90 days",
@@ -1339,6 +1353,11 @@ const resources = {
       featureUnderDevelopment: "Feature under development",
       editUser:"Update user",
       fastPassword: "Fast password",
+      generateFastPassword: "Generate Fast Password",
+      fastPasswordGenerated: "Fast password generated successfully",
+      fastPasswordCopied: "Fast password copied successfully",
+      fastPasswordValidation: "Fast password must be 4 letters",
+      fastPasswordTooltip: "Fast password for quick access (4 letters)",
       manual: "User manual",
       downloadUsersTemplate: "Download users template",
 
@@ -1495,7 +1514,36 @@ const resources = {
       removeText: "Remove Text",
       removeTextConfirm: "Are you sure you want to remove this text?",
       scheduleSequence: "Schedule Sequence",
+      openTags: "Open Tags",
+      closedTags: "Closed Tags",
+      totalTags: "Total Tags",
+      filterTag: "Filter",
+      tagType: "Type",
       
+      // Discarded Cards Chart strings
+      discardedCardsUser: "User",
+      discardedCardsCards: "tags",
+      discardedCardsAllReasons: "All reasons",
+      discardedCardsBreakdownByReason: "Breakdown by reason",
+      discardedCardsErrorLoading: "Error loading discarded tags data",
+      discardedCardsNoData: "No discarded tags data available",
+      discardedCardslCardsTitle: "Discarded Tags",
+      
+      // CILT Positions Levels Modal strings
+      ciltPositionsLevelsTitle: "Positions / Levels",
+      ciltPositionsLevelsButton: "View Positions / Levels",
+      ciltPositionsLevelsAssignments: "assignments",
+      ciltPositionsLevelsNoData: "No positions/levels assigned to this CILT",
+      ciltPositionsLevelsNoAssignments: "No assignments found",
+      ciltPositionsLevelsLoadingDetails: "Loading level details...",
+      ciltPositionsLevelsErrorLoadingDetails: "Error loading level details",
+      levelName: "Level Name",
+      readOnly: "Read Only",
+      levelsConsultation: "Levels Consultation",
+      assignmentSuccessful: "Assignment completed successfully",
+      selectPositionAndCilt: "Please select both a position and a CILT procedure",
+      warning: "Warning",
+      assign: "Assign",
     },
   },
   es: {
@@ -1782,15 +1830,27 @@ const resources = {
       noDueDate: "Sin fecha de vencimiento",
 
       // Tags re-design
-      tagsOf: "Tarjetas de",
+      tagsOf: "Etiquetas de",
       filters: "Filtros",
-      status: "Estado",
-      dueDate: "Fecha de vencimiento",
-      cardType: "Tipo de Tarjeta",
-      problemType: "Tipo de problema",
-      location: "Ubicación",
-      createdBy: "Creado por",
-      problemDescription: "Descripción del problema",
+      status: "Estado ",
+      dueDate: "Fecha de vencimiento ",
+      cardType: "Tipo de etiqueta ",
+      problemType: "Tipo de problema ",
+      location: "Ubicación ",
+      createdBy: "Creado por ",
+      problemDescription: "Descripción del problema ",
+
+      // Sorting and filtering
+      noSort: "Sin ordenar",
+      ascending: "Ascendente",
+      descending: "Descendente",
+      sortBy: "Ordenar por",
+      enterCardNumber: "Ingrese número de tarjeta",
+      enterLocation: "Ingrese ubicación",
+      dateRange: "Rango de fechas",
+      creationDateFilter: "Fecha de creación",
+      dueDateFilter: "Fecha de vencimiento",
+      selectDates: "Seleccionar fechas",
 
       // Tags details re-design
       tagStatusCanceled: "Cancelado",
@@ -2743,6 +2803,8 @@ const resources = {
       // CILT Sequences strings
       sequences: "Secuencias",
       sequence: "Secuencia",
+      startDate: "Fecha de inicio",
+      endDate: "Fecha final",
       createNewSequence: "Crear Nueva Secuencia",
       searchByDescriptionOrderOrTime: "Buscar por descripción, orden o tiempo",
       noSequencesForCilt: "No hay secuencias asociadas a este CILT.",
@@ -2828,6 +2890,11 @@ const resources = {
       select: "Seleccionar",
       editUser:"Editar usuario",
       fastPassword: "Password rápido",
+      generateFastPassword: "Generar Password Rápido",
+      fastPasswordGenerated: "Password rápido generado exitosamente",
+      fastPasswordCopied: "Password rápido copiado exitosamente",
+      fastPasswordValidation: "El password rápido debe tener 4 letras",
+      fastPasswordTooltip: "Password rápido para acceso rápido (4 letras)",
       manual: "Manual de usuario",
       downloadUsersTemplate: "Descargar plantilla de usuarios",
 
@@ -3007,7 +3074,35 @@ const resources = {
       scheduleSequence: "Calendarizar",
       addSchedule: "Agregar horario",
       removeSchedule: "Eliminar horario",
-
+      openTags: "Abiertas",
+      closedTags: "Cerradas",
+      filterTag: "Filtro",
+      tagType: "Tipo",
+      
+      // Discarded Cards Chart strings
+      discardedCardsUser: "Usuario",
+      discardedCardsCards: "tarjetas",
+      discardedCardsAllReasons: "Todos los motivos",
+      discardedCardsBreakdownByReason: "Desglose por motivo",
+      discardedCardsErrorLoading: "Error al cargar datos de tarjetas descartadas",
+      discardedCardsNoData: "No hay datos de tarjetas descartadas disponibles",
+      discardedCardslCardsTitle: "Tarjetas Descartadas",
+      
+      // CILT Positions Levels Modal strings
+      ciltPositionsLevelsTitle: "Posiciones / Niveles",
+      ciltPositionsLevelsButton: "Ver Posiciones / Niveles",
+      ciltPositionsLevelsAssignments: "asignaciones",
+      ciltPositionsLevelsNoData: "No hay posiciones/niveles asignados a este CILT",
+      ciltPositionsLevelsNoAssignments: "No se encontraron asignaciones",
+      ciltPositionsLevelsLoadingDetails: "Cargando detalles de niveles...",
+      ciltPositionsLevelsErrorLoadingDetails: "Error al cargar detalles de niveles",
+      levelName: "Nombre del Nivel",
+      readOnly: "Solo Lectura",
+      levelsConsultation: "Consulta de Niveles",
+      assignmentSuccessful: "Asignación completada exitosamente",
+      selectPositionAndCilt: "Por favor, seleccione tanto una posición como un procedimiento CILT",
+      warning: "Advertencia",
+      assign: "Asignar",
     },
   },
 };

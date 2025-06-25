@@ -285,6 +285,9 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
           name="ciltDueDate"
           label={Strings.ciltDueDate}
           className="flex-1"
+          rules={[
+            { required: true, message: Strings.requiredDueDate }
+          ]}
         >
           <Input 
             size="large" 

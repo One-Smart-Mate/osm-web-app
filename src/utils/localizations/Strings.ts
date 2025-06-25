@@ -335,6 +335,18 @@ class StringsBase {
   static location = "location";
   static createdBy = "createdBy";
   static problemDescription = "problemDescription";
+  
+  // Sorting and filtering
+  static noSort = "noSort";
+  static ascending = "ascending";
+  static descending = "descending";
+  static sortBy = "sortBy";
+  static enterCardNumber = "enterCardNumber";
+  static enterLocation = "enterLocation";
+  static dateRange = "dateRange";
+  static creationDateFilter = "creationDateFilter";
+  static dueDateFilter = "dueDateFilter";
+  static selectDates = "selectDates";
 
   static tagStatusCanceled = "tagStatusCanceled";
   static tagDate = "tagDate";
@@ -466,6 +478,8 @@ class StringsBase {
   static last14days = "last14days";
   static last30days = "last30days";
   static last90days = "last90days";
+  static startDate = "startDate";
+  static endDate = "endDate";
 
   static failedToDownload = "failedToDownload";
 
@@ -1341,6 +1355,11 @@ class StringsBase {
 
   static editUser = "editUser";
   static fastPassword = "fastPassword";
+  static generateFastPassword = "generateFastPassword";
+  static fastPasswordGenerated = "fastPasswordGenerated";
+  static fastPasswordCopied = "fastPasswordCopied";
+  static fastPasswordValidation = "fastPasswordValidation";
+  static fastPasswordTooltip = "fastPasswordTooltip";
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 
@@ -1522,6 +1541,35 @@ class StringsBase {
   static removeText = "removeText"
   static removeTextConfirm = "removeTextConfirm"
   static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
+  static openTags = "openTags"
+  static closedTags = "closedTags"
+  static filterTag = "filter"
+  static tagType = "tagType"
+  
+  // Discarded Cards Chart strings
+  static discardedCardsUser = "discardedCardsUser"
+  static discardedCardsCards = "discardedCardsCards"
+  static discardedCardsAllReasons = "discardedCardsAllReasons"
+  static discardedCardsBreakdownByReason = "discardedCardsBreakdownByReason"
+  static discardedCardsErrorLoading = "discardedCardsErrorLoading"
+  static discardedCardsNoData = "discardedCardsNoData"
+  static discardedCardslCardsTitle = "discardedCardslCardsTitle"
+  
+  // CILT Positions Levels Modal strings
+  static ciltPositionsLevelsTitle = "ciltPositionsLevelsTitle"
+  static ciltPositionsLevelsButton = "ciltPositionsLevelsButton"
+  static ciltPositionsLevelsAssignments = "ciltPositionsLevelsAssignments"
+  static ciltPositionsLevelsNoData = "ciltPositionsLevelsNoData"
+  static ciltPositionsLevelsNoAssignments = "ciltPositionsLevelsNoAssignments"
+  static ciltPositionsLevelsLoadingDetails = "ciltPositionsLevelsLoadingDetails"
+  static ciltPositionsLevelsErrorLoadingDetails = "ciltPositionsLevelsErrorLoadingDetails"
+  static levelName = "levelName"
+  static readOnly = "readOnly"
+  static levelsConsultation = "levelsConsultation"
+  static assignmentSuccessful = "assignmentSuccessful";
+  static selectPositionAndCilt = "selectPositionAndCilt";
+  static warning = "warning";
+  static assign = "assign";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

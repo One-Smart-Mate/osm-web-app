@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 /**
  * Formats seconds into a natural time format (HH:MM:SS or MM:SS)
  * @param seconds - The number of seconds to format
@@ -43,4 +45,15 @@ export const parseNaturalTimeToSeconds = (timeString: string): number | null => 
   }
   
   return null;
+};
+
+/**
+ * Gets the week number for a given date
+ * @param date - The dayjs date object
+ * @returns Week number (1-based)
+ */
+export const getWeekNumber = (date: dayjs.Dayjs): number => {
+  const startOfYear = date.startOf('year');
+  const diff = date.diff(startOfYear, 'week');
+  return diff + 1;
 };

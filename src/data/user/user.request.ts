@@ -55,6 +55,7 @@ export class UpdateUser {
   uploadCardEvidenceWithDataNet: number;
   roles: number[];
   status: string;
+  fastPassword?: string;
 
   constructor(
     id: number,
@@ -65,7 +66,8 @@ export class UpdateUser {
     uploadCardDataWithDataNet: number,
     uploadCardEvidenceWithDataNet: number,
     roles: number[],
-    status: string
+    status: string,
+    fastPassword?: string
   ) {
     this.id = id;
     this.name = name;
@@ -76,6 +78,7 @@ export class UpdateUser {
     this.uploadCardEvidenceWithDataNet = uploadCardEvidenceWithDataNet;
     this.roles = roles;
     this.status = status;
+    this.fastPassword = fastPassword;
   }
 }
 

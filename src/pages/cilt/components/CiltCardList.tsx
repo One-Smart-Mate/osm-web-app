@@ -21,6 +21,7 @@ import SequenceDetailsModal from "./SequenceDetailsModal";
 import EditCiltSequenceModal from "./EditCiltSequenceModal";
 import OplDetailsModal from "./OplDetailsModal";
 import CloneCiltModal from "./CloneCiltModal";
+import CiltPositionsLevelsModal from "./CiltPositionsLevelsModal";
 import type { TablePaginationConfig } from "antd/es/table";
 
 const { Text } = Typography;
@@ -53,10 +54,12 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const [isOplDetailsModalVisible, setIsOplDetailsModalVisible] =
     useState(false);
   const [isCloneCiltModalVisible, setIsCloneCiltModalVisible] = useState(false);
+  const [isPositionsLevelsModalVisible, setIsPositionsLevelsModalVisible] = useState(false);
 
   const [editingCilt, setEditingCilt] = useState<CiltMstr | null>(null);
   const [detailsCilt, setDetailsCilt] = useState<CiltMstr | null>(null);
   const [ciltToClone, setCiltToClone] = useState<CiltMstr | null>(null);
+  const [positionsLevelsCilt, setPositionsLevelsCilt] = useState<CiltMstr | null>(null);
   const [sequenceCilt, setSequenceCilt] = useState<CiltMstr | null>(null);
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
@@ -168,6 +171,16 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setCiltToClone(null);
     setRefreshTrigger((prev) => prev + 1);
     refetch();
+  };
+
+  const showPositionsLevelsModal = (cilt: CiltMstr) => {
+    setPositionsLevelsCilt(cilt);
+    setIsPositionsLevelsModalVisible(true);
+  };
+
+  const handlePositionsLevelsCancel = () => {
+    setIsPositionsLevelsModalVisible(false);
+    setPositionsLevelsCilt(null);
   };
 
   const navigateToSequences = (cilt: CiltMstr) => {
@@ -337,6 +350,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onDetails={showDetailsModal}
         onNavigateToSequences={navigateToSequences}
         onClone={showCloneModal}
+        onViewPositionsLevels={showPositionsLevelsModal}
       />
 
       {/* Edit Modal */}
@@ -450,6 +464,13 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
           </div>
         )}
       </Modal>
+
+      {/* Positions Levels Modal */}
+      <CiltPositionsLevelsModal
+        visible={isPositionsLevelsModalVisible}
+        cilt={positionsLevelsCilt}
+        onCancel={handlePositionsLevelsCancel}
+      />
     </>
   );
 };

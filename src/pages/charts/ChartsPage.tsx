@@ -4,6 +4,7 @@ import AreasChart from "./components/AreasChart";
 import CreatorsChart from "./components/CreatorsChart";
 import WeeksChart from "./components/WeeksChart";
 import PreclassifiersChart from "./components/PreclassifiersChart";
+import DiscardedCardsChart from "./components/DiscardedCardsChart";
 import { useEffect, useState } from "react";
 import { useGetCardTypesCatalogsMutation, useGetCardTypesMutation } from "../../services/CardTypesService";
 import { CardTypesCatalog, CardTypes } from "../../data/cardtypes/cardTypes";
@@ -401,7 +402,12 @@ const ChartsPage = () => {
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.tagMonitoring}>
-                          <WeeksChart siteId={siteId} cardTypeName={selectedCardType} />
+                          <WeeksChart 
+                            siteId={siteId} 
+                            startDate={startDate}
+                            endDate={endDate}
+                            cardTypeName={selectedCardType} 
+                          />
                         </ChartExpander>
                       </div>
                     </div>
@@ -409,7 +415,45 @@ const ChartsPage = () => {
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
                 >
                   <div className="w-full h-60">
-                    <WeeksChart siteId={siteId} cardTypeName={selectedCardType} />
+                    <WeeksChart 
+                      siteId={siteId} 
+                      startDate={startDate}
+                      endDate={endDate}
+                      cardTypeName={selectedCardType} 
+                    />
+                  </div>
+                </Card>
+              </div>
+              <div className="mb-2 flex flex-wrap flex-row gap-2">
+                <Card
+                  title={
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                         <Typography.Title level={4}>
+                         {Strings.discardedCardslCardsTitle}
+                        </Typography.Title>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.discardedCardslCardsTitle}>
+                          <DiscardedCardsChart 
+                            siteId={siteId} 
+                            startDate={startDate}
+                            endDate={endDate}
+                            cardTypeName={selectedCardType} 
+                          />
+                        </ChartExpander>
+                      </div>
+                    </div>
+                  }
+                  className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
+                >
+                  <div className="w-full h-60">
+                    <DiscardedCardsChart 
+                      siteId={siteId} 
+                      startDate={startDate}
+                      endDate={endDate}
+                      cardTypeName={selectedCardType} 
+                    />
                   </div>
                 </Card>
               </div>

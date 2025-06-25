@@ -117,8 +117,8 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   const handleSubmit = async () => {
     if (!selectedPosition || !selectedCiltMstr) {
       notification.warning({
-        message: Strings.error,
-        description: Strings.errorOccurred,
+        message: Strings.warning,
+        description: Strings.selectPositionAndCilt,
       });
       return;
     }
@@ -179,6 +179,12 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       console.log("Payload enviado:", payload);
 
       await onAssign(payload);
+
+      // Show success notification
+      notification.success({
+        message: Strings.success,
+        description: Strings.assignmentSuccessful,
+      });
 
       setSelectedPosition(null);
       setSelectedCiltMstr(null);

@@ -16,6 +16,7 @@ interface CiltTableProps {
   onDetails: (cilt: CiltMstr) => void;
   onNavigateToSequences: (cilt: CiltMstr) => void;
   onClone: (cilt: CiltMstr) => void;
+  onViewPositionsLevels: (cilt: CiltMstr) => void;
 }
 
 const CiltTable: React.FC<CiltTableProps> = ({
@@ -27,6 +28,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
   onDetails,
   onNavigateToSequences,
   onClone,
+  onViewPositionsLevels,
 }) => {
   const columns: ColumnsType<CiltMstr> = [
     {
@@ -109,6 +111,13 @@ const CiltTable: React.FC<CiltTableProps> = ({
           >
             {Strings.levelsTreeOptionClone}
           </Button>
+                      <Button
+              type="primary"
+              size="small"
+              onClick={() => onViewPositionsLevels(record)}
+            >
+              {Strings.ciltPositionsLevelsButton}
+            </Button>
           <CiltPDFButton id={record.id.toString()} />
         </Space>
       ),

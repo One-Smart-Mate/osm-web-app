@@ -11,7 +11,6 @@ import {
   Card,
   Empty,
 } from "antd";
-import AnatomyNotification from "../../../pages/components/AnatomyNotification";
 
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { useGetOplMstrBySiteMutation } from "../../../services/cilt/oplMstrService";
@@ -57,13 +56,19 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
       await getOplMstrBySite(siteId.toString());
     } catch (error) {
       console.error("Error fetching OPLs:", error);
-      AnatomyNotification.error(notification, Strings.oplErrorLoadingDetails);
+      notification.error({
+        message: Strings.error,
+        description: Strings.oplErrorLoadingDetails,
+      });
     }
   };
 
   const handleSubmit = async () => {
     if (!selectedOpl) {
-      AnatomyNotification.error(notification, Strings.oplErrorSelectingOpl);
+      notification.warning({
+        message: Strings.warning,
+        description: Strings.oplErrorSelectingOpl,
+      });
       return;
     }
 
@@ -93,6 +98,12 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
 
       await onAssign(payload);
 
+      // Show success notification
+      notification.success({
+        message: Strings.success,
+        description: Strings.assignmentSuccessful,
+      });
+
       setSelectedOpl(null);
       onClose();
     } catch (error) {
@@ -115,7 +126,10 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
         }
       }
 
-      AnatomyNotification.error(notification, errorMessage);
+      notification.error({
+        message: Strings.error,
+        description: errorMessage,
+      });
     }
   };
 
@@ -208,7 +222,7 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
               loading={isSubmitting}
               disabled={!selectedOpl}
             >
-              Assign
+              {Strings.assign}
             </Button>
           </div>
         }
