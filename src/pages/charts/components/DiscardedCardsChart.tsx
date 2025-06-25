@@ -6,6 +6,7 @@ import { Empty, Spin } from 'antd';
 import DrawerTagList from '../../components/DrawerTagList';
 import Strings from '../../../utils/localizations/Strings';
 import useDarkMode from '../../../utils/hooks/useDarkMode';
+import Constants from '../../../utils/Constants';
 
 interface DiscardedCardData {
   responsibleName: string;
@@ -60,11 +61,11 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
     
     const filtered = allCards.filter(card => {
       // Check if card is discarded by status - be more permissive
-      const isDiscarded = card.status === 'DISCARDED' || 
-                         card.status === 'D' || 
-                         card.status === 'CANCELED' ||
-                         card.status === 'C' ||
-                         card.status === 'CANCELLED' ||
+      const isDiscarded = card.status === Constants.STATUS_DISCARDED || 
+                         card.status === Constants.STATUS_DISCARDED || 
+                         card.status === Constants.STATUS_CANCELLED_CARD ||
+                         card.status === Constants.STATUS_CANCELED ||
+                         card.status === Constants.STATUS_CANCELLED_CARD ||
                          card.status?.toLowerCase().includes('discard') ||
                          card.status?.toLowerCase().includes('cancel');
       

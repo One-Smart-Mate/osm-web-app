@@ -296,7 +296,7 @@ const CiltLevelAssignaments: React.FC = () => {
               const ciltAssignments = ciltData.data || ciltData;
               return {
                 levelId: level.id,
-                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === 'A').length : 0,
+                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === Constants.STATUS_ACTIVE).length : 0,
                 type: 'cilt'
               };
             }

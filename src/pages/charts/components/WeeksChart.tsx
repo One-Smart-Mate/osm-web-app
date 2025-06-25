@@ -14,14 +14,8 @@ import { useGetWeeksChartDataMutation } from "../../../services/chartService";
 import { useGetCardsMutation } from "../../../services/cardService";
 import Strings from "../../../utils/localizations/Strings";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import { getWeekNumber } from "../../../utils/timeUtils";
 import dayjs from "dayjs";
-
-// Helper function to get week number
-const getWeekNumber = (date: dayjs.Dayjs) => {
-  const startOfYear = date.startOf('year');
-  const diff = date.diff(startOfYear, 'week');
-  return diff + 1;
-};
 
 export interface WeeksChartProps {
   siteId: string;
