@@ -16,7 +16,8 @@ const LanguageDropdown = () => {
     window.location.reload();
   };
 
-  const items: MenuProps["items"] = [
+  // All available language options
+  const allLanguageOptions = [
     {
       key: "es",
       label: (
@@ -26,7 +27,6 @@ const LanguageDropdown = () => {
             alt="México"
             className="w-6 h-4"
           />
-
           <span>{Constants.esOption}</span>
         </div>
       ),
@@ -45,6 +45,11 @@ const LanguageDropdown = () => {
       ),
     },
   ];
+
+  // Filter items to exclude the current language
+  const items: MenuProps["items"] = allLanguageOptions.filter(
+    (option) => option.key !== currentLanguage
+  );
 
   useEffect(() => {
     setCurrentLanguage(i18n.language.split("-")[0]);

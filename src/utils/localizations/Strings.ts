@@ -827,6 +827,14 @@ class StringsBase {
   // CILT MASTER CREATE
   static ciltMasterCreateSuccess = "ciltMasterCreateSuccess";
   static ciltMasterCreateError = "ciltMasterCreateError";
+  static ciltCloneSuccess = "ciltCloneSuccess";
+  static ciltCloneError = "ciltCloneError";
+  static fastPasswordModalTitle = "fastPasswordModalTitle";
+  static fastPasswordModalDescription = "fastPasswordModalDescription";
+  static fastPasswordModalWarning = "fastPasswordModalWarning";
+  static fastPasswordCopied = "fastPasswordCopied";
+  static fastPasswordCopyFailed = "fastPasswordCopyFailed";
+  static siteIdRequired = "siteIdRequired";
   static ciltName = "ciltName";
   static registerCiltNameRequiredValidation =
     "registerCiltNameRequiredValidation";
