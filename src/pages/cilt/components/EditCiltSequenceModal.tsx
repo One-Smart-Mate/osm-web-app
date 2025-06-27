@@ -140,8 +140,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
           ciltTypeName: sequence.ciltTypeName,
           referenceOplSopId: sequence.referenceOplSopId,
           remediationOplSopId: sequence.remediationOplSopId,
-          frecuencyId: sequence.frecuencyId,
-          frecuencyCode: sequence.frecuencyCode,
+          // Removed frequency field assignments as they are no longer needed
           standardTime: sequence.standardTime,
           standardOk: sequence.standardOk,
           toolsRequired: sequence.toolsRequired,
@@ -236,8 +235,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       values.positionName = sequence.positionName;
       values.order = sequence.order;
 
-      // Updated payload to match backend requirements - removed areaId, areaName, positionId, positionName, levelId, levelName, and route fields
-      // Log para ver los valores del formulario antes de crear el payload
+      // Log to see form values before creating payload
       console.log("Form values before creating payload:", values);
       console.log("Special Warning value from form:", values.specialWarning);
       
@@ -247,8 +245,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         siteName: values.siteName || sequence.siteName || "",
         ciltMstrId: Number(values.ciltMstrId),
         ciltMstrName: values.ciltMstrName || sequence.ciltMstrName || "",
-        frecuencyId: Number(values.frecuencyId) || sequence.frecuencyId || 0,
-        frecuencyCode: values.frecuencyCode || sequence.frecuencyCode || "",
+        // Removed frequency fields as they are now optional
         referencePoint: values.referencePoint || "",
         order: Number(values.order),
         secuenceList: values.secuenceList || "",
@@ -270,22 +267,17 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         updatedAt: new Date().toISOString(),
       };
       
-      // Log para ver el payload final que se enviará al backend
+      // Log to see final payload to be sent
       console.log("Final payload to be sent:", payload);
 
       delete (values as any).referenceOplName;
       delete (values as any).remediationOplName;
 
-      if (!payload.frecuencyId && sequence.frecuencyId) {
-        payload.frecuencyId = sequence.frecuencyId;
-      }
-      if (!payload.frecuencyCode && sequence.frecuencyCode) {
-        payload.frecuencyCode = sequence.frecuencyCode;
-      }
+      // Removed frequency fallback logic as frequencies are now optional
 
       const response = await updateCiltSequence(payload).unwrap();
       
-      // Log para ver la respuesta del backend
+      // Log to see backend response
       console.log("Backend response after update:", response);
 
       notification.success({
@@ -368,12 +360,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               <Form.Item name="secuenceColor" hidden>
                 <Input />
               </Form.Item>
-              <Form.Item name="frecuencyId" hidden>
-                <Input />
-              </Form.Item>
-              <Form.Item name="frecuencyCode" hidden>
-                <Input />
-              </Form.Item>
+              {/* Removed frequency hidden fields as they are no longer needed */}
             </div>
 
             <div className="mb-4">

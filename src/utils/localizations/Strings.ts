@@ -1365,7 +1365,6 @@ class StringsBase {
   static fastPassword = "fastPassword";
   static generateFastPassword = "generateFastPassword";
   static fastPasswordGenerated = "fastPasswordGenerated";
-  static fastPasswordCopied = "fastPasswordCopied";
   static fastPasswordValidation = "fastPasswordValidation";
   static fastPasswordTooltip = "fastPasswordTooltip";
   static manual = "manual";
@@ -1578,6 +1577,34 @@ class StringsBase {
   static selectPositionAndCilt = "selectPositionAndCilt";
   static warning = "warning";
   static assign = "assign";
+
+  // AM Tag Viewer Modal translations
+  static tagOrigin = "tagOrigin";
+  static appVersion = "appVersion";
+  static appSo = "appSo";
+  static feasibility = "feasibility";
+  static effect = "effect";
+  static manager = "manager";
+  static managerCloseDate = "managerCloseDate";
+  static commentsManagerAtCardClose = "commentsManagerAtCardClose";
+  static executionId = "executionId";
+  static cardUUID = "cardUUID";
+  static nodeId = "nodeId";
+  static nodeName = "nodeName";
+  static superiorId = "superiorId";
+  static evidenceCounters = "evidenceCounters";
+  static evidenceAtCreation = "evidenceAtCreation";
+  static evidenceAtProvisional = "evidenceAtProvisional";
+  static evidenceAtDefinitive = "evidenceAtDefinitive";
+  static evidenceType = "evidenceType";
+  static evidenceName = "evidenceName";
+  static evidenceCreatedAt = "evidenceCreatedAt";
+  static evidenceUpdatedAt = "evidenceUpdatedAt";
+  static amTag = "amTag";
+  static amTagDetails = "amTagDetails";
+  static cardInformation = "cardInformation";
+  static cardTechnicalDetails = "cardTechnicalDetails";
+  static managerInformation = "managerInformation";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
