@@ -244,26 +244,37 @@ export const getCardStatusAndText = (
   DefiniSolutionDate?: string,
   CreatDate?: string
 ): { status: "error" | "success"; text: string; dateStatus: string } => {
-  const currentDate = new Date();
+  // Check if card is expired based on the new logic:
+  // Expired = status is NOT 'C' or 'R' AND current date > due date
+  const isExpiredCard = (status: string, dueDate?: string): boolean => {
+    if (!dueDate) return false;
+    
+    // If status is 'C' (Closed) or 'R' (Resolved), card cannot be expired
+    if (status === "C" || status === "R") {
+      return false;
+    }
+    
+    // For other statuses, check if current date is after due date
+    const dueDateObj = new Date(dueDate);
+    const currentDateObj = new Date();
+    
+    // Set time to start of day for accurate comparison
+    dueDateObj.setHours(23, 59, 59, 999); // End of due date
+    currentDateObj.setHours(0, 0, 0, 0);   // Start of current date
+    
+    return currentDateObj > dueDateObj;
+  };
 
   switch (input) {
     case "A":
     case "P":
     case "V":
-      if (duDate) {
-        const isExpired = compareDates(duDate, currentDate.toISOString());
-        return {
-          status: "success",
-          text: Strings.open,
-          dateStatus: isExpired ? Strings.expired : Strings.current,
-        };
-      } else {
-        return {
-          status: "success",
-          text: Strings.open,
-          dateStatus: Strings.current,
-        };
-      }
+      const isExpired = isExpiredCard(input, duDate);
+      return {
+        status: "success",
+        text: Strings.open,
+        dateStatus: isExpired ? Strings.expired : Strings.current,
+      };
 
     case "R":
       if (duDate) {
@@ -271,9 +282,6 @@ export const getCardStatusAndText = (
           const isOnTime = compareDates(DefiniSolutionDate, duDate);
           if (CreatDate) {
             const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
-          //  console.log("compareDates result: ", isOnTime);
-           // console.log("Days between: ", daysBetween);
-
             return {
               status: "error",
               text: Strings.closed,
@@ -286,29 +294,68 @@ export const getCardStatusAndText = (
             return {
               status: "error",
               text: Strings.closed,
-              dateStatus: " ",
+              dateStatus: Strings.onTime, // Default to onTime for resolved cards
             };
           }
         } else {
           return {
             status: "error",
             text: Strings.closed,
-            dateStatus: " ",
+            dateStatus: Strings.onTime, // Default to onTime for resolved cards
           };
         }
       } else {
         return {
           status: "error",
           text: Strings.closed,
-          dateStatus: " ",
+          dateStatus: Strings.onTime, // Default to onTime for resolved cards
+        };
+      }
+
+    case "C":
+      // Closed cards - similar logic to resolved cards
+      if (duDate) {
+        if (DefiniSolutionDate) {
+          const isOnTime = compareDates(DefiniSolutionDate, duDate);
+          if (CreatDate) {
+            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
+            return {
+              status: "error",
+              text: Strings.closed,
+              dateStatus:
+                isOnTime || daysBetween === 0
+                  ? Strings.onTime
+                  : Strings.expired,
+            };
+          } else {
+            return {
+              status: "error",
+              text: Strings.closed,
+              dateStatus: Strings.onTime, // Default to onTime for closed cards
+            };
+          }
+        } else {
+          return {
+            status: "error",
+            text: Strings.closed,
+            dateStatus: Strings.onTime, // Default to onTime for closed cards
+          };
+        }
+      } else {
+        return {
+          status: "error",
+          text: Strings.closed,
+          dateStatus: Strings.onTime, // Default to onTime for closed cards
         };
       }
 
     default:
+      // For any other status, apply the expiration logic
+      const isExpiredDefault = isExpiredCard(input, duDate);
       return {
         status: "error",
         text: Strings.tagStatusCanceled,
-        dateStatus: " ",
+        dateStatus: isExpiredDefault ? Strings.expired : Strings.current,
       };
   }
 };
