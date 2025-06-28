@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Tabs, Card, Typography, Space, Image, Button } from "antd";
-import { FileTextOutlined, PictureOutlined, VideoCameraOutlined, FilePdfOutlined, PlusOutlined, EyeOutlined, FileOutlined } from "@ant-design/icons";
+import { Modal, Tabs, Card, Typography, Space, Image, Button, Popconfirm, Tooltip, notification } from "antd";
+import { FileTextOutlined, PictureOutlined, VideoCameraOutlined, FilePdfOutlined, PlusOutlined, EyeOutlined, FileOutlined, DeleteOutlined } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { OplDetail } from "../../../data/cilt/oplDetails/oplDetails";
 import OplTextForm from "./OplTextForm";
 import OplMediaUploader from "./OplMediaUploader";
-import type { TabsProps } from "antd";
+import type { TabsProps } from "antd"; // Removed UploadFile as it's not used directly here
+import { useDeleteOplDetailMutation } from "../../../services/cilt/oplDetailsService";
 import Strings from "../../../utils/localizations/Strings";
+import AnatomyNotification from "../../components/AnatomyNotification";
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -15,7 +17,7 @@ interface OplDetailsModalProps {
   currentOpl: OplMstr | null;
   currentDetails: OplDetail[];
   activeTab: string;
-  fileList: any[];
+  fileList: any[]; // This seems to be for new files in OplMediaUploader
   uploadLoading: boolean;
   detailForm: any;
   onCancel: () => void;
@@ -24,6 +26,7 @@ interface OplDetailsModalProps {
   onPreview: (file: any) => void;
   onAddText: (values: any) => void;
   onAddMedia: (type: "imagen" | "video" | "pdf") => void;
+  onDetailDeleted: (detailId: number) => void; 
 }
 
 const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
@@ -40,6 +43,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
   onPreview,
   onAddText,
   onAddMedia,
+  onDetailDeleted,
 }) => {
   // State for PDF preview modal
   const [pdfPreviewVisible, setPdfPreviewVisible] = useState(false);
@@ -47,7 +51,22 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
   
   // State for video preview modal
   const [videoPreviewVisible, setVideoPreviewVisible] = useState(false);
-  const [currentVideoUrl, ] = useState("");
+  const [currentVideoUrl, _setCurrentVideoUrl] = useState(""); // Prefixed setCurrentVideoUrl with _ as it's not used
+
+  const [deleteOplDetail, { isLoading: isDeletingDetail }] = useDeleteOplDetailMutation();
+
+  const handleDeleteExistingDetail = async (detailId: number) => {
+    try {
+      await deleteOplDetail(detailId).unwrap();
+      notification.success({ message: Strings.notificationSuccessTitle, description: Strings.fileDeletedSuccessfully });
+      onDetailDeleted?.(detailId);
+    } catch (error) {
+      AnatomyNotification.error(notification, {
+        data: { message: Strings.errorDeletingFile }, // Assuming you'll add this string
+        error,
+      });
+    }
+  };
 
   // Effect to debug details when they change
   useEffect(() => {
@@ -120,7 +139,24 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           title={<Space><FileTextOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsTextType}</Text></Space>}
           bordered={true}
         >
-          <Paragraph>{detail.text}</Paragraph>
+          <Paragraph style={{ whiteSpace: 'pre-wrap' }}>{detail.text}</Paragraph>
+          <Popconfirm
+            title={Strings.removeTextConfirm}
+            onConfirm={() => handleDeleteExistingDetail(detail.id)}
+            okText={Strings.yes}
+            cancelText={Strings.no}
+            disabled={isDeletingDetail}
+          >
+            <Tooltip title={Strings.removeText}>
+              <Button 
+                type="text" 
+                danger 
+                icon={<DeleteOutlined />} 
+                loading={isDeletingDetail} 
+                style={{ position: 'absolute', top: '10px', right: '10px' }}
+              />
+            </Tooltip>
+          </Popconfirm>
         </Card>
       );
     } else if (detail.type === "imagen" && detail.mediaUrl) {
@@ -149,6 +185,23 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
             />
           </div>
           <Text style={{ marginTop: 8, display: 'block', fontWeight: 'bold', textAlign: 'center' }}>{getFileName(detail.mediaUrl)}</Text>
+          <Popconfirm
+            title={Strings.removeFileConfirm}
+            onConfirm={() => handleDeleteExistingDetail(detail.id)}
+            okText={Strings.yes}
+            cancelText={Strings.no}
+            disabled={isDeletingDetail}
+          >
+            <Tooltip title={Strings.removeFile}>
+              <Button 
+                type="text" 
+                danger 
+                icon={<DeleteOutlined />} 
+                loading={isDeletingDetail} 
+                style={{ position: 'absolute', top: '10px', right: '10px' }}
+              />
+            </Tooltip>
+          </Popconfirm>
         </Card>
       );
     } else if (detail.type === "video" && detail.mediaUrl) {
@@ -176,6 +229,23 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
             />
             <Text style={{ marginTop: 8, display: 'block', fontWeight: 'bold', textAlign: 'center' }}>{getFileName(detail.mediaUrl)}</Text>
           </div>
+          <Popconfirm
+            title={Strings.removeFileConfirm}
+            onConfirm={() => handleDeleteExistingDetail(detail.id)}
+            okText={Strings.yes}
+            cancelText={Strings.no}
+            disabled={isDeletingDetail}
+          >
+            <Tooltip title={Strings.removeFile}>
+              <Button 
+                type="text" 
+                danger 
+                icon={<DeleteOutlined />} 
+                loading={isDeletingDetail} 
+                style={{ position: 'absolute', top: '10px', right: '10px' }}
+              />
+            </Tooltip>
+          </Popconfirm>
         </Card>
       );
     } else if (detail.type === "pdf" && detail.mediaUrl) {
@@ -203,6 +273,23 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
             </Button>
             <Text style={{ display: 'block', fontWeight: 'bold' }}>{getFileName(detail.mediaUrl)}</Text>
           </Space>
+          <Popconfirm
+            title={Strings.removeFileConfirm}
+            onConfirm={() => handleDeleteExistingDetail(detail.id)}
+            okText={Strings.yes}
+            cancelText={Strings.no}
+            disabled={isDeletingDetail}
+          >
+            <Tooltip title={Strings.removeFile}>
+              <Button 
+                type="text" 
+                danger 
+                icon={<DeleteOutlined />} 
+                loading={isDeletingDetail} 
+                style={{ position: 'absolute', top: '10px', right: '10px' }}
+              />
+            </Tooltip>
+          </Popconfirm>
         </Card>
       );
     }

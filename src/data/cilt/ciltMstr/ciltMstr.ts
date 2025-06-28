@@ -1,7 +1,6 @@
 export interface CiltMstr {
   id: number;
   siteId: number | null;
-  positionId: number | null;
   ciltName: string | null;
   ciltDescription: string | null;
   creatorId: number | null;
@@ -23,7 +22,6 @@ export interface CiltMstr {
 
 export class CreateCiltMstrDTO {
   siteId?: number;
-  positionId?: number;
   ciltName?: string;
   ciltDescription?: string;
   creatorId?: number;
@@ -33,19 +31,15 @@ export class CreateCiltMstrDTO {
   approvedById?: number;
   approvedByName?: string;
   standardTime?: number;
-  learnigTime?: string;
   urlImgLayout?: string;
   order?: number;
   status?: string;
-  dateOfLastUsed: string;
   ciltDueDate?: string;
   createdAt: string;
 
   constructor(
-    dateOfLastUsed: string,
     createdAt: string,
-    siteId?: number,
-    positionId?: number,
+    siteId?: number,  
     ciltName?: string,
     ciltDescription?: string,
     creatorId?: number,
@@ -55,14 +49,12 @@ export class CreateCiltMstrDTO {
     approvedById?: number,
     approvedByName?: string,
     standardTime?: number,
-    learnigTime?: string,
     urlImgLayout?: string,
     order?: number,
     status?: string,
-    ciltDueDate?: string
+    ciltDueDate?: string,
   ) {
     this.siteId = siteId;
-    this.positionId = positionId;
     this.ciltName = ciltName;
     this.ciltDescription = ciltDescription;
     this.creatorId = creatorId;
@@ -72,11 +64,9 @@ export class CreateCiltMstrDTO {
     this.approvedById = approvedById;
     this.approvedByName = approvedByName;
     this.standardTime = standardTime;
-    this.learnigTime = learnigTime;
     this.urlImgLayout = urlImgLayout;
     this.order = order;
     this.status = status;
-    this.dateOfLastUsed = dateOfLastUsed;
     this.ciltDueDate = ciltDueDate;
     this.createdAt = createdAt;
   }
@@ -85,7 +75,6 @@ export class CreateCiltMstrDTO {
 export class UpdateCiltMstrDTO {
   id: number;
   siteId?: number;
-  positionId?: number;
   ciltName?: string;
   ciltDescription?: string;
   creatorId?: number;
@@ -95,7 +84,6 @@ export class UpdateCiltMstrDTO {
   approvedById?: number;
   approvedByName?: string;
   standardTime?: number;
-  learnigTime?: string;
   urlImgLayout?: string;
   order?: number;
   status?: string;
@@ -108,7 +96,6 @@ export class UpdateCiltMstrDTO {
     dateOfLastUsed: string,
     updatedAt: string,
     siteId?: number,
-    positionId?: number,
     ciltName?: string,
     ciltDescription?: string,
     creatorId?: number,
@@ -118,7 +105,6 @@ export class UpdateCiltMstrDTO {
     approvedById?: number,
     approvedByName?: string,
     standardTime?: number,
-    learnigTime?: string,
     urlImgLayout?: string,
     order?: number,
     status?: string,
@@ -126,7 +112,6 @@ export class UpdateCiltMstrDTO {
   ) {
     this.id = id;
     this.siteId = siteId;
-    this.positionId = positionId;
     this.ciltName = ciltName;
     this.ciltDescription = ciltDescription;
     this.creatorId = creatorId;
@@ -136,7 +121,6 @@ export class UpdateCiltMstrDTO {
     this.approvedById = approvedById;
     this.approvedByName = approvedByName;
     this.standardTime = standardTime;
-    this.learnigTime = learnigTime;
     this.urlImgLayout = urlImgLayout;
     this.order = order;
     this.status = status;

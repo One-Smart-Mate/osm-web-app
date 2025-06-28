@@ -11,6 +11,9 @@ export interface Position {
   name: string;
   description: string | null;
   status: string;
+  nodeResponsableId?: number | null;
+  nodeResponsableName?: string | null;
+  order?: number;
   createdAt?: string;
   updatedAt?: string;
   userIds?: number[];

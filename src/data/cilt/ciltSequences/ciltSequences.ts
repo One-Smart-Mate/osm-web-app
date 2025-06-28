@@ -29,6 +29,7 @@ export interface CiltSequence {
   quantityPicturesCreate: number | null;
   quantityPicturesClose: number | null;
   selectableWithoutProgramming: number | null;
+  specialWarning: string | null;
   status: string | null;
   createdAt: string;
   updatedAt: string | null;
@@ -65,6 +66,7 @@ export interface CreateCiltSequenceDTO {
   quantityPicturesCreate?: number;
   quantityPicturesClose?: number;
   selectableWithoutProgramming?: number;
+  specialWarning?: string;
   status?: string;
   createdAt: string;
 }
@@ -101,7 +103,12 @@ export interface UpdateCiltSequenceDTO {
   quantityPicturesCreate?: number;
   quantityPicturesClose?: number;
   selectableWithoutProgramming?: number;
+  specialWarning?: string;
   status?: string;
   updatedAt: string;
 }
 
+export interface UpdateSequenceOrderDTO {
+  sequenceId: number;
+  newOrder: number;
+}

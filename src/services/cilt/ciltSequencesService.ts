@@ -3,6 +3,7 @@ import {
   CiltSequence,
   CreateCiltSequenceDTO,
   UpdateCiltSequenceDTO,
+  UpdateSequenceOrderDTO,
 } from "../../data/cilt/ciltSequences/ciltSequences";
 
 export const ciltSequencesService = apiSlice.injectEndpoints({
@@ -43,6 +44,14 @@ export const ciltSequencesService = apiSlice.injectEndpoints({
       query: (payload) => ({ url: `/cilt-sequences/update`, method: "PUT", body: { ...payload } }),
       transformResponse: (response: { data: CiltSequence }) => response.data,
     }),
+    updateCiltSequenceOrder: builder.mutation<CiltSequence, UpdateSequenceOrderDTO>({
+      query: (payload) => ({
+        url: `/cilt-sequences/update-order`,
+        method: "PUT",
+        body: { ...payload },
+      }),
+      transformResponse: (response: { data: CiltSequence }) => response.data,
+    }),
   }),
   overrideExisting: false,
 });
@@ -57,4 +66,5 @@ export const {
   useGetCiltSequenceByIdMutation,
   useCreateCiltSequenceMutation,
   useUpdateCiltSequenceMutation,
+  useUpdateCiltSequenceOrderMutation,
 } = ciltSequencesService;

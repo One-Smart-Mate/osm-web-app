@@ -10,10 +10,14 @@ export interface OplLevel {
   export class CreateOplLevelDTO {
     oplId: number;
     levelId: number;
+    siteId?: number;
+    createdAt?: string;
   
-    constructor(oplId: number, levelId: number) {
+    constructor(oplId: number, levelId: number, siteId?: number, createdAt?: string) {
       this.oplId = oplId;
       this.levelId = levelId;
+      this.siteId = siteId;
+      this.createdAt = createdAt || new Date().toISOString();
     }
   }
   

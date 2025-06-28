@@ -2,24 +2,56 @@ import React, { useState } from "react";
 import {
   Drawer,
   Button,
-  Spin,
-  Select,
   Space,
-  Typography,
-  notification,
+  Select,
   Row,
   Col,
+  Typography,
+  Spin,
+  List,
+  notification,
 } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 import { Position } from "../../../data/postiions/positions";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
-import { useGetPositionsBySiteIdQuery } from "../../../services/positionService";
+import { useGetPositionsBySiteIdQuery, useGetPositionUsersQuery } from "../../../services/positionService";
+import { Responsible } from "../../../data/user/user";
 import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import Strings from "../../../utils/localizations/Strings";
 import PositionDetailsModal from "./PositionDetailsModal";
 import CiltMstrDetailsModal from "./CiltMstrDetailsModal";
 
 const { Text } = Typography;
+
+// Componente para mostrar los usuarios de una posición
+const PositionUsers = ({ positionId }: { positionId: string }) => {
+  const { data: users = [], isLoading } = useGetPositionUsersQuery(positionId, {
+    refetchOnMountOrArgChange: true
+  });
+
+  if (isLoading) {
+    return <Spin size="small" />;
+  }
+
+  if (!users.length) {
+    return <Text type="secondary">{Strings.noAssignedUsers || "No hay usuarios asignados"}</Text>;
+  }
+
+  return (
+    <List
+      size="small"
+      bordered
+      className="shadow-md rounded-md bg-white max-w-xs"
+      dataSource={users}
+      renderItem={(user: Responsible) => (
+        <List.Item>
+          <UserOutlined className="mr-2" /> {user.name}
+        </List.Item>
+      )}
+    />
+  );
+};
 
 interface CiltAssignmentDrawerProps {
   isVisible: boolean;
@@ -50,8 +82,10 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   );
 
   const [positionDetailsVisible, setPositionDetailsVisible] = useState(false);
-  const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [positionToView, setPositionToView] = useState<Position | null>(null);
+  const [showPositionUsers, setShowPositionUsers] = useState(false);
+
+  const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [ciltMstrToView, setCiltMstrToView] = useState<CiltMstr | null>(null);
 
   const [positionDropdownOpen, setPositionDropdownOpen] = useState(false);
@@ -83,45 +117,74 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   const handleSubmit = async () => {
     if (!selectedPosition || !selectedCiltMstr) {
       notification.warning({
-        message: Strings.error,
-        description: Strings.errorOccurred,
+        message: Strings.warning,
+        description: Strings.selectPositionAndCilt,
       });
       return;
     }
 
     try {
-      // Asegurarse de que todos los campos numéricos sean números válidos
+      if (!selectedNode || !selectedNode.id) {
+        console.error("No hay un nodo seleccionado o el nodo no tiene ID", selectedNode);
+        throw new Error(Strings.noValidLevelId);
+      }
+
+      console.log("selectedNode en handleSubmit:", selectedNode);
+
+      
       const numericSiteId = Number(siteId);
       const numericCiltMstrId = Number(selectedCiltMstr.id);
       const numericPositionId = Number(selectedPosition.id);
-      const numericLevelId = Number(selectedNode.id);
       
-      // Validar que todos los IDs sean números válidos
-      if (isNaN(numericSiteId)) {
-        throw new Error("El ID del sitio no es un número válido");
-      }
-      if (isNaN(numericCiltMstrId)) {
-        throw new Error("El ID del CILT no es un número válido");
-      }
-      if (isNaN(numericPositionId)) {
-        throw new Error("El ID de la posición no es un número válido");
-      }
-      if (isNaN(numericLevelId)) {
-        throw new Error("El ID del nivel no es un número válido");
+      
+      let nodeId = String(selectedNode.id);
+      let levelIdValue = nodeId.replace(/[^0-9]/g, '');
+      
+      if (!levelIdValue) {
+        levelIdValue = selectedNode.levelId || selectedNode.realId || "0";
+        console.warn("No se pudo extraer un ID numérico válido, usando alternativa:", levelIdValue);
       }
       
-      // Crear un objeto simple en lugar de usar el constructor de la clase
+      const numericLevelId = Number(levelIdValue);
+      
+      
+      console.log("Datos del nodo seleccionado completo:", JSON.stringify(selectedNode));
+      console.log("ID original del nodo:", nodeId);
+      console.log("ID del nivel limpio:", levelIdValue);
+      console.log("ID del nivel convertido a número:", numericLevelId);
+      
+      
+      if (isNaN(numericSiteId) || numericSiteId <= 0) {
+        throw new Error(Strings.noValidSiteId);
+      }
+      if (isNaN(numericCiltMstrId) || numericCiltMstrId <= 0) {
+        throw new Error(Strings.noValidCiltMstrId);
+      }
+      if (isNaN(numericPositionId) || numericPositionId <= 0) {
+        throw new Error(Strings.noValidPositionId);
+      }
+      if (isNaN(numericLevelId) || numericLevelId <= 0) {
+        throw new Error(Strings.noValidLevelId);
+      }
+      
       const payload = {
         siteId: numericSiteId,
         ciltMstrId: numericCiltMstrId,
         positionId: numericPositionId,
         levelId: numericLevelId,
-        status: "A"
+        status: "A",
+        createdAt: new Date().toISOString()
       };
 
       console.log("Payload enviado:", payload);
 
       await onAssign(payload);
+
+      // Show success notification
+      notification.success({
+        message: Strings.success,
+        description: Strings.assignmentSuccessful,
+      });
 
       setSelectedPosition(null);
       setSelectedCiltMstr(null);
@@ -130,13 +193,12 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
     } catch (error) {
       console.error("Error in assignment:", error);
       
-      // Mostrar un mensaje de error más específico
       let errorMessage = Strings.errorOccurred;
       
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object') {
-        // Intentar extraer el mensaje de error de la respuesta de la API
+        
         const data = error.data as any;
         if (data.message) {
           errorMessage = data.message;
@@ -160,6 +222,14 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
               <div className="p-2 border border-gray-300 rounded mt-1">
                 {selectedNode?.name || Strings.level}
               </div>
+              {showPositionUsers && selectedPosition && (
+                <div className="mt-3 border-t pt-2">
+                  <div className="font-medium text-blue-600 mb-2">
+                    {Strings.assignedUsers || "Usuarios asignados"}
+                  </div>
+                  <PositionUsers positionId={selectedPosition.id.toString()} />
+                </div>
+              )}
             </div>
 
             <div>
@@ -218,16 +288,26 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                 </Col>
                 {selectedPosition && (
                   <Col flex="none">
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={() => {
-                        setPositionToView(selectedPosition);
-                        setPositionDetailsVisible(true);
-                      }}
-                    >
-                      {Strings.ciltCardListViewDetailsButton}
-                    </Button>
+                    <Space>
+                      <Button
+                        type="primary"
+                        size="small"
+                        onClick={() => {
+                          setPositionToView(selectedPosition);
+                          setPositionDetailsVisible(true);
+                        }}
+                      >
+                        {Strings.ciltCardListViewDetailsButton}
+                      </Button>
+                      <Button
+                        type="default"
+                        size="small"
+                        onClick={() => setShowPositionUsers(!showPositionUsers)}
+                        className={showPositionUsers ? "text-blue-500" : ""}
+                      >
+                        {Strings.users || "Usuarios"}
+                      </Button>
+                    </Space>
                   </Col>
                 )}
               </Row>
@@ -347,7 +427,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       width={placement === "right" ? 500 : undefined}
       onClose={onClose}
       open={isVisible}
-      destroyOnClose
+      destroyOnHidden
       closable={true}
       className="drawer-responsive"
       mask={false}

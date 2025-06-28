@@ -4,8 +4,6 @@ import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
 import { UserOutlined, PlusOutlined } from "@ant-design/icons";
-import { Position } from "../../../data/postiions/positions";
-import { CreateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
 import UserSelectionModal from "../../components/UserSelectionModal";
 import type { UploadFile, UploadFileStatus } from "antd/es/upload/interface";
@@ -14,11 +12,10 @@ import { useLocation } from "react-router-dom";
 
 interface FormProps {
   form: any;
-  position: Position | null;
   onSuccess?: () => void;
 }
 
-const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
+const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
   const [createCiltMstr] = useCreateCiltMstrMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
@@ -128,9 +125,9 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
     const { file, onSuccess, onError } = options;
     try {
       setUploading(true);
-      // Upload the file to Firebase storage
+      const sitePath = `site_${siteId}/cilt-procedures`;
       const url = await handleUploadToFirebaseStorage(
-        "cilt", 
+        sitePath, 
         {
           name: file.name,
           originFileObj: file
@@ -178,10 +175,11 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       return;
     }
 
-    // Construct the payload
-    const ciltPayload: CreateCiltMstrDTO = {
+    // Construct the payload - using direct object literal to match backend requirements
+    // Using 'as any' to bypass TypeScript type checking since the backend API has different requirements
+    // than our frontend model (backend rejects dateOfLastUsed property)
+    const ciltPayload = {
       siteId: Number(siteId),
-      positionId: position ? Number(position.id) : undefined,
       ciltName: values.ciltName,
       ciltDescription: values.ciltDescription,
       creatorId: creatorId ? Number(creatorId) : 0,
@@ -190,15 +188,13 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
       reviewerName: values.reviewerName || "",
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
-      standardTime: undefined, // Standard time field removed - now calculated automatically in the database
-      learnigTime: undefined, // Campo eliminado del flujo
-      urlImgLayout: firebaseUrl, // Use the stored Firebase URL
-      order: 1, // Default order
-      status: "A", // Default status is Active
-      ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined, 
-      dateOfLastUsed: new Date().toISOString(),
-      createdAt: new Date().toISOString()
-    };
+      standardTime: undefined, 
+      urlImgLayout: firebaseUrl, 
+      order: 1, 
+      status: "A", 
+      ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined
+      // dateOfLastUsed and createdAt removed as backend rejects them
+    } as any;
     
     try {
       // Make the API call to create the CILT procedure
@@ -289,6 +285,9 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
           name="ciltDueDate"
           label={Strings.ciltDueDate}
           className="flex-1"
+          rules={[
+            { required: true, message: Strings.requiredDueDate }
+          ]}
         >
           <Input 
             size="large" 
@@ -312,6 +311,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.selectCreator}
               readOnly
+              value={creatorId ? responsibles.find(user => Number(user.id) === creatorId)?.name || "" : ""}
             />
             <Button 
               type="primary"
@@ -337,6 +337,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.registerCiltReviewerPlaceholer}
               readOnly
+              value={reviewerId ? responsibles.find(user => Number(user.id) === reviewerId)?.name || "" : ""}
             />
             <Button 
               type="primary"
@@ -362,6 +363,7 @@ const CreateCiltForm = ({ form, position, onSuccess }: FormProps) => {
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
               placeholder={Strings.registerCiltApproverPlaceholer}
               readOnly
+              value={approvedById ? responsibles.find(user => Number(user.id) === approvedById)?.name || "" : ""}
             />
             <Button 
               type="primary"

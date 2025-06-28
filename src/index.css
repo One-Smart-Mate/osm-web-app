@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 /*Applying these styles to the menu was the only solution*/
 .ant-menu-item, 
 .ant-menu-submenu-title, 
@@ -28,6 +33,32 @@
 .no-scrollbar {
   -ms-overflow-style: none !important; /* Hide scrollbar for IE and Edge */
   scrollbar-width: none !important; /* Hide scrollbar for Firefox */
+}
+
+/* Custom scrollbar styles for the entire application */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1890FF;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0c7cd5;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1890FF #f1f1f1;
 }
 
 /* Add fade-out animation */
