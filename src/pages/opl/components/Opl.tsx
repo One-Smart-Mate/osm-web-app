@@ -11,6 +11,7 @@ import {
 import {
   useGetOplDetailsByOplMutation,
   useCreateOplDetailMutation,
+  useUpdateOplDetailOrderMutation,
 } from "../../../services/cilt/oplDetailsService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { OplMstr, CreateOplMstrDTO } from "../../../data/cilt/oplMstr/oplMstr";
@@ -67,6 +68,7 @@ const Opl = (): React.ReactElement => {
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplDetail] = useCreateOplDetailMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
+  const [updateOplDetailOrder] = useUpdateOplDetailOrderMutation();
 
   useEffect(() => {
     fetchOpls();
@@ -78,7 +80,6 @@ const Opl = (): React.ReactElement => {
   const fetchOpls = async () => {
     setLoading(true);
     try {
-      
       let response;
       if (siteId) {
         response = await getOplMstrBySite(String(siteId)).unwrap();
@@ -176,10 +177,17 @@ const Opl = (): React.ReactElement => {
       }
     } catch (error) {
       console.error("Error fetching OPL details for view:", error);
-      notification.error({
-        message: "Error",
-        description: Strings.oplErrorLoadingDetails,
-      });
+      if (
+        error &&
+        typeof error === "object" &&
+        "status" in error &&
+        error.status !== 404
+      ) {
+        notification.error({
+          message: "Error",
+          description: Strings.oplErrorLoadingDetails,
+        });
+      }
       setViewDetails([]);
     }
   };
@@ -187,6 +195,31 @@ const Opl = (): React.ReactElement => {
   const handleViewCancel = () => {
     setViewModalVisible(false);
     setViewDetails([]);
+    setCurrentOpl(null);
+  };
+
+  // Handle updating the order of OPL details
+  const handleUpdateDetailOrder = async (detailId: number, newOrder: number) => {
+    try {
+      // Call the API to update the order
+      await updateOplDetailOrder({ detailId, newOrder }).unwrap();
+      
+      // If the current OPL is still selected, refresh details to get the updated order
+      if (currentOpl?.id) {
+        const details = await getOplDetailsByOpl(String(currentOpl.id)).unwrap();
+        // Update the view details with the new ordered data
+        if (details) {
+          const sortedDetails = [...details].sort((a, b) => a.order - b.order);
+          setViewDetails(sortedDetails);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating OPL detail order:', error);
+      notification.error({
+        message: "Error",
+        description: "Error updating order",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -279,6 +312,12 @@ const Opl = (): React.ReactElement => {
     setFileList([]);
   };
 
+  const handleDetailDeleted = async (_detailId: number) => {
+    if (currentOpl?.id) {
+      await fetchOplDetails(String(currentOpl.id));
+    }
+  };
+
   const handleDetailTabChange = (key: string) => {
     setActiveDetailTab(key);
     detailForm.resetFields();
@@ -331,11 +370,13 @@ const Opl = (): React.ReactElement => {
 
     try {
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type: "texto",
         text: values.text,
         mediaUrl: "",
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();
@@ -401,18 +442,24 @@ const Opl = (): React.ReactElement => {
         originFileObj: file.originFileObj as File,
       };
 
+      const sitePath =
+        currentOpl && currentOpl.siteId
+          ? `site_${currentOpl.siteId}/opl`
+          : FIREBASE_OPL_DIRECTORY;
       const url = await handleUploadToFirebaseStorage(
-        FIREBASE_OPL_DIRECTORY,
+        sitePath,
         uploadFile,
         fileExtension
       );
 
       const newDetail: CreateOplDetailsDTO = {
+        siteId: Number(currentOpl.siteId),
         oplId: Number(currentOpl.id),
         order: currentDetails.length + 1,
         type,
         text: "",
         mediaUrl: url,
+        createdAt: new Date().toISOString(),
       };
 
       await createOplDetail(newDetail).unwrap();
@@ -509,6 +556,7 @@ const Opl = (): React.ReactElement => {
         currentOpl={currentOpl}
         currentDetails={viewDetails}
         onCancel={handleViewCancel}
+        onUpdateDetailOrder={handleUpdateDetailOrder}
       />
 
       <OplDetailsModal
@@ -527,6 +575,7 @@ const Opl = (): React.ReactElement => {
         onAddMedia={(type) =>
           handleAddMediaDetail(type as "imagen" | "video" | "pdf")
         }
+        onDetailDeleted={handleDetailDeleted}
       />
     </div>
   );

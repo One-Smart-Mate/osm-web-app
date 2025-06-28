@@ -48,15 +48,18 @@ interface OplSelectionModalProps {
   isVisible: boolean;
   onClose: () => void;
   onSelect: (opl: OplMstr) => void;
+  siteId?: string | number; // Add siteId prop
 }
 
 const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   isVisible,
   onClose,
   onSelect,
+  siteId: propSiteId, // Accept the siteId prop
 }) => {
   const location = useLocation();
-  const currentSiteId = location.state?.siteId || null;
+  const currentSiteId = location.state?.siteId;
+
   const [getOplMstrAll] = useGetOplMstrAllMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
@@ -89,6 +92,8 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     if (isVisible) {
       fetchOpls();
       fetchResponsibles();
+    } else {
+      setSearchText("");
     }
   }, [isVisible]);
 
@@ -173,9 +178,37 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           )
         : null;
 
-      // Usar el siteId de la ubicación actual o del formulario
-      const siteIdToUse = values.siteId ? Number(values.siteId) : (currentSiteId ? Number(currentSiteId) : null);
+      // Usar el siteId con prioridad: 1) valor del form, 2) prop desde el padre, 3) location.state
+      let siteIdToUse;
       
+      try {
+        if (values.siteId && values.siteId !== 'undefined' && values.siteId !== 'null') {
+          siteIdToUse = Number(values.siteId);
+        } else if (propSiteId && propSiteId !== 'undefined' && propSiteId !== 'null') {
+          siteIdToUse = Number(propSiteId);
+        } else if (currentSiteId && currentSiteId !== 'undefined' && currentSiteId !== 'null') {
+          siteIdToUse = Number(currentSiteId);
+        } else {
+          siteIdToUse = null;
+        }
+        
+        // Verificar si tenemos un siteId válido antes de continuar
+        if (!siteIdToUse || isNaN(siteIdToUse)) {
+          notification.warning({
+            message: Strings.oplSelectionModalErrorOpl,
+            description: Strings.requiredPosition
+          });
+          throw new Error("Se requiere un ID de sitio válido");
+        }
+      } catch (error) {
+        console.error("Error al procesar siteId:", error);
+        notification.error({
+          message: Strings.oplSelectionModalErrorOpl,
+          description: Strings.oplSelectionModalErrorDescription
+        });
+        throw error;
+      }
+
       const createPayload = {
         title: values.title,
         objetive: values.objetive || "", // Provide empty string as default
@@ -185,7 +218,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         reviewerName: reviewer?.name || "", // Provide empty string as default
         oplType: values.oplType || "opl", // Default to 'opl'
         createdAt: new Date().toISOString(),
-        siteId: siteIdToUse, // Usar el siteId obtenido
+        siteId: siteIdToUse, // Usar el siteId obtenido y validado
       };
       
       console.log("Creating OPL with payload:", createPayload);
@@ -225,21 +258,10 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
 
   const handleFileChange = (info: any) => {
     let fileList = [...info.fileList];
-
     fileList = fileList.slice(-1);
-
+    
     setFileList(fileList);
     
-    // If file is selected and it's not a text file, trigger upload automatically
-    if (fileList.length > 0 && activeDetailTab !== "2") {
-      const fileType = activeDetailTab === "3" ? "imagen" : 
-                      activeDetailTab === "4" ? "video" : 
-                      activeDetailTab === "5" ? "pdf" : "";
-      
-      if (fileType && !uploadLoading) {
-        handleAddMedia(fileType as "imagen" | "video" | "pdf");
-      }
-    }
   };
 
   const handlePreview = (file: any) => {
@@ -267,15 +289,15 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         throw new Error("No se ha seleccionado un OPL");
       }
       
-      // Manejar texto y media de manera separada
       if (type === "texto") {
-        // Para detalles de texto
         const newDetail: CreateOplDetailsDTO = {
+          siteId: Number(currentOpl.siteId || 0),
           oplId: Number(currentOpl.id),
           order: currentOplDetails.length + 1,
           type: "texto",
           text: values.text || "",
           mediaUrl: "",
+          createdAt: new Date().toISOString(),
         };
         
         console.log("Creating text detail:", newDetail);
@@ -288,11 +310,10 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           });
           
           detailForm.resetFields();
-          setActiveDetailTab("1"); // Volver a la lista
+          setActiveDetailTab("1");
           await fetchOplDetails(currentOpl.id);
         }
       } else {
-        // Para detalles de media (imagen, video, pdf)
         if (fileList.length === 0) {
           notification.error({
             message: "Error",
@@ -312,7 +333,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           return;
         }
         
-        // Determinar la extensión del archivo
         let fileExtension = "jpg";
         if (type === "video") {
           fileExtension = "mp4";
@@ -322,28 +342,30 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           fileExtension = file.name.split(".").pop() || "jpg";
         }
         
-        // Preparar el archivo para la carga
         const uploadFile = {
           name: file.name,
           originFileObj: file.originFileObj as File,
         };
         
-        // Subir el archivo a Firebase
+        
         console.log("Uploading file to Firebase...");
+        
+        const sitePath = currentOpl && currentOpl.siteId ? `site_${currentOpl.siteId}/opl` : `${FIREBASE_OPL_DIRECTORY}/${currentOpl.id}`;
         const url = await handleUploadToFirebaseStorage(
-          `${FIREBASE_OPL_DIRECTORY}/${currentOpl.id}`,
+          sitePath,
           uploadFile,
           fileExtension
         );
         console.log("File uploaded successfully, URL:", url);
         
-        // Crear el detalle con la URL del archivo
         const newDetail: CreateOplDetailsDTO = {
+          siteId: Number(currentOpl.siteId || 0),
           oplId: Number(currentOpl.id),
           order: currentOplDetails.length + 1,
           type,
           text: "",
           mediaUrl: url,
+          createdAt: new Date().toISOString(),
         };
         
         console.log("Creating media detail:", newDetail);
@@ -356,7 +378,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           });
           
           setFileList([]);
-          setActiveDetailTab("1"); // Volver a la lista
+          setActiveDetailTab("1"); 
           await fetchOplDetails(currentOpl.id);
         }
       }
@@ -583,7 +605,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             }
             bordered={true}
           >
-            <Typography.Paragraph style={{ maxWidth: '400px', margin: '0 auto' }}>
+            <Typography.Paragraph style={{ maxWidth: '400px', margin: '0 auto', whiteSpace: 'pre-wrap' }}>
               {detail.text}
             </Typography.Paragraph>
           </Card>
@@ -646,7 +668,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   return (
     <>
       <Modal
-        title="Seleccionar OPL/SOP"
+        title={Strings.oplSelectionModalTitle}
         open={isVisible}
         onCancel={onClose}
         footer={null}
@@ -664,7 +686,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
           }}
         >
           <Input
-            placeholder="Buscar por título"
+            placeholder={Strings.searchBarDefaultPlaceholder}
             prefix={<SearchOutlined />}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -676,8 +698,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
             icon={<PlusOutlined />}
             onClick={() => setCreateOplModalVisible(true)}
             style={{ cursor: "pointer" }}
+            className="ml-3"
           >
-            Crear OPL
+            {Strings.oplSelectionModalCreateTitle}
           </Button>
         </div>
 

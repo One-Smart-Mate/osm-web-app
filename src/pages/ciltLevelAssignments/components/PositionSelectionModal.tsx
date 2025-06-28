@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Modal, Card, Button, Row, Col, Spin, Input, Empty } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Modal, Card, Button, Row, Col, Spin, Input, Empty, List, Typography } from 'antd';
+import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { Position } from '../../../data/postiions/positions';
-import { useGetPositionsBySiteIdQuery } from '../../../services/positionService';
+import { Responsible } from '../../../data/user/user';
+import { useGetPositionsBySiteIdQuery, useGetPositionUsersQuery } from '../../../services/positionService';
 import Strings from '../../../utils/localizations/Strings';
 import { theme } from 'antd';
 import useDarkMode from '../../../utils/hooks/useDarkMode';
@@ -14,6 +15,37 @@ interface PositionSelectionModalProps {
   onPositionSelect: (position: Position) => void;
 }
 
+const { Text } = Typography;
+
+// Componente para mostrar los usuarios de una posición
+const PositionUsers = ({ positionId }: { positionId: string }) => {
+  const { data: users = [], isLoading } = useGetPositionUsersQuery(positionId, {
+    refetchOnMountOrArgChange: true
+  });
+
+  if (isLoading) {
+    return <Spin size="small" />;
+  }
+
+  if (!users.length) {
+    return <Text type="secondary">{Strings.noAssignedUsers}</Text>;
+  }
+
+  return (
+    <List
+      size="small"
+      bordered
+      className="shadow-md rounded-md bg-white max-w-xs"
+      dataSource={users}
+      renderItem={(user: Responsible) => (
+        <List.Item>
+          <UserOutlined className="mr-2" /> {user.name}
+        </List.Item>
+      )}
+    />
+  );
+};
+
 const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
   isVisible,
   siteId,
@@ -23,6 +55,7 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
   const { token } = theme.useToken();
   const isDarkMode = useDarkMode();
   const [searchText, setSearchText] = useState('');
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
   
   // Fetch positions by site ID
   const { data: positions, isLoading, error } = useGetPositionsBySiteIdQuery(siteId.toString());
@@ -91,15 +124,34 @@ const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({
                         </p>
                       )}
                     </div>
-                    <div className="ml-4 flex items-center">
+                    <div className="ml-4 flex flex-col items-center space-y-2">
                       <Button 
                         type="primary" 
                         onClick={() => onPositionSelect(position)}
                       >
                         {Strings.select}
                       </Button>
+                      <Button
+                        type="default"
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenPopoverId(openPopoverId === position.id.toString() ? null : position.id.toString());
+                        }}
+                        className={openPopoverId === position.id.toString() ? "text-blue-500" : ""}
+                      >
+                        {Strings.users || "Usuarios"}
+                      </Button>
                     </div>
                   </div>
+                  {openPopoverId === position.id.toString() && (
+                    <div className="mt-3 border-t pt-2">
+                      <div className="font-medium text-blue-600 mb-2">
+                        {Strings.assignedUsers || "Usuarios asignados"}
+                      </div>
+                      <PositionUsers positionId={position.id.toString()} />
+                    </div>
+                  )}
                 </Card>
               </Col>
             ))}

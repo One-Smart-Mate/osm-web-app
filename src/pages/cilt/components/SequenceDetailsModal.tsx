@@ -21,6 +21,9 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
   onCancel,
 }) => {
   if (!sequence) return null;
+  
+  // Debug to check if specialWarning exists in the sequence object
+  console.log("Sequence object in details:", sequence);
 
   
 
@@ -118,7 +121,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           </Col>
           <Col span={6}>
             <Text type="secondary">{Strings.referencePoint}:</Text>
-            <div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
               <Text>{sequence.referencePoint || "N/A"}</Text>
             </div>
           </Col>
@@ -130,7 +133,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           </Col>
           <Col span={12}>
             <Text type="secondary">{Strings.standardOk}:</Text>
-            <div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
               <Text>{sequence.standardOk || "N/A"}</Text>
             </div>
           </Col>
@@ -146,6 +149,12 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.quantityPicturesClose}:</Text>
             <div>
               <Text>{sequence.quantityPicturesClose || "0"}</Text>
+            </div>
+          </Col>
+          <Col span={24}>
+            <Text type="secondary">{Strings.specialWarning}:</Text>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              <Text>{sequence.specialWarning || Strings.oplFormNotAssigned}</Text>
             </div>
           </Col>
         </Row>
@@ -166,7 +175,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>
-            <div>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
               <Text>{sequence.frecuencyCode || "N/A"}</Text>
             </div>
           </Col>

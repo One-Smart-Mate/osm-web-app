@@ -38,6 +38,8 @@ const STATUS_SUSPENDED = "S";
 const STATUS_CANCELED = "C";
 const STATUS_INACTIVE = "I";
 const STATUS_DRAFT = "D";
+const STATUS_DISCARDED = "DISCARDED";
+const STATUS_CANCELLED_CARD = "CANCELLED";
 
 // Position table constants
 const DEFAULT_PAGE_SIZE = 6;
@@ -74,6 +76,7 @@ const ROUTES_PATH = {
   priorities: 'priorities',
   cardTypes: 'cardtypes',
   levels:'levels',
+  levelsReadOnly: 'levels-readonly',
   companies: 'companies',
   cardDetail: 'card-detail',
   positions:'positions',
@@ -82,12 +85,15 @@ const ROUTES_PATH = {
   opl: 'opl',
   ciltTypes: 'cilt-types',
   ciltFrecuencies: 'cilt-frecuencies',
-  ciltLevelAssignaments: 'cilt-level-assignaments'
+  ciltLevelAssignaments: 'cilt-level-assignaments',
+  ciltSequences: 'cilt-sequences',
+  ciltReports: 'cilt-reports'
 }
 
 const ROUTES_PARAMS = {
   siteId: ':siteId',
-  cardId: ':cardId'
+  cardId: ':cardId',
+  ciltId: ':ciltId'
 }
 
 const SESSION_KEYS = {
@@ -140,5 +146,7 @@ export default {
   ROUTES_PARAMS,
   SESSION_KEYS,
   STATUS_INACTIVE,
-  STATUS_DRAFT
+  STATUS_DRAFT,
+  STATUS_DISCARDED,
+  STATUS_CANCELLED_CARD
 };

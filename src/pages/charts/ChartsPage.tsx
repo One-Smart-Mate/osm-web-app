@@ -4,11 +4,12 @@ import AreasChart from "./components/AreasChart";
 import CreatorsChart from "./components/CreatorsChart";
 import WeeksChart from "./components/WeeksChart";
 import PreclassifiersChart from "./components/PreclassifiersChart";
+import DiscardedCardsChart from "./components/DiscardedCardsChart";
 import { useEffect, useState } from "react";
-import { useGetCardTypesCatalogsMutation } from "../../services/CardTypesService";
-import { CardTypesCatalog } from "../../data/cardtypes/cardTypes";
+import { useGetCardTypesCatalogsMutation, useGetCardTypesMutation } from "../../services/CardTypesService";
+import { CardTypesCatalog, CardTypes } from "../../data/cardtypes/cardTypes";
 import MethodologiesChart from "./components/MethodologiesChart";
-import { Card, DatePicker, Empty, Space, TimeRangePickerProps, Typography } from "antd";
+import { Card, DatePicker, Empty, Space, TimeRangePickerProps, Typography, Select } from "antd";
 import { useGetMethodologiesChartDataMutation } from "../../services/chartService";
 import { Methodology } from "../../data/charts/charts";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -35,10 +36,13 @@ const ChartsPage = () => {
   const location = useLocation();
   const [getMethodologiesCatalog] = useGetCardTypesCatalogsMutation();
   const [getMethodologies] = useGetMethodologiesChartDataMutation();
+  const [getCardTypes] = useGetCardTypesMutation();
   const [methodologiesCatalog, setMethodologiesCatalog] = useState<
     CardTypesCatalog[]
   >([]);
   const [methodologies, setMethodologies] = useState<Methodology[]>([]);
+  const [cardTypes, setCardTypes] = useState<CardTypes[]>([]);
+  const [selectedCardType, setSelectedCardType] = useState<string | null>(null);
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
@@ -58,17 +62,19 @@ const ChartsPage = () => {
       return;
     }
     setIsLoading(true);
-    const [response, response2] = await Promise.all([
+    const [response, response2, cardTypesResponse] = await Promise.all([
       getMethodologiesCatalog().unwrap(),
       getMethodologies({
         siteId,
         startDate,
         endDate,
       }).unwrap(),
+      getCardTypes(siteId).unwrap()
     ]);
 
     setMethodologiesCatalog(response);
     setMethodologies(response2);
+    setCardTypes(cardTypesResponse);
     setIsLoading(false);
   };
 
@@ -93,6 +99,10 @@ const ChartsPage = () => {
       setEndDate(Strings.empty);
     }
   };
+  
+  const handleCardTypeChange = (value: string | null) => {
+    setSelectedCardType(value);
+  };
 
   return (
     <MainContainer
@@ -106,8 +116,18 @@ const ChartsPage = () => {
           <div className="flex items-end justify-end">
             <DownloadChartDataButton siteId={siteId} />
           </div>
-          <Space className="w-full md:w-auto mb-1 md:mb-0 pb-2">
+          <Space className="w-full flex flex-wrap gap-2 mb-1 md:mb-0 pb-2">
             <RangePicker presets={rangePresets} onChange={onRangeChange} />
+            <Select
+              placeholder={Strings.filterByCardType}
+              style={{ minWidth: 200 }}
+              allowClear
+              onChange={handleCardTypeChange}
+              options={[
+                { value: null, label: Strings.allCardTypes },
+                ...cardTypes.map((type) => ({ value: type.name, label: type.name }))
+              ]}
+            />
           </Space>
           {methodologies.length > 0 ? (
             <>
@@ -126,6 +146,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             startDate={startDate}
                             endDate={endDate}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
                       </div>
@@ -155,6 +176,7 @@ const ChartsPage = () => {
                           siteId={siteId}
                           startDate={startDate}
                           endDate={endDate}
+                          cardTypeName={selectedCardType}
                         />
                       </div>
                       <div className="md:w-80 w-full h-60">
@@ -162,6 +184,7 @@ const ChartsPage = () => {
                           methodologies={methodologies}
                           methodologiesCatalog={methodologiesCatalog}
                           siteId={siteId}
+                          cardTypeName={selectedCardType}
                         />
                       </div>
                     </div>
@@ -178,18 +201,24 @@ const ChartsPage = () => {
                         </Typography.Title>
                       </div>
                       <div className="absolute right-0 top-0">
-                        <ChartExpander title={Strings.areas}>
-                          <AreasChart
+                        <ChartExpander title={Strings.preclassifierChart}>
+                          <PreclassifiersChart
                             startDate={startDate}
                             endDate={endDate}
-                            methodologies={methodologies}
                             siteId={siteId}
-                            onClick={(superiorId, areaName) => {
-                              setSelectedAreaId(superiorId);
-                              setSelectedAreaName(areaName || "");
-                            }}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
+                        <AreasChart
+                          startDate={startDate}
+                          endDate={endDate}
+                          methodologies={methodologies}
+                          siteId={siteId}
+                          onClick={(superiorId, areaName) => {
+                            setSelectedAreaId(superiorId);
+                            setSelectedAreaName(areaName || "");
+                          }}
+                        />
                       </div>
                     </div>
                   }
@@ -201,6 +230,7 @@ const ChartsPage = () => {
                       endDate={endDate}
                       methodologies={methodologies}
                       siteId={siteId}
+                      cardTypeName={selectedCardType}
                       onClick={(superiorId, areaName) => {
                         setSelectedAreaId(superiorId);
                         setSelectedAreaName(areaName || "");
@@ -212,7 +242,7 @@ const ChartsPage = () => {
                   title={
                     <div className="mt-2 relative">
                       <div className="flex flex-col items-center">
-                        <Typography.Title level={4}>
+                        <Typography.Title level={4} className="pr-10 mb-2">
                          {selectedAreaName
                             ? `${Strings.machinesOfArea}: ${selectedAreaName}`
                             : Strings.machines}
@@ -232,6 +262,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             areaId={selectedAreaId}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
                       </div>
@@ -246,6 +277,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       areaId={selectedAreaId}
+                      cardTypeName={selectedCardType}
                     />
                   </div>
                 </Card>
@@ -266,6 +298,7 @@ const ChartsPage = () => {
                             endDate={endDate}
                             siteId={siteId}
                             methodologies={methodologies}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
                       </div>
@@ -279,6 +312,7 @@ const ChartsPage = () => {
                       endDate={endDate}
                       siteId={siteId}
                       methodologies={methodologies}
+                      cardTypeName={selectedCardType}
                     />
                   </div>
                 </Card>
@@ -288,7 +322,7 @@ const ChartsPage = () => {
                       <div className="flex flex-col items-center">
                          <Typography.Title level={4}>
                          {selectedAreaName
-                            ? `${Strings.mechanics}: ${selectedAreaName}`
+                            ? `${Strings.mechanics}`
                             : Strings.mechanics}
                         </Typography.Title>
                       </div>
@@ -296,7 +330,7 @@ const ChartsPage = () => {
                         <ChartExpander
                           title={
                             selectedAreaName
-                              ? `${Strings.machines}: ${selectedAreaName}`
+                              ? `${Strings.machines}`
                               : Strings.mechanics
                           }
                         >
@@ -305,6 +339,7 @@ const ChartsPage = () => {
                             endDate={endDate}
                             siteId={siteId}
                             methodologies={methodologies}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
                       </div>
@@ -318,6 +353,7 @@ const ChartsPage = () => {
                       endDate={endDate}
                       siteId={siteId}
                       methodologies={methodologies}
+                      cardTypeName={selectedCardType}
                     />
                   </div>
                 </Card>
@@ -338,6 +374,7 @@ const ChartsPage = () => {
                             endDate={endDate}
                             siteId={siteId}
                             methodologies={methodologies}
+                            cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
                       </div>
@@ -351,6 +388,7 @@ const ChartsPage = () => {
                       endDate={endDate}
                       siteId={siteId}
                       methodologies={methodologies}
+                      cardTypeName={selectedCardType}
                     />
                   </div>
                 </Card>
@@ -364,7 +402,12 @@ const ChartsPage = () => {
                       </div>
                       <div className="absolute right-0 top-0">
                         <ChartExpander title={Strings.tagMonitoring}>
-                          <WeeksChart siteId={siteId} />
+                          <WeeksChart 
+                            siteId={siteId} 
+                            startDate={startDate}
+                            endDate={endDate}
+                            cardTypeName={selectedCardType} 
+                          />
                         </ChartExpander>
                       </div>
                     </div>
@@ -372,7 +415,45 @@ const ChartsPage = () => {
                   className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
                 >
                   <div className="w-full h-60">
-                    <WeeksChart siteId={siteId} />
+                    <WeeksChart 
+                      siteId={siteId} 
+                      startDate={startDate}
+                      endDate={endDate}
+                      cardTypeName={selectedCardType} 
+                    />
+                  </div>
+                </Card>
+              </div>
+              <div className="mb-2 flex flex-wrap flex-row gap-2">
+                <Card
+                  title={
+                    <div className="mt-2 relative">
+                      <div className="flex flex-col items-center">
+                         <Typography.Title level={4}>
+                         {Strings.discardedCardslCardsTitle}
+                        </Typography.Title>
+                      </div>
+                      <div className="absolute right-0 top-0">
+                        <ChartExpander title={Strings.discardedCardslCardsTitle}>
+                          <DiscardedCardsChart 
+                            siteId={siteId} 
+                            startDate={startDate}
+                            endDate={endDate}
+                            cardTypeName={selectedCardType} 
+                          />
+                        </ChartExpander>
+                      </div>
+                    </div>
+                  }
+                  className="md:flex-1 w-full mx-auto bg-gray-100 rounded-xl shadow-md"
+                >
+                  <div className="w-full h-60">
+                    <DiscardedCardsChart 
+                      siteId={siteId} 
+                      startDate={startDate}
+                      endDate={endDate}
+                      cardTypeName={selectedCardType} 
+                    />
                   </div>
                 </Card>
               </div>

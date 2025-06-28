@@ -68,7 +68,6 @@ const CiltProceduresPage = (): React.ReactElement => {
       {/* Create CILT Modal */}
       <CreateCiltModal
         visible={isCiltFormVisible}
-        position={null}
         form={ciltForm}
         onCancel={handleCiltFormCancel}
         onSuccess={handleCiltFormSuccess}

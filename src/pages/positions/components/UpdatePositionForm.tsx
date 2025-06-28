@@ -1,4 +1,13 @@
-import { Form, Input, Button, Modal, Select, notification, Spin, Typography } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Modal,
+  Select,
+  notification,
+  Spin,
+  Typography,
+} from "antd";
 import { useEffect, useState } from "react";
 import { useUpdatePositionMutation } from "../../../services/positionService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
@@ -21,30 +30,40 @@ interface FormProps {
   onSuccess?: () => void;
 }
 
-const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: FormProps) => {
+const UpdatePositionForm = ({
+  form,
+  position,
+  isVisible,
+  onCancel,
+  onSuccess,
+}: FormProps) => {
   const [updatePosition] = useUpdatePositionMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const { data: positionUsers = [] } = useGetPositionUsersQuery(
-    position?.id ? position.id.toString() : '', 
+    position?.id ? position.id.toString() : "",
     { skip: !position?.id }
   );
-  
+
   const [users, setUsers] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [selectedUserDetails, setSelectedUserDetails] = useState<Responsible[]>([]);
+  const [selectedUserDetails, setSelectedUserDetails] = useState<Responsible[]>(
+    []
+  );
   const [userModalVisible, setUserModalVisible] = useState(false);
+  const [responsibles, setResponsibles] = useState<Responsible[]>([]);
 
-  // Load site users when the form becomes visible
   useEffect(() => {
     const fetchUsers = async () => {
       if (position?.siteId && isVisible) {
         setLoading(true);
         try {
-          const responsibles = await getSiteResponsibles(String(position.siteId)).unwrap();
-          setUsers(responsibles);
+          const fetchedResponsibles = await getSiteResponsibles(
+            String(position.siteId)
+          ).unwrap();
+          setUsers(fetchedResponsibles);
+          setResponsibles(fetchedResponsibles);
         } catch (error) {
-          // Error handling without logging
         } finally {
           setLoading(false);
         }
@@ -54,19 +73,18 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
     fetchUsers();
   }, [position, isVisible, getSiteResponsibles]);
 
-  // Set initially selected users based on position users
   useEffect(() => {
     if (positionUsers.length > 0) {
-      const userIds = positionUsers.map(user => user.id);
+      const userIds = positionUsers.map((user) => user.id);
       setSelectedUsers(userIds);
       setSelectedUserDetails(positionUsers);
     }
   }, [positionUsers]);
 
   const handleUserSelect = (userIds: number[]) => {
-    setSelectedUsers(userIds.map(id => id.toString()));
-    // Update the selected users list with their details
-    const selected = users.filter(user => userIds.includes(Number(user.id)));
+    setSelectedUsers(userIds.map((id) => id.toString()));
+
+    const selected = users.filter((user) => userIds.includes(Number(user.id)));
     setSelectedUserDetails(selected);
   };
 
@@ -80,24 +98,41 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
       return;
     }
 
-    // Construct the payload based on the example and available data
+    const nodeResponsable = responsibles.find(
+      (resp) => resp.id === values.nodeResponsableId
+    );
+
     const positionPayload = {
-      ...position,
+      id: position.id,
+      siteId: position.siteId,
+      siteName: position.siteName,
+      siteType: position.siteType,
+      areaId: position.areaId,
+      areaName: position.areaName,
+      levelId: position.levelId,
+      levelName: position.levelName,
+      route: position.route,
       name: values.name,
       description: values.description,
       status: values.status,
-      userIds: selectedUsers.map(id => parseInt(id, 10))
+      nodeResponsableId: values.nodeResponsableId
+        ? Number(values.nodeResponsableId)
+        : position.nodeResponsableId,
+      nodeResponsableName: nodeResponsable
+        ? nodeResponsable.name
+        : position.nodeResponsableName,
+      userIds: selectedUsers.map((id) => parseInt(id, 10)),
     };
 
     try {
       await updatePosition(positionPayload).unwrap();
-      
+
       notification.success({
         message: Strings.success,
         description: Strings.positionUpdatedSuccess,
         duration: 4,
       });
-      
+
       if (onSuccess) {
         onSuccess();
       }
@@ -110,21 +145,23 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
     }
   };
 
-  // Helper function to determine the initial status value
   const getInitialStatus = (status: string | undefined) => {
     if (!status) return Constants.STATUS_ACTIVE;
-    
-    // Normalize status values
+
     if (status === Constants.STATUS_ACTIVE) return Constants.STATUS_ACTIVE;
-    if (status === Constants.STATUS_SUSPENDED) return Constants.STATUS_SUSPENDED;
+    if (status === Constants.STATUS_SUSPENDED)
+      return Constants.STATUS_SUSPENDED;
     if (status === Constants.STATUS_CANCELED) return Constants.STATUS_CANCELED;
-    
-    return Constants.STATUS_ACTIVE; // Default to active if unknown
+
+    return Constants.STATUS_ACTIVE;
   };
 
   return (
     <Modal
-      title={Strings.updatePositionTitle + (position?.name ? ': ' + position.name : '')}
+      title={
+        Strings.updatePositionTitle +
+        (position?.name ? ": " + position.name : "")
+      }
       open={isVisible}
       onCancel={onCancel}
       footer={null}
@@ -136,9 +173,10 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
         layout="vertical"
         onFinish={handleSubmit}
         initialValues={{
-          name: position?.name || '',
-          description: position?.description || '',
+          name: position?.name || "",
+          description: position?.description || "",
           status: getInitialStatus(position?.status),
+          nodeResponsableId: position?.nodeResponsableId || undefined,
         }}
         preserve={false}
       >
@@ -156,7 +194,7 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
             },
           ]}
         >
-          <Input 
+          <Input
             placeholder={Strings.positionNameHeader}
             maxLength={45}
             showCount
@@ -173,8 +211,8 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
             },
           ]}
         >
-          <Input.TextArea 
-            rows={4} 
+          <Input.TextArea
+            rows={4}
             placeholder={Strings.positionDescriptionHeader}
             maxLength={100}
             showCount
@@ -193,8 +231,40 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
         >
           <Select placeholder={Strings.selectStatus}>
             <Option value={Constants.STATUS_ACTIVE}>{Strings.active}</Option>
-            <Option value={Constants.STATUS_SUSPENDED}>{Strings.suspended}</Option>
-            <Option value={Constants.STATUS_CANCELED}>{Strings.canceled}</Option>
+            <Option value={Constants.STATUS_SUSPENDED}>
+              {Strings.suspended}
+            </Option>
+            <Option value={Constants.STATUS_CANCELED}>
+              {Strings.canceled}
+            </Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="nodeResponsableId"
+          label={Strings.nodeResponsable || "Node Responsible"}
+          rules={[{ required: true, message: Strings.requiredInfo }]}
+        >
+          <Select
+            placeholder={Strings.selectResponsable || "Select Responsible"}
+            loading={loading}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input: string, option: any) => {
+              if (!option || !option.children) return false;
+              return (
+                option.children
+                  .toString()
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              );
+            }}
+          >
+            {responsibles.map((responsible) => (
+              <Select.Option key={responsible.id} value={responsible.id}>
+                {responsible.name}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
 
@@ -204,28 +274,35 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
             <Spin tip={Strings.loadingPositions} />
           ) : (
             <div className="mt-2">
-              <Button 
-                type="dashed" 
-                icon={<UserOutlined />} 
+              <Button
+                type="dashed"
+                icon={<UserOutlined />}
                 onClick={() => setUserModalVisible(true)}
                 className="w-full"
               >
                 {Strings.selectUsersForPosition}
               </Button>
-              
+
               {selectedUsers.length > 0 ? (
                 <div className="mt-2">
-                  <Text strong>{Strings.selectedUsers} ({selectedUsers.length})</Text>
+                  <Text strong>
+                    {Strings.selectedUsers} ({selectedUsers.length})
+                  </Text>
                   <div className="mt-1 p-2 border rounded-md max-h-32 overflow-y-auto">
-                    {selectedUserDetails.map(user => (
-                      <div key={user.id} className="py-1 border-b last:border-b-0">
+                    {selectedUserDetails.map((user) => (
+                      <div
+                        key={user.id}
+                        className="py-1 border-b last:border-b-0"
+                      >
                         {user.name}
                       </div>
                     ))}
                   </div>
                 </div>
               ) : (
-                <Text type="secondary" className="block mt-2">{Strings.noUsersSelected}</Text>
+                <Text type="secondary" className="block mt-2">
+                  {Strings.noUsersSelected}
+                </Text>
               )}
             </div>
           )}
@@ -238,14 +315,14 @@ const UpdatePositionForm = ({ form, position, isVisible, onCancel, onSuccess }: 
           </Button>
         </div>
       </Form>
-      
+
       <UserSelectionModal
         isVisible={userModalVisible}
         onCancel={() => setUserModalVisible(false)}
         onConfirm={handleUserSelect}
         users={users}
         loading={loading}
-        initialSelectedUserIds={selectedUsers.map(id => Number(id))}
+        initialSelectedUserIds={selectedUsers.map((id) => Number(id))}
         title={Strings.assignedUsers}
       />
     </Modal>

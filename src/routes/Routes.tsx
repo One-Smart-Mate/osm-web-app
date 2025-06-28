@@ -16,6 +16,7 @@ import { MdHealthAndSafety } from "react-icons/md";
 import React from "react";
 import Strings from "../utils/localizations/Strings";
 import Constants from "../utils/Constants";
+import { CILTReports } from "../pages/ciltReports/CILTReports";
 
 const CardTypesPage = React.lazy(
   () => import("../pages/cardtypes/CardTypesPage")
@@ -26,6 +27,7 @@ const TagDetailsPage = React.lazy(
 );
 const UsersPage = React.lazy(() => import("../pages/user/UsersPage"));
 const LevelsPage = React.lazy(() => import("../pages/level/LevelsPage"));
+const LevelsReadOnly = React.lazy(() => import("../pages/levelReadOnly/LevelReadOnly"));
 const SystemHealth = React.lazy(
   () => import("../pages/systemhealth/SystemHealth")
 );
@@ -40,6 +42,9 @@ const PrioritiesPage = React.lazy(
 
 const CiltProceduresPage = React.lazy(
   () => import("../pages/cilt/CiltProceduresPage")
+);
+const CiltSequencesPage = React.lazy(
+  () => import("../pages/cilt/CiltSequencesPage")
 );
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
 const CiltTypesPage = React.lazy(
@@ -63,6 +68,14 @@ const ciltLevelAssignamentsRoute = new Route(
   Strings.cilt
 );
 
+const ciltReportsRoute = new Route(
+  Strings.ciltReportsSB,
+  Constants.ROUTES_PATH.ciltReports,
+  <CILTReports />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
 // Common routes
 const prioritiesRoute = new Route(
   Strings.prioritiesSB,
@@ -76,6 +89,14 @@ const levelsRoute = new Route(
   Strings.levelsSB,
   Constants.ROUTES_PATH.levels,
   <LevelsPage />,
+  <BsDiagram3 />,
+  Strings.catalogs
+);
+
+const levelsReadOnlyRoute = new Route(
+  Strings.levelsConsultation,
+  Constants.ROUTES_PATH.levelsReadOnly,
+  <LevelsReadOnly />,
   <BsDiagram3 />,
   Strings.catalogs
 );
@@ -184,12 +205,23 @@ export const tagDetailsRoute = new Route(
   ""
 );
 
+export const ciltSequencesRoute = new Route(
+  "Secuencias",
+  `${Constants.ROUTES_PATH.ciltSequences}/${Constants.ROUTES_PARAMS.ciltId}`,
+  <CiltSequencesPage />,
+  <></>,
+  ""
+);
+
 const routes: Route[] = [
   tagDetailsRoute,
+  ciltSequencesRoute,
   siteUsersRoute,
   sitesRoute,
+  ciltReportsRoute,
   tagsRoute,
   levelsRoute,
+  levelsReadOnlyRoute,
   positionsRoute,
   prioritiesRoute,
   cardTypesRoute,
@@ -218,10 +250,22 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       section: tagsRoute.section,
     }),
     getItemV2({
+      label: levelsReadOnlyRoute.label,
+      key: levelsReadOnlyRoute.path,
+      icon: levelsReadOnlyRoute.icon,
+      section: levelsReadOnlyRoute.section,
+    }),
+    getItemV2({
       label: positionsRoute.label,
       key: positionsRoute.path,
       icon: positionsRoute.icon,
       section: positionsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;
@@ -240,6 +284,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
+    }),
+    getItemV2({
+      label: levelsReadOnlyRoute.label,
+      key: levelsReadOnlyRoute.path,
+      icon: levelsReadOnlyRoute.icon,
+      section: levelsReadOnlyRoute.section,
     }),
     getItemV2({
       label: sitesRoute.label,
@@ -306,6 +356,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltLevelAssignamentsRoute.path,
       icon: ciltLevelAssignamentsRoute.icon,
       section: ciltLevelAssignamentsRoute.section,
+    }),
+    getItemV2({
+      label: ciltReportsRoute.label,
+      key: ciltReportsRoute.path,
+      icon: ciltReportsRoute.icon,
+      section: ciltReportsRoute.section,
     }),
   ];
   return items;
