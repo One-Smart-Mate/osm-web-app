@@ -136,7 +136,7 @@ export const CILTReports = () => {
       dataIndex: "route",
       key: "route",
       render: (text) => text || Strings.oplFormNotAssigned,
-      width: 210,
+      width: 80,
       ellipsis: { showTitle: true },
       sorter: (a, b) => (a.route || "").localeCompare(b.route || ""),
       filterSearch: true,
@@ -158,26 +158,15 @@ export const CILTReports = () => {
           }}
         />
       ),
-      width: 50,
-    },
-    {
-      title: "CILT Type",
-      dataIndex: "ciltTypeName",
-      key: "ciltTypeName",
-      render: (text) => text || Strings.oplFormNotAssigned,
-      width: 80,
-      sorter: (a, b) => (a.ciltTypeName || "").localeCompare(b.ciltTypeName || ""),
-      filterSearch: true,
-      filters: Array.from(new Set(executions.map(item => item.ciltTypeName || "").filter(Boolean)))
-        .map(type => ({ text: type, value: type })),
-      onFilter: (value, record) => record.ciltTypeName === value as string,
+      width: 60,
+      align: "center",
     },
     {
       title: Strings.schedule,
       dataIndex: "secuenceSchedule",
       key: "secuenceSchedule",
       render: (text) => formatDate(text),
-      width: 100,
+      width: 140,
       sorter: (a, b) => {
         if (!a.secuenceSchedule && !b.secuenceSchedule) return 0;
         if (!a.secuenceSchedule) return -1;
@@ -190,7 +179,8 @@ export const CILTReports = () => {
       dataIndex: "duration",
       key: "duration",
       render: (duration) => formatDuration(duration),
-      width: 70,
+      width: 80,
+      align: "center",
       sorter: (a, b) => {
         if (a.duration === null && b.duration === null) return 0;
         if (a.duration === null) return -1;
@@ -203,7 +193,8 @@ export const CILTReports = () => {
       dataIndex: "standardOk",
       key: "standardOk",
       render: (text) => text || Strings.oplFormNotAssigned,
-      width: 120,
+      width: 200,
+      ellipsis: { showTitle: true },
       filterSearch: true,
     },
     {
@@ -219,6 +210,7 @@ export const CILTReports = () => {
         );
       },
       width: 80,
+      align: "center",
       filters: [
         { text: Strings.active, value: "A" },
         { text: Strings.inactive, value: "I" },
@@ -229,12 +221,15 @@ export const CILTReports = () => {
       title: Strings.actions,
       key: "actions",
       render: (_, record) => (
-        <Button type="primary" onClick={() => showDetailsModal(record)}>
+        <Button 
+          type="primary" 
+          size="small"
+          onClick={() => showDetailsModal(record)}
+        >
           {Strings.ciltCardListViewDetailsButton || "Ver Detalles"}
         </Button>
       ),
-      width: 90,
-      fixed: "right",
+      width: 120,
     },
   ];
 
@@ -295,13 +290,13 @@ export const CILTReports = () => {
               columns={columns}
               rowKey={(record) => String(record.id)}
               pagination={{
-                pageSize: 100,
+                pageSize: 20,
                 showSizeChanger: true,
-                pageSizeOptions: ["10", "20", "50"],
+                pageSizeOptions: ["10", "20", "50", "100"],
               }}
               bordered
               size="middle"
-              scroll={{ x: 1500 }}
+              scroll={{ x: 800 }}
             />
           </Spin>
           <ExecutionDetailsModal

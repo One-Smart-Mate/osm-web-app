@@ -86,15 +86,24 @@ export const useCiltCloning = () => {
       // Show success notification
       notification.success({
         message: Strings.success,
-        description: `${Strings.ciltMasterCreateSuccess} ${Strings.copy}`,
+        description: Strings.ciltCloneSuccess,
       });
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error cloning CILT:", error);
+      
+      // Extract meaningful error message
+      let errorMessage = Strings.ciltCloneError;
+      if (error?.data?.message) {
+        errorMessage = error.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
       notification.error({
         message: Strings.error,
-        description: `${Strings.errorCloningTheLevel} ${error}`,
+        description: errorMessage,
       });
       return false;
     }

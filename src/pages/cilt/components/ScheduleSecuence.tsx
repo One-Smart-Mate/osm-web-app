@@ -25,6 +25,8 @@ import {
   useCreateScheduleMutation,
   useUpdateScheduleMutation,
 } from "../../../services/cilt/ciltSecuencesScheduleService";
+import { useGetCiltMstrByIdMutation } from "../../../services/cilt/ciltMstrService";
+import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import Strings from "../../../utils/localizations/Strings";
 
 const { Text } = Typography;
@@ -61,13 +63,29 @@ export default function ScheduleSecuence({
   existingSchedule,
 }: ScheduleSecuenceProps) {
   const [form] = Form.useForm();
+  const [ciltData, setCiltData] = useState<CiltMstr | null>(null);
 
   const [createSchedule, { isLoading: isCreating }] =
     useCreateScheduleMutation();
   const [updateSchedule, { isLoading: isUpdating }] =
     useUpdateScheduleMutation();
+  const [getCiltMstrById] = useGetCiltMstrByIdMutation();
 
   const [scheduleType, setScheduleType] = useState<ScheduleType>("dai");
+
+  // Fetch CILT data when modal opens and ciltId is available
+  useEffect(() => {
+    if (open && ciltId) {
+      getCiltMstrById(ciltId.toString())
+        .unwrap()
+        .then((cilt) => {
+          setCiltData(cilt);
+        })
+        .catch((error) => {
+          console.error("Error fetching CILT data:", error);
+        });
+    }
+  }, [open, ciltId, getCiltMstrById]);
 
   useEffect(() => {
     if (open) {
@@ -133,6 +151,22 @@ export default function ScheduleSecuence({
   const handleScheduleTypeChange = (value: ScheduleType) => {
     setScheduleType(value);
     form.setFieldsValue({ scheduleType: value });
+  };
+
+  // Custom validator for end date
+  const validateEndDate = (_: any, value: any) => {
+    if (!value || !ciltData?.ciltDueDate) {
+      return Promise.resolve();
+    }
+
+    const endDate = dayjs(value);
+    const ciltDueDate = dayjs(ciltData.ciltDueDate);
+
+    if (endDate.isAfter(ciltDueDate)) {
+      return Promise.reject(new Error(`La fecha final no puede ser posterior a la fecha de vencimiento del CILT (${ciltDueDate.format('DD/MM/YYYY')})`));
+    }
+
+    return Promise.resolve();
   };
 
   const handleSubmit = async () => {
@@ -266,12 +300,32 @@ AnatomyNotification.error(notification, {
         onCancel();
         form.resetFields();
         setScheduleType("dai");
+        setCiltData(null);
       }}
       width={700}
       footer={null}
     >
       <Form form={form} layout="vertical" initialValues={{ schedules: [undefined] }}>
         {/* Error and success messages are now shown via AnatomyNotification */}
+
+        {/* Show CILT due date info if available */}
+        {ciltData?.ciltDueDate && (
+          <div style={{ 
+            background: '#f6ffed', 
+            border: '1px solid #b7eb8f', 
+            borderRadius: '6px', 
+            padding: '12px', 
+            marginBottom: '16px' 
+          }}>
+            <Text strong style={{ color: '#52c41a' }}>
+              📅 {Strings.cardDueDate}: {dayjs(ciltData.ciltDueDate).format('DD/MM/YYYY')}
+            </Text>
+            <br />
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              La fecha final de la programación no puede superar esta fecha
+            </Text>
+          </div>
+        )}
 
         <Form.List name="schedules">
           {(fields, { add, remove }) => (
@@ -318,10 +372,22 @@ AnatomyNotification.error(notification, {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label={Strings.labelEndDate} name="endDate">
+        <Form.Item 
+          label={Strings.labelEndDate} 
+          name="endDate"
+          rules={[{ validator: validateEndDate }]}
+        >
           <DatePicker
             style={{ width: "100%" }}
             placeholder={Strings.placeholderEndDate}
+            disabledDate={(current) => {
+              // Disable dates after CILT due date
+              if (ciltData?.ciltDueDate) {
+                const ciltDueDate = dayjs(ciltData.ciltDueDate);
+                return current && current.isAfter(ciltDueDate, 'day');
+              }
+              return false;
+            }}
           />
         </Form.Item>
 
