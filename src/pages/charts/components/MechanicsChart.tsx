@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -14,6 +14,7 @@ import {
 import { Methodology } from "../../../data/charts/charts";
 import { useGetMechanicsChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
+import { useSearchCardsQuery } from "../../../services/cardService";
 import DrawerTagList from "../../components/DrawerTagList";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
 
@@ -35,23 +36,18 @@ const MechanicsChart = ({
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedMechanicName, setSelectedMechanicName] = useState(
-    Strings.empty
-  );
-  const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
-  const [, setSelectedTotalCards] = useState(Strings.empty);
-  const [virtualCards, setVirtualCards] = useState<any[]>([]);
-  const [isGeneratingCards, setIsGeneratingCards] = useState(false);
+  const [selectedMechanicName, setSelectedMechanicName] = useState(Strings.empty);
+  const [selectedCardTypeName, setSelectedCardTypeName] = useState(Strings.empty);
+  const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
+  const [searchParams, setSearchParams] = useState<{
+    siteId: string;
+    mechanicName?: string;
+    cardTypeName: string;
+  } | null>(null);
 
-  // Use virtual cards instead of backend search
-  const filteredSearchData = useMemo(() => {
-    return virtualCards;
-  }, [virtualCards]);
-
-  // Calculate actual total from filtered data
-  const actualTotalCards = useMemo(() => {
-    return filteredSearchData ? filteredSearchData.length.toString() : '0';
-  }, [filteredSearchData]);
+  const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
+    skip: !searchParams,
+  });
 
   const handleGetData = async () => {
     try {
@@ -228,71 +224,22 @@ const MechanicsChart = ({
     return null;
   };
 
-  const generateVirtualCards = (mechanic: string, cardType: string | null, status: 'onTime' | 'overdue', count: number) => {
-    const cards = [];
-    const statusText = status === 'onTime' ? 'En Tiempo' : 'Vencida';
-    const cardTypeName = cardType || 'Todas';
-    
-    for (let i = 1; i <= count; i++) {
-      cards.push({
-        id: `virtual-${mechanic}-${cardTypeName}-${status}-${i}`,
-        siteCardId: `${i}`,
-        cardTypeMethodologyName: cardTypeName,
-        cardTypeName: cardTypeName,
-        mechanicName: mechanic,
-        status: status === 'onTime' ? 'A' : 'C',
-        creatorName: `Creator ${i}`,
-        areaName: 'Virtual Area',
-        cardCreationDate: new Date().toISOString(),
-        cardDueDate: new Date(Date.now() + (status === 'onTime' ? 86400000 : -86400000)).toISOString(),
-        cardDefinitiveSolutionDate: status === 'overdue' ? new Date().toISOString() : null,
-        priorityDescription: 'Normal',
-        commentsAtCardCreation: `Tarjeta virtual ${statusText} - ${cardTypeName}`,
-        cardLocation: 'Virtual Location',
-        evidences: [],
-        createdAt: new Date().toISOString(),
-        cardUUID: `virtual-uuid-${i}`,
-        // Add other required fields with default values
-        siteId: siteId,
-        preclassifierCode: 'VIR',
-        preclassifierDescription: 'Virtual',
-        cardTypeColor: '#CCCCCC',
-        priorityCode: 'N',
-        userProvisionalSolutionName: '',
-        cardProvisionalSolutionDate: '',
-        commentsAtCardProvisionalSolution: '',
-        userDefinitiveSolutionName: '',
-        commentsAtCardDefinitiveSolution: '',
-        responsableName: '',
-        userAppProvisionalSolutionName: '',
-        userAppDefinitiveSolutionName: ''
-      });
-    }
-    return cards;
-  };
-
   const handleOnClick = (data: any, status: 'onTime' | 'overdue', cardTypeName?: string) => {
-    setIsGeneratingCards(true);
-    
+    // Set search parameters to fetch real cards from backend
+    setSearchParams({
+      siteId,
+      mechanicName: data.mechanic !== Strings.noMechanic ? data.mechanic : undefined,
+      cardTypeName: cardTypeName || '',
+    });
+
     // Get the count from the chart data
     const count = cardTypeName 
       ? data[`${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`] || 0
       : (status === 'onTime' ? data.onTime_total : data.overdue_total) || 0;
     
-    // Generate virtual cards based on the chart data
-    const cards = generateVirtualCards(
-      data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none,
-      cardTypeName || null,
-      status,
-      count
-    );
-    
-    setVirtualCards(cards);
-    setIsGeneratingCards(false);
-    
     setSelectedTotalCards(count.toString());
     setSelectedMechanicName(data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none);
-    setCardTypeName(cardTypeName || `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`);
+    setSelectedCardTypeName(cardTypeName || `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`);
     setOpen(true);
   };
 
@@ -391,11 +338,11 @@ const MechanicsChart = ({
       </ResponsiveContainer>
       <DrawerTagList
         open={open}
-        dataSource={filteredSearchData}
-        isLoading={isGeneratingCards}
+        dataSource={searchData}
+        isLoading={isFetching}
         label={Strings.mechanic}
         onClose={() => setOpen(false)}
-        totalCards={actualTotalCards}
+        totalCards={selectedTotalCards}
         text={selectedMechanicName}
         cardTypeName={selectedCardTypeName}
       />

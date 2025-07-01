@@ -3,7 +3,7 @@ import { apiSlice } from "./apiSlice";
 
 export const amDiscardReasonService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAmDiscardReasons: builder.mutation<AmDiscardReason[], number>({
+    getAmDiscardReasons: builder.query<AmDiscardReason[], number>({
       query: (siteId) => `/am-discard-reasons?siteId=${siteId}`,
       transformResponse: (response: { data: AmDiscardReason[] }) => response.data,
     }),
@@ -35,7 +35,7 @@ export const amDiscardReasonService = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetAmDiscardReasonsMutation,
+  useGetAmDiscardReasonsQuery,
   useGetAmDiscardReasonByIdQuery,
   useCreateAmDiscardReasonMutation,
   useUpdateAmDiscardReasonMutation,

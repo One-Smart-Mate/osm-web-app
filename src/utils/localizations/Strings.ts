@@ -186,6 +186,16 @@ class StringsBase {
   static amDiscardReasonUpdatedSuccessfully = "amDiscardReasonUpdatedSuccessfully";
   static amDiscardReasonCreateError = "amDiscardReasonCreateError";
   static amDiscardReasonUpdateError = "amDiscardReasonUpdateError";
+  static discardCard = "discardCard";
+  static discardCardModalTitle = "discardCardModalTitle";
+  static discardReason = "discardReason";
+  static selectDiscardReason = "selectDiscardReason";
+  static additionalReason = "additionalReason";
+  static additionalReasonPlaceholder = "additionalReasonPlaceholder";
+  static cardDiscardedSuccessfully = "cardDiscardedSuccessfully";
+  static errorDiscardingCard = "errorDiscardingCard";
+  static errorLoadingDiscardReasons = "errorLoadingDiscardReasons";
+  static pleaseSelectDiscardReason = "pleaseSelectDiscardReason";
   static requiredDaysNumber = "requiredDaysNumber";
   static requiredResponsableId = "requiredResponsableId";
   static requiredMechanic = "requiredMechanic";

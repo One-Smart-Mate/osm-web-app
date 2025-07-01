@@ -140,8 +140,12 @@ const TagDetailsPage = () => {
       isLoading={isLoading}
       content={
         <div>
-          <div className="w-full sm:w-auto flex justify-start sm:justify-end ">
-            {data && <TagPDFButton site={site} data={data} />}
+          <div className="w-full sm:w-auto flex justify-start sm:justify-end gap-2">
+            {data && (
+              <>
+                <TagPDFButton site={site} data={data} />
+              </>
+            )}
           </div>
 
           <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetAmDiscardReasonsMutation } from "../../services/amDiscardReasonService";
+import { useGetAmDiscardReasonsQuery } from "../../services/amDiscardReasonService";
 import { AmDiscardReason } from "../../data/amDiscardReason/amDiscardReason";
 import { List } from "antd";
 import Strings from "../../utils/localizations/Strings";
@@ -12,18 +12,26 @@ import AmDiscardReasonForm, { AmDiscardReasonFormType } from "./components/AmDis
 import AmDiscardReasonCard from "./components/AmDiscardReasonCard";
 
 const AmDiscardReasonsPage = () => {
-  const [getAmDiscardReasons] = useGetAmDiscardReasonsMutation();
-  const [isLoading, setLoading] = useState(false);
   const location = useLocation();
   const [data, setData] = useState<AmDiscardReason[]>([]);
   const [dataBackup, setDataBackup] = useState<AmDiscardReason[]>([]);
+  const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
   const { isIhAdmin } = useCurrentUser();
+  
+  // Get discard reasons using the query hook
+  const { data: amDiscardReasons = [], isLoading: queryLoading, error } = useGetAmDiscardReasonsQuery(
+    location?.state?.siteId ? Number(location.state.siteId) : 0,
+    { skip: !location?.state?.siteId }
+  );
 
   useEffect(() => {
-    handleGetAmDiscardReasons();
-  }, []);
+    if (amDiscardReasons.length > 0) {
+      setData(amDiscardReasons);
+      setDataBackup(amDiscardReasons);
+    }
+  }, [amDiscardReasons]);
 
   const handleOnSearch = (query: string) => {
     const getSearch = query;
@@ -44,27 +52,10 @@ const AmDiscardReasonsPage = () => {
     );
   };
 
-  const handleGetAmDiscardReasons = async () => {
-    if (!location.state) {
-      navigate(UnauthorizedRoute);
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await getAmDiscardReasons(location.state.siteId).unwrap();
-      
-      // Ensure response is an array
-      const dataArray = Array.isArray(response) ? response : [];
-      
-      setData(dataArray);
-      setDataBackup(dataArray);
-    } catch (error) {
-      console.error("Error fetching AM Discard Reasons:", error);
-      // Set empty array on error to prevent crash
-      setData([]);
-      setDataBackup([]);
-    } finally {
-      setLoading(false);
+  const handleRefresh = () => {
+    if (amDiscardReasons.length > 0) {
+      setData(amDiscardReasons);
+      setDataBackup(amDiscardReasons);
     }
   };
 
@@ -76,7 +67,7 @@ const AmDiscardReasonsPage = () => {
       createButtonComponent={
         <AmDiscardReasonForm
           formType={AmDiscardReasonFormType.CREATE}
-          onComplete={() => handleGetAmDiscardReasons()}
+          onComplete={() => handleRefresh()}
         />
       }
       onSearchChange={handleOnSearch}
@@ -92,7 +83,7 @@ const AmDiscardReasonsPage = () => {
               <List.Item key={index}>
                 <AmDiscardReasonCard
                   amDiscardReason={value}
-                  onComplete={() => handleGetAmDiscardReasons()}
+                  onComplete={() => handleRefresh()}
                 />
               </List.Item>
             )}
