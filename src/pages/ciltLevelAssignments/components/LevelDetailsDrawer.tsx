@@ -27,6 +27,8 @@ import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
 import { useGetPositionUsersQuery } from "../../../services/positionService";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
+import { useDeleteCiltMstrPositionLevelMutation } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 import { Responsible } from "../../../data/user/user";
 import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 
@@ -187,6 +189,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [levelAssignments, setLevelAssignments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
+  const [deleteCiltAssignment, { isLoading: isDeleting }] = useDeleteCiltMstrPositionLevelMutation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -280,6 +283,82 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     });
   };
 
+  const handleDeleteAssignment = (assignment: any) => {
+    Modal.confirm({
+      title: Strings.ciltAssignmentDeleteConfirmTitle,
+      content: Strings.ciltAssignmentDeleteFromCiltConfirmContent,
+      okText: Strings.confirm,
+      cancelText: Strings.cancel,
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteCiltAssignment(assignment.id).unwrap();
+          // Show success notification using localized string
+          notification.success({
+            message: Strings.success,
+            description: Strings.ciltAssignmentDeleteSuccess,
+          });
+          // Refresh the data by re-fetching
+          await refreshLevelAssignments();
+        } catch (error: any) {
+          // Log and show error notification using AnatomyNotification
+          AnatomyNotification.error(notification, error, Strings.ciltAssignmentDeleteError);
+        }
+      },
+    });
+  };
+
+  const handleDeletePositionAssignment = (assignment: any) => {
+    Modal.confirm({
+      title: Strings.ciltAssignmentDeleteConfirmTitle,
+      content: Strings.ciltAssignmentDeleteFromPositionConfirmContent,
+      okText: Strings.confirm,
+      cancelText: Strings.cancel,
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteCiltAssignment(assignment.id).unwrap();
+          // Show success notification using localized string
+          notification.success({
+            message: Strings.success,
+            description: Strings.ciltAssignmentDeleteSuccess,
+          });
+          // Refresh the data by re-fetching
+          await refreshLevelAssignments();
+        } catch (error: any) {
+          // Log and show error notification using AnatomyNotification
+          AnatomyNotification.error(notification, error, Strings.ciltAssignmentDeleteError);
+        }
+      },
+    });
+  };
+
+  const refreshLevelAssignments = async () => {
+    if (!levelId) return;
+    
+    setIsLoading(true);
+    try {
+      const apiUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': '*/*',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const assignments = data.data || data;
+        setLevelAssignments(Array.isArray(assignments) ? assignments : []);
+      }
+    } catch (err) {
+      console.error('Error refetching data:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getImageUrl = (url: string | null | undefined): string => {
     if (!url) return '';
     
@@ -317,7 +396,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   }, [levelAssignments, searchText]);
 
   const renderCiltProcedures = () => {
-    if (isLoading) return <Spin size="large" />;
+    if (isLoading || isDeleting) return <Spin size="large" />;
     if (error) {
       console.error('Error rendering CILT procedures:', error);
       return (
@@ -382,7 +461,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                   <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
                   <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
                   
-                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                  <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button 
                       type="primary" 
                       onClick={() => showCiltDetails(assignment.ciltMstr)}
@@ -398,6 +477,15 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                         {Strings.viewSequences}
                       </Button>
                     )}
+                    
+                    <Button 
+                      type="primary" 
+                      danger
+                      loading={isDeleting}
+                      onClick={() => handleDeleteAssignment(assignment)}
+                    >
+                      {Strings.delete}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -425,7 +513,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const positionPageSize = 4;
 
   const renderPositions = () => {
-    if (isLoading) return <Spin size="large" />;
+    if (isLoading || isDeleting) return <Spin size="large" />;
     if (error) {
       console.error('Error rendering positions:', error);
       return (
@@ -500,13 +588,13 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 <p><strong>{Strings.description}:</strong> {assignment.position?.description}</p>
                 <p><strong>Ruta:</strong> {assignment.position?.route || 'N/A'}</p>
                 
-                <div style={{ marginTop: '10px' }}>
+                <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <Button 
                     type="default" 
                     size="small"
                     onClick={(e) => {
                       const button = e.currentTarget;
-                      const usersList = button.nextElementSibling as HTMLElement;
+                      const usersList = button.parentElement?.nextElementSibling as HTMLElement;
                       if (usersList) {
                         const isVisible = usersList.style.display !== 'none';
                         usersList.style.display = isVisible ? 'none' : 'block';
@@ -516,9 +604,19 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                   >
                     {Strings.users || "Usuarios"}
                   </Button>
-                  <div style={{ marginTop: '8px', display: 'none' }}>
-                    <PositionUsers positionId={assignment.position?.id.toString()} />
-                  </div>
+                  
+                  <Button 
+                    type="primary" 
+                    size="small"
+                    danger
+                    loading={isDeleting}
+                    onClick={() => handleDeletePositionAssignment(assignment)}
+                  >
+                    {Strings.delete}
+                  </Button>
+                </div>
+                <div style={{ marginTop: '8px', display: 'none' }}>
+                  <PositionUsers positionId={assignment.position?.id.toString()} />
                 </div>
               </Card>
             </Col>

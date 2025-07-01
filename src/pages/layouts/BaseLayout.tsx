@@ -14,6 +14,7 @@ import { useSetAppTokenMutation } from "../../services/userService";
 import { requestPermissionAndGetToken } from "../../config/firebaseMessaging";
 import Constants from "../../utils/Constants";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import useUserActivity from "../../utils/hooks/useUserActivity";
 import NotificationHandler from "../components/NotificationHandler";
 
 const { Header, Content } = Layout;
@@ -23,6 +24,9 @@ const BaseLayout: React.FC = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const { token: { colorBgContainer, colorBgBase }} = theme.useToken();
   const [setAppToken] = useSetAppTokenMutation();
+  
+  // Track user activity automatically
+  useUserActivity();
 
   const sidebarWidth = 250;
   const collapsedWidth = 80;

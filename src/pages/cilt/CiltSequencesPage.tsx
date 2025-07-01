@@ -16,6 +16,7 @@ import {
   notification,
   Input,
   Table,
+  Modal,
 } from "antd";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -34,6 +35,7 @@ import { useGetCiltMstrByIdMutation } from "../../services/cilt/ciltMstrService"
 import {
   useGetCiltSequencesByCiltMutation,
   useUpdateCiltSequenceOrderMutation,
+  useDeleteCiltSequenceMutation,
 } from "../../services/cilt/ciltSequencesService";
 import { useGetOplMstrByIdMutation } from "../../services/cilt/oplMstrService";
 import { useGetOplDetailsByOplMutation } from "../../services/cilt/oplDetailsService";
@@ -249,6 +251,7 @@ const CiltSequencesPage = () => {
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [updateCiltSequenceOrder, { isLoading: isUpdatingOrder }] =
     useUpdateCiltSequenceOrderMutation();
+  const [deleteCiltSequence, { isLoading: isDeleting }] = useDeleteCiltSequenceMutation();
 
   useEffect(() => {
     if (!ciltId) return;
@@ -439,6 +442,31 @@ const CiltSequencesPage = () => {
   const goBack = () => {
     // Navegar hacia atrás preservando la información del sitio en el estado
     navigate(-1);
+  };
+
+  const handleDeleteSequence = (sequence: CiltSequence) => {
+    Modal.confirm({
+      title: Strings.ciltSequenceDeleteConfirmTitle,
+      content: Strings.ciltSequenceDeleteConfirmContent,
+      okText: Strings.confirm,
+      cancelText: Strings.cancel,
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteCiltSequence(sequence.id.toString()).unwrap();
+          // Show success notification using localized string
+          notification.success({
+            message: Strings.success,
+            description: Strings.ciltSequenceDeleteSuccess,
+          });
+          // Refresh sequences data
+          setRefreshTrigger((prev) => prev + 1);
+        } catch (error: any) {
+          // Log and show error notification using AnatomyNotification
+          AnatomyNotification.error(notification, error, Strings.ciltSequenceDeleteError);
+        }
+      },
+    });
   };
 
   const moveRow = useCallback(
@@ -685,9 +713,18 @@ const CiltSequencesPage = () => {
           >
             {"Ver OPL Rem."}
           </Button>
+          <Button
+            type="primary"
+            size="small"
+            danger
+            loading={isDeleting}
+            onClick={() => handleDeleteSequence(record)}
+          >
+            {Strings.delete}
+          </Button>
         </Space>
       ),
-      width: 250,
+      width: 320,
     },
   ];
 
@@ -770,7 +807,7 @@ const CiltSequencesPage = () => {
                 </Text>
               </div>
 
-              <Spin spinning={loading || isUpdatingOrder}>
+              <Spin spinning={loading || isUpdatingOrder || isDeleting}>
                 <Table
                   dataSource={filteredSequences}
                   columns={columns} // Use the restored columns constant

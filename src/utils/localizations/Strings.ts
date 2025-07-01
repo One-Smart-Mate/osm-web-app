@@ -1113,6 +1113,20 @@ class StringsBase {
   static ciltMstrListSuspendedFilter = "ciltMstrListSuspendedFilter";
   static ciltMstrListCanceledFilter = "ciltMstrListCanceledFilter";
   static ciltMstrCreateSequenceButton = "ciltMstrCreateSequenceButton";
+  static ciltMstrDeleteSuccess = "ciltMstrDeleteSuccess";
+  static ciltMstrDeleteError = "ciltMstrDeleteError";
+  static ciltMstrDeleteConfirmTitle = "ciltMstrDeleteConfirmTitle";
+  static ciltMstrDeleteConfirmContent = "ciltMstrDeleteConfirmContent";
+  static ciltSequenceDeleteSuccess = "ciltSequenceDeleteSuccess";
+  static ciltSequenceDeleteError = "ciltSequenceDeleteError";
+  static ciltSequenceDeleteConfirmTitle = "ciltSequenceDeleteConfirmTitle";
+  static ciltSequenceDeleteConfirmContent = "ciltSequenceDeleteConfirmContent";
+  static ciltAssignmentDeleteSuccess = "ciltAssignmentDeleteSuccess";
+  static ciltAssignmentDeleteError = "ciltAssignmentDeleteError";
+  static ciltAssignmentDeleteConfirmTitle = "ciltAssignmentDeleteConfirmTitle";
+  static ciltAssignmentDeleteConfirmContent = "ciltAssignmentDeleteConfirmContent";
+  static ciltAssignmentDeleteFromCiltConfirmContent = "ciltAssignmentDeleteFromCiltConfirmContent";
+  static ciltAssignmentDeleteFromPositionConfirmContent = "ciltAssignmentDeleteFromPositionConfirmContent";
 
   // Opl page strings
   static oplPageManagementTitle = "oplPageManagementTitle";
@@ -1326,6 +1340,8 @@ class StringsBase {
   static areaSelectPlaceholder = "areaSelectPlaceholder";
   static lastLoginWeb = "lastLoginWeb";
   static lastLoginApp = "lastLoginApp";
+  static lastActivityWeb = "lastActivityWeb";
+  static lastActivityApp = "lastActivityApp";
   static imageLoadSuccess = "imageLoadSuccess";
   static imageLoadError = "imageLoadError";
   static warningImageUpload = "warningImageUpload";
@@ -1550,6 +1566,8 @@ class StringsBase {
   static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
   static openTags = "openTags"
   static closedTags = "closedTags"
+  static onTimeTags = "onTimeTags"
+  static overdueTags = "overdueTags"
   static filterTag = "filter"
   static tagType = "tagType"
   

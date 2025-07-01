@@ -59,13 +59,13 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
       />
 
       <AnatomySection
-        title={Strings.lastLoginWeb}
+        title={Strings.lastActivityWeb}
         label={user.lastLoginWeb ? formatDate(user.lastLoginWeb) : Strings.NA}
         icon={<BsClockHistory />}
       />
 
       <AnatomySection
-        title={Strings.lastLoginApp}
+        title={Strings.lastActivityApp}
         label={user.lastLoginApp ? formatDate(user.lastLoginApp)  : Strings.NA}
         icon={<BsClockHistory />}
       />

@@ -53,6 +53,12 @@ export const ciltMstrService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
     }),
+    deleteCiltMstr: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/cilt-mstr/delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -64,7 +70,8 @@ export const {
   useCreateCiltMstrMutation,
   useUpdateCiltMstrMutation,
   useGetCiltDetailsMutation,
-  useCloneCiltMstrMutation
+  useCloneCiltMstrMutation,
+  useDeleteCiltMstrMutation
 } = ciltMstrService;
 
 /**
