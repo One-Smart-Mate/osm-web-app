@@ -11,7 +11,7 @@ import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
+import AnatomyNotification from "../components/AnatomyNotification";
 
 import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
 import { useCreateOplLevelMutation } from "../../services/cilt/assignaments/oplLevelService";

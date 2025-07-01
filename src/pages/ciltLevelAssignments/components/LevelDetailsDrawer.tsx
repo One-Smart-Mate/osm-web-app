@@ -28,7 +28,7 @@ import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignamen
 import { useGetPositionUsersQuery } from "../../../services/positionService";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
 import { useDeleteCiltMstrPositionLevelMutation } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
-import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
+import AnatomyNotification from "../../components/AnatomyNotification";
 import { Responsible } from "../../../data/user/user";
 import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 

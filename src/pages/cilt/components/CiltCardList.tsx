@@ -183,7 +183,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setPositionsLevelsCilt(null);
   };
 
-  const handleDelete = (cilt: CiltMstr) => {
+  const handleDelete = () => {
     // Refresh the data after successful deletion
     setRefreshTrigger((prev) => prev + 1);
     refetch();
