@@ -9,6 +9,7 @@ const Levels = "/levels";
 const LevelsReadOnly = "/levels-readonly";
 const Cards = "/cards";
 const Positions = "/positions";
+const AmDiscardReasons = "/am-discard-reasons";
 export const ResetPasswordRoute = "/reset-password";
 const Charts = "/charts";
 export const UnauthorizedRoute = "/unauthorized";
@@ -46,5 +47,6 @@ export default {
   Company,
   CardType,
   Positions,
+  AmDiscardReasons,
   PublicCardDetailsRoute
 };

@@ -11,6 +11,7 @@ class StringsBase {
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";
   static prioritiesSB = "prioritiesSB";
+  static amDiscardReasonsSB = "amDiscardReasonsSB";
   static usersSB = "usersSB";
   static siteUsersSB = "siteUsersSB";
   static sitesSB = "sitesSB";
@@ -178,6 +179,13 @@ class StringsBase {
   // errors priority form
   static requiredCode = "requiredCode";
   static requiredDescription = "requiredDescription";
+  static requiredDiscardReason = "requiredDiscardReason";
+  static maxCharactersAllowed = "maxCharactersAllowed";
+  static discardReasonTooltip = "discardReasonTooltip";
+  static amDiscardReasonCreatedSuccessfully = "amDiscardReasonCreatedSuccessfully";
+  static amDiscardReasonUpdatedSuccessfully = "amDiscardReasonUpdatedSuccessfully";
+  static amDiscardReasonCreateError = "amDiscardReasonCreateError";
+  static amDiscardReasonUpdateError = "amDiscardReasonUpdateError";
   static requiredDaysNumber = "requiredDaysNumber";
   static requiredResponsableId = "requiredResponsableId";
   static requiredMechanic = "requiredMechanic";
@@ -290,6 +298,9 @@ class StringsBase {
 
   static prioritiesOf = "prioritiesOf";
   static priority = "priority";
+  static amDiscardReasonsOf = "amDiscardReasonsOf";
+  static amDiscardReason = "amDiscardReason";
+  static discardReason = "discardReason";
   static code = "code";
   static enterCode = "enterCode";
   static description = "description";
@@ -300,6 +311,8 @@ class StringsBase {
   static createCompany = "createCompany";
   static updateCompany = "updateCompany";
   static createPriority = "createPriority";
+  static createAmDiscardReason = "createAmDiscardReason";
+  static updateAmDiscardReason = "updateAmDiscardReason";
   static createUserFor = "createUserFor";
   static importUsersFor = "importUsersFor";
   static createUser = "createUser";
@@ -816,6 +829,7 @@ class StringsBase {
   static verificationOfServices = "verificationOfServices";
 
   static catalogs = "catalogs";
+
   static accounts = "accounts";
   static dashboard = "dashboard";
   static technicalSupport = "technicalSupport";
