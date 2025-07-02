@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Drawer,
@@ -200,7 +199,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       
       try {
         const apiUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
-        console.log('Fetching from URL:', apiUrl);
         
         const response = await fetch(apiUrl, {
           method: 'GET',
@@ -215,8 +213,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         }
         
         const data = await response.json();
-        console.log('API Response:', data);
-        
         const assignments = data.data || data;
         setLevelAssignments(Array.isArray(assignments) ? assignments : []);
       } catch (err) {

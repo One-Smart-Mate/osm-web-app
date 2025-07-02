@@ -137,7 +137,7 @@ const CustomNode = ({
         <>
           {/* Base circle in yellow (represents leaf nodes or no assignments) */}
           <circle r={15} fill="#FFFF00" stroke="none" />
-          {/* Top half in blue (represents CILT/OPL assignments) */}
+          {/* Top half in blue (represents CILT and OPL assignments combined) */}
           <path
             d="M -15,0 A 15,15 0 0,1 15,0 L -15,0 Z"
             fill="#145695"
@@ -265,10 +265,10 @@ const CiltLevelAssignaments: React.FC = () => {
       
       const activeNodes = getActiveNodesFromTree(treeData[0].children || []);
       
-      // Optimize assignment count fetching with better error handling and batching
+      // Fetch both CILT and OPL assignment counts for tree display
       const assignmentCountsObj: {[key: string]: number} = {};
       
-      // Create batched requests with proper error handling
+      // Create batched requests with proper error handling for both CILT and OPL
       const fetchAssignmentCounts = async (levels: any[]) => {
         // Batch CILT assignments request
         const ciltPromises = levels.map(async (level) => {
@@ -300,7 +300,7 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         });
 
-        // OPL assignments with proper error handling
+        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
         const oplPromises = levels.map(async (level) => {
           try {
             const oplResponse = await fetch(
@@ -325,12 +325,12 @@ const CiltLevelAssignaments: React.FC = () => {
             }
             return { levelId: level.id, count: 0, type: 'opl' };
           } catch (error) {
-            // Silently handle OPL fetch errors to reduce console noise
+            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
             return { levelId: level.id, count: 0, type: 'opl' };
           }
         });
 
-        // Execute all requests in parallel but limit concurrency to avoid overwhelming the server
+        // Execute requests in batches to avoid overwhelming the server
         const chunkSize = 5; // Process 5 levels at a time to reduce server load
         const ciltCounts: {[key: string]: number} = {};
         const oplCounts: {[key: string]: number} = {};
@@ -363,7 +363,7 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         }
 
-        // Combine counts
+        // Combine CILT and OPL counts for tree display
         levels.forEach(level => {
           const ciltCount = ciltCounts[level.id] || 0;
           const oplCount = oplCounts[level.id] || 0;
@@ -410,13 +410,10 @@ const CiltLevelAssignaments: React.FC = () => {
 
       applyExpandState(hierarchyData);
 
-      // Optimize assignment count fetching with better error handling and batching
+      // Fetch both CILT and OPL assignment counts for tree display
       const assignmentCountsObj: {[key: string]: number} = {};
       
-      // OPL fetching is currently disabled to avoid 404 warnings
-      // Many levels don't have OPL endpoints configured
-      
-      // Create batched requests with proper error handling
+      // Create batched requests with proper error handling for both CILT and OPL
       const fetchAssignmentCounts = async (levels: any[]) => {
         // Batch CILT assignments request
         const ciltPromises = levels.map(async (level) => {
@@ -448,7 +445,7 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         });
 
-        // OPL assignments with proper error handling
+        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
         const oplPromises = levels.map(async (level) => {
           try {
             const oplResponse = await fetch(
@@ -473,12 +470,12 @@ const CiltLevelAssignaments: React.FC = () => {
             }
             return { levelId: level.id, count: 0, type: 'opl' };
           } catch (error) {
-            // Silently handle OPL fetch errors to reduce console noise
+            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
             return { levelId: level.id, count: 0, type: 'opl' };
           }
         });
 
-        // Execute all requests in parallel but limit concurrency to avoid overwhelming the server
+        // Execute requests in batches to avoid overwhelming the server
         const chunkSize = 5; // Process 5 levels at a time to reduce server load
         const ciltCounts: {[key: string]: number} = {};
         const oplCounts: {[key: string]: number} = {};
@@ -511,7 +508,7 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         }
 
-        // Combine counts
+        // Combine CILT and OPL counts for tree display
         levels.forEach(level => {
           const ciltCount = ciltCounts[level.id] || 0;
           const oplCount = oplCounts[level.id] || 0;
