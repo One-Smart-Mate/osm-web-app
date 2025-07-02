@@ -38,6 +38,7 @@ import { useLocation } from "react-router-dom";
 import Constants from "../../../utils/Constants";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import TagStatus from "../../components/TagStatus";
+import { useGetAmDiscardReasonsQuery } from "../../../services/amDiscardReasonService";
 
 const { useToken } = theme;
 
@@ -71,6 +72,19 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
   );
 
   const isCardClosed = cardStatus.text == Strings.closed;
+
+  // Get discard reasons for lookup
+  const {
+    data: discardReasons = [],
+  } = useGetAmDiscardReasonsQuery(Number(data.card.siteId), {
+    skip: !data.card.siteId || !(data.card as any).amDiscardReasonId,
+  });
+
+  // Function to get discard reason name by ID
+  const getDiscardReasonName = (amDiscardReasonId: number): string => {
+    const reason = discardReasons.find(r => r.id === amDiscardReasonId);
+    return reason?.discardReason || Strings.NA;
+  };
 
   const handleOnOpenModal = (modalType: string) => {
     if (!isPublicRoute) {
@@ -284,6 +298,60 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
             label={card.commentsAtCardCreation || Strings.NA}
             justify={true}
           />
+
+          {/* Manager Information Section - Only show if there's discard information */}
+          {((card as any).amDiscardReasonId || (card as any).discardReason || (card as any).managerName) && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 mb-4 border-t pt-4 mt-4">
+                {(card as any).managerName && (
+                  <AnatomySection
+                    title="Descartada por"
+                    label={(card as any).managerName || Strings.NA}
+                    justify={true}
+                  />
+                )}
+
+                {((card as any).amDiscardReasonId || (card as any).discardReason) && (
+                  <AnatomySection
+                    title={Strings.discardReason}
+                    label={
+                      (card as any).amDiscardReasonId 
+                        ? getDiscardReasonName((card as any).amDiscardReasonId)
+                        : (
+                            // Fallback to discardReason field, but check for test data
+                            (card as any).discardReason && 
+                            !(card as any).discardReason.includes("User confirmed") && 
+                            !(card as any).discardReason.includes("duplicate") &&
+                            !(card as any).discardReason.toLowerCase().includes("example") &&
+                            !(card as any).discardReason.toLowerCase().includes("test")
+                              ? (card as any).discardReason
+                              : Strings.NA
+                          )
+                    }
+                    justify={true}
+                  />
+                )}
+
+                {(card as any).cardManagerCloseDate && (
+                  <AnatomySection
+                    title={Strings.managerCloseDate}
+                    label={formatDate((card as any).cardManagerCloseDate) || Strings.NA}
+                    justify={true}
+                  />
+                )}
+
+                {(card as any).commentsManagerAtCardClose && (card as any).commentsManagerAtCardClose.trim() !== "" && (
+                  <div className="col-span-full">
+                    <AnatomySection
+                      title={Strings.commentsManagerAtCardClose}
+                      label={(card as any).commentsManagerAtCardClose || Strings.NA}
+                      justify={true}
+                    />
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </Card>
         {showEvidencesSection() && (
           <>

@@ -22,8 +22,30 @@ export class UpdateCardMechanic {
   }
 }
 
-export interface DiscardCardDto {
+export class DiscardCardDto {
   cardId: number;
   amDiscardReasonId: number;
   discardReason?: string;
+  managerId?: number;
+  managerName?: string;
+  cardManagerCloseDate?: string;
+  commentsManagerAtCardClose?: string;
+
+  constructor(
+    cardId: number,
+    amDiscardReasonId: number,
+    discardReason?: string,
+    managerId?: number,
+    managerName?: string,
+    cardManagerCloseDate?: string,
+    commentsManagerAtCardClose?: string
+  ) {
+    this.cardId = cardId;
+    this.amDiscardReasonId = amDiscardReasonId;
+    this.discardReason = discardReason;
+    this.managerId = managerId;
+    this.managerName = managerName;
+    this.cardManagerCloseDate = cardManagerCloseDate;
+    this.commentsManagerAtCardClose = commentsManagerAtCardClose;
+  }
 }

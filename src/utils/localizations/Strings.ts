@@ -310,7 +310,6 @@ class StringsBase {
   static priority = "priority";
   static amDiscardReasonsOf = "amDiscardReasonsOf";
   static amDiscardReason = "amDiscardReason";
-  static discardReason = "discardReason";
   static code = "code";
   static enterCode = "enterCode";
   static description = "description";

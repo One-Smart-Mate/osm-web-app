@@ -1,6 +1,5 @@
 import { CardDetailsInterface, CardInterface } from "../data/card/card";
 import {
-  DiscardCardDto,
   UpdateCardMechanic,
   UpdateCardPriority,
 } from "../data/card/card.request";
@@ -111,7 +110,7 @@ export const cardService = apiSlice.injectEndpoints({
       },
       transformResponse: (response: { data: any[] }) => response.data,
     }),
-    discardCard: builder.mutation<void, DiscardCardDto>({
+    discardCard: builder.mutation<void, any>({
       query: (dto) => ({
         url: "/card/discard",
         method: "POST",
