@@ -6,6 +6,17 @@ import {
 import { Note } from "../data/note";
 import { apiSlice } from "./apiSlice";
 
+// Define the response type for the new endpoint
+interface FastPasswordResponse {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    fastPassword?: string;
+  };
+  cards: CardInterface[];
+}
+
 export const cardService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCardsByLevel: builder.mutation<
@@ -117,7 +128,14 @@ export const cardService = apiSlice.injectEndpoints({
         body: dto,
       }),
     }),
-    
+    findCardsByFastPassword: builder.query<
+      FastPasswordResponse,
+      { siteId: number; fastPassword: string }
+    >({
+      query: ({ siteId, fastPassword }) =>
+        `/card/fast-password/${siteId}/${fastPassword}`,
+      transformResponse: (response: { data: FastPasswordResponse }) => response.data,
+    }),
   }),
 });
 
@@ -133,4 +151,5 @@ export const {
   useGetCardNotesByUUIDMutation,
   useGetDiscardedCardsByUserQuery,
   useDiscardCardMutation,
+  useFindCardsByFastPasswordQuery,
 } = cardService;

@@ -3,7 +3,8 @@ import NotificationDropdown from "./NotificationDropdown";
 import UserProfileDropdown from "./UserProfileDropdown";
 import User from "../../data/user/user";
 import LanguageDropdown from "./LanguageDropdown";
-import { Switch, theme } from "antd";
+import { Switch, theme, Button } from "antd";
+import { LockOutlined } from "@ant-design/icons";
 import Constants from "../../utils/Constants";
 
 interface HeaderBarProps {
@@ -37,6 +38,10 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
     }, 500);
   };
 
+  const handleLockSession = () => {
+    console.log("Session lock requested");
+  };
+
   return (
     <div
       style={{
@@ -56,8 +61,27 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         backgroundColor: token.colorBgContainer,
       }}
     >
-      <div style={{ width: 200, marginRight: "20px", marginLeft: "20px" }}>
-        <LanguageDropdown />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ width: 140, marginRight: "10px", marginLeft: "20px" }}>
+          <LanguageDropdown />
+        </div>
+        <Button 
+          type="text"
+          icon={<LockOutlined />}
+          onClick={handleLockSession}
+          style={{ 
+            color: token.colorText,
+            background: 'transparent',
+            border: 'none',
+            boxShadow: 'none',
+            padding: '0 8px'
+          }}
+          className="lock-session-button"
+        >
+          <span style={{ textDecoration: 'none' }}>
+            Bloquear Sesión
+          </span>
+        </Button>
       </div>
 
       <div style={{ display: "flex", alignItems: "center" }}>
