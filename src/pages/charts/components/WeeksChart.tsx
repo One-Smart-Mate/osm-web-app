@@ -36,16 +36,25 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
 
   const handleGetData = async () => {
     try {
-      // If no filters are applied, use the original weeks endpoint
+      // If no filters are applied, use the backend weeks data directly
       if (!hasCardTypeFilter && !startDate && !endDate) {
-        console.log('WeeksChart - Using original weeks endpoint (no filters)');
+        console.log('WeeksChart - Using backend weeks data (no filters)');
         const response = await getWeeks(siteId).unwrap();
-        setWeeks(response);
-        console.log('WeeksChart - Original API response:', response);
+        
+        console.log('WeeksChart - Backend response:', response);
+        
+        // Transform data to add weekLabel for display
+        const transformedData = response.map((weekData: any) => ({
+          ...weekData,
+          weekLabel: `${weekData.year}-W${weekData.week.toString().padStart(2, '0')}`,
+          sortKey: weekData.year * 100 + weekData.week
+        }));
+        
+        setWeeks(transformedData);
         return;
       }
 
-      // If filters are applied, get all cards and calculate weeks data in frontend
+      // If filters are applied, get all cards and calculate in frontend
       console.log('WeeksChart - Getting all cards for frontend filtering');
       const cardsResponse = await getCards(siteId).unwrap();
       setAllCards(cardsResponse);
@@ -53,17 +62,20 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
       
     } catch (error) {
       console.error('Error fetching weeks chart data:', error);
+      setWeeks([]);
     }
   };
 
-  // Calculate weeks data from filtered cards
+  // Calculate weeks data: use backend data when no filters, frontend calculation when filters applied
   const filteredWeeksData = useMemo(() => {
+    // If no filters are applied, use backend data directly
     if (!hasCardTypeFilter && !startDate && !endDate) {
-      return weeks; // Use original API data when no filters
+      return weeks;
     }
 
+    // If filters are applied but we don't have cards data yet, return empty
     if (!allCards.length) {
-      return []; // No cards data yet
+      return [];
     }
 
     // Filter cards by card type
@@ -122,7 +134,9 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
       return {
         ...weekData,
         cumulativeIssued,
-        cumulativeEradicated
+        cumulativeEradicated,
+        weekLabel: `${weekData.year}-W${weekData.week.toString().padStart(2, '0')}`,
+        sortKey: weekData.year * 100 + weekData.week
       };
     });
 
@@ -174,6 +188,18 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
     );
   };
 
+  // Custom tick formatter for X-axis to show only some labels to avoid crowding
+  const formatXAxisTick = (tickItem: string, index: number) => {
+    // Show every nth tick based on data length to avoid overcrowding
+    const dataLength = filteredWeeksData.length;
+    const interval = Math.max(1, Math.floor(dataLength / 8)); // Show max 8 labels
+    
+    if (index % interval === 0 || index === dataLength - 1) {
+      return tickItem;
+    }
+    return '';
+  };
+
   return (
     <ResponsiveContainer width={"100%"} height={"100%"}>
       <LineChart
@@ -183,7 +209,14 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="week" />
+        <XAxis 
+          dataKey="weekLabel"
+          angle={-45}
+          textAnchor="end"
+          height={60}
+          interval={0}
+          tickFormatter={formatXAxisTick}
+        />
         <YAxis 
           tickFormatter={(value: any) => Math.round(Number(value)).toString()}
           allowDecimals={false}
@@ -200,7 +233,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
                     {Strings.year} {props.payload[0].payload.year}
                   </p>
                   <p>
-                    {Strings.week} {props.label}
+                    {Strings.week} {props.payload[0].payload.week}
                   </p>
                   <p>
                     {Strings.cumulativeIssued}{" "}

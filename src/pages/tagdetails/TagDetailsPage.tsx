@@ -17,7 +17,7 @@ import {
   setSiteId,
 } from "../../core/genericReducer";
 import { Note } from "../../data/note";
-import { Divider, Typography, App as AntdApp  } from "antd";
+import { Divider, Typography, App as AntdApp, Button } from "antd";
 import ProvisionalSolutionTagCard from "./components/ProvisionalSolutionTagCard";
 import NoteTagCard from "./components/NoteTagCard";
 import DefinitiveSolutionTagCard from "./components/DefinitiveSolutionTagCard";
@@ -27,6 +27,7 @@ import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
 import TagPDFButton from "../components/TagPDFButton";
 import AnatomyNotification from "../components/AnatomyNotification";
+import DiscardCardModal from "./components/DiscardCardModal";
 
 // Components
 const { Text } = Typography;
@@ -36,6 +37,7 @@ const TagDetailsPage = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [site, setSite] = useState<SiteUpdateForm>();
+  const [isDiscardModalVisible, setIsDiscardModalVisible] = useState(false);
 
   const [getCardDetails] = useGetCardDetailByUUIDMutation();
   const [getNotes] = useGetCardNotesByUUIDMutation();
@@ -120,6 +122,11 @@ const TagDetailsPage = () => {
     }
   }
 
+  const handleDiscardSuccess = () => {
+    setIsDiscardModalVisible(false);
+    handleGetData(); // Refresh card data after successful discard
+  };
+
   useEffect(() => {
     if (isCardUpdated) {
       handleGetData();
@@ -140,8 +147,19 @@ const TagDetailsPage = () => {
       isLoading={isLoading}
       content={
         <div>
-          <div className="w-full sm:w-auto flex justify-start sm:justify-end ">
-            {data && <TagPDFButton site={site} data={data} />}
+          <div className="w-full sm:w-auto flex justify-start sm:justify-end gap-2">
+            {data && (
+              <>
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => setIsDiscardModalVisible(true)}
+                >
+                  {Strings.discardCard}
+                </Button>
+                <TagPDFButton site={site} data={data} />
+              </>
+            )}
           </div>
 
           <div className="flex flex-col overflow-y-auto overflow-x-hidden gap-2 sm:gap-3 px-2 sm:px-3 md:px-4 lg:px-6">
@@ -177,6 +195,29 @@ const TagDetailsPage = () => {
 
             <NoteTagCard data={notes} />
           </div>
+
+          {/* Discard Card Modal */}
+          {data && siteId && (() => {
+            // Debug log outside JSX
+            console.log("🔍 Modal Debug:", {
+              cardId: data.card.id,
+              cardIdType: typeof data.card.id,
+              cardIdParsed: parseInt(String(data.card.id), 10),
+              siteId: siteId,
+              siteIdType: typeof siteId,
+              siteIdParsed: parseInt(siteId, 10)
+            });
+            
+            return (
+              <DiscardCardModal
+                isVisible={isDiscardModalVisible}
+                onCancel={() => setIsDiscardModalVisible(false)}
+                onSuccess={handleDiscardSuccess}
+                cardId={parseInt(String(data.card.id), 10)}
+                siteId={parseInt(siteId, 10)}
+              />
+            );
+          })()}
         </div>
       }
     />

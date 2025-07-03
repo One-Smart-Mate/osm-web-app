@@ -75,3 +75,10 @@ export class UpdateLevel {
     this.notify = notify;
   }
 }
+
+export class MoveLevelDto {
+  constructor(
+    public levelId: number,
+    public newSuperiorId: number,
+  ) {}
+}

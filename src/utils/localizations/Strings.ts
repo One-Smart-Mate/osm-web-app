@@ -11,6 +11,7 @@ class StringsBase {
   static notificationsSB = "notificationsSB";
   static companiesSB = "companiesSB";
   static prioritiesSB = "prioritiesSB";
+  static amDiscardReasonsSB = "amDiscardReasonsSB";
   static usersSB = "usersSB";
   static siteUsersSB = "siteUsersSB";
   static sitesSB = "sitesSB";
@@ -178,6 +179,23 @@ class StringsBase {
   // errors priority form
   static requiredCode = "requiredCode";
   static requiredDescription = "requiredDescription";
+  static requiredDiscardReason = "requiredDiscardReason";
+  static maxCharactersAllowed = "maxCharactersAllowed";
+  static discardReasonTooltip = "discardReasonTooltip";
+  static amDiscardReasonCreatedSuccessfully = "amDiscardReasonCreatedSuccessfully";
+  static amDiscardReasonUpdatedSuccessfully = "amDiscardReasonUpdatedSuccessfully";
+  static amDiscardReasonCreateError = "amDiscardReasonCreateError";
+  static amDiscardReasonUpdateError = "amDiscardReasonUpdateError";
+  static discardCard = "discardCard";
+  static discardCardModalTitle = "discardCardModalTitle";
+  static discardReason = "discardReason";
+  static selectDiscardReason = "selectDiscardReason";
+  static additionalReason = "additionalReason";
+  static additionalReasonPlaceholder = "additionalReasonPlaceholder";
+  static cardDiscardedSuccessfully = "cardDiscardedSuccessfully";
+  static errorDiscardingCard = "errorDiscardingCard";
+  static errorLoadingDiscardReasons = "errorLoadingDiscardReasons";
+  static pleaseSelectDiscardReason = "pleaseSelectDiscardReason";
   static requiredDaysNumber = "requiredDaysNumber";
   static requiredResponsableId = "requiredResponsableId";
   static requiredMechanic = "requiredMechanic";
@@ -290,6 +308,8 @@ class StringsBase {
 
   static prioritiesOf = "prioritiesOf";
   static priority = "priority";
+  static amDiscardReasonsOf = "amDiscardReasonsOf";
+  static amDiscardReason = "amDiscardReason";
   static code = "code";
   static enterCode = "enterCode";
   static description = "description";
@@ -300,6 +320,8 @@ class StringsBase {
   static createCompany = "createCompany";
   static updateCompany = "updateCompany";
   static createPriority = "createPriority";
+  static createAmDiscardReason = "createAmDiscardReason";
+  static updateAmDiscardReason = "updateAmDiscardReason";
   static createUserFor = "createUserFor";
   static importUsersFor = "importUsersFor";
   static createUser = "createUser";
@@ -816,6 +838,7 @@ class StringsBase {
   static verificationOfServices = "verificationOfServices";
 
   static catalogs = "catalogs";
+
   static accounts = "accounts";
   static dashboard = "dashboard";
   static technicalSupport = "technicalSupport";
@@ -1113,6 +1136,20 @@ class StringsBase {
   static ciltMstrListSuspendedFilter = "ciltMstrListSuspendedFilter";
   static ciltMstrListCanceledFilter = "ciltMstrListCanceledFilter";
   static ciltMstrCreateSequenceButton = "ciltMstrCreateSequenceButton";
+  static ciltMstrDeleteSuccess = "ciltMstrDeleteSuccess";
+  static ciltMstrDeleteError = "ciltMstrDeleteError";
+  static ciltMstrDeleteConfirmTitle = "ciltMstrDeleteConfirmTitle";
+  static ciltMstrDeleteConfirmContent = "ciltMstrDeleteConfirmContent";
+  static ciltSequenceDeleteSuccess = "ciltSequenceDeleteSuccess";
+  static ciltSequenceDeleteError = "ciltSequenceDeleteError";
+  static ciltSequenceDeleteConfirmTitle = "ciltSequenceDeleteConfirmTitle";
+  static ciltSequenceDeleteConfirmContent = "ciltSequenceDeleteConfirmContent";
+  static ciltAssignmentDeleteSuccess = "ciltAssignmentDeleteSuccess";
+  static ciltAssignmentDeleteError = "ciltAssignmentDeleteError";
+  static ciltAssignmentDeleteConfirmTitle = "ciltAssignmentDeleteConfirmTitle";
+  static ciltAssignmentDeleteConfirmContent = "ciltAssignmentDeleteConfirmContent";
+  static ciltAssignmentDeleteFromCiltConfirmContent = "ciltAssignmentDeleteFromCiltConfirmContent";
+  static ciltAssignmentDeleteFromPositionConfirmContent = "ciltAssignmentDeleteFromPositionConfirmContent";
 
   // Opl page strings
   static oplPageManagementTitle = "oplPageManagementTitle";
@@ -1326,6 +1363,8 @@ class StringsBase {
   static areaSelectPlaceholder = "areaSelectPlaceholder";
   static lastLoginWeb = "lastLoginWeb";
   static lastLoginApp = "lastLoginApp";
+  static lastActivityWeb = "lastActivityWeb";
+  static lastActivityApp = "lastActivityApp";
   static imageLoadSuccess = "imageLoadSuccess";
   static imageLoadError = "imageLoadError";
   static warningImageUpload = "warningImageUpload";
@@ -1550,6 +1589,8 @@ class StringsBase {
   static errorUpdatingSequenceOrder = "errorUpdatingSequenceOrder"
   static openTags = "openTags"
   static closedTags = "closedTags"
+  static onTimeTags = "onTimeTags"
+  static overdueTags = "overdueTags"
   static filterTag = "filter"
   static tagType = "tagType"
   
@@ -1605,6 +1646,17 @@ class StringsBase {
   static cardInformation = "cardInformation";
   static cardTechnicalDetails = "cardTechnicalDetails";
   static managerInformation = "managerInformation";
+  static levelsTreeOptionMove = "levelsTreeOptionMove"
+
+  static modeMove = "modeMove"; 
+  static moveModeActiveMessage = "moveModeActiveMessage";
+  static moveModeActiveDescription = "moveModeActiveDescription";
+  static moveCanceledMessage = "moveCanceledMessage";
+  static moveCanceledDescription = "moveCanceledDescription";
+  static invalidMove = "invalidMove";
+  static levelMovedMessage = "levelMovedMessage";
+  static levelMovedDescription = "levelMovedDescription";
+  static invalidMoveDescription = "invalidMoveDescription";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

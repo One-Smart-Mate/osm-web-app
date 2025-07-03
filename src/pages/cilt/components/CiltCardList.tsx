@@ -183,6 +183,12 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     setPositionsLevelsCilt(null);
   };
 
+  const handleDelete = () => {
+    // Refresh the data after successful deletion
+    setRefreshTrigger((prev) => prev + 1);
+    refetch();
+  };
+
   const navigateToSequences = (cilt: CiltMstr) => {
     const ciltId = cilt.id.toString();
     // Pasar la información del sitio en el estado de navegación para mantener la consistencia en el SideBar
@@ -351,6 +357,7 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
         onNavigateToSequences={navigateToSequences}
         onClone={showCloneModal}
         onViewPositionsLevels={showPositionsLevelsModal}
+        onDelete={handleDelete}
       />
 
       {/* Edit Modal */}

@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -36,48 +36,18 @@ const MechanicsChart = ({
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedMechanicName, setSelectedMechanicName] = useState(
-    Strings.empty
-  );
-  const [selectedCardTypeName, setCardTypeName] = useState(Strings.empty);
-  const [, setSelectedTotalCards] = useState(Strings.empty);
-  const [selectedStatus, setSelectedStatus] = useState<'open' | 'closed' | null>(null);
+  const [selectedMechanicName, setSelectedMechanicName] = useState(Strings.empty);
+  const [selectedCardTypeName, setSelectedCardTypeName] = useState(Strings.empty);
+  const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
   const [searchParams, setSearchParams] = useState<{
     siteId: string;
-    mechanic?: string;
+    mechanicName?: string;
     cardTypeName: string;
   } | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
   });
-
-  // Filter search data by selected status
-  const filteredSearchData = useMemo(() => {
-    if (!searchData || !selectedStatus) return searchData;
-    
-    // Map status to card status values
-    const statusMap = {
-      'open': 'A', // Assuming 'A' means open/active
-      'closed': 'C/R' // Assuming 'C/R' means closed/resolved
-    };
-    
-    const targetStatus = statusMap[selectedStatus];
-    const filtered = searchData.filter(card => {
-      // Handle both 'C/R' as a single status or separate 'C' and 'R' statuses
-      if (selectedStatus === 'closed') {
-        return card.status === 'C/R' || card.status === 'C' || card.status === 'R';
-      }
-      return card.status === targetStatus;
-    });
-    
-    return filtered;
-  }, [searchData, selectedStatus]);
-
-  // Calculate actual total from filtered data
-  const actualTotalCards = useMemo(() => {
-    return filteredSearchData ? filteredSearchData.length.toString() : '0';
-  }, [filteredSearchData]);
 
   const handleGetData = async () => {
     try {
@@ -99,9 +69,9 @@ const MechanicsChart = ({
       // Transform the new data structure
       const { categories, series } = chartData;
       
-      // Group series by card type and status (A for open, C/R for closed)
-      const openSeries = series.filter((s: any) => s.name.includes(' - A'));
-      const closedSeries = series.filter((s: any) => s.name.includes(' - C/R)'));
+      // Group series by card type and status (En tiempo for on time, Vencidas for overdue)
+      const onTimeSeries = series.filter((s: any) => s.name.includes(' - En tiempo'));
+      const overdueSeries = series.filter((s: any) => s.name.includes(' - Vencidas'));
       
       // Create transformed data for each category (user)
       const transformedData = categories.map((category: string, categoryIndex: number) => {
@@ -110,51 +80,51 @@ const MechanicsChart = ({
           totalCards: 0,
         };
         
-        // Calculate totals and individual values for open cards (A) by card type
-        let totalOpenCards = 0;
-        openSeries.forEach((serie: any) => {
-          const cardType = serie.name.replace(' - A', '').toLowerCase().replace(/\s/g, '_');
+        // Calculate totals and individual values for on time cards (En tiempo) by card type
+        let totalOnTimeCards = 0;
+        onTimeSeries.forEach((serie: any) => {
+          const cardType = serie.name.replace(' - En tiempo', '').toLowerCase().replace(/\s/g, '_');
           const value = serie.data[categoryIndex] || 0;
-          userData[`${cardType}_open`] = value;
-          totalOpenCards += value;
+          userData[`${cardType}_onTime`] = value;
+          totalOnTimeCards += value;
         });
-        userData.open_total = totalOpenCards;
+        userData.onTime_total = totalOnTimeCards;
         
-        // Calculate totals and individual values for closed cards (C/R) by card type  
-        let totalClosedCards = 0;
-        closedSeries.forEach((serie: any) => {
-          const cardType = serie.name.replace(' - C/R)', '').toLowerCase().replace(/\s/g, '_');
+        // Calculate totals and individual values for overdue cards (Vencidas) by card type  
+        let totalOverdueCards = 0;
+        overdueSeries.forEach((serie: any) => {
+          const cardType = serie.name.replace(' - Vencidas', '').toLowerCase().replace(/\s/g, '_');
           const value = serie.data[categoryIndex] || 0;
-          userData[`${cardType}_closed`] = value;
-          totalClosedCards += value;
+          userData[`${cardType}_overdue`] = value;
+          totalOverdueCards += value;
         });
-        userData.closed_total = totalClosedCards;
+        userData.overdue_total = totalOverdueCards;
         
         // Store breakdown by type for tooltip
         userData.breakdown = {
-          open: {},
-          closed: {}
+          onTime: {},
+          overdue: {}
         };
         
-        // Store open breakdown by type
-        openSeries.forEach((serie: any) => {
-          const cardType = serie.name.replace(' - A', '');
+        // Store on time breakdown by type
+        onTimeSeries.forEach((serie: any) => {
+          const cardType = serie.name.replace(' - En tiempo', '');
           const value = serie.data[categoryIndex] || 0;
           if (value > 0) {
-            userData.breakdown.open[cardType] = value;
+            userData.breakdown.onTime[cardType] = value;
           }
         });
         
-        // Store closed breakdown by type
-        closedSeries.forEach((serie: any) => {
-          const cardType = serie.name.replace(' - C/R)', '');
+        // Store overdue breakdown by type
+        overdueSeries.forEach((serie: any) => {
+          const cardType = serie.name.replace(' - Vencidas', '');
           const value = serie.data[categoryIndex] || 0;
           if (value > 0) {
-            userData.breakdown.closed[cardType] = value;
+            userData.breakdown.overdue[cardType] = value;
           }
         });
         
-        userData.totalCards = totalOpenCards + totalClosedCards;
+        userData.totalCards = totalOnTimeCards + totalOverdueCards;
         
         return userData;
       });
@@ -183,13 +153,13 @@ const MechanicsChart = ({
       const data = payload[0]?.payload;
       
       // Get totals
-      const openTotal = data?.open_total || 0;
-      const closedTotal = data?.closed_total || 0;
-      const totalCards = openTotal + closedTotal;
+      const onTimeTotal = data?.onTime_total || 0;
+      const overdueTotal = data?.overdue_total || 0;
+      const totalCards = onTimeTotal + overdueTotal;
       
       // Get breakdown data
-      const openBreakdown = data?.breakdown?.open || {};
-      const closedBreakdown = data?.breakdown?.closed || {};
+      const onTimeBreakdown = data?.breakdown?.onTime || {};
+      const overdueBreakdown = data?.breakdown?.overdue || {};
       
       return (
         <div 
@@ -204,14 +174,14 @@ const MechanicsChart = ({
         >
           <p className="font-medium">{mechanicName}</p>
           <p>{Strings.totalCards}: {totalCards}</p>
-          <p className="text-green-500">{Strings.openTags}: {openTotal}</p>
-          <p className="text-blue-500">{Strings.closedTags}: {closedTotal}</p>
+          <p className="text-green-500">{Strings.onTimeTags}: {onTimeTotal}</p>
+          <p className="text-red-500">{Strings.overdueTags}: {overdueTotal}</p>
           
-          {/* Show breakdown for open cards */}
-          {Object.keys(openBreakdown).length > 0 && (
+          {/* Show breakdown for on time cards */}
+          {Object.keys(onTimeBreakdown).length > 0 && (
             <div className="mt-2">
-              <p className="font-medium text-green-500">Detalle Abiertas:</p>
-              {Object.entries(openBreakdown).map(([type, value]: [string, any]) => {
+              <p className="font-medium text-green-500">Detalle En Tiempo:</p>
+              {Object.entries(onTimeBreakdown).map(([type, value]: [string, any]) => {
                 const methodology = methodologies.find(m => 
                   m.methodology.toLowerCase() === type.toLowerCase()
                 );
@@ -228,11 +198,11 @@ const MechanicsChart = ({
             </div>
           )}
           
-          {/* Show breakdown for closed cards */}
-          {Object.keys(closedBreakdown).length > 0 && (
+          {/* Show breakdown for overdue cards */}
+          {Object.keys(overdueBreakdown).length > 0 && (
             <div className="mt-2">
-              <p className="font-medium text-blue-500">Detalle Cerradas:</p>
-              {Object.entries(closedBreakdown).map(([type, value]: [string, any]) => {
+              <p className="font-medium text-red-500">Detalle Vencidas:</p>
+              {Object.entries(overdueBreakdown).map(([type, value]: [string, any]) => {
                 const methodology = methodologies.find(m => 
                   m.methodology.toLowerCase() === type.toLowerCase()
                 );
@@ -254,32 +224,27 @@ const MechanicsChart = ({
     return null;
   };
 
-  const handleOnClick = (data: any, status: 'open' | 'closed', cardTypeName?: string) => {
-    // If specific card type is clicked, filter by that type
-    // If general bar is clicked, show all types for that status
-    const searchCardType = cardTypeName || 'all';
-    
+  const handleOnClick = (data: any, status: 'onTime' | 'overdue', cardTypeName?: string) => {
+    // Set search parameters to fetch real cards from backend
     setSearchParams({
       siteId,
-      mechanic: data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none,
-      cardTypeName: searchCardType,
+      mechanicName: data.mechanic !== Strings.noMechanic ? data.mechanic : undefined,
+      cardTypeName: cardTypeName || '',
     });
+
+    // Get the count from the chart data
+    const count = cardTypeName 
+      ? data[`${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`] || 0
+      : (status === 'onTime' ? data.onTime_total : data.overdue_total) || 0;
     
-    // Store the selected status for filtering
-    setSelectedStatus(status);
-    
-    setSelectedTotalCards(
-      cardTypeName 
-        ? data[`${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`]?.toString() || '0'
-        : (status === 'open' ? data.open_total : data.closed_total)?.toString() || '0'
-    );
+    setSelectedTotalCards(count.toString());
     setSelectedMechanicName(data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none);
-    setCardTypeName(cardTypeName || `Todas (${status === 'open' ? 'Abiertas' : 'Cerradas'})`);
+    setSelectedCardTypeName(cardTypeName || `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`);
     setOpen(true);
   };
 
-  // Create stacked bars for each status (open/closed)
-  const createStackedBars = (status: 'open' | 'closed') => {
+  // Create stacked bars for each status (onTime/overdue)
+  const createStackedBars = (status: 'onTime' | 'overdue') => {
     return methodologies.map((methodology) => {
       const dataKey = `${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_${status}`;
       
@@ -287,7 +252,7 @@ const MechanicsChart = ({
         <Bar
           key={`${methodology.methodology}_${status}`}
           dataKey={dataKey}
-          stackId={status} // Stack by status (open/closed)
+          stackId={status} // Stack by status (onTime/overdue)
           stroke="black"
           strokeWidth={0.5}
           fill={`#${methodology.color}`}
@@ -323,11 +288,11 @@ const MechanicsChart = ({
       <div className="flex gap-4 ml-4">
         <div className="flex gap-1 items-center">
           <div className="w-3 h-3 bg-green-500 rounded" />
-          <span className="text-xs">{Strings.openTags}</span>
+          <span className="text-xs">{Strings.onTimeTags}</span>
         </div>
         <div className="flex gap-1 items-center">
-          <div className="w-3 h-3 bg-blue-500 rounded" />
-          <span className="text-xs">{Strings.closedTags}</span>
+          <div className="w-3 h-3 bg-red-500 rounded" />
+          <span className="text-xs">{Strings.overdueTags}</span>
         </div>
       </div>
     </div>
@@ -364,20 +329,20 @@ const MechanicsChart = ({
             className="md:text-sm text-xs"
           />
           
-          {/* Create stacked bars for open cards */}
-          {createStackedBars('open')}
+          {/* Create stacked bars for on time cards */}
+          {createStackedBars('onTime')}
           
-          {/* Create stacked bars for closed cards */}
-          {createStackedBars('closed')}
+          {/* Create stacked bars for overdue cards */}
+          {createStackedBars('overdue')}
         </BarChart>
       </ResponsiveContainer>
       <DrawerTagList
         open={open}
-        dataSource={filteredSearchData}
+        dataSource={searchData}
         isLoading={isFetching}
         label={Strings.mechanic}
         onClose={() => setOpen(false)}
-        totalCards={actualTotalCards}
+        totalCards={selectedTotalCards}
         text={selectedMechanicName}
         cardTypeName={selectedCardTypeName}
       />

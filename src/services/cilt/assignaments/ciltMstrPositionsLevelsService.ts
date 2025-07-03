@@ -103,7 +103,7 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
 
     deleteCiltMstrPositionLevel: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/cilt-mstr-position-levels/${id}`,
+        url: `/cilt-mstr-position-levels/delete/${id}`,
         method: "DELETE",
       }),
     }),

@@ -59,6 +59,10 @@ const CiltLevelAssignamentsPage = React.lazy(
   () => import("../pages/ciltLevelAssignments/CiltLevelAssignaments")
 );
 
+const AmDiscardReasonsPage = React.lazy(
+  () => import("../pages/amDiscardReasons/AmDiscardReasonsPage")
+);
+
 
 const ciltLevelAssignamentsRoute = new Route(
   Strings.asignamentsSB,
@@ -74,6 +78,14 @@ const ciltReportsRoute = new Route(
   <CILTReports />,
   <BsNodePlus />,
   Strings.cilt
+);
+
+const amDiscardReasonsRoute = new Route(
+  Strings.amDiscardReasonsSB,
+  Constants.ROUTES_PATH.amDiscardReasons,
+  <AmDiscardReasonsPage />,
+  <BsCardChecklist />,
+  Strings.dashboard
 );
 
 // Common routes
@@ -224,6 +236,7 @@ const routes: Route[] = [
   levelsReadOnlyRoute,
   positionsRoute,
   prioritiesRoute,
+  amDiscardReasonsRoute,
   cardTypesRoute,
   companiesRoute,
   systemHealthRoute,
@@ -248,6 +261,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
+    }),
+    getItemV2({
+      label: amDiscardReasonsRoute.label,
+      key: amDiscardReasonsRoute.path,
+      icon: amDiscardReasonsRoute.icon,
+      section: amDiscardReasonsRoute.section,
     }),
     getItemV2({
       label: levelsReadOnlyRoute.label,
@@ -284,6 +303,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
+    }),
+    getItemV2({
+      label: amDiscardReasonsRoute.label,
+      key: amDiscardReasonsRoute.path,
+      icon: amDiscardReasonsRoute.icon,
+      section: amDiscardReasonsRoute.section,
     }),
     getItemV2({
       label: levelsReadOnlyRoute.label,

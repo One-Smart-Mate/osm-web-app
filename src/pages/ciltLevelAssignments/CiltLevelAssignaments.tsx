@@ -11,7 +11,7 @@ import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
-import AnatomyNotification, { AnatomyNotificationType } from "../components/AnatomyNotification";
+import AnatomyNotification from "../components/AnatomyNotification";
 
 import { useCreateCiltMstrPositionLevelMutation } from "../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
 import { useCreateOplLevelMutation } from "../../services/cilt/assignaments/oplLevelService";
@@ -137,7 +137,7 @@ const CustomNode = ({
         <>
           {/* Base circle in yellow (represents leaf nodes or no assignments) */}
           <circle r={15} fill="#FFFF00" stroke="none" />
-          {/* Top half in blue (represents CILT/OPL assignments) */}
+          {/* Top half in blue (represents CILT and OPL assignments combined) */}
           <path
             d="M -15,0 A 15,15 0 0,1 15,0 L -15,0 Z"
             fill="#145695"
@@ -240,42 +240,35 @@ const CiltLevelAssignaments: React.FC = () => {
     localStorage.setItem("treeExpandedState", isTreeExpanded.toString());
   }, [isTreeExpanded]);
 
-  const handleGetLevels = async () => {
-    setIsLoading(true);
+  const refreshAssignmentCounts = async () => {
     try {
-      const response = await getLevels(siteId).unwrap();
-      
-      const activeNodes = response.filter((node: any) => !node.deletedAt);
-    
-      
-      const hierarchyData = buildHierarchy(activeNodes);
-
-      const isExpanded = localStorage.getItem("treeExpandedState") === "true";
-
-      const applyExpandState = (nodes: any[]) => {
-        nodes.forEach((node) => {
-          if (node.id !== "0") {
-            localStorage.setItem(
-              `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
-              (!isExpanded).toString()
-            );
-          }
-
-          if (node.children && node.children.length > 0) {
-            applyExpandState(node.children);
-          }
-        });
+      // Get active nodes from current tree data
+      const getActiveNodesFromTree = (nodes: any[]): any[] => {
+        let activeNodes: any[] = [];
+        
+        const traverse = (nodeList: any[]) => {
+          nodeList.forEach(node => {
+            if (node.id !== "0") {
+              activeNodes.push({ id: node.id, name: node.name });
+            }
+            if (node.children && node.children.length > 0) {
+              traverse(node.children);
+            }
+          });
+        };
+        
+        traverse(nodes);
+        return activeNodes;
       };
 
-      applyExpandState(hierarchyData);
-
-      // Optimize assignment count fetching with better error handling and batching
+      if (treeData.length === 0) return;
+      
+      const activeNodes = getActiveNodesFromTree(treeData[0].children || []);
+      
+      // Fetch both CILT and OPL assignment counts for tree display
       const assignmentCountsObj: {[key: string]: number} = {};
       
-      // OPL fetching is currently disabled to avoid 404 warnings
-      // Many levels don't have OPL endpoints configured
-      
-      // Create batched requests with proper error handling
+      // Create batched requests with proper error handling for both CILT and OPL
       const fetchAssignmentCounts = async (levels: any[]) => {
         // Batch CILT assignments request
         const ciltPromises = levels.map(async (level) => {
@@ -307,14 +300,37 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         });
 
-        // OPL assignments are currently disabled to avoid 404 warnings
-        // Many levels don't have OPL endpoints configured, causing console spam
+        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
         const oplPromises = levels.map(async (level) => {
-          // Return 0 count for all OPL assignments to avoid 404 requests
-          return { levelId: level.id, count: 0, type: 'opl' };
+          try {
+            const oplResponse = await fetch(
+              `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Accept': '*/*',
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+            
+            if (oplResponse.ok) {
+              const oplData = await oplResponse.json();
+              const oplAssignments = oplData.data || oplData;
+              return {
+                levelId: level.id,
+                count: Array.isArray(oplAssignments) ? oplAssignments.length : 0,
+                type: 'opl'
+              };
+            }
+            return { levelId: level.id, count: 0, type: 'opl' };
+          } catch (error) {
+            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
+            return { levelId: level.id, count: 0, type: 'opl' };
+          }
         });
 
-        // Execute all requests in parallel but limit concurrency to avoid overwhelming the server
+        // Execute requests in batches to avoid overwhelming the server
         const chunkSize = 5; // Process 5 levels at a time to reduce server load
         const ciltCounts: {[key: string]: number} = {};
         const oplCounts: {[key: string]: number} = {};
@@ -347,7 +363,152 @@ const CiltLevelAssignaments: React.FC = () => {
           }
         }
 
-        // Combine counts
+        // Combine CILT and OPL counts for tree display
+        levels.forEach(level => {
+          const ciltCount = ciltCounts[level.id] || 0;
+          const oplCount = oplCounts[level.id] || 0;
+          assignmentCountsObj[level.id] = ciltCount + oplCount;
+        });
+      };
+
+      // Fetch assignment counts for active nodes only
+      await fetchAssignmentCounts(activeNodes);
+      
+      // Update state with assignment counts
+      setAssignmentCounts(assignmentCountsObj);
+    } catch (error) {
+      console.error('Error refreshing assignment counts:', error);
+    }
+  };
+
+  const handleGetLevels = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getLevels(siteId).unwrap();
+      
+      const activeNodes = response.filter((node: any) => !node.deletedAt);
+    
+      
+      const hierarchyData = buildHierarchy(activeNodes);
+
+      const isExpanded = localStorage.getItem("treeExpandedState") === "true";
+
+      const applyExpandState = (nodes: any[]) => {
+        nodes.forEach((node) => {
+          if (node.id !== "0") {
+            localStorage.setItem(
+              `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+              (!isExpanded).toString()
+            );
+          }
+
+          if (node.children && node.children.length > 0) {
+            applyExpandState(node.children);
+          }
+        });
+      };
+
+      applyExpandState(hierarchyData);
+
+      // Fetch both CILT and OPL assignment counts for tree display
+      const assignmentCountsObj: {[key: string]: number} = {};
+      
+      // Create batched requests with proper error handling for both CILT and OPL
+      const fetchAssignmentCounts = async (levels: any[]) => {
+        // Batch CILT assignments request
+        const ciltPromises = levels.map(async (level) => {
+          try {
+            const ciltResponse = await fetch(
+              `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
+              {
+                method: 'GET',
+                headers: {
+                  'Accept': '*/*',
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+            
+            if (ciltResponse.ok) {
+              const ciltData = await ciltResponse.json();
+              const ciltAssignments = ciltData.data || ciltData;
+              return {
+                levelId: level.id,
+                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === Constants.STATUS_ACTIVE).length : 0,
+                type: 'cilt'
+              };
+            }
+            return { levelId: level.id, count: 0, type: 'cilt' };
+          } catch (error) {
+            // Silently handle CILT fetch errors to reduce console noise
+            return { levelId: level.id, count: 0, type: 'cilt' };
+          }
+        });
+
+        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
+        const oplPromises = levels.map(async (level) => {
+          try {
+            const oplResponse = await fetch(
+              `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
+              {
+                method: 'GET',
+                headers: {
+                  'Accept': '*/*',
+                  'Content-Type': 'application/json'
+                }
+              }
+            );
+            
+            if (oplResponse.ok) {
+              const oplData = await oplResponse.json();
+              const oplAssignments = oplData.data || oplData;
+              return {
+                levelId: level.id,
+                count: Array.isArray(oplAssignments) ? oplAssignments.length : 0,
+                type: 'opl'
+              };
+            }
+            return { levelId: level.id, count: 0, type: 'opl' };
+          } catch (error) {
+            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
+            return { levelId: level.id, count: 0, type: 'opl' };
+          }
+        });
+
+        // Execute requests in batches to avoid overwhelming the server
+        const chunkSize = 5; // Process 5 levels at a time to reduce server load
+        const ciltCounts: {[key: string]: number} = {};
+        const oplCounts: {[key: string]: number} = {};
+
+        // Process CILT assignments in chunks
+        for (let i = 0; i < ciltPromises.length; i += chunkSize) {
+          const chunk = ciltPromises.slice(i, i + chunkSize);
+          const results = await Promise.all(chunk);
+          results.forEach(result => {
+            ciltCounts[result.levelId] = result.count;
+          });
+          
+          // Small delay between chunks to avoid overwhelming the server
+          if (i + chunkSize < ciltPromises.length) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+
+        // Process OPL assignments in chunks
+        for (let i = 0; i < oplPromises.length; i += chunkSize) {
+          const chunk = oplPromises.slice(i, i + chunkSize);
+          const results = await Promise.all(chunk);
+          results.forEach(result => {
+            oplCounts[result.levelId] = result.count;
+          });
+          
+          // Small delay between chunks to avoid overwhelming the server
+          if (i + chunkSize < oplPromises.length) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+        }
+
+        // Combine CILT and OPL counts for tree display
         levels.forEach(level => {
           const ciltCount = ciltCounts[level.id] || 0;
           const oplCount = oplCounts[level.id] || 0;
@@ -551,7 +712,15 @@ const CiltLevelAssignaments: React.FC = () => {
       
       const result = await createCiltMstrPositionLevel(validatedPayload).unwrap();
       console.log("Assignment result:", result);
-      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+      
+      // Refresh assignment counts to show the new assignment immediately
+      await refreshAssignmentCounts();
+      
+      // Show success notification with localized message
+      notification.success({
+        message: Strings.success,
+        description: Strings.assignmentSuccessful,
+      });
     } catch (error: any) {
       console.error("Error in assignment:", error);
 
@@ -586,7 +755,15 @@ const CiltLevelAssignaments: React.FC = () => {
       };
 
       await createOplLevel(validatedPayload).unwrap();
-      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+      
+      // Refresh assignment counts to show the new assignment immediately
+      await refreshAssignmentCounts();
+      
+      // Show success notification with localized message
+      notification.success({
+        message: Strings.success,
+        description: Strings.assignmentSuccessful,
+      });
     } catch (error) {
       console.error(Strings.oplErrorAssigning, error);
 

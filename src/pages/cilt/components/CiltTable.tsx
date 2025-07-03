@@ -1,11 +1,13 @@
 import React from "react";
-import { Table, Badge, Button, Space } from "antd";
+import { Table, Badge, Button, Space, Modal, notification } from "antd";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { getStatusAndText } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
 import type { TablePaginationConfig } from "antd/es/table";
 import type { ColumnsType } from "antd/es/table";
 import CiltPDFButton from "./CiltPDFButton";
+import { useDeleteCiltMstrMutation } from "../../../services/cilt/ciltMstrService";
+import AnatomyNotification from "../../components/AnatomyNotification";
 
 interface CiltTableProps {
   ciltList: CiltMstr[];
@@ -17,6 +19,7 @@ interface CiltTableProps {
   onNavigateToSequences: (cilt: CiltMstr) => void;
   onClone: (cilt: CiltMstr) => void;
   onViewPositionsLevels: (cilt: CiltMstr) => void;
+  onDelete?: (cilt: CiltMstr) => void;
 }
 
 const CiltTable: React.FC<CiltTableProps> = ({
@@ -29,7 +32,37 @@ const CiltTable: React.FC<CiltTableProps> = ({
   onNavigateToSequences,
   onClone,
   onViewPositionsLevels,
+  onDelete,
 }) => {
+  const [deleteCiltMstr, { isLoading: isDeleting }] = useDeleteCiltMstrMutation();
+
+  const handleDelete = (cilt: CiltMstr) => {
+    Modal.confirm({
+      title: Strings.ciltMstrDeleteConfirmTitle,
+      content: Strings.ciltMstrDeleteConfirmContent,
+      okText: Strings.confirm,
+      cancelText: Strings.cancel,
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteCiltMstr(cilt.id.toString()).unwrap();
+          // Show success notification using localized string
+          notification.success({
+            message: Strings.success,
+            description: Strings.ciltMstrDeleteSuccess,
+          });
+          // Call onDelete callback if provided
+          if (onDelete) {
+            onDelete(cilt);
+          }
+        } catch (error: any) {
+          // Log and show error notification using AnatomyNotification
+          AnatomyNotification.error(notification, error, Strings.ciltMstrDeleteError);
+        }
+      },
+    });
+  };
+
   const columns: ColumnsType<CiltMstr> = [
     {
       title: Strings.ciltMstrListNameColumn,
@@ -119,6 +152,17 @@ const CiltTable: React.FC<CiltTableProps> = ({
               {Strings.ciltPositionsLevelsButton}
             </Button>
           <CiltPDFButton id={record.id.toString()} />
+                     {onDelete && (
+             <Button
+               type="primary"
+               size="small"
+               danger
+               loading={isDeleting}
+               onClick={() => handleDelete(record)}
+             >
+               {Strings.delete}
+             </Button>
+           )}
         </Space>
       ),
     },

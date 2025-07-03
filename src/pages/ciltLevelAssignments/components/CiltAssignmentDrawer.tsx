@@ -180,12 +180,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
 
       await onAssign(payload);
 
-      // Show success notification
-      notification.success({
-        message: Strings.success,
-        description: Strings.assignmentSuccessful,
-      });
-
+      // Success notification is now handled by the parent component
       setSelectedPosition(null);
       setSelectedCiltMstr(null);
 

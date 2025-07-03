@@ -42,17 +42,23 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
 
   const fetchSiteUsers = async () => {
     try {
+      console.log(`Fetching users for siteId: ${siteId}`);
       const response = await getSiteUsers(siteId).unwrap();
       setSiteUsers(response);
+      console.log("Users fetched successfully:", response);
     } catch (error) {
-      throw error;
+      console.error("Error fetching site users:", error);
+      // Here you could add a user-facing notification if desired
     }
   };
 
   useEffect(() => {
-    if (!siteId) return;
+    if (!siteId) {
+      console.warn("No siteId available in UpdateMechanicForm.");
+      return;
+    }
     fetchSiteUsers();
-  }, [siteId, getSiteUsers]);
+  }, [siteId]);
 
   const onFinish = async (values: any) => {
     const selectedUserId = values.mechanicId;
@@ -114,7 +120,9 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
           {siteUsers.map((user) => (
             <Select.Option key={user.id} value={user.id}>
               {user.name}{" "}
-              {user.roles && user.roles.length > 0
+              {user.roles &&
+              Array.isArray(user.roles) &&
+              user.roles.length > 0
                 ? `(${user.roles.map((role) => role.name).join(", ")})`
                 : ""}
             </Select.Option>

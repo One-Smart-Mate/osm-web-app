@@ -52,6 +52,12 @@ export const ciltSequencesService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CiltSequence }) => response.data,
     }),
+    deleteCiltSequence: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/cilt-sequences/delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -67,4 +73,5 @@ export const {
   useCreateCiltSequenceMutation,
   useUpdateCiltSequenceMutation,
   useUpdateCiltSequenceOrderMutation,
+  useDeleteCiltSequenceMutation,
 } = ciltSequencesService;
