@@ -235,8 +235,8 @@ const LevelsPage = () => {
       setMovingNodeId(selectedNode.data.id);
       setContextMenuVisible(false);
       notification.info({
-        message: 'Move Mode Active',
-        description: 'Select a new parent for the level, or click the background to cancel.',
+        message: Strings.moveModeActiveMessage,
+        description: Strings.moveModeActiveDescription,
         duration: 5,
       });
     }
@@ -246,7 +246,7 @@ const LevelsPage = () => {
     if (!movingNodeId) return;
 
     if (movingNodeId === newParentId) {
-      notification.warning({ message: "Invalid Move", description: "You cannot move a level into itself." });
+      notification.warning({ message: Strings.invalidMove, description: Strings.invalidMoveDescription });
       return;
     }
 
@@ -254,7 +254,7 @@ const LevelsPage = () => {
       setLoading(true);
       const dto = new MoveLevelDto(Number(movingNodeId), Number(newParentId));
       await moveLevel(dto).unwrap();
-      notification.success({ message: "Level Moved", description: "The level and its hierarchy have been successfully moved." });
+      notification.success({ message: Strings.levelMovedMessage, description: Strings.levelMovedDescription });
       await handleGetLevels();
     } catch (error) {
       console.error("Failed to move level:", error);

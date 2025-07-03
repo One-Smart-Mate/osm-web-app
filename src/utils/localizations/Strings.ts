@@ -1647,6 +1647,16 @@ class StringsBase {
   static cardTechnicalDetails = "cardTechnicalDetails";
   static managerInformation = "managerInformation";
   static levelsTreeOptionMove = "levelsTreeOptionMove"
+
+  static modeMove = "modeMove"; 
+  static moveModeActiveMessage = "moveModeActiveMessage";
+  static moveModeActiveDescription = "moveModeActiveDescription";
+  static moveCanceledMessage = "moveCanceledMessage";
+  static moveCanceledDescription = "moveCanceledDescription";
+  static invalidMove = "invalidMove";
+  static levelMovedMessage = "levelMovedMessage";
+  static levelMovedDescription = "levelMovedDescription";
+  static invalidMoveDescription = "invalidMoveDescription";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
