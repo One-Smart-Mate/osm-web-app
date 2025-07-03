@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { Modal, Form, Select, Input, Button, App as AntdApp } from "antd";
 import { useGetAmDiscardReasonsQuery } from "../../../services/amDiscardReasonService";
 import { useDiscardCardMutation } from "../../../services/cardService";
-import { DiscardCardDto } from "../../../data/card/card.request";
 import { useAppSelector } from "../../../core/store";
 import { selectCurrentUser } from "../../../core/authReducer";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyNotification from "../../components/AnatomyNotification";
-import { BsCardText, BsTextareaResize } from "react-icons/bs";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -160,7 +158,7 @@ const DiscardCardModal = ({
             loading={isLoadingReasons}
             showSearch
             filterOption={(input, option) =>
-              option?.children?.toLowerCase().includes(input.toLowerCase()) ?? false
+              String(option?.children).toLowerCase().includes(input.toLowerCase())
             }
           >
             {discardReasons.map((reason) => (
