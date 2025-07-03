@@ -114,7 +114,9 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
           {siteUsers.map((user) => (
             <Select.Option key={user.id} value={user.id}>
               {user.name}{" "}
-              {user.roles && user.roles.length > 0
+              {user.roles &&
+              Array.isArray(user.roles) &&
+              user.roles.length > 0
                 ? `(${user.roles.map((role) => role.name).join(", ")})`
                 : ""}
             </Select.Option>

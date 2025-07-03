@@ -32,7 +32,10 @@ export const userService = apiSlice.injectEndpoints({
     }),
     getSiteUsers: builder.mutation<UserTable[], string>({
       query: (siteId) => `/users/site/${siteId}`,
-      transformResponse: (response: { data: UserTable[] }) => response.data,
+      transformResponse: (response: { data: UserTable[] }) => {
+        console.log("API response for getSiteUsers:", response.data);
+        return response.data;
+      },
     }),
     createUser: builder.mutation<void, CreateUser>({
       query: (user) => {
