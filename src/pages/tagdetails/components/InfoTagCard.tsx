@@ -87,6 +87,7 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
   };
 
   const handleOnOpenModal = (modalType: string) => {
+    console.log("handleOnOpenModal called with type:", modalType);
     if (!isPublicRoute) {
       setModalOpen(true);
       setModalType(modalType);
@@ -273,6 +274,7 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
               label={
                 <span
                   onClick={() => {
+                    console.log("Assign responsible clicked. Card closed:", isCardClosed);
                     if (!isCardClosed) {
                       handleOnOpenModal(Strings.mechanic);
                     }
