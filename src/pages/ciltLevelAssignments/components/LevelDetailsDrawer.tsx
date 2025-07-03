@@ -23,7 +23,7 @@ import { SearchOutlined, FileOutlined, CalendarOutlined, UserOutlined } from "@a
 import ViewSchedulesModal from "./ViewSchedulesModal";
 import Strings from "../../../utils/localizations/Strings";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
-import { useGetOplLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/oplLevelService";
+import { useGetOplLevelsByLevelIdQuery, useDeleteOplLevelMutation } from "../../../services/cilt/assignaments/oplLevelService";
 import { useGetPositionUsersQuery } from "../../../services/positionService";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
 import { useDeleteCiltMstrPositionLevelMutation } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
@@ -35,6 +35,7 @@ import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
 // Extended interface for OPL with details from API response
 interface ExtendedOplLevel {
   id: number;
+  oplLevelId: number;
   title: string;
   objetive: string;
   creatorId: number;
@@ -189,6 +190,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [deleteCiltAssignment, { isLoading: isDeleting }] = useDeleteCiltMstrPositionLevelMutation();
+  const [deleteOplLevel, { isLoading: isDeletingOpl }] = useDeleteOplLevelMutation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -324,6 +326,27 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         } catch (error: any) {
           // Log and show error notification using AnatomyNotification
           AnatomyNotification.error(notification, error, Strings.ciltAssignmentDeleteError);
+        }
+      },
+    });
+  };
+
+  const handleDeleteOplAssignment = (opl: ExtendedOplLevel) => {
+    Modal.confirm({
+      title: 'Confirmar Eliminación',
+      content: `¿Estás seguro de que deseas eliminar la asignación del OPL "${opl.title}"?`,
+      okText: Strings.confirm,
+      cancelText: Strings.cancel,
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteOplLevel(opl.oplLevelId).unwrap();
+          notification.success({
+            message: Strings.success,
+            description: 'Asignación de OPL eliminada correctamente.',
+          });
+        } catch (error: any) {
+          AnatomyNotification.error(notification, error, 'Error al eliminar la asignación de OPL');
         }
       },
     });
@@ -855,6 +878,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 actions={[
                   <Button type="primary" onClick={() => showOplDetails(opl)}>
                     {Strings.viewDetails}
+                  </Button>,
+                  <Button type="primary" danger loading={isDeletingOpl} onClick={() => handleDeleteOplAssignment(opl)}>
+                    {Strings.delete}
                   </Button>
                 ]}
               >
