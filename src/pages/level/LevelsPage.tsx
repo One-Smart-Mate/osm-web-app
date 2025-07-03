@@ -7,6 +7,7 @@ import {
   useCreateLevelMutation,
   useGetlevelsMutation,
   useUdpateLevelMutation,
+  useMoveLevelMutation,
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
@@ -14,7 +15,7 @@ import { Form, Drawer, Spin, Modal, Button, App as AntApp } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
-import { CreateNode } from "../../data/level/level.request";
+import { CreateNode, MoveLevelDto } from "../../data/level/level.request";
 import Constants from "../../utils/Constants";
 import NodeElement from "./components/NodeElement";
 import LevelMenuOptions from "./components/LevelMenuOptions";
@@ -58,6 +59,7 @@ const LevelsPage = () => {
   const [getLevels] = useGetlevelsMutation();
   const [createLevel] = useCreateLevelMutation();
   const [updateLevel] = useUdpateLevelMutation();
+  const [moveLevel] = useMoveLevelMutation();
   const [getCardsByLevel] = useGetCardsByLevelMutation();
   const { notification } = AntApp.useApp();
 
@@ -77,6 +79,7 @@ const LevelsPage = () => {
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
 
   const [isCloning, setIsCloning] = useState(false);
+  const [movingNodeId, setMovingNodeId] = useState<string | null>(null);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<"create" | "update" | "position" | null>(null);
@@ -225,6 +228,40 @@ const LevelsPage = () => {
   const closeAllDrawers = () => {
     setDetailsVisible(false);
     setDrawerVisible(false);
+  };
+
+  const handleInitiateMove = () => {
+    if (selectedNode?.data?.id) {
+      setMovingNodeId(selectedNode.data.id);
+      setContextMenuVisible(false);
+      notification.info({
+        message: 'Move Mode Active',
+        description: 'Select a new parent for the level, or click the background to cancel.',
+        duration: 5,
+      });
+    }
+  };
+
+  const handleMoveNode = async (newParentId: string) => {
+    if (!movingNodeId) return;
+
+    if (movingNodeId === newParentId) {
+      notification.warning({ message: "Invalid Move", description: "You cannot move a level into itself." });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const dto = new MoveLevelDto(Number(movingNodeId), Number(newParentId));
+      await moveLevel(dto).unwrap();
+      notification.success({ message: "Level Moved", description: "The level and its hierarchy have been successfully moved." });
+      await handleGetLevels();
+    } catch (error) {
+      console.error("Failed to move level:", error);
+    } finally {
+      setMovingNodeId(null);
+      setLoading(false);
+    }
   };
 
   const handleCreateLevel = () => {
@@ -495,8 +532,17 @@ const LevelsPage = () => {
         ref={containerRef}
         className="flex-grow border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
         style={{ height: "calc(100vh - 6rem)" }}
-        onPointerDown={() => {
-          setContextMenuVisible(false);
+        onPointerDown={(e) => {
+          if (e.target === containerRef.current) {
+            setContextMenuVisible(false);
+            if (movingNodeId) {
+              setMovingNodeId(null);
+              notification.info({
+                message: "Move Canceled",
+                description: "The move operation has been canceled.",
+              });
+            }
+          }
         }}
       >
         {isLoading ? (
@@ -535,6 +581,8 @@ const LevelsPage = () => {
                     setSelectedNode={setSelectedNode}
                     handleShowDetails={handleShowDetails}
                     cardCounts={levelCardCounts}
+                    movingNodeId={movingNodeId}
+                    onMoveNode={handleMoveNode}
                   />
                 )}
                 collapsible={true}
@@ -558,6 +606,7 @@ const LevelsPage = () => {
         handleUpdateLevel={handleUpdateLevel}
         handleCloneLevel={handleCloneLevel}
         handleCreatePosition={handleCreatePosition}
+        handleInitiateMove={handleInitiateMove}
       />
 
       {detailsVisible && selectedLevelId && (

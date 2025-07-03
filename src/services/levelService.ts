@@ -1,5 +1,5 @@
 import { Level } from "../data/level/level";
-import { CreateLevel, UpdateLevel } from "../data/level/level.request";
+import { CreateLevel, MoveLevelDto, UpdateLevel } from "../data/level/level.request";
 import { apiSlice } from "./apiSlice";
 
 export const levelService = apiSlice.injectEndpoints({
@@ -28,6 +28,13 @@ export const levelService = apiSlice.injectEndpoints({
         body: { ...level },
       }),
     }),
+    moveLevel: builder.mutation<void, MoveLevelDto>({
+      query: (dto) => ({
+        url: "/level/move",
+        method: "PUT",
+        body: { ...dto },
+      }),
+    }),
   }),
 });
 
@@ -36,4 +43,5 @@ export const {
   useCreateLevelMutation,
   useGetlevelMutation,
   useUdpateLevelMutation,
+  useMoveLevelMutation,
 } = levelService;

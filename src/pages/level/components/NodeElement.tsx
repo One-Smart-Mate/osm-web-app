@@ -12,6 +12,8 @@ interface NodeElementProps {
   setSelectedNode: (node: any) => void;
   handleShowDetails: (nodeId: string) => void;
   cardCounts?: { [key: string]: number };
+  movingNodeId?: string | null;
+  onMoveNode?: (newParentId: string) => void;
 }
 
 const isLeafNode = (node: any) => !node.children || node.children.length === 0;
@@ -57,6 +59,8 @@ const NodeElement: React.FC<NodeElementProps> = ({
   setSelectedNode,
   handleShowDetails,
   cardCounts = {},
+  movingNodeId,
+  onMoveNode,
 }) => {
   const longPressTimeoutRef = useRef<number | null>(null);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
@@ -170,15 +174,45 @@ const NodeElement: React.FC<NodeElementProps> = ({
     touchStartPositionRef.current = null;
   };
 
+  const isMoving = movingNodeId === nodeDatum.id;
+  const isPossibleTarget = movingNodeId && !isMoving && nodeDatum.id !== "0";
+
+  const handleNodeClick = (e: React.MouseEvent<SVGGElement>) => {
+    if (movingNodeId) {
+      e.stopPropagation();
+      if (isPossibleTarget && onMoveNode) {
+        onMoveNode(nodeDatum.id);
+      }
+      return; 
+    }
+    handleLeftClick(e);
+  };
+
+  const handleNodeContextMenu = (e: React.MouseEvent<SVGGElement>) => {
+    if (movingNodeId) {
+      e.preventDefault();
+      return; 
+    }
+    handleContextMenu(e);
+  };
+
   return (
     <g
-      onClick={handleLeftClick}
-      onContextMenu={handleContextMenu}
+      onClick={handleNodeClick}
+      onContextMenu={handleNodeContextMenu}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
+      style={{
+        cursor: isPossibleTarget ? 'copy' : 'pointer',
+        opacity: isMoving ? 0.5 : 1,
+        transition: 'opacity 0.3s ease',
+      }}
     >
+      {isPossibleTarget && (
+        <circle r="20" fill="none" stroke="#1890ff" strokeWidth="2" strokeDasharray="4 4" />
+      )}
       {showSplitColors ? (
         <>
           <circle r={15} fill="#FFFF00" stroke="none" />

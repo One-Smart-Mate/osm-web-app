@@ -1626,6 +1626,7 @@ const resources = {
       noDataAvailable: "No data available",
       noCommentsAvailable: "No comments available",
       cardDueDate: "Tag Due Date",
+      move: "Move level"
     },
   },
   es: {
@@ -3266,6 +3267,7 @@ const resources = {
       noDataAvailable: "No hay datos disponibles",
       noCommentsAvailable: "No hay comentarios disponibles",
       cardDueDate: "Fecha de Vencimiento",
+      levelsTreeOptionMove: "Mover nivel"
     },
   },
 };

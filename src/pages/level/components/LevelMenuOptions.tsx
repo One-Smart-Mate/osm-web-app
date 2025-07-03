@@ -14,6 +14,7 @@ interface LevelContextMenuProps {
   handleUpdateLevel: () => void;
   handleCloneLevel: () => void;
   handleCreatePosition: () => void; // Callback for creating a position
+  handleInitiateMove: () => void;
 }
 
 const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
@@ -24,6 +25,7 @@ const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
   handleCreateLevel,
   handleUpdateLevel,
   handleCloneLevel,
+  handleInitiateMove,
 }) => {
   if (
     !isVisible ||
@@ -63,6 +65,9 @@ const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
           </Button>
           <Button type="link" variant="dashed" onClick={handleCloneLevel}>
             {Strings.levelsTreeOptionClone}
+          </Button>
+          <Button type="primary" onClick={handleInitiateMove}>
+            {Strings.levelsTreeOptionMove || 'Move'}
           </Button>
         </>
       )}

@@ -1646,6 +1646,7 @@ class StringsBase {
   static cardInformation = "cardInformation";
   static cardTechnicalDetails = "cardTechnicalDetails";
   static managerInformation = "managerInformation";
+  static levelsTreeOptionMove = "levelsTreeOptionMove"
 }
 
 // Create a Proxy object for StringsBase to intercept property access
