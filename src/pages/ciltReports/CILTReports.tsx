@@ -23,6 +23,10 @@ export const CILTReports = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedExecution, setSelectedExecution] =
     useState<CiltSequenceExecution | null>(null);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 20,
+  });
 
   const [getCiltSequenceExecutionsBySite] =
     useGetCiltSequenceExecutionsBySiteMutation();
@@ -290,10 +294,12 @@ export const CILTReports = () => {
               columns={columns}
               rowKey={(record) => String(record.id)}
               pagination={{
-                pageSize: 20,
+                ...pagination,
                 showSizeChanger: true,
                 pageSizeOptions: ["10", "20", "50", "100"],
+                total: filteredExecutions.length,
               }}
+              onChange={(pagination) => setPagination(pagination)}
               bordered
               size="middle"
               scroll={{ x: 800 }}
