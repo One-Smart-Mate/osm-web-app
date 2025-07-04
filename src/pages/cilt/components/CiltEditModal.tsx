@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Alert, Select, Upload, Spin, notification, Typography, Popconfirm, Button } from 'antd';
 import { PlusOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
-import type { UploadFile, UploadFileStatus, UploadProps } from 'antd/es/upload/interface';
-import { handleUploadToFirebaseStorage } from '../../../config/firebaseUpload';
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { uploadFileToFirebaseWithPath } from '../../../config/firebaseUpload';
 import { CiltMstr, UpdateCiltMstrDTO } from '../../../data/cilt/ciltMstr/ciltMstr';
 import { useUpdateCiltMstrMutation } from '../../../services/cilt/ciltMstrService';
 import { useGetSiteResponsiblesMutation } from '../../../services/userService';
@@ -34,8 +34,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [firebaseUrl, setFirebaseUrl] = useState<string | undefined>(undefined);
-
+  
   const [creatorModalVisible, setCreatorModalVisible] = useState(false);
   const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
   const [approverModalVisible, setApproverModalVisible] = useState(false);
@@ -160,78 +159,12 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     }
   };
 
+  // Handle file selection for image upload
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
 
-  const customUpload = async (options: any) => {
-    const { file, onSuccess, onError } = options;
-    try {
-      // Set uploading state to show spinner
-      setUploading(true);
-      
-      // Generate a unique filename with timestamp
-      const timestamp = new Date().getTime();
-      const fileName = `cilt_${timestamp}`;
-      
-      // Upload the file to Firebase storage with site-specific path
-      const sitePath = cilt && cilt.siteId ? `site_${cilt.siteId}/cilt-procedures` : 'cilt';
-      const url = await handleUploadToFirebaseStorage(
-        sitePath, 
-        {
-          name: fileName,
-          originFileObj: file
-        },
-        "jpg"
-      );
-      
-      // Store the Firebase URL directly in state for later use
-      setFirebaseUrl(url);
-      
-      // Update the form field value to ensure it's included in form submission
-      form.setFieldsValue({ urlImgLayout: url });
-      
-      // Update the file list with the uploaded file
-      const newFile: UploadFile = {
-        uid: file.uid,
-        name: file.name,
-        status: "done" as UploadFileStatus,
-        url: url,
-      };
-      
-      // Set the file list with the new file
-      setFileList([newFile]);
-      
-      // Signal success to the Upload component
-      onSuccess("Upload successful");
-      
-      // Show success notification
-      notification.success({
-        message: Strings.success,
-        description: Strings.imageLoadSuccess,
-        duration: 2,
-      });
-    } catch (error) {
-      
-      // Signal error to the Upload component
-      onError("Upload failed");
-      
-      // Show error notification
-      notification.error({
-        message: Strings.error,
-        description: Strings.imageUploadError,
-        duration: 4,
-      });
-      
-      // Clear the file list in case of error
-      setFileList([]);
-    } finally {
-      // Always reset uploading state when done
-      setUploading(false);
-    }
-  };
-
-  // Upload button
+  // Upload button for the Upload component
   const uploadButton = (
     <div>
       {uploading ? <Spin /> : <PlusOutlined />}
@@ -239,74 +172,81 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     </div>
   );
 
+  // Save changes handler, uploads image if needed and updates CILT
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      if (cilt) {
-        const dateOfLastUsed = cilt.dateOfLastUsed || new Date().toISOString();
-        const updatedAt = new Date().toISOString();
-
-        // Get the image URL from the form values or use the existing one
-        let imageUrl = values.urlImgLayout;
-        
-        // If no URL in form values, try to get it from fileList or firebaseUrl
-        if (!imageUrl) {
-          imageUrl = firebaseUrl || (fileList.length > 0 && fileList[0].url) || cilt.urlImgLayout || undefined;
-        }
-
-        // Log the image URL for debugging
-        
-        // Ensure we have an image URL
-        if (!imageUrl && fileList.length === 0) {
-          notification.warning({
-            message: "Warning",
-            description: "Please upload a layout image or cancel the edit.",
-            duration: 4,
-          });
-          return;
-        }
-        
-        const updatedData = new UpdateCiltMstrDTO(
-          cilt.id,
-          dateOfLastUsed,
-          updatedAt,
-          cilt.siteId ?? undefined,
-          values.ciltName,
-          values.ciltDescription,
-          creatorId ?? undefined,
-          values.creatorName ?? undefined,
-          reviewerId ?? undefined,
-          values.reviewerName ?? undefined,
-          approvedById ?? undefined,
-          values.approvedByName ?? undefined,
-          values.standardTime ?? undefined,
-          imageUrl, 
-          cilt.order ?? undefined,
-          values.status,
-          values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined 
-        );
-        
-        // Submit the update
-        await updateCiltMstr(updatedData).unwrap();
-        
-        // Show success notification
-        notification.success({
-          message: Strings.success,
-          description: Strings.ciltMstrUpdateSuccess || 'CILT actualizado correctamente',
+      if (!cilt) {
+        notification.error({
+          message: Strings.error,
+          description: "CILT data is missing.",
         });
-        
-        onSuccess();
+        return;
       }
+      // Require an image
+      if (fileList.length === 0) {
+        notification.error({
+          message: Strings.error,
+          description: Strings.registerCiltLayoutImageRequiredValidation,
+          duration: 4,
+        });
+        return;
+      }
+      setUploading(true);
+      let imageUrl = cilt.urlImgLayout; // Default to existing image
+      // If a new file is selected, upload it to Firebase with the correct path structure
+      const file = fileList[0];
+      if (file.originFileObj) {
+        // Use the required path: site_{siteId}/cilt/{ciltID}/images/{name}
+        const path = `site_${cilt.siteId}/cilt/${cilt.id}/images/${file.name}`;
+        imageUrl = await uploadFileToFirebaseWithPath(path, file);
+      }
+      const dateOfLastUsed = cilt.dateOfLastUsed || new Date().toISOString();
+      const updatedAt = new Date().toISOString();
+      // Ensure ciltDueDate is never null for type safety
+      let safeCiltDueDate: string | undefined = undefined;
+      if (values.ciltDueDate && values.ciltDueDate !== '' && values.ciltDueDate !== null) {
+        safeCiltDueDate = values.ciltDueDate as string;
+      }
+      // Utility to ensure no null or empty string is passed to DTO
+      const cleanString = (v: string | null | undefined): string | undefined => (v && v !== '' ? v : undefined);
+      const updatedData = new UpdateCiltMstrDTO(
+        cilt.id,
+        dateOfLastUsed,
+        updatedAt,
+        cilt.siteId ?? undefined,
+        cleanString(values.ciltName),
+        cleanString(values.ciltDescription),
+        creatorId ?? undefined,
+        cleanString(values.creatorName),
+        reviewerId ?? undefined,
+        cleanString(values.reviewerName),
+        approvedById ?? undefined,
+        cleanString(values.approvedByName),
+        values.standardTime !== null && values.standardTime !== '' ? Number(values.standardTime) : undefined,
+        imageUrl ?? undefined,
+        cilt.order ?? undefined,
+        cleanString(values.status),
+        // Only pass string or undefined, never null
+        (safeCiltDueDate ? `${safeCiltDueDate}T00:00:00.000Z` : undefined)
+      );
+      await updateCiltMstr(updatedData).unwrap();
+      notification.success({
+        message: Strings.success,
+        description: Strings.ciltMstrUpdateSuccess || 'CILT actualizado correctamente',
+      });
+      onSuccess();
     } catch (err: any) {
       console.error('Failed to update CILT:', err);
       setUpdateError(err.data?.message || err.message || Strings.ciltMstrUpdateError);
+    } finally {
+      setUploading(false);
     }
   };
 
   const handleCancel = () => {
     setUpdateError(null);
     setFileList([]);
-    setFirebaseUrl(undefined);
     onCancel();
   };
 
@@ -332,7 +272,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         ciltName: cilt.ciltName,
         ciltDescription: cilt.ciltDescription,
         // standardTime removed - now calculated automatically in the database
-        ciltDueDate: cilt.ciltDueDate ? cilt.ciltDueDate.split('T')[0] : null,
+        ciltDueDate: cilt.ciltDueDate ? cilt.ciltDueDate.split('T')[0] : undefined, // Always undefined, never null
         status: cilt.status,
         creatorName: cilt.creatorName || '',
         reviewerName: cilt.reviewerName || '',
@@ -493,31 +433,8 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
             listType="picture-card"
             fileList={fileList}
             onPreview={handlePreview}
-            onChange={(info) => {
-              handleChange(info);
-              // Update the form field value when the file list changes
-              if (info.fileList.length > 0 && info.fileList[0].status === 'done' && info.fileList[0].url) {
-                form.setFieldsValue({ urlImgLayout: info.fileList[0].url });
-              } else {
-                form.setFieldsValue({ urlImgLayout: undefined });
-              }
-            }}
-            customRequest={customUpload}
-            showUploadList={{
-              showPreviewIcon: true,
-              showRemoveIcon: false, // Hide the default remove icon
-              showDownloadIcon: false
-            }}
-            beforeUpload={(file) => {
-              const isImage = file.type.startsWith('image/');
-              if (!isImage) {
-                notification.error({
-                  message: Strings.error,
-                  description: Strings.imageUploadError,
-                });
-              }
-              return isImage || Upload.LIST_IGNORE;
-            }}
+            onChange={handleChange}
+            beforeUpload={() => false}
             maxCount={1}
             // Custom item render with our own delete button
             itemRender={(originNode, _file) => {
@@ -530,7 +447,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
                       onConfirm={() => {
                         // Clear the file list and firebase URL
                         setFileList([]);
-                        setFirebaseUrl(undefined);
                         // Also clear the form field value
                         form.setFieldsValue({ urlImgLayout: undefined });
                       }}

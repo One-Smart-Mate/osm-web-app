@@ -45,6 +45,27 @@ export const handleUploadToFirebaseStorage = async (directory: string, file: Upl
   }
 };
 
+export const uploadFileToFirebaseWithPath = async (
+  path: string,
+  file: any
+): Promise<string> => {
+  try {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file.originFileObj as Blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading file to Firebase: ", error);
+    notification.error({
+      message: "Upload Error",
+      description:
+        "An error occurred while uploading the file to Firebase. Please try again.",
+      placement: "topRight",
+    });
+    throw error;
+  }
+};
+
 export const FIREBASE_COMPANY_DIRECTORY = "company"
 export const FIREBASE_SITE_DIRECTORY = "site"
 export const FIREBASE_OPL_DIRECTORY = "opl"

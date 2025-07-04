@@ -21,8 +21,7 @@ import {
 } from "../../../data/cilt/oplDetails/oplDetails";
 import { Responsible } from "../../../data/user/user";
 import {
-  handleUploadToFirebaseStorage,
-  FIREBASE_OPL_DIRECTORY,
+  uploadFileToFirebaseWithPath,
 } from "../../../config/firebaseUpload";
 import type { UploadFile, UploadProps } from "antd";
 import OplTable from "./OplTable";
@@ -428,29 +427,11 @@ const Opl = (): React.ReactElement => {
         return;
       }
 
-      let fileExtension = "jpg";
-      if (type === "video") {
-        fileExtension = "mp4";
-      } else if (type === "pdf") {
-        fileExtension = "pdf";
-      } else if (type === "imagen") {
-        fileExtension = file.name.split(".").pop() || "jpg";
-      }
+      const fileTypePlural =
+        type === "imagen" ? "images" : type === "video" ? "videos" : "pdf";
+      const path = `site_${currentOpl.siteId}/opls/${currentOpl.id}/${fileTypePlural}/${file.name}`;
 
-      const uploadFile = {
-        name: file.name,
-        originFileObj: file.originFileObj as File,
-      };
-
-      const sitePath =
-        currentOpl && currentOpl.siteId
-          ? `site_${currentOpl.siteId}/opl`
-          : FIREBASE_OPL_DIRECTORY;
-      const url = await handleUploadToFirebaseStorage(
-        sitePath,
-        uploadFile,
-        fileExtension
-      );
+      const url = await uploadFileToFirebaseWithPath(path, file);
 
       const newDetail: CreateOplDetailsDTO = {
         siteId: Number(currentOpl.siteId),
@@ -485,6 +466,7 @@ const Opl = (): React.ReactElement => {
       });
     } finally {
       setUploadLoading(false);
+      fileValidationCache.clear();
     }
   };
 
