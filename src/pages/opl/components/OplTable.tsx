@@ -96,7 +96,11 @@ const OplTable: React.FC<OplTableProps> = ({
       columns={columns}
       dataSource={opls}
       rowKey="id"
-      pagination={{ pageSize: 10 }}
+      pagination={{ 
+        pageSize: 100,
+        showSizeChanger: true,
+        pageSizeOptions: ["20", "50", "100", "200"]
+      }}
       scroll={{ x: 'max-content' }}
       size="middle"
     />

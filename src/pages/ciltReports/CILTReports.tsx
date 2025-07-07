@@ -25,7 +25,7 @@ export const CILTReports = () => {
     useState<CiltSequenceExecution | null>(null);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 20,
+    pageSize: 100,
   });
 
   const [getCiltSequenceExecutionsBySite] =
@@ -296,7 +296,7 @@ export const CILTReports = () => {
               pagination={{
                 ...pagination,
                 showSizeChanger: true,
-                pageSizeOptions: ["10", "20", "50", "100"],
+                pageSizeOptions: ["20", "50", "100", "200"],
                 total: filteredExecutions.length,
               }}
               onChange={(pagination) => setPagination(pagination)}

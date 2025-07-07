@@ -168,7 +168,7 @@ const CiltTable: React.FC<CiltTableProps> = ({
     },
   ];
 
-  const DEFAULT_PAGE_SIZE = 50;
+  const DEFAULT_PAGE_SIZE = 100;
 
   return (
     <Table
@@ -180,8 +180,8 @@ const CiltTable: React.FC<CiltTableProps> = ({
         current: currentPage,
         pageSize: DEFAULT_PAGE_SIZE,
         total: ciltList.length,
-        showSizeChanger: false,
-
+        showSizeChanger: true,
+        pageSizeOptions: ["20", "50", "100", "200"],
         showTotal: (total) => `Total ${total} registros`,
         onChange: (page) => {
           console.log("Changing to page:", page);
