@@ -1636,6 +1636,10 @@ const resources = {
       levelMovedMessage: "Level Moved",
       invalidMoveDescription: "You cannot move a level into itself.",
       levelMovedDescription: "The level and its hierarchy have been successfully moved.",
+      ciltDueDateValidation: "The end date of the programming cannot exceed this date",
+      noPreclassifiers: "without preclassifiers",
+      searchBy: "Search by",
+      filterBy: "Filter by"
     },
   },
   es: {
@@ -3286,6 +3290,10 @@ const resources = {
       levelMovedMessage: "Nivel Movido",
       invalidMoveDescription: "No puedes mover un nivel dentro de sí mismo.",
       levelMovedDescription: "El nivel y su jerarquía han sido movidos exitosamente.",
+      ciltDueDateValidation: "La fecha final de la programación no puede superar esta fecha",
+      noPreclassifiers: "sin preclasificadores",
+      searchBy: "Buscar por",
+      filterBy: "Filtrar por"
     },
   },
 };

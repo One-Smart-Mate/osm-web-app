@@ -148,6 +148,15 @@ export default function ScheduleSecuence({
     }
   }, [open, existingSchedule, form]);
 
+  // Set default end date when CILT data is available and there's no existing schedule
+  useEffect(() => {
+    if (open && ciltData?.ciltDueDate && !existingSchedule) {
+      form.setFieldsValue({
+        endDate: dayjs(ciltData.ciltDueDate),
+      });
+    }
+  }, [open, ciltData, existingSchedule, form]);
+
   const handleScheduleTypeChange = (value: ScheduleType) => {
     setScheduleType(value);
     form.setFieldsValue({ scheduleType: value });
@@ -163,7 +172,7 @@ export default function ScheduleSecuence({
     const ciltDueDate = dayjs(ciltData.ciltDueDate);
 
     if (endDate.isAfter(ciltDueDate)) {
-      return Promise.reject(new Error(`La fecha final no puede ser posterior a la fecha de vencimiento del CILT (${ciltDueDate.format('DD/MM/YYYY')})`));
+      return Promise.reject(new Error(`${Strings.ciltDueDateValidation} (${ciltDueDate.format('DD/MM/YYYY')})`));
     }
 
     return Promise.resolve();
@@ -318,11 +327,11 @@ AnatomyNotification.error(notification, {
             marginBottom: '16px' 
           }}>
             <Text strong style={{ color: '#52c41a' }}>
-              📅 {Strings.cardDueDate}: {dayjs(ciltData.ciltDueDate).format('DD/MM/YYYY')}
+              {Strings.cardDueDate}: {dayjs(ciltData.ciltDueDate).format('DD/MM/YYYY')}
             </Text>
             <br />
             <Text type="secondary" style={{ fontSize: '12px' }}>
-              La fecha final de la programación no puede superar esta fecha
+              {Strings.ciltDueDateValidation}
             </Text>
           </div>
         )}

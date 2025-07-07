@@ -1657,6 +1657,10 @@ class StringsBase {
   static levelMovedMessage = "levelMovedMessage";
   static levelMovedDescription = "levelMovedDescription";
   static invalidMoveDescription = "invalidMoveDescription";
+  static ciltDueDateValidation = "ciltDueDateValidation";
+  static noPreclassifiers = "noPreclassifiers";
+  static searchBy = "searchBy";
+  static filterBy = "filterBy";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

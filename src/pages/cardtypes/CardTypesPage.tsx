@@ -584,6 +584,7 @@ const CardTypesPage = () => {
         </Dropdown>
         <text x={20} y={35} style={textStyles}>
           {nodeDatum.name}
+          {nodeDatum.nodeType === "cardType" && (!nodeDatum.children || nodeDatum.children.length === 0) && " (" + Strings.noPreclassifiers + ")"}
         </text>
       </g>
     );

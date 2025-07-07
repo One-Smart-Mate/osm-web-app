@@ -42,6 +42,12 @@ const TagsPage = () => {
   const [debouncedCardNumber] = useDebounce(cardNumber, 300);
   const [location_, setLocation] = useState("");
   const [debouncedLocation] = useDebounce(location_, 300);
+  const [creator, setCreator] = useState("");
+  const [debouncedCreator] = useDebounce(creator, 300);
+  const [resolver, setResolver] = useState("");
+  const [debouncedResolver] = useDebounce(resolver, 300);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText] = useDebounce(searchText, 300);
   const [dateFilterType, setDateFilterType] = useState<DateFilterType>("");
   const [dateRange, setDateRange] = useState<[any, any] | null>(null);
   
@@ -51,7 +57,14 @@ const TagsPage = () => {
     return (
       item.creatorName.toLowerCase().includes(normalizedQuery) ||
       item.areaName.toLowerCase().includes(normalizedQuery) ||
-      item.cardTypeMethodologyName.toLowerCase().includes(normalizedQuery)
+      item.cardTypeMethodologyName.toLowerCase().includes(normalizedQuery) ||
+      item.cardTypeName.toLowerCase().includes(normalizedQuery) ||
+      item.preclassifierDescription.toLowerCase().includes(normalizedQuery) ||
+      item.priorityDescription.toLowerCase().includes(normalizedQuery) ||
+      item.mechanicName?.toLowerCase().includes(normalizedQuery) ||
+      item.responsableName?.toLowerCase().includes(normalizedQuery) ||
+      item.userProvisionalSolutionName?.toLowerCase().includes(normalizedQuery) ||
+      item.userDefinitiveSolutionName?.toLowerCase().includes(normalizedQuery)
     );
   }, []);
   
@@ -66,6 +79,24 @@ const TagsPage = () => {
     if (!loc) return true;
     const normalizedLocation = loc.toLowerCase();
     return item.cardLocation.toLowerCase().includes(normalizedLocation);
+  }, []);
+  
+  // Filter by creator
+  const filterByCreator = useCallback((item: CardInterface, creatorQuery: string) => {
+    if (!creatorQuery) return true;
+    const normalizedCreator = creatorQuery.toLowerCase();
+    return item.creatorName.toLowerCase().includes(normalizedCreator);
+  }, []);
+  
+  // Filter by resolver (including all solution users)
+  const filterByResolver = useCallback((item: CardInterface, resolverQuery: string) => {
+    if (!resolverQuery) return true;
+    const normalizedResolver = resolverQuery.toLowerCase();
+    return (
+      item.responsableName?.toLowerCase().includes(normalizedResolver) ||
+      item.userProvisionalSolutionName?.toLowerCase().includes(normalizedResolver) ||
+      item.userDefinitiveSolutionName?.toLowerCase().includes(normalizedResolver)
+    );
   }, []);
   
   // Filter by date range
@@ -130,7 +161,10 @@ const TagsPage = () => {
     // Apply filters
     let filteredResults = data;
 
-    // Text search filter removed as we're using custom filters instead
+    // General search filter
+    if (debouncedSearchText) {
+      filteredResults = filteredResults.filter(item => search(item, debouncedSearchText));
+    }
 
     // Card number filter
     if (debouncedCardNumber) {
@@ -140,6 +174,16 @@ const TagsPage = () => {
     // Location filter
     if (debouncedLocation) {
       filteredResults = filteredResults.filter(item => filterByLocation(item, debouncedLocation));
+    }
+
+    // Creator filter
+    if (debouncedCreator) {
+      filteredResults = filteredResults.filter(item => filterByCreator(item, debouncedCreator));
+    }
+
+    // Resolver filter
+    if (debouncedResolver) {
+      filteredResults = filteredResults.filter(item => filterByResolver(item, debouncedResolver));
     }
 
     // Date range filter
@@ -154,7 +198,7 @@ const TagsPage = () => {
     }
 
     return filteredResults;
-  }, [data, debouncedCardNumber, debouncedLocation, dateRange, dateFilterType, sortOption, search, filterByCardNumber, filterByLocation, filterByDateRange, sortCards]);
+  }, [data, debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedCreator, debouncedResolver, dateRange, dateFilterType, sortOption, search, filterByCardNumber, filterByLocation, filterByCreator, filterByResolver, filterByDateRange, sortCards]);
 
   // Sort options for dropdown
   const sortOptions = [
@@ -199,6 +243,20 @@ const TagsPage = () => {
               <Divider style={{ margin: '12px 0' }} />
 
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                {/* General Search */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                    <Typography.Text strong>{Strings.search}</Typography.Text>
+                  </div>
+                  <Input
+                    placeholder={`${Strings.searchBy}: ${Strings.creator}, ${Strings.area}, ${Strings.cardType}, ${Strings.methodology}, ${Strings.preclassifier}, ${Strings.priority}, ${Strings.mechanic}, ${Strings.responsible}`}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    style={{ borderRadius: '6px' }}
+                    allowClear
+                  />
+                </div>
+
                 {/* Sort Options */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
@@ -224,6 +282,7 @@ const TagsPage = () => {
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value)}
                       style={{ borderRadius: '6px' }}
+                      allowClear
                     />
                   </div>
 
@@ -237,6 +296,37 @@ const TagsPage = () => {
                       value={location_}
                       onChange={(e) => setLocation(e.target.value)}
                       style={{ borderRadius: '6px' }}
+                      allowClear
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  {/* Creator Filter */}
+                  <div style={{ flex: 1, minWidth: '200px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                      <Typography.Text strong>{Strings.creator}</Typography.Text>
+                    </div>
+                    <Input
+                      placeholder={`${Strings.filterBy} ${Strings.creator.toLowerCase()}`}
+                      value={creator}
+                      onChange={(e) => setCreator(e.target.value)}
+                      style={{ borderRadius: '6px' }}
+                      allowClear
+                    />
+                  </div>
+
+                  {/* Resolver Filter */}
+                  <div style={{ flex: 1, minWidth: '200px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                      <Typography.Text strong>{Strings.responsible}</Typography.Text>
+                    </div>
+                    <Input
+                      placeholder={`${Strings.filterBy} ${Strings.responsible.toLowerCase()}`}
+                      value={resolver}
+                      onChange={(e) => setResolver(e.target.value)}
+                      style={{ borderRadius: '6px' }}
+                      allowClear
                     />
                   </div>
                 </div>
