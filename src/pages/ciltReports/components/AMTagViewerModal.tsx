@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
-import { Modal, Typography, Tag, Spin, Divider } from "antd";
+import { Modal, Typography, Spin, Divider } from "antd";
 import { useGetCardDetailsMutation } from "../../../services/cardService";
 import { 
-  formatDate,
-  getCardStatusAndText,
-  getDaysSince,
   hasAudios,
   hasImages,
   hasVideos

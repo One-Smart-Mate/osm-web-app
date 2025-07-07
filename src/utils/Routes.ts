@@ -8,6 +8,7 @@ const Users = "/users";
 const Levels = "/levels";
 const LevelsReadOnly = "/levels-readonly";
 const Cards = "/cards";
+const TagsFastPassword = "/tags-fast-password";
 const Positions = "/positions";
 const AmDiscardReasons = "/am-discard-reasons";
 export const ResetPasswordRoute = "/reset-password";
@@ -36,6 +37,7 @@ export default {
   Levels,
   LevelsReadOnly,
   Cards,
+  TagsFastPassword,
   Login,
   CardDetails,
   Charts,

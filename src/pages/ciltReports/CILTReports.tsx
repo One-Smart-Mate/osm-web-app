@@ -299,7 +299,7 @@ export const CILTReports = () => {
                 pageSizeOptions: ["20", "50", "100", "200"],
                 total: filteredExecutions.length,
               }}
-              onChange={(pagination) => setPagination(pagination)}
+              onChange={(pagination) => setPagination(pagination as any)}
               bordered
               size="middle"
               scroll={{ x: 800 }}

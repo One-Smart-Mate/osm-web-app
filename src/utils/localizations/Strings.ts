@@ -19,6 +19,7 @@ class StringsBase {
   static preclassifiersSB = "preclassifiersSB";
   static levelsSB = "levelsSB";
   static cardsSB = "cardsSB";
+  static tagsFastPasswordSB = "tagsFastPasswordSB";
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
   static positionsSB = "positionsSB";

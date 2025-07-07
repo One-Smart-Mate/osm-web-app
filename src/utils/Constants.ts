@@ -71,6 +71,7 @@ const ROUTES_PATH = {
   dashboard: "dashboard",
   sites:'sites',
   cards: 'cards',
+  tagsFastPassword: 'tags-fast-password',
   charts: 'charts',
   users: 'users',
   priorities: 'priorities',
