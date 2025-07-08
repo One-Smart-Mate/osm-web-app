@@ -1641,6 +1641,15 @@ const resources = {
       searchBy: "Search by",
       filterBy: "Filter by",
       discarted: "Discarted",
+      
+      // Evidence viewer strings
+      viewInitialEvidence: "View initial evidence",
+      viewFinalEvidence: "View final evidence", 
+      initialEvidenceTitle: "Initial Evidence",
+      finalEvidenceTitle: "Final Evidence",
+      evidenceDetails: "Evidence Details",
+      openEvidence: "Open Evidence",
+      resolved: "Resolved",
     },
   },
   es: {
@@ -3296,6 +3305,15 @@ const resources = {
       searchBy: "Buscar por",
       filterBy: "Filtrar por",
       discarted: "Descartada",
+      
+      // Evidence viewer strings
+      viewInitialEvidence: "Ver evidencia al inicio",
+      viewFinalEvidence: "Ver evidencia al cierre",
+      initialEvidenceTitle: "Evidencia al Inicio",
+      finalEvidenceTitle: "Evidencia al Cierre",
+      evidenceDetails: "Detalles de Evidencia",
+      openEvidence: "Abrir Evidencia",
+      resolved: "Resuelto",
     },
   },
 };

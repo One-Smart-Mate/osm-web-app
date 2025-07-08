@@ -1663,6 +1663,15 @@ class StringsBase {
   static searchBy = "searchBy";
   static filterBy = "filterBy";
   static discarted = "discarted";
+  
+  // Evidence viewer strings
+  static viewInitialEvidence = "viewInitialEvidence";
+  static viewFinalEvidence = "viewFinalEvidence";
+  static initialEvidenceTitle = "initialEvidenceTitle";
+  static finalEvidenceTitle = "finalEvidenceTitle";
+  static evidenceDetails = "evidenceDetails";
+  static openEvidence = "openEvidence";
+  static resolved = "resolved";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

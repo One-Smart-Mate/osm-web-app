@@ -53,6 +53,7 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
+      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -136,6 +137,19 @@ export const CILTReports = () => {
 
   const columns: ColumnsType<CiltSequenceExecution> = [
     {
+      title: "ID",
+      dataIndex: "siteExecutionId",
+      key: "siteExecutionId",
+      render: (text) => text || Strings.oplFormNotAssigned,
+      width: 60,
+      align: "center",
+      sorter: (a, b) => {
+        const aId = a.siteExecutionId || 0;
+        const bId = b.siteExecutionId || 0;
+        return aId - bId;
+      },
+    },
+    {
       title: Strings.route,
       dataIndex: "route",
       key: "route",
@@ -210,14 +224,14 @@ export const CILTReports = () => {
         return status === "A" ? (
           <Tag color="green">{Strings.active}</Tag>
         ) : (
-          <Tag color="red">{Strings.inactive}</Tag>
+          <Tag color="blue">{Strings.resolved}</Tag>
         );
       },
       width: 80,
       align: "center",
       filters: [
         { text: Strings.active, value: "A" },
-        { text: Strings.inactive, value: "I" },
+        { text: Strings.resolved, value: "R" },
       ],
       onFilter: (value, record) => record.status === value as string,
     },

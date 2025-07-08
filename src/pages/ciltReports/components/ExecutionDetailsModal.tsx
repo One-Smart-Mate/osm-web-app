@@ -4,20 +4,40 @@ import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService
 import OplViewerModal from "./OplViewerModal";
 import AMTagViewerModal from "./AMTagViewerModal";
 import DiagramViewerModal from "./DiagramViewerModal";
+import EvidenceViewerModal from "./EvidenceViewerModal";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { OplDetail } from "../../../data/cilt/oplDetails/oplDetails";
 import { CiltSequenceExecution } from "../../../data/cilt/ciltSequencesExecutions/ciltSequencesExecutions";
 import Strings from "../../../utils/localizations/Strings";
 import { format } from "date-fns";
 
+// Evidence interface
+interface Evidence {
+  id: number;
+  siteId: number;
+  positionId: number;
+  ciltId: number;
+  ciltSequencesExecutionsId: number;
+  evidenceUrl: string;
+  type: 'INITIAL' | 'FINAL' | null;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
+
 // Extended OplMstr type to include details property
 interface ExtendedOplMstr extends OplMstr {
   details?: OplDetail[];
 }
 
+// Extended CiltSequenceExecution type to include evidences property
+interface ExtendedCiltSequenceExecution extends CiltSequenceExecution {
+  evidences?: Evidence[];
+}
+
 interface ExecutionDetailsModalProps {
   isVisible: boolean;
-  execution: CiltSequenceExecution | null;
+  execution: ExtendedCiltSequenceExecution | null;
   onClose: () => void;
 }
 
@@ -40,6 +60,11 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
   
   // State for Diagram modal
   const [isDiagramModalVisible, setIsDiagramModalVisible] = useState(false);
+  
+  // State for Evidence modal
+  const [isEvidenceModalVisible, setIsEvidenceModalVisible] = useState(false);
+  const [currentEvidence, setCurrentEvidence] = useState<Evidence | null>(null);
+  const [evidenceModalTitle, setEvidenceModalTitle] = useState("");
 
   // Get OPL data mutation
   const [getOplMstrById] = useGetOplMstrByIdMutation();
@@ -123,6 +148,25 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
     setIsAmTagModalVisible(false);
   };
 
+  // Handle evidence view
+  const handleViewEvidence = (type: 'INITIAL' | 'FINAL') => {
+    if (!execution?.evidences) return;
+    
+    const evidence = execution.evidences.find(e => e.type === type);
+    if (evidence) {
+      setCurrentEvidence(evidence);
+      setEvidenceModalTitle(type === 'INITIAL' ? Strings.initialEvidenceTitle : Strings.finalEvidenceTitle);
+      setIsEvidenceModalVisible(true);
+    }
+  };
+
+  // Handle closing Evidence modal
+  const handleEvidenceModalClose = () => {
+    setIsEvidenceModalVisible(false);
+    setCurrentEvidence(null);
+    setEvidenceModalTitle("");
+  };
+
   return (
     <>
       <Modal
@@ -134,7 +178,7 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
             {Strings.close}
           </Button>
         ]}
-        width={800}
+        width={1000}
         bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflow: 'auto', paddingRight: 20 }}
         style={{ top: 20 }}
       >
@@ -182,15 +226,35 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
                   </Descriptions.Item>
                   
                   <Descriptions.Item label={Strings.initialParameter}>
-                    {execution.initialParameter || Strings.oplFormNotAssigned}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{execution.initialParameter || Strings.oplFormNotAssigned}</span>
+                      <Button 
+                        type="link" 
+                        size="small"
+                        onClick={() => handleViewEvidence('INITIAL')}
+                        disabled={!execution.evidences || !execution.evidences.some(e => e.type === 'INITIAL')}
+                      >
+{Strings.viewInitialEvidence}
+                      </Button>
+                    </div>
                   </Descriptions.Item>
                   
                   <Descriptions.Item label={Strings.finalParameter}>
-                    {execution.finalParameter || Strings.oplFormNotAssigned}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{execution.finalParameter || Strings.oplFormNotAssigned}</span>
+                      <Button 
+                        type="link" 
+                        size="small"
+                        onClick={() => handleViewEvidence('FINAL')}
+                        disabled={!execution.evidences || !execution.evidences.some(e => e.type === 'FINAL')}
+                      >
+{Strings.viewFinalEvidence}
+                      </Button>
+                    </div>
                   </Descriptions.Item>
                   
                   <Descriptions.Item label={Strings.status}>
-                    {execution.status === "A" ? Strings.active : Strings.inactive}
+                    {execution.status === "A" ? Strings.active : Strings.resolved}
                   </Descriptions.Item>
                 </Descriptions>
               </Col>
@@ -337,6 +401,14 @@ export const ExecutionDetailsModal: React.FC<ExecutionDetailsModalProps> = ({
         ciltId={execution?.ciltId || null}
         onClose={handleDiagramModalClose}
         title={Strings.seeDiagram}
+      />
+      
+      {/* Evidence Viewer Modal */}
+      <EvidenceViewerModal
+        open={isEvidenceModalVisible}
+        evidence={currentEvidence}
+        onClose={handleEvidenceModalClose}
+        title={evidenceModalTitle}
       />
     </>
   );
