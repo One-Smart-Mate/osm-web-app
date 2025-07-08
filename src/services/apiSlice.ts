@@ -16,8 +16,8 @@ export const apiSlice = createApi({
       return headers;
     },
    }),
-  tagTypes: ["User"],
-  endpoints: (_) => ({}),
+  tagTypes: ["User", "OplLevel"],
+  endpoints: (_) => ({}),
   refetchOnFocus: true, // Refetch data when the app regains focus
   refetchOnReconnect: true, 
 });

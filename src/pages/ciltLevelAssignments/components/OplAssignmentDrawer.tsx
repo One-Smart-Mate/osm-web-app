@@ -98,9 +98,14 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
 
       await onAssign(payload);
 
-      // Success notification is now handled by the parent component
+      // Show success notification
+      notification.success({
+        message: Strings.success,
+        description: Strings.oplAssignmentSuccess || "OPL asignado correctamente",
+      });
+
+      // Reset state - drawer closing is handled by parent
       setSelectedOpl(null);
-      onClose();
     } catch (error) {
       console.error("Error in assignment:", error);
 

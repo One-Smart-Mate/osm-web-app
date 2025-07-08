@@ -1662,6 +1662,7 @@ class StringsBase {
   static noPreclassifiers = "noPreclassifiers";
   static searchBy = "searchBy";
   static filterBy = "filterBy";
+  static discarted = "discarted";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

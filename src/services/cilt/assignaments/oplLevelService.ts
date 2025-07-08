@@ -11,6 +11,7 @@ export const oplLevelsService = apiSlice.injectEndpoints({
         body: data,
       }),
       transformResponse: (response: { data: OplLevel }) => response.data,
+      invalidatesTags: ["OplLevel"],
     }),
 
     deleteOplLevel: builder.mutation<void, number>({
@@ -18,11 +19,13 @@ export const oplLevelsService = apiSlice.injectEndpoints({
         url: `/opl-levels/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["OplLevel"],
     }),
 
     getOplLevelsByLevelId: builder.query<OplLevel[], number>({
       query: (levelId) => `/opl-levels/level/${levelId}`,
       transformResponse: (response: { data: OplLevel[] }) => response.data,
+      providesTags: ["OplLevel"],
     }),
   }),
 });

@@ -345,6 +345,8 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             message: Strings.success,
             description: 'Asignación de OPL eliminada correctamente.',
           });
+          // Close the drawer to refresh the tree view
+          onClose();
         } catch (error: any) {
           AnatomyNotification.error(notification, error, 'Error al eliminar la asignación de OPL');
         }
