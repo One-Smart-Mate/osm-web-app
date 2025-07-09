@@ -74,14 +74,16 @@ const TagCard = ({ data }: TagCardProps) => {
             <Typography.Title level={5}>
               {data.cardTypeMethodologyName} {data.siteCardId}
             </Typography.Title>
-            <div
-              className="w-10 md:flex-1 rounded-full"
-              style={{
-                backgroundColor: `#${data.cardTypeColor}`,
-                width: "1.5rem",
-                height: "1.5rem",
-              }}
-            />
+            {data.cardTypeColor && (
+              <div
+                className="w-10 md:flex-1 rounded-full"
+                style={{
+                  backgroundColor: `#${data.cardTypeColor}`,
+                  width: "1.5rem",
+                  height: "1.5rem",
+                }}
+              />
+            )}
           </div>
           {evidenceIndicator(data.evidences)}
         </div>
