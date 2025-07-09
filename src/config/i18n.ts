@@ -1650,6 +1650,7 @@ const resources = {
       evidenceDetails: "Evidence Details",
       openEvidence: "Open Evidence",
       resolved: "Resolved",
+      oplAssignmentSuccess: "OPL assigned successfully",
     },
   },
   es: {
@@ -1659,7 +1660,6 @@ const resources = {
       usersSelected: "Usuarios seleccionados",
       noUsersSelected: "No hay usuarios seleccionados",
       selectedUsers: "Usuarios seleccionados",
-
       requiredLevelId: "Id de nivel requerido",
       requiredLevelName: "Nombre del nivel requerido",
       requiredRoute: "Ruta de posición requerida",
@@ -3314,6 +3314,7 @@ const resources = {
       evidenceDetails: "Detalles de Evidencia",
       openEvidence: "Abrir Evidencia",
       resolved: "Resuelto",
+      oplAssignmentSuccess: "OPL asignado correctamente",
     },
   },
 };

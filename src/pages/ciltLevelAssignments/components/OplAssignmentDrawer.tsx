@@ -101,7 +101,7 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
       // Show success notification
       notification.success({
         message: Strings.success,
-        description: Strings.oplAssignmentSuccess || "OPL asignado correctamente",
+        description: Strings.oplAssignmentSuccess,
       });
 
       // Reset state - drawer closing is handled by parent

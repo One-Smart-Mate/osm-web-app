@@ -1672,6 +1672,7 @@ class StringsBase {
   static evidenceDetails = "evidenceDetails";
   static openEvidence = "openEvidence";
   static resolved = "resolved";
+  static oplAssignmentSuccess = "oplAssignmentSuccess";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
