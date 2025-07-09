@@ -13,7 +13,7 @@ import * as zipjs from "@zip.js/zip.js";
 import { useUpdateUserMutation, useGetUserMutation } from "../../services/userService";
 import { UpdateUser } from "../../data/user/user.request";
 import { useAppSelector } from "../../core/store";
-import { selectSiteId } from "../../core/genericReducer";
+import { selectSiteId, selectIsSessionLocked } from "../../core/genericReducer";
 
 /**
  * Props for the UserProfileDropdown component
@@ -34,6 +34,9 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
   const [fastPasswordModalVisible, setFastPasswordModalVisible] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
   const location = useLocation();
+  
+  // Get session lock state
+  const isSessionLocked = useAppSelector(selectIsSessionLocked);
   
   // Get siteId from multiple sources with fallback priority
   const reduxSiteId = useAppSelector(selectSiteId);
@@ -92,6 +95,8 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
    * Generate a random 4-letter fast password and update it in the backend
    */
   const handleGenerateFastPassword = async () => {
+    if (isSessionLocked) return; // Prevent action when locked
+    
     if (!currentSiteId) {
       notification.warning({
         message: Strings.warning,
@@ -155,6 +160,8 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
    * Uses environment variable for ZIP password
    */
   const handleDownloadLogs = async () => {
+    if (isSessionLocked) return; // Prevent action when locked
+    
     try {
       const logs = JSON.parse(localStorage.getItem("errorLogs") || "[]");
       
@@ -295,21 +302,40 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       <Dropdown
         menu={{ items: menuItems }}
         placement="bottomRight"
-        trigger={["click"]}
+        trigger={isSessionLocked ? [] : ["click"]} // Disable trigger when locked
         overlayStyle={{
           backgroundColor: token.colorBgElevated,
           borderRadius: token.borderRadius,
           boxShadow: token.boxShadowSecondary,
         }}
+        disabled={isSessionLocked} // Disable dropdown when locked
       >
-        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded">
+        <div 
+          className={`flex items-center gap-2 px-2 py-1 rounded ${
+            isSessionLocked 
+              ? 'cursor-not-allowed opacity-50' 
+              : 'cursor-pointer hover:bg-gray-100'
+          }`}
+          style={{
+            pointerEvents: isSessionLocked ? 'none' : 'auto'
+          }}
+        >
           <Avatar
             size="small"
             icon={<UserOutlined />}
             src={user.logo}
             className="flex-shrink-0"
+            style={{
+              opacity: isSessionLocked ? 0.5 : 1
+            }}
           />
-          <span className="text-sm font-medium truncate max-w-32">
+          <span 
+            className="text-sm font-medium truncate max-w-32"
+            style={{
+              opacity: isSessionLocked ? 0.5 : 1,
+              color: isSessionLocked ? token.colorTextDisabled : token.colorText
+            }}
+          >
             {user.name}
           </span>
         </div>
@@ -321,7 +347,7 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       {/* Fast Password Modal */}
       <Modal
         title={Strings.fastPasswordModalTitle}
-        open={fastPasswordModalVisible}
+        open={fastPasswordModalVisible && !isSessionLocked} // Prevent modal when locked
         onCancel={handleCloseFastPasswordModal}
         footer={[
           <Button key="close" onClick={handleCloseFastPasswordModal}>

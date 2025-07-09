@@ -1,14 +1,15 @@
 import { Form, Input, Button, notification, Upload, UploadProps, Spin } from "antd";
-import { useCreateCiltMstrMutation } from "../../../services/cilt/ciltMstrService";
+import { useCreateCiltMstrMutation, useUpdateCiltMstrMutation } from "../../../services/cilt/ciltMstrService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
 import { UserOutlined, PlusOutlined } from "@ant-design/icons";
-import { handleUploadToFirebaseStorage } from "../../../config/firebaseUpload";
+import { uploadFileToFirebaseWithPath } from "../../../config/firebaseUpload";
 import UserSelectionModal from "../../components/UserSelectionModal";
-import type { UploadFile, UploadFileStatus } from "antd/es/upload/interface";
+import type { UploadFile } from "antd/es/upload/interface";
 import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
+import { CiltMstr, UpdateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
 
 interface FormProps {
   form: any;
@@ -17,6 +18,7 @@ interface FormProps {
 
 const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
   const [createCiltMstr] = useCreateCiltMstrMutation();
+  const [updateCiltMstr] = useUpdateCiltMstrMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
   const [approverModalVisible, setApproverModalVisible] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [firebaseUrl, setFirebaseUrl] = useState<string>("");
 
   // Get siteId from location state
   const location = useLocation();
@@ -44,7 +45,7 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       setApprovedById(null);
       setFileList([]);
     }
-  }, [siteId]); // Dependency on siteId instead of position
+  }, [siteId]);
 
   const fetchResponsibles = async () => {
     if (!siteId) return;
@@ -121,41 +122,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
     setFileList(newFileList);
   };
 
-  const customUpload = async (options: any) => {
-    const { file, onSuccess, onError } = options;
-    try {
-      setUploading(true);
-      const sitePath = `site_${siteId}/cilt-procedures`;
-      const url = await handleUploadToFirebaseStorage(
-        sitePath, 
-        {
-          name: file.name,
-          originFileObj: file
-        },
-        "jpg"
-      );
-      
-      // Store the Firebase URL directly in state for later use
-      setFirebaseUrl(url);
-      
-      // Update the file list with the uploaded file
-      const newFile: UploadFile = {
-        uid: file.uid,
-        name: file.name,
-        status: "done" as UploadFileStatus,
-        url: url,
-      };
-      setFileList([newFile]);
-      
-      onSuccess("Upload successful");
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      onError("Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
-
   // Upload button
   const uploadButton = (
     <div>
@@ -166,7 +132,7 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
 
   const handleSubmit = async (values: any) => {
     // Use the stored Firebase URL
-    if (!firebaseUrl) {
+    if (fileList.length === 0) {
       notification.error({
         message: Strings.error,
         description: Strings.registerCiltLayoutImageRequiredValidation,
@@ -175,9 +141,8 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       return;
     }
 
-    // Construct the payload - using direct object literal to match backend requirements
-    // Using 'as any' to bypass TypeScript type checking since the backend API has different requirements
-    // than our frontend model (backend rejects dateOfLastUsed property)
+    setUploading(true);
+    
     const ciltPayload = {
       siteId: Number(siteId),
       ciltName: values.ciltName,
@@ -189,51 +154,68 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
       standardTime: undefined, 
-      urlImgLayout: firebaseUrl, 
+      urlImgLayout: "uploading...", 
       order: 1, 
       status: "A", 
       ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined
-      // dateOfLastUsed and createdAt removed as backend rejects them
     } as any;
     
     try {
-      // Make the API call to create the CILT procedure
-      const result = await createCiltMstr(ciltPayload).unwrap();
-      console.log('CILT Mstr created successfully:', result);
+      const createdCilt: CiltMstr = await createCiltMstr(ciltPayload).unwrap();
       
-      // Show only one success notification with appropriate message
+      const file = fileList[0];
+      const path = `site_${siteId}/cilt/${createdCilt.id}/images/${file.name}`;
+      const firebaseUrl = await uploadFileToFirebaseWithPath(path, file);
+
+      const updatePayload: UpdateCiltMstrDTO = {
+        id: createdCilt.id,
+        siteId: createdCilt.siteId ?? undefined,
+        ciltName: createdCilt.ciltName ?? undefined,
+        ciltDescription: createdCilt.ciltDescription ?? undefined,
+        creatorId: createdCilt.creatorId ?? undefined,
+        creatorName: createdCilt.creatorName ?? undefined,
+        reviewerId: createdCilt.reviewerId ?? undefined,
+        reviewerName: createdCilt.reviewerName ?? undefined,
+        approvedById: createdCilt.approvedById ?? undefined,
+        approvedByName: createdCilt.approvedByName ?? undefined,
+        standardTime: createdCilt.standardTime ?? undefined,
+        order: createdCilt.order ?? undefined,
+        status: createdCilt.status ?? undefined,
+        ciltDueDate: createdCilt.ciltDueDate ?? undefined,
+        dateOfLastUsed: createdCilt.dateOfLastUsed ?? new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        urlImgLayout: firebaseUrl,
+      };
+
+      await updateCiltMstr(updatePayload).unwrap();
+      
       notification.success({
         message: Strings.success,
         description: Strings.ciltMasterCreateSuccess,
         duration: 4,
       });
       
-      // Reset form fields
       form.resetFields();
       setCreatorId(null);
       setReviewerId(null);
       setApprovedById(null);
       setFileList([]);
-      setFirebaseUrl('');
       
-      // Call onSuccess callback to trigger data refresh in parent component
       if (onSuccess) {
-        // Call onSuccess immediately
         onSuccess();
-        
-        // Call it again after a short delay to ensure data is refreshed
         setTimeout(() => {
           onSuccess();
         }, 500);
       }
     } catch (error: any) {
       console.error(Strings.ciltMasterCreateError, error);
-      // Show error notification
       notification.error({
         message: Strings.error,
         description: `${Strings.ciltMasterCreateError}: ${error.data?.message || "Unknown error"}`,
         duration: 6,
       });
+    } finally {
+        setUploading(false);
     }
   };
 
@@ -280,7 +262,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       </Form.Item>
 
       <div className="flex flex-row gap-4">
-        {/* Standard time field removed - now calculated automatically in the database */}
         <Form.Item
           name="ciltDueDate"
           label={Strings.ciltDueDate}
@@ -389,17 +370,7 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
           fileList={fileList}
           onPreview={handlePreview}
           onChange={handleChange}
-          customRequest={customUpload}
-          beforeUpload={(file) => {
-            const isImage = file.type.startsWith('image/');
-            if (!isImage) {
-              notification.error({
-                message: Strings.error,
-                description: Strings.imageUploadError,
-              });
-            }
-            return isImage || Upload.LIST_IGNORE;
-          }}
+          beforeUpload={() => false}
           maxCount={1}
           className="border-gray-300 p-2 rounded-md"
         >
@@ -412,6 +383,7 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
           type="primary" 
           htmlType="submit"
           size="large"
+          loading={uploading}
           className="px-6 py-2 h-auto font-medium"
         >
           {Strings.save}

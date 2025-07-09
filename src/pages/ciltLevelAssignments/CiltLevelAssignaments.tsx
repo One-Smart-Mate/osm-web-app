@@ -759,11 +759,9 @@ const CiltLevelAssignaments: React.FC = () => {
       // Refresh assignment counts to show the new assignment immediately
       await refreshAssignmentCounts();
       
-      // Show success notification with localized message
-      notification.success({
-        message: Strings.success,
-        description: Strings.assignmentSuccessful,
-      });
+      // Success notification is handled by the child component
+      // Close the drawer after successful assignment
+      setIsDrawerVisible(false);
     } catch (error) {
       console.error(Strings.oplErrorAssigning, error);
 
@@ -773,9 +771,11 @@ const CiltLevelAssignaments: React.FC = () => {
       } else {
         AnatomyNotification.error(notification, Strings.oplErrorAssigning);
       }
+      // Re-throw error so the child component can handle it
+      throw error;
     } finally {
       setIsAssigning(false);
-      setIsDrawerVisible(false);
+      // Don't automatically close the drawer here, let the child component handle it
     }
   };
 

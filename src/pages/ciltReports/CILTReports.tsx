@@ -23,6 +23,10 @@ export const CILTReports = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedExecution, setSelectedExecution] =
     useState<CiltSequenceExecution | null>(null);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 100,
+  });
 
   const [getCiltSequenceExecutionsBySite] =
     useGetCiltSequenceExecutionsBySiteMutation();
@@ -49,6 +53,7 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
+      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -132,6 +137,19 @@ export const CILTReports = () => {
 
   const columns: ColumnsType<CiltSequenceExecution> = [
     {
+      title: "ID",
+      dataIndex: "siteExecutionId",
+      key: "siteExecutionId",
+      render: (text) => text || Strings.oplFormNotAssigned,
+      width: 60,
+      align: "center",
+      sorter: (a, b) => {
+        const aId = a.siteExecutionId || 0;
+        const bId = b.siteExecutionId || 0;
+        return aId - bId;
+      },
+    },
+    {
       title: Strings.route,
       dataIndex: "route",
       key: "route",
@@ -206,14 +224,14 @@ export const CILTReports = () => {
         return status === "A" ? (
           <Tag color="green">{Strings.active}</Tag>
         ) : (
-          <Tag color="red">{Strings.inactive}</Tag>
+          <Tag color="blue">{Strings.resolved}</Tag>
         );
       },
       width: 80,
       align: "center",
       filters: [
         { text: Strings.active, value: "A" },
-        { text: Strings.inactive, value: "I" },
+        { text: Strings.resolved, value: "R" },
       ],
       onFilter: (value, record) => record.status === value as string,
     },
@@ -290,10 +308,12 @@ export const CILTReports = () => {
               columns={columns}
               rowKey={(record) => String(record.id)}
               pagination={{
-                pageSize: 20,
+                ...pagination,
                 showSizeChanger: true,
-                pageSizeOptions: ["10", "20", "50", "100"],
+                pageSizeOptions: ["20", "50", "100", "200"],
+                total: filteredExecutions.length,
               }}
+              onChange={(pagination) => setPagination(pagination as any)}
               bordered
               size="middle"
               scroll={{ x: 800 }}

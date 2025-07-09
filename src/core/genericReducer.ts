@@ -1,7 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Strings from "../utils/localizations/Strings";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "./store";
 
-const initialState = {
+export interface GenericState {
+  rowData: any;
+  indicators: {
+    company: { updated: boolean };
+    site: { updated: boolean };
+    priority: { updated: boolean };
+    cardType: { updated: boolean };
+    level: { created: boolean; updated: boolean };
+    preclassifier: { updated: boolean };
+    user: { updated: boolean };
+    card: { updated: boolean };
+  };
+  siteId: string;
+  siteCode: string;
+  cardUpdatedIndicator: boolean;
+  isSessionLocked: boolean;
+}
+
+const initialState: GenericState = {
   rowData: null,
   indicators: {
     company: { updated: false },
@@ -13,9 +33,12 @@ const initialState = {
     user: { updated: false },
     card: { updated: false },
   },
-  siteId: 0,
+  siteId: "",
   siteCode: Strings.empty,
+  cardUpdatedIndicator: false,
+  isSessionLocked: false,
 };
+
 const genericSlice = createSlice({
   name: "data",
   initialState,
@@ -89,6 +112,12 @@ const genericSlice = createSlice({
     resetCardUpdatedIndicator: (state) => {
       state.indicators.card.updated = false;
     },
+    setSessionLocked: (state, action: PayloadAction<boolean>) => {
+      state.isSessionLocked = action.payload;
+    },
+    toggleSessionLock: (state) => {
+      state.isSessionLocked = !state.isSessionLocked;
+    },
   },
 });
 
@@ -116,6 +145,8 @@ export const {
   resetUserUpdatedIndicator,
   setCardUpdatedIndicator,
   resetCardUpdatedIndicator,
+  setSessionLocked,
+  toggleSessionLock,
 } = genericSlice.actions;
 
 export default genericSlice.reducer;
@@ -141,3 +172,4 @@ export const selectUserUpdatedIndicator = (state: any) =>
 export const selectCardUpdatedIndicator = (state: any) =>
   state.data.indicators.card.updated;
 export const selectSiteId = (state: any) => state.data.siteId;
+export const selectIsSessionLocked = (state: RootState) => state.data.isSessionLocked;

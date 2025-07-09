@@ -19,6 +19,7 @@ class StringsBase {
   static preclassifiersSB = "preclassifiersSB";
   static levelsSB = "levelsSB";
   static cardsSB = "cardsSB";
+  static tagsFastPasswordSB = "tagsFastPasswordSB";
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
   static positionsSB = "positionsSB";
@@ -1657,6 +1658,21 @@ class StringsBase {
   static levelMovedMessage = "levelMovedMessage";
   static levelMovedDescription = "levelMovedDescription";
   static invalidMoveDescription = "invalidMoveDescription";
+  static ciltDueDateValidation = "ciltDueDateValidation";
+  static noPreclassifiers = "noPreclassifiers";
+  static searchBy = "searchBy";
+  static filterBy = "filterBy";
+  static discarted = "discarted";
+  
+  // Evidence viewer strings
+  static viewInitialEvidence = "viewInitialEvidence";
+  static viewFinalEvidence = "viewFinalEvidence";
+  static initialEvidenceTitle = "initialEvidenceTitle";
+  static finalEvidenceTitle = "finalEvidenceTitle";
+  static evidenceDetails = "evidenceDetails";
+  static openEvidence = "openEvidence";
+  static resolved = "resolved";
+  static oplAssignmentSuccess = "oplAssignmentSuccess";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

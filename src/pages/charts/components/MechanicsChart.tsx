@@ -39,6 +39,7 @@ const MechanicsChart = ({
   const [selectedMechanicName, setSelectedMechanicName] = useState(Strings.empty);
   const [selectedCardTypeName, setSelectedCardTypeName] = useState(Strings.empty);
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
+  const [selectedCardsData, setSelectedCardsData] = useState<any[]>([]);
   const [searchParams, setSearchParams] = useState<{
     siteId: string;
     mechanicName?: string;
@@ -62,7 +63,10 @@ const MechanicsChart = ({
         categories: string[];
         series: Array<{
           name: string;
-          data: number[];
+          data: Array<{
+            count: number;
+            cards: any[];
+          }>;
         }>;
       };
       
@@ -78,14 +82,17 @@ const MechanicsChart = ({
         const userData: any = {
           mechanic: category,
           totalCards: 0,
+          cardsData: {}
         };
         
         // Calculate totals and individual values for on time cards (En tiempo) by card type
         let totalOnTimeCards = 0;
         onTimeSeries.forEach((serie: any) => {
           const cardType = serie.name.replace(' - En tiempo', '').toLowerCase().replace(/\s/g, '_');
-          const value = serie.data[categoryIndex] || 0;
+          const dataPoint = serie.data[categoryIndex] || { count: 0, cards: [] };
+          const value = dataPoint.count;
           userData[`${cardType}_onTime`] = value;
+          userData.cardsData[`${cardType}_onTime`] = dataPoint.cards;
           totalOnTimeCards += value;
         });
         userData.onTime_total = totalOnTimeCards;
@@ -94,8 +101,10 @@ const MechanicsChart = ({
         let totalOverdueCards = 0;
         overdueSeries.forEach((serie: any) => {
           const cardType = serie.name.replace(' - Vencidas', '').toLowerCase().replace(/\s/g, '_');
-          const value = serie.data[categoryIndex] || 0;
+          const dataPoint = serie.data[categoryIndex] || { count: 0, cards: [] };
+          const value = dataPoint.count;
           userData[`${cardType}_overdue`] = value;
+          userData.cardsData[`${cardType}_overdue`] = dataPoint.cards;
           totalOverdueCards += value;
         });
         userData.overdue_total = totalOverdueCards;
@@ -109,7 +118,8 @@ const MechanicsChart = ({
         // Store on time breakdown by type
         onTimeSeries.forEach((serie: any) => {
           const cardType = serie.name.replace(' - En tiempo', '');
-          const value = serie.data[categoryIndex] || 0;
+          const dataPoint = serie.data[categoryIndex] || { count: 0, cards: [] };
+          const value = dataPoint.count;
           if (value > 0) {
             userData.breakdown.onTime[cardType] = value;
           }
@@ -118,7 +128,8 @@ const MechanicsChart = ({
         // Store overdue breakdown by type
         overdueSeries.forEach((serie: any) => {
           const cardType = serie.name.replace(' - Vencidas', '');
-          const value = serie.data[categoryIndex] || 0;
+          const dataPoint = serie.data[categoryIndex] || { count: 0, cards: [] };
+          const value = dataPoint.count;
           if (value > 0) {
             userData.breakdown.overdue[cardType] = value;
           }
@@ -225,13 +236,32 @@ const MechanicsChart = ({
   };
 
   const handleOnClick = (data: any, status: 'onTime' | 'overdue', cardTypeName?: string) => {
-    // Set search parameters to fetch real cards from backend
-    setSearchParams({
-      siteId,
-      mechanicName: data.mechanic !== Strings.noMechanic ? data.mechanic : undefined,
-      cardTypeName: cardTypeName || '',
+    // Get cards directly from the chart data
+    let cards: any[] = [];
+    if (cardTypeName) {
+      // Get cards for specific card type
+      const cardKey = `${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`;
+      cards = data.cardsData[cardKey] || [];
+    } else {
+      // Get all cards for the status by combining all card types
+      const cardKeys = Object.keys(data.cardsData).filter(key => key.endsWith(`_${status}`));
+      cards = cardKeys.reduce((allCards: any[], key: string) => {
+        return allCards.concat(data.cardsData[key] || []);
+      }, []);
+    }
+
+    // Add missing fields to each card
+    const enrichedCards = cards.map(card => {
+      return {
+        ...card,
+        cardTypeName: card.cardTypeMethodologyName || 'Unknown', // Add cardTypeName if missing
+        siteId: String(card.siteId || siteId) // Use card.siteId or fallback to component siteId
+      };
     });
 
+    // Set the enriched cards data directly without making API call
+    setSearchParams(null); // Clear search params since we're using direct data
+    
     // Get the count from the chart data
     const count = cardTypeName 
       ? data[`${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`] || 0
@@ -240,6 +270,9 @@ const MechanicsChart = ({
     setSelectedTotalCards(count.toString());
     setSelectedMechanicName(data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none);
     setSelectedCardTypeName(cardTypeName || `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`);
+    
+    // Store the enriched cards data to pass to the drawer
+    setSelectedCardsData(enrichedCards);
     setOpen(true);
   };
 
@@ -338,10 +371,14 @@ const MechanicsChart = ({
       </ResponsiveContainer>
       <DrawerTagList
         open={open}
-        dataSource={searchData}
-        isLoading={isFetching}
+        dataSource={selectedCardsData.length > 0 ? selectedCardsData : searchData}
+        isLoading={selectedCardsData.length > 0 ? false : isFetching}
         label={Strings.mechanic}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setSelectedCardsData([]);
+          setSearchParams(null);
+        }}
         totalCards={selectedTotalCards}
         text={selectedMechanicName}
         cardTypeName={selectedCardTypeName}

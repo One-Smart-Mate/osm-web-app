@@ -128,6 +128,7 @@ const UserForm = ({
         {formType == UserFormType.CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
+        key={`${formType}-${data?.id || 'new'}`}
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
         title={

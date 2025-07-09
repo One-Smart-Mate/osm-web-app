@@ -18,6 +18,7 @@ const useRouteValidation = (): boolean => {
     [UserRoles.IHSISADMIN]: ["*"],
     [UserRoles.LOCALADMIN]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.tagsFastPassword}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.positions}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,
@@ -33,6 +34,7 @@ const useRouteValidation = (): boolean => {
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
     [UserRoles.LOCALSYSADMIN]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
+    `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.tagsFastPassword}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.positions}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,

@@ -7,6 +7,8 @@ import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { buildRoute, getUserSiderOptions, navigateWithState } from "../../routes/RoutesExtensions";
 import { useLocation } from "react-router-dom";
+import { useAppSelector } from "../../core/store";
+import { selectIsSessionLocked } from "../../core/genericReducer";
 
 interface SideBarProps {
   collapsed: boolean;
@@ -20,6 +22,7 @@ const SideBar: React.FC<SideBarProps> = ({
   const { token } = theme.useToken();
   const navigate = navigateWithState();
   const location = useLocation();
+  const isSessionLocked = useAppSelector(selectIsSessionLocked);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
@@ -35,11 +38,17 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const handleClick = useCallback(
     (item: any) => {
+      if (isSessionLocked) return; // Prevent navigation when locked
       setSelectedKey(item.key);
       navigate(buildRoute(item.key));
     },
-    [navigate]
+    [navigate, isSessionLocked]
   );
+
+  const handleToggleCollapse = () => {
+    if (isSessionLocked) return; // Prevent toggle when locked
+    toggleCollapse();
+  };
 
   const setDefaultRoute = () => {
     const defaultKey = location.pathname.split("/").filter(Boolean).pop() || "";
@@ -64,21 +73,27 @@ const SideBar: React.FC<SideBarProps> = ({
           transition: "left 0.2s ease",
           padding: "0 10px",
           background: token.colorBgContainer,
+          opacity: isSessionLocked ? 0.5 : 1,
+          pointerEvents: isSessionLocked ? 'none' : 'auto',
         }}
       >
         {collapsed ? (
           <MenuUnfoldOutlined
             style={{
               fontSize: 20,
-              cursor: "pointer",
-              color: token.colorPrimaryHover,
+              cursor: isSessionLocked ? 'not-allowed' : 'pointer',
+              color: isSessionLocked ? token.colorTextDisabled : token.colorPrimaryHover,
             }}
-            onClick={toggleCollapse}
+            onClick={handleToggleCollapse}
           />
         ) : (
           <MenuFoldOutlined
-            style={{ fontSize: 20, cursor: "pointer" }}
-            onClick={toggleCollapse}
+            style={{ 
+              fontSize: 20, 
+              cursor: isSessionLocked ? 'not-allowed' : 'pointer',
+              color: isSessionLocked ? token.colorTextDisabled : token.colorText,
+            }}
+            onClick={handleToggleCollapse}
           />
         )}
       </div>
@@ -95,8 +110,26 @@ const SideBar: React.FC<SideBarProps> = ({
           boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
           transition: "width 0.2s ease",
           overflow: "auto",
+          opacity: isSessionLocked ? 0.4 : 1,
+          pointerEvents: isSessionLocked ? 'none' : 'auto',
         }}
       >
+        {/* Overlay when locked */}
+        {isSessionLocked && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              zIndex: 100,
+              pointerEvents: "all",
+            }}
+          />
+        )}
+        
         <div
           style={{
             height: 64,
@@ -122,7 +155,7 @@ const SideBar: React.FC<SideBarProps> = ({
                   style={{
                     padding: "10px 20px",
                     fontSize: 12,
-                    color: "#8C8C8C",
+                    color: isSessionLocked ? token.colorTextDisabled : "#8C8C8C",
                   }}
                 >
                   {section}
@@ -133,7 +166,7 @@ const SideBar: React.FC<SideBarProps> = ({
                 .map((item) => (
                   <Tooltip
                     key={item.key}
-                    title={collapsed ? item.label : undefined}
+                    title={collapsed && !isSessionLocked ? item.label : undefined}
                     placement="right"
                   >
                     <div
@@ -143,32 +176,47 @@ const SideBar: React.FC<SideBarProps> = ({
                         display: "flex",
                         alignItems: "center",
                         padding: "10px 20px",
-                        cursor: "pointer",
+                        cursor: isSessionLocked ? 'not-allowed' : 'pointer',
                         transition: "background 0.2s",
                         background:
-                          selectedKey === item.key
+                          selectedKey === item.key && !isSessionLocked
                             ? token.colorLinkActive
                             : "transparent",
                         position: "relative",
+                        color: isSessionLocked ? token.colorTextDisabled : token.colorText,
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedKey !== item.key) {
+                        if (selectedKey !== item.key && !isSessionLocked) {
                           (e.currentTarget as HTMLDivElement).style.background =
                             token.colorLinkHover;
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (selectedKey !== item.key) {
+                        if (selectedKey !== item.key && !isSessionLocked) {
                           (e.currentTarget as HTMLDivElement).style.background =
                             "transparent";
                         }
                       }}
                     >
-                      <span style={{ fontSize: 18 }}>{item.icon}</span>
+                      <span 
+                        style={{ 
+                          fontSize: 18,
+                          opacity: isSessionLocked ? 0.5 : 1
+                        }}
+                      >
+                        {item.icon}
+                      </span>
                       {!collapsed && (
-                        <span style={{ marginLeft: 15 }}>{item.label}</span>
+                        <span 
+                          style={{ 
+                            marginLeft: 15,
+                            opacity: isSessionLocked ? 0.5 : 1
+                          }}
+                        >
+                          {item.label}
+                        </span>
                       )}
-                      {selectedKey === item.key && (
+                      {selectedKey === item.key && !isSessionLocked && (
                         <div
                           style={{
                             position: "absolute",
@@ -191,9 +239,10 @@ const SideBar: React.FC<SideBarProps> = ({
             style={{
               padding: "10px 20px",
               fontSize: 12,
-              color: "#8C8C8C",
+              color: isSessionLocked ? token.colorTextDisabled : "#8C8C8C",
               position: "absolute",
               bottom: 10,
+              opacity: isSessionLocked ? 0.5 : 1,
             }}
           >
            {Strings.tagVersion}
