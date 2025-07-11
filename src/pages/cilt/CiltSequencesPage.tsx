@@ -634,7 +634,7 @@ const CiltSequencesPage = () => {
       ),
     },
     {
-      title: "Color",
+      title: Strings.color,
       dataIndex: "secuenceColor",
       key: "secuenceColor",
       render: (color: string | null) => (
@@ -653,28 +653,21 @@ const CiltSequencesPage = () => {
       width: 20,
     },
     {
-      title: "Tiempo Estándar",
+      title: Strings.standardTime,
       dataIndex: "standardTime",
       key: "standardTime",
       render: (time) => formatSecondsToNaturalTime(time) || "N/A",
       width: 60,
     },
     {
-      title: "Frecuencia",
-      dataIndex: "frecuencyCode",
-      key: "frecuencyCode",
-      render: (text) => text || "N/A",
-      width: 30,
-    },
-    {
-      title: "Tipo CILT",
+      title: Strings.ciltType,
       dataIndex: "ciltTypeName",
       key: "ciltTypeName",
       render: (text) => text || "N/A",
       width: 60,
     },
     {
-      title: "Acciones",
+      title: Strings.actions,
       key: "actions",
       render: (_, record) => (
         <Space size="small" wrap>
@@ -683,14 +676,14 @@ const CiltSequencesPage = () => {
             size="small"
             onClick={() => showSequenceDetails(record)}
           >
-            {"Ver Detalles"}
+            {Strings.viewDetails}
           </Button>
           <Button
             type="primary"
             size="small"
             onClick={() => showEditSequenceModal(record)}
           >
-            {"Editar"}
+            {Strings.edit}
           </Button>
           <Button
             type="default"
@@ -703,7 +696,7 @@ const CiltSequencesPage = () => {
               !record.referenceOplSopId || record.referenceOplSopId <= 0
             }
           >
-            {"Ver OPL Ref."}
+            {Strings.viewReferenceOplButton}
           </Button>
           <Button
             type="default"
@@ -711,7 +704,7 @@ const CiltSequencesPage = () => {
             onClick={() => showOplDetails(record.remediationOplSopId)}
             disabled={!record.remediationOplSopId}
           >
-            {"Ver OPL Rem."}
+            {Strings.viewRemediationOplButton}
           </Button>
           <Button
             type="primary"
