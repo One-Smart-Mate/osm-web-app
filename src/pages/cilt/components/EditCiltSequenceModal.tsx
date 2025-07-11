@@ -546,6 +546,12 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
             <Form.Item
               label={Strings.specialWarning}
               name="specialWarning"
+              rules={[
+                {
+                  max: 100,
+                  message: "Special warning must not exceed 100 characters",
+                },
+              ]}
             >
               <Input
                 placeholder={Strings.specialWarning}
@@ -556,10 +562,17 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
             <Form.Item
               label={Strings.editCiltSequenceModalStandardOkLabel}
               name="standardOk"
+              rules={[
+                {
+                  max: 100,
+                  message: "Standard OK must not exceed 100 characters",
+                },
+              ]}
             >
               <TextArea
                 rows={2}
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
+                maxLength={100}
               />
             </Form.Item>
 
@@ -600,9 +613,6 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                     <Option value={Constants.STATUS_INACTIVE}>
                       {Strings.inactive}
                     </Option>
-                    <Option value={Constants.STATUS_DRAFT}>
-                      {Strings.draft}
-                    </Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -616,7 +626,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                   }
                   name="quantityPicturesCreate"
                 >
-                  <InputNumber min={0} style={{ width: "100%" }} />
+                  <InputNumber min={0} max={255} style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
 
@@ -627,14 +637,23 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                   }
                   name="quantityPicturesClose"
                 >
-                  <InputNumber min={0} style={{ width: "100%" }} />
+                  <InputNumber min={0} max={255} style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
             </Row>
 
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item label={Strings.referencePoint} name="referencePoint">
+                <Form.Item 
+                  label={Strings.referencePoint} 
+                  name="referencePoint"
+                  rules={[
+                    {
+                      max: 10,
+                      message: "Reference point must not exceed 10 characters",
+                    },
+                  ]}
+                >
                   <Input
                     maxLength={10}
                     placeholder={Strings.referencePoint}

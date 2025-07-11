@@ -67,11 +67,13 @@ export const CILTReports = () => {
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredExecutions(executions);
+      setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when clearing search
     } else {
       const filtered = executions.filter(
         (execution) =>
-          // Filter by any searchable field
+          // Filter by any searchable field including IDs
           String(execution.id).includes(searchTerm) ||
+          String(execution.siteExecutionId).includes(searchTerm) ||
           String(execution.ciltId).includes(searchTerm) ||
           (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
             false) ||
@@ -80,6 +82,10 @@ export const CILTReports = () => {
             .includes(searchTerm.toLowerCase()) ??
             false) ||
           (execution.ciltTypeName
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.standardOk
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ??
             false) ||
@@ -93,6 +99,7 @@ export const CILTReports = () => {
             false)
       );
       setFilteredExecutions(filtered);
+      setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when searching
     }
   }, [executions, searchTerm]);
 
@@ -288,12 +295,12 @@ export const CILTReports = () => {
               }}
             >
               <Input
-                placeholder={Strings.searchBarDefaultPlaceholder}
+                placeholder="Search by ID, route, sequence, type, standard OK..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 prefix={<SearchOutlined />}
                 allowClear
-                style={{ width: 300 }}
+                style={{ width: 400 }}
               />
               <Text style={{ marginLeft: "auto" }}>
                 {Strings.total}: {filteredExecutions.length}{" "}
@@ -308,12 +315,21 @@ export const CILTReports = () => {
               columns={columns}
               rowKey={(record) => String(record.id)}
               pagination={{
-                ...pagination,
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: filteredExecutions.length,
                 showSizeChanger: true,
                 pageSizeOptions: ["20", "50", "100", "200"],
-                total: filteredExecutions.length,
+                showQuickJumper: true,
+                showTotal: (total, range) => 
+                  `${range[0]}-${range[1]} ${Strings.of} ${total} ${Strings.items}`,
               }}
-              onChange={(pagination) => setPagination(pagination as any)}
+              onChange={(paginationConfig) => {
+                setPagination({
+                  current: paginationConfig.current || 1,
+                  pageSize: paginationConfig.pageSize || 100,
+                });
+              }}
               bordered
               size="middle"
               scroll={{ x: 800 }}
