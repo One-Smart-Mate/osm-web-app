@@ -1675,6 +1675,8 @@ class StringsBase {
   static oplAssignmentSuccess = "oplAssignmentSuccess";
   static viewReferenceOplButton = "viewReferenceOplButton";
   static viewRemediationOplButton = "viewRemediationOplButton";
+  static initial = "initial";
+  static final = "final";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

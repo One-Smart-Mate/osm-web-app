@@ -32,13 +32,6 @@ export const EvidenceViewerModal: React.FC<EvidenceViewerModalProps> = ({
 }) => {
   if (!evidence) return null;
 
-  // Determine if the evidence is an image based on URL extension or Firebase Storage image patterns
-  const isImage = evidence.evidenceUrl && (
-    /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(evidence.evidenceUrl) ||
-    evidence.evidenceUrl.includes('firebasestorage.googleapis.com') ||
-    evidence.evidenceUrl.includes('alt=media')
-  );
-
   return (
     <Modal
       title={title}

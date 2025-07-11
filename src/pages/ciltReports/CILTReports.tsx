@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Table, Input, Spin, Typography, Button, Tag } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Resizable } from 'react-resizable';
@@ -465,18 +465,15 @@ export const CILTReports = () => {
               rowKey={(record) => String(record.id)}
               pagination={{
                 current: pagination.current,
-                pageSize: pagination.pageSize,
+                pageSize: 100,
                 total: filteredExecutions.length,
-                showSizeChanger: true,
-                pageSizeOptions: ["20", "50", "100", "200"],
-                showQuickJumper: true,
-                showTotal: (total, range) => 
-                  `${range[0]}-${range[1]} ${Strings.of} ${total} ${Strings.items}`,
+                showSizeChanger: false,
+                showQuickJumper: false,
               }}
               onChange={(paginationConfig) => {
                 setPagination({
                   current: paginationConfig.current || 1,
-                  pageSize: paginationConfig.pageSize || 100,
+                  pageSize: 100,
                 });
               }}
               bordered
