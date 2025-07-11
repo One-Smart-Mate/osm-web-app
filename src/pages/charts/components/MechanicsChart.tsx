@@ -11,6 +11,8 @@ import {
   Tooltip,
   TooltipProps,
 } from "recharts";
+import { Button } from "antd";
+import { SwapOutlined } from "@ant-design/icons";
 import { Methodology } from "../../../data/charts/charts";
 import { useGetMechanicsChartDataMutation } from "../../../services/chartService";
 import Strings from "../../../utils/localizations/Strings";
@@ -40,6 +42,7 @@ const MechanicsChart = ({
   const [selectedCardTypeName, setSelectedCardTypeName] = useState(Strings.empty);
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
   const [selectedCardsData, setSelectedCardsData] = useState<any[]>([]);
+  const [isGroupedView, setIsGroupedView] = useState(true); // New state for view toggle
   const [searchParams, setSearchParams] = useState<{
     siteId: string;
     mechanicName?: string;
@@ -80,9 +83,10 @@ const MechanicsChart = ({
       // Create transformed data for each category (user)
       const transformedData = categories.map((category: string, categoryIndex: number) => {
         const userData: any = {
-          mechanic: category,
+          mechanic: category === "Without mechanic" ? Strings.noResponsible : category,
           totalCards: 0,
-          cardsData: {}
+          cardsData: {},
+          allCards: [] // Store all cards for grouped view
         };
         
         // Calculate totals and individual values for on time cards (En tiempo) by card type
@@ -93,6 +97,7 @@ const MechanicsChart = ({
           const value = dataPoint.count;
           userData[`${cardType}_onTime`] = value;
           userData.cardsData[`${cardType}_onTime`] = dataPoint.cards;
+          userData.allCards = userData.allCards.concat(dataPoint.cards); // Add to all cards
           totalOnTimeCards += value;
         });
         userData.onTime_total = totalOnTimeCards;
@@ -105,6 +110,7 @@ const MechanicsChart = ({
           const value = dataPoint.count;
           userData[`${cardType}_overdue`] = value;
           userData.cardsData[`${cardType}_overdue`] = dataPoint.cards;
+          userData.allCards = userData.allCards.concat(dataPoint.cards); // Add to all cards
           totalOverdueCards += value;
         });
         userData.overdue_total = totalOverdueCards;
@@ -136,6 +142,19 @@ const MechanicsChart = ({
         });
         
         userData.totalCards = totalOnTimeCards + totalOverdueCards;
+        
+        // For grouped view, create combined values by methodology
+        methodologies.forEach((methodology) => {
+          const methodologyKey = methodology.methodology.toLowerCase().replace(/\s/g, '_');
+          const onTimeValue = userData[`${methodologyKey}_onTime`] || 0;
+          const overdueValue = userData[`${methodologyKey}_overdue`] || 0;
+          userData[`${methodologyKey}_combined`] = onTimeValue + overdueValue;
+          
+          // Combine cards for methodology
+          const onTimeCards = userData.cardsData[`${methodologyKey}_onTime`] || [];
+          const overdueCards = userData.cardsData[`${methodologyKey}_overdue`] || [];
+          userData.cardsData[`${methodologyKey}_combined`] = onTimeCards.concat(overdueCards);
+        });
         
         return userData;
       });
@@ -185,11 +204,39 @@ const MechanicsChart = ({
         >
           <p className="font-medium">{mechanicName}</p>
           <p>{Strings.totalCards}: {totalCards}</p>
-          <p className="text-green-500">{Strings.onTimeTags}: {onTimeTotal}</p>
-          <p className="text-red-500">{Strings.overdueTags}: {overdueTotal}</p>
           
-          {/* Show breakdown for on time cards */}
-          {Object.keys(onTimeBreakdown).length > 0 && (
+          {!isGroupedView && (
+            <>
+              <p className="text-green-500">{Strings.onTimeTags}: {onTimeTotal}</p>
+              <p className="text-red-500">{Strings.overdueTags}: {overdueTotal}</p>
+            </>
+          )}
+          
+          {/* Show breakdown for methodologies in grouped view */}
+          {isGroupedView && (
+            <div className="mt-2">
+              <p className="font-medium">Detalle por Metodología:</p>
+              {methodologies.map((methodology) => {
+                const methodologyKey = methodology.methodology.toLowerCase().replace(/\s/g, '_');
+                const combinedValue = data[`${methodologyKey}_combined`] || 0;
+                if (combinedValue > 0) {
+                  return (
+                    <div key={methodology.methodology} className="flex items-center gap-2 ml-2">
+                      <div 
+                        className="w-3 h-3 rounded-sm" 
+                        style={{ backgroundColor: `#${methodology.color}` }}
+                      />
+                      <span className="text-sm">{methodology.methodology}: {combinedValue}</span>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          )}
+          
+          {/* Show breakdown for on time cards in separated view */}
+          {!isGroupedView && Object.keys(onTimeBreakdown).length > 0 && (
             <div className="mt-2">
               <p className="font-medium text-green-500">Detalle En Tiempo:</p>
               {Object.entries(onTimeBreakdown).map(([type, value]: [string, any]) => {
@@ -209,8 +256,8 @@ const MechanicsChart = ({
             </div>
           )}
           
-          {/* Show breakdown for overdue cards */}
-          {Object.keys(overdueBreakdown).length > 0 && (
+          {/* Show breakdown for overdue cards in separated view */}
+          {!isGroupedView && Object.keys(overdueBreakdown).length > 0 && (
             <div className="mt-2">
               <p className="font-medium text-red-500">Detalle Vencidas:</p>
               {Object.entries(overdueBreakdown).map(([type, value]: [string, any]) => {
@@ -235,19 +282,41 @@ const MechanicsChart = ({
     return null;
   };
 
-  const handleOnClick = (data: any, status: 'onTime' | 'overdue', cardTypeName?: string) => {
+  const handleOnClick = (data: any, status?: 'onTime' | 'overdue' | 'combined', cardTypeName?: string) => {
     // Get cards directly from the chart data
     let cards: any[] = [];
-    if (cardTypeName) {
-      // Get cards for specific card type
-      const cardKey = `${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`;
-      cards = data.cardsData[cardKey] || [];
+    let count = 0;
+    let displayName = '';
+    
+    if (isGroupedView) {
+      // Grouped view - show all cards for the methodology
+      if (cardTypeName) {
+        const cardKey = `${cardTypeName.toLowerCase().replace(/\s/g, '_')}_combined`;
+        cards = data.cardsData[cardKey] || [];
+        count = data[cardKey] || 0;
+        displayName = cardTypeName;
+      } else {
+        // Show all cards for the user
+        cards = data.allCards || [];
+        count = data.totalCards || 0;
+        displayName = 'Todas';
+      }
     } else {
-      // Get all cards for the status by combining all card types
-      const cardKeys = Object.keys(data.cardsData).filter(key => key.endsWith(`_${status}`));
-      cards = cardKeys.reduce((allCards: any[], key: string) => {
-        return allCards.concat(data.cardsData[key] || []);
-      }, []);
+      // Separated view - existing logic
+      if (cardTypeName && status) {
+        const cardKey = `${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`;
+        cards = data.cardsData[cardKey] || [];
+        count = data[cardKey] || 0;
+        displayName = `${cardTypeName} (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`;
+      } else if (status) {
+        // Get all cards for the status by combining all card types
+        const cardKeys = Object.keys(data.cardsData).filter(key => key.endsWith(`_${status}`));
+        cards = cardKeys.reduce((allCards: any[], key: string) => {
+          return allCards.concat(data.cardsData[key] || []);
+        }, []);
+        count = status === 'onTime' ? data.onTime_total : data.overdue_total || 0;
+        displayName = `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`;
+      }
     }
 
     // Add missing fields to each card
@@ -262,38 +331,33 @@ const MechanicsChart = ({
     // Set the enriched cards data directly without making API call
     setSearchParams(null); // Clear search params since we're using direct data
     
-    // Get the count from the chart data
-    const count = cardTypeName 
-      ? data[`${cardTypeName.toLowerCase().replace(/\s/g, '_')}_${status}`] || 0
-      : (status === 'onTime' ? data.onTime_total : data.overdue_total) || 0;
-    
     setSelectedTotalCards(count.toString());
     setSelectedMechanicName(data.mechanic !== Strings.noMechanic ? data.mechanic : Strings.none);
-    setSelectedCardTypeName(cardTypeName || `Todas (${status === 'onTime' ? 'En Tiempo' : 'Vencidas'})`);
+    setSelectedCardTypeName(displayName);
     
     // Store the enriched cards data to pass to the drawer
     setSelectedCardsData(enrichedCards);
     setOpen(true);
   };
 
-  // Create stacked bars for each status (onTime/overdue)
-  const createStackedBars = (status: 'onTime' | 'overdue') => {
+  // Create stacked bars for combined view only
+  const createCombinedBars = () => {
     return methodologies.map((methodology) => {
-      const dataKey = `${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_${status}`;
+      const dataKey = `${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_combined`;
       
       return (
         <Bar
-          key={`${methodology.methodology}_${status}`}
+          key={`${methodology.methodology}_combined`}
           dataKey={dataKey}
-          stackId={status} // Stack by status (onTime/overdue)
+          stackId="combined"
           stroke="black"
           strokeWidth={0.5}
           fill={`#${methodology.color}`}
-          onClick={(data) => handleOnClick(data, status, methodology.methodology)}
+          onClick={(data) => handleOnClick(data, 'combined', methodology.methodology)}
         >
           {transformedData.map((_, index) => (
             <Cell
-              key={`cell-${methodology.methodology}-${status}-${index}`}
+              key={`cell-${methodology.methodology}-combined-${index}`}
               className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
             />
           ))}
@@ -318,22 +382,112 @@ const MechanicsChart = ({
           </h1>
         </div>
       ))}
-      <div className="flex gap-4 ml-4">
-        <div className="flex gap-1 items-center">
-          <div className="w-3 h-3 bg-green-500 rounded" />
-          <span className="text-xs">{Strings.onTimeTags}</span>
+      {!isGroupedView && (
+        <div className="flex gap-4 ml-4">
+          <div className="flex gap-1 items-center">
+            <div className="w-3 h-3 bg-green-500 rounded" />
+            <span className="text-xs">{Strings.onTimeTags}</span>
+          </div>
+          <div className="flex gap-1 items-center">
+            <div className="w-3 h-3 bg-red-500 rounded" />
+            <span className="text-xs">{Strings.overdueTags}</span>
+          </div>
         </div>
-        <div className="flex gap-1 items-center">
-          <div className="w-3 h-3 bg-red-500 rounded" />
-          <span className="text-xs">{Strings.overdueTags}</span>
-        </div>
-      </div>
+      )}
     </div>
+  );
+
+  // Component for separated view using original logic
+  const SeparatedChart = () => (
+    <ResponsiveContainer width={"100%"} height={"100%"}>
+      <BarChart data={transformedData} margin={{ bottom: 50 }}>
+        <Legend content={<MethodologiesLegend />} verticalAlign="top" />
+        <CartesianGrid strokeDasharray="3 3" />
+        <Tooltip 
+          content={<CustomTooltip />} 
+          cursor={false}
+          isAnimationActive={false}
+          allowEscapeViewBox={{ x: true, y: true }}
+          wrapperStyle={{ 
+            zIndex: 9999, 
+            pointerEvents: 'none',
+            filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))'
+          }}
+        />
+        <YAxis 
+          tickFormatter={(value: any) => Math.round(Number(value)).toString()}
+          allowDecimals={false}
+          domain={[0, 'dataMax']}
+          tickCount={5}
+          scale="linear"
+        />
+        <XAxis
+          dataKey={"mechanic"}
+          angle={-15}
+          textAnchor="end"
+          className="md:text-sm text-xs"
+        />
+        
+        {/* Create stacked bars for on time cards */}
+        {methodologies.map((methodology) => (
+          <Bar
+            key={`${methodology.methodology}_onTime`}
+            dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_onTime`}
+            stackId="onTime"
+            stroke="black"
+            strokeWidth={0.5}
+            fill={`#${methodology.color}`}
+            onClick={(data) => handleOnClick(data, 'onTime', methodology.methodology)}
+          >
+            {transformedData.map((_, index) => (
+              <Cell
+                key={`cell-${methodology.methodology}-onTime-${index}`}
+                className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
+              />
+            ))}
+          </Bar>
+        ))}
+        
+        {/* Create stacked bars for overdue cards */}
+        {methodologies.map((methodology) => (
+          <Bar
+            key={`${methodology.methodology}_overdue`}
+            dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_overdue`}
+            stackId="overdue"
+            stroke="black"
+            strokeWidth={0.5}
+            fill={`#${methodology.color}`}
+            onClick={(data) => handleOnClick(data, 'overdue', methodology.methodology)}
+          >
+            {transformedData.map((_, index) => (
+              <Cell
+                key={`cell-${methodology.methodology}-overdue-${index}`}
+                className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
+              />
+            ))}
+          </Bar>
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
   );
 
   return (
     <>
-      <ResponsiveContainer width={"100%"} height={"100%"}>
+      {/* Toggle Button */}
+      <div className="flex justify-end mb-2">
+        <Button
+          type={isGroupedView ? "default" : "primary"}
+          icon={<SwapOutlined />}
+          onClick={() => setIsGroupedView(!isGroupedView)}
+          size="small"
+        >
+          {isGroupedView ? "Vista Separada" : "Vista Agrupada"}
+        </Button>
+      </div>
+      
+      {/* Grouped Chart */}
+      <div style={{ display: isGroupedView ? 'block' : 'none', width: '100%', height: '100%' }}>
+        <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<MethodologiesLegend />} verticalAlign="top" />
           <CartesianGrid strokeDasharray="3 3" />
@@ -362,13 +516,17 @@ const MechanicsChart = ({
             className="md:text-sm text-xs"
           />
           
-          {/* Create stacked bars for on time cards */}
-          {createStackedBars('onTime')}
-          
-          {/* Create stacked bars for overdue cards */}
-          {createStackedBars('overdue')}
+                    {/* Render combined bars */}
+          {createCombinedBars()}
         </BarChart>
       </ResponsiveContainer>
+      </div>
+      
+      {/* Separated Chart */}
+      <div style={{ display: isGroupedView ? 'none' : 'block', width: '100%', height: '100%' }}>
+        <SeparatedChart />
+      </div>
+      
       <DrawerTagList
         open={open}
         dataSource={selectedCardsData.length > 0 ? selectedCardsData : searchData}

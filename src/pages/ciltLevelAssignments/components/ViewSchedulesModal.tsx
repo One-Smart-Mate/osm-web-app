@@ -95,6 +95,14 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
     }
   };
 
+  // Helper function to extract time for sorting
+  const getTimeForSorting = (schedule: any) => {
+    if (!schedule.schedule) return '';
+    // Extract time portion (HH:MM) from schedule
+    const time = schedule.schedule.substring(0, 5);
+    return time;
+  };
+
   // Define columns for the table
   const tableColumns = [
     {
@@ -102,6 +110,22 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
       dataIndex: 'scheduleType',
       key: 'scheduleType',
       render: (text: string) => getScheduleTypeDescription(text),
+      sorter: (a: any, b: any) => getScheduleTypeDescription(a.scheduleType).localeCompare(getScheduleTypeDescription(b.scheduleType)),
+    },
+    {
+      title: 'Hora',
+      dataIndex: 'schedule',
+      key: 'schedule',
+      render: (text: string) => text ? text.substring(0, 5) : '-',
+      sorter: (a: any, b: any) => {
+        const timeA = getTimeForSorting(a);
+        const timeB = getTimeForSorting(b);
+        if (!timeA && !timeB) return 0;
+        if (!timeA) return 1;
+        if (!timeB) return -1;
+        return timeA.localeCompare(timeB);
+      },
+      defaultSortOrder: 'ascend' as const,
     },
     {
       title: Strings.description,

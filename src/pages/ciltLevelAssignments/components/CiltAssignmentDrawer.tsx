@@ -62,6 +62,7 @@ interface CiltAssignmentDrawerProps {
   selectedNode: any;
   drawerType: "cilt-position" | "opl" | "details";
   isSubmitting?: boolean;
+  onSuccess?: () => void; // Callback to refresh the tree
 }
 
 const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
@@ -73,6 +74,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
   selectedNode,
   drawerType,
   isSubmitting = false,
+  onSuccess,
 }) => {
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(
     null
@@ -183,6 +185,11 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       // Success notification is now handled by the parent component
       setSelectedPosition(null);
       setSelectedCiltMstr(null);
+
+      // Call the success callback to refresh the tree
+      if (onSuccess) {
+        onSuccess();
+      }
 
       onClose();
     } catch (error) {

@@ -274,7 +274,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         >
           {/* Hidden fields */}
           <Form.Item name="order" hidden>
-            <Input type="number" />
+            <InputNumber min={0} max={255} />
           </Form.Item>
           <Form.Item name="secuenceColor" hidden>
             <Input />
@@ -398,6 +398,10 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       required: true,
                       message: Strings.editCiltSequenceModalStandardOkRequired,
                     },
+                    {
+                      max: 100,
+                      message: "Standard OK must not exceed 100 characters",
+                    },
                   ]}
                 >
                   <Input
@@ -405,6 +409,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                       Strings.editCiltSequenceModalStandardOkPlaceholder
                     }
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                    maxLength={100}
                   />
                 </Form.Item>
               </div>
@@ -430,6 +435,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   >
                     <InputNumber
                       min={0}
+                      max={255}
                       className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </Form.Item>
@@ -450,6 +456,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                   >
                     <InputNumber
                       min={0}
+                      max={255}
                       className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </Form.Item>
@@ -505,6 +512,12 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                 <Form.Item
                   name="specialWarning"
                   label={Strings.specialWarning}
+                  rules={[
+                    {
+                      max: 100,
+                      message: "Special warning must not exceed 100 characters",
+                    },
+                  ]}
                   getValueFromEvent={(e) => e.target.value}
                 >
                   <Input
@@ -601,7 +614,16 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                 </div>
 
                 {/* Reference Point */}
-                <Form.Item name="referencePoint" label={Strings.referencePoint}>
+                <Form.Item 
+                  name="referencePoint" 
+                  label={Strings.referencePoint}
+                  rules={[
+                    {
+                      max: 10,
+                      message: "Reference point must not exceed 10 characters",
+                    },
+                  ]}
+                >
                   <Input
                     maxLength={10}
                     placeholder={Strings.referencePoint}

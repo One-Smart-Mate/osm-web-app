@@ -846,6 +846,10 @@ const CiltLevelAssignaments: React.FC = () => {
                 selectedNode={selectedNode}
                 drawerType={"cilt-position"}
                 isSubmitting={isAssigning}
+                onSuccess={() => {
+                  // Refresh the tree after successful assignment
+                  handleGetLevels();
+                }}
               />
             )}
             

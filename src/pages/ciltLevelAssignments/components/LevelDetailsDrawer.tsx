@@ -479,7 +479,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 {/* Content column - expanded to use more space */}
                 <div style={{ flex: '1 1 auto', width: 'calc(100% - 200px)' }}>
                   <p><strong>{Strings.description}:</strong> {assignment.ciltMstr?.ciltDescription}</p>
-                  <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime} min</p>
+                  <p><strong>{Strings.standardTime}:</strong> {assignment.ciltMstr?.standardTime ? `${Math.floor(assignment.ciltMstr.standardTime / 60)}:${(assignment.ciltMstr.standardTime % 60).toString().padStart(2, '0')} min` : '0:00 min'}</p>
                   <p><strong>{Strings.sequences}:</strong> {assignment.ciltMstr?.sequences?.length || 0}</p>
                   
                   <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -1080,7 +1080,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                         </div>
                         <div className="mb-2">
                           <Text strong>{Strings.standardTime}: </Text>
-                          <Text>{sequence.standardTime} min</Text>
+                          <Text>{Math.floor(sequence.standardTime / 60)}:{(sequence.standardTime % 60).toString().padStart(2, '0')} min</Text>
                         </div>
                         <div style={{ marginTop: '12px', textAlign: 'center', display: 'flex', gap: '8px', justifyContent: 'center' }}>
                           <Button 
@@ -1150,7 +1150,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             {selectedSequence.ciltTypeName}
           </Descriptions.Item>
           <Descriptions.Item label={Strings.standardTime}>
-            {selectedSequence.standardTime} min
+            {Math.floor(selectedSequence.standardTime / 60)}:{(selectedSequence.standardTime % 60).toString().padStart(2, '0')} min
           </Descriptions.Item>
           <Descriptions.Item label={Strings.standardOk}>
             {selectedSequence.standardOk}

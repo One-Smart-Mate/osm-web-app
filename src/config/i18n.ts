@@ -1651,6 +1651,10 @@ const resources = {
       openEvidence: "Open Evidence",
       resolved: "Resolved",
       oplAssignmentSuccess: "OPL assigned successfully",
+      viewReferenceOplButton: "View Reference OPL",
+      viewRemediationOplButton: "View Remediation OPL",
+      initial: "Initial",
+      final: "Final",
     },
   },
   es: {
@@ -3315,6 +3319,10 @@ const resources = {
       openEvidence: "Abrir Evidencia",
       resolved: "Resuelto",
       oplAssignmentSuccess: "OPL asignado correctamente",
+      viewReferenceOplButton: "Ver OPL Ref.",
+      viewRemediationOplButton: "Ver OPL Rem.",
+      initial: "Inicial",
+      final: "Final",
     },
   },
 };
