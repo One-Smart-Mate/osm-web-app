@@ -108,7 +108,6 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
 
   // Get counts
   const assignmentCount = nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] : null;
-  const totalAssignmentCount = nodeDatum.id !== "0" ? calculateTotalAssignments(nodeDatum, assignmentCounts) : null;
   const totalCardCount = nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
 
   // Check if node or children have assignments
