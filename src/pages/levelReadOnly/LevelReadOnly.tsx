@@ -124,21 +124,9 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
   // Default fill color
   const fillColor = isLeafNode ? "#FFFF00" : "#145695";
 
-  // Display text with both assignments and cards count
-  let displayText = nodeDatum.name;
-  const counts = [];
-  
-  if (totalAssignmentCount && totalAssignmentCount > 0) {
-    counts.push(`${totalAssignmentCount} asign`);
-  }
-  
-  if (totalCardCount && totalCardCount > 0) {
-    counts.push(`${totalCardCount} cards`);
-  }
-  
-  if (counts.length > 0) {
-    displayText += ` (${counts.join(', ')})`;
-  }
+  // Display text with only card count (matching LevelsPage format)
+  const displayText = nodeDatum.name + 
+    (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
 
   const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
     e.stopPropagation();

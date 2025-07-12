@@ -42,13 +42,14 @@ import { useGetAmDiscardReasonsQuery } from "../../../services/amDiscardReasonSe
 
 const { useToken } = theme;
 
-interface InfoTagCardProps {
+export interface InfoTagCardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
   cardName?: any;
+  onOpenModal?: (modalType: string) => void;
 }
 
-const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
+const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProps) => {
   const location = useLocation();
   const isPublicRoute = location.pathname.includes(
     Constants.externalProviderRouteVal
@@ -89,8 +90,14 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
   const handleOnOpenModal = (modalType: string) => {
     console.log("handleOnOpenModal called with type:", modalType);
     if (!isPublicRoute) {
-      setModalOpen(true);
-      setModalType(modalType);
+      if (onOpenModal) {
+        // Use external modal handler if provided (e.g., from AMTagViewerModal)
+        onOpenModal(modalType);
+      } else {
+        // Use internal modal handler (original behavior)
+        setModalOpen(true);
+        setModalType(modalType);
+      }
     }
   };
 
@@ -380,19 +387,21 @@ const InfoTagCard = ({ data, evidences, cardName }: InfoTagCardProps) => {
           </>
         )}
 
-        <Form.Provider
-          onFormFinish={async (_, { values }) =>
-            handleOnFormUpdateFinish(values)
-          }
-        >
-          <ModalForm
-            open={modalIsOpen}
-            isLoading={modalIsLoading}
-            onCancel={handleOnCancelButton}
-            title={selecTitleByModalType(modalType)}
-            FormComponent={selectFormByModalType(modalType)}
-          />
-        </Form.Provider>
+        {!onOpenModal && (
+          <Form.Provider
+            onFormFinish={async (_, { values }) =>
+              handleOnFormUpdateFinish(values)
+            }
+          >
+            <ModalForm
+              open={modalIsOpen}
+              isLoading={modalIsLoading}
+              onCancel={handleOnCancelButton}
+              title={selecTitleByModalType(modalType)}
+              FormComponent={selectFormByModalType(modalType)}
+            />
+          </Form.Provider>
+        )}
       </div>
     </>
   );

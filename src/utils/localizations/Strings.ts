@@ -1677,6 +1677,14 @@ class StringsBase {
   static viewRemediationOplButton = "viewRemediationOplButton";
   static initial = "initial";
   static final = "final";
+
+  // General notification messages
+  static successfullyRegistered = "successfullyRegistered";
+  static successfullyUpdated = "successfullyUpdated";
+  static successfullyDeleted = "successfullyDeleted";
+  static successfullyCompleted = "successfullyCompleted";
+  static passwordResetSuccess = "passwordResetSuccess";
+  static hour = "hour";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

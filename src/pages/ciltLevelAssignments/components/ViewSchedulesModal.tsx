@@ -113,7 +113,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
       sorter: (a: any, b: any) => getScheduleTypeDescription(a.scheduleType).localeCompare(getScheduleTypeDescription(b.scheduleType)),
     },
     {
-      title: 'Hora',
+      title: Strings.hour,
       dataIndex: 'schedule',
       key: 'schedule',
       render: (text: string) => text ? text.substring(0, 5) : '-',
@@ -141,7 +141,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
       onCancel={onCancel}
       footer={[
         <Button key="close" onClick={onCancel}>
-          Cerrar
+          {Strings.close}
         </Button>,
       ]}
       width={800}

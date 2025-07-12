@@ -1,4 +1,5 @@
 import { notification } from "antd";
+import Strings from "./localizations/Strings";
 
 export const handleErrorNotification = (value: any, text?: string) => {
   if (value.hasOwnProperty("data") && value.data.hasOwnProperty("message")) {
@@ -41,20 +42,20 @@ export enum NotificationSuccess {
 
 export const getSuccessMessage = (type: NotificationSuccess): string => {
   if (type == NotificationSuccess.REGISTER) {
-    return "Successfully registered";
+    return Strings.successfullyRegistered;
   }
 
   if (type == NotificationSuccess.UPDATE) {
-    return "Successfully updated";
+    return Strings.successfullyUpdated;
   }
 
   if (type == NotificationSuccess.SUCCESS_DELETE) {
-    return "Successfully deleted";
+    return Strings.successfullyDeleted;
   }
 
   if (type == NotificationSuccess.RESET_PASSWORD) {
-    return "Your password has been reset successfully. You can now log in with your new password";
+    return Strings.passwordResetSuccess;
   }
 
-  return "Successfully completed";
+  return Strings.successfullyCompleted;
 };

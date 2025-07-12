@@ -382,18 +382,6 @@ const MechanicsChart = ({
           </h1>
         </div>
       ))}
-      {!isGroupedView && (
-        <div className="flex gap-4 ml-4">
-          <div className="flex gap-1 items-center">
-            <div className="w-3 h-3 bg-green-500 rounded" />
-            <span className="text-xs">{Strings.onTimeTags}</span>
-          </div>
-          <div className="flex gap-1 items-center">
-            <div className="w-3 h-3 bg-red-500 rounded" />
-            <span className="text-xs">{Strings.overdueTags}</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 

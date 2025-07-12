@@ -154,6 +154,13 @@ const resources = {
       requiredMechanic: "Please select the mechanic.",
       requiredPriority: "Priority required.",
 
+      // General notification messages
+      successfullyRegistered: "Successfully registered",
+      successfullyUpdated: "Successfully updated",
+      successfullyDeleted: "Successfully deleted",
+      successfullyCompleted: "Successfully completed",
+      passwordResetSuccess: "Your password has been reset successfully. You can now log in with your new password",
+
       companyName: "Name",
       rfc: "RFC",
       companyAddress: "Address",
@@ -1655,6 +1662,7 @@ const resources = {
       viewRemediationOplButton: "View Remediation OPL",
       initial: "Initial",
       final: "Final",
+      hour: "Hour",
     },
   },
   es: {
@@ -1808,6 +1816,13 @@ const resources = {
       requiredResponsableId: "Por favor, selecciona el responsable.",
       requiredMechanic: "Por favor, selecciona el mecánico.",
       requiredPriority: "Prioridad requerida.",
+
+      // General notification messages
+      successfullyRegistered: "Registrado exitosamente",
+      successfullyUpdated: "Actualizado exitosamente",
+      successfullyDeleted: "Eliminado exitosamente",
+      successfullyCompleted: "Completado exitosamente",
+      passwordResetSuccess: "Su contraseña ha sido restablecida exitosamente. Ahora puede iniciar sesión con su nueva contraseña",
       withSequences: "con {count} secuencias",
 
       // company
@@ -3323,6 +3338,7 @@ const resources = {
       viewRemediationOplButton: "Ver OPL Rem.",
       initial: "Inicial",
       final: "Final",
+      hour: "Hora",
     },
   },
 };
