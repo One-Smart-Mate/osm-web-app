@@ -125,7 +125,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
 
   // Render an individual detail
   const renderDetailContent = (detail: OplDetail) => {
-    console.log("Rendering detail:", detail);
+    // console.log("Rendering detail:", detail);
     
     if (detail.type === "texto") {
       return (
@@ -298,7 +298,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
 
   // Preview of all details
   const DetailsPreview = () => {
-    console.log("Rendering DetailsPreview with", currentDetails.length, "details");
+    // console.log("Rendering DetailsPreview with", currentDetails.length, "details");
     
     return (
       <div style={{ padding: '0 16px' }}>

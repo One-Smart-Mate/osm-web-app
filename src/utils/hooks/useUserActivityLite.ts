@@ -32,7 +32,6 @@ const useUserActivityLite = () => {
       }).unwrap();
       
       lastUpdateRef.current = now;
-      console.log('[UserActivityLite] Activity updated for user:', user.userId);
     } catch (error) {
       console.error('[UserActivityLite] Error updating user activity:', error);
     }

@@ -44,7 +44,6 @@ const useUserActivity = () => {
         }).unwrap();
         
         lastUpdateRef.current = now;
-        console.log('[UserActivity] Activity updated for user:', user.userId);
       };
 
       if (window.requestIdleCallback) {

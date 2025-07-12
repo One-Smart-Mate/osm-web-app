@@ -5,11 +5,11 @@ import { onMessageListener } from "../../config/firebaseMessaging";
 const NotificationHandler: React.FC = () => {
 
   useEffect(() => {
-    console.log("[NotificationHandler] Initializing notification handler");
+    // console.log("[NotificationHandler] Initializing notification handler");
 
     // Function to display notifications
     const displayNotification = (payload: any) => {
-      console.log("[NotificationHandler] Notification received:", payload);
+      // console.log("[NotificationHandler] Notification received:", payload);
       // Extract title and body from notification
       const title = payload.notification?.title || "Default Title";
       const body = payload.notification?.body || "Default Message";

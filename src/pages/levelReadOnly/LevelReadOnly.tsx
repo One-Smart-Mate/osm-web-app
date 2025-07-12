@@ -232,7 +232,6 @@ const LevelsReadOnly = () => {
       const response = await getLevels(location.state.siteId).unwrap();
 
       const activeNodes = response.filter((node: any) => !node.deletedAt);
-      console.log(`Filtering nodes: ${response.length} total, ${activeNodes.length} active, ${response.length - activeNodes.length} deleted`);
 
       const hierarchyData = buildHierarchy(activeNodes);
 
@@ -280,6 +279,7 @@ const LevelsReadOnly = () => {
       const assignmentPromises = response.map(async (level) => {
         try {
           // Fetch CILT assignments for this level
+          
           const ciltAssignmentsResponse = await fetch(
             `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
             {

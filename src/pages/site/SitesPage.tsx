@@ -47,7 +47,6 @@ const SitesPage = () => {
       companyPhone: location.state.companyPhone,
       companyLogo: location.state.companyLogo,
     };
-    console.log(`[COMPANY] ${JSON.stringify(companyInfo)}`);
     sessionStorage.setItem(
       Constants.SESSION_KEYS.companyInfo,
       JSON.stringify(companyInfo)

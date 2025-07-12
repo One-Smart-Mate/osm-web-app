@@ -153,7 +153,6 @@ const LevelsPage = () => {
       const response = await getLevels(location.state.siteId).unwrap();
       
       const activeNodes = response.filter((node: any) => !node.deletedAt);
-      console.log(`Filtrando nodos: ${response.length} totales, ${activeNodes.length} activos, ${response.length - activeNodes.length} eliminados`);
       
       const hierarchyData = buildHierarchy(activeNodes);
       
