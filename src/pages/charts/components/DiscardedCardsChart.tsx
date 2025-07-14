@@ -285,6 +285,9 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
             tickFormatter={(value: any) => Math.round(Number(value)).toString()}
             allowDecimals={false}
             domain={[0, 'dataMax']}
+            tickCount={5}
+            scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <Tooltip 
             content={<CustomTooltip />} 

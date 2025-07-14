@@ -330,7 +330,7 @@ const ChartsPage = () => {
                         <ChartExpander
                           title={
                             selectedAreaName
-                              ? `${Strings.machines}`
+                              ? `${Strings.mechanics}`
                               : Strings.mechanics
                           }
                         >
