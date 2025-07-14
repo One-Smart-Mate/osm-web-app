@@ -35,8 +35,8 @@ const UserSelectionModal = ({
     if (isVisible) {
       // Always set the selected user IDs when the modal becomes visible
       setSelectedUserIds(initialSelectedUserIds || []);
-      console.log('UserSelectionModal opened with users:', users);
-      console.log('Initial selected user IDs:', initialSelectedUserIds);
+      // console.log('UserSelectionModal opened with users:', users);
+      // console.log('Initial selected user IDs:', initialSelectedUserIds);
     }
   }, [isVisible, initialSelectedUserIds, users]);
 

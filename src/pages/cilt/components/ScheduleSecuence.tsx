@@ -17,6 +17,8 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import AnatomyNotification from "../../components/AnatomyNotification";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import {
   ScheduleType,
   UpdateCiltSecuencesScheduleDTO,
@@ -28,6 +30,10 @@ import {
 import { useGetCiltMstrByIdMutation } from "../../../services/cilt/ciltMstrService";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import Strings from "../../../utils/localizations/Strings";
+
+// Extend dayjs with UTC and timezone plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const { Text } = Typography;
 
@@ -73,6 +79,36 @@ export default function ScheduleSecuence({
 
   const [scheduleType, setScheduleType] = useState<ScheduleType>("dai");
 
+  // Function to convert local time to UTC
+  const convertLocalTimeToUTC = (localTime: dayjs.Dayjs): string => {
+    // Get user's timezone
+    const userTimezone = dayjs.tz.guess();
+    
+    // Create a full datetime with today's date and the selected time in user's timezone
+    const localDateTime = dayjs().tz(userTimezone).hour(localTime.hour()).minute(localTime.minute()).second(localTime.second());
+    
+    // Convert to UTC
+    const utcDateTime = localDateTime.utc();
+    
+    // Return only the time part in HH:mm:ss format
+    return utcDateTime.format("HH:mm:ss");
+  };
+
+  // Function to convert UTC time to local time for display
+  const convertUTCTimeToLocal = (utcTime: string): dayjs.Dayjs => {
+    // Get user's timezone
+    const userTimezone = dayjs.tz.guess();
+    
+    // Create a UTC datetime with today's date and the UTC time
+    const utcDateTime = dayjs().utc().hour(parseInt(utcTime.split(':')[0])).minute(parseInt(utcTime.split(':')[1])).second(parseInt(utcTime.split(':')[2]));
+    
+    // Convert to local timezone
+    const localDateTime = utcDateTime.tz(userTimezone);
+    
+    // Return dayjs object for the TimePicker
+    return dayjs(localDateTime.format("HH:mm:ss"), "HH:mm:ss");
+  };
+
   // Fetch CILT data when modal opens and ciltId is available
   useEffect(() => {
     if (open && ciltId) {
@@ -91,7 +127,7 @@ export default function ScheduleSecuence({
     if (open) {
       if (existingSchedule) {
         const initialSchedules = existingSchedule.schedules && Array.isArray(existingSchedule.schedules) && existingSchedule.schedules.length > 0
-          ? existingSchedule.schedules.map(s => dayjs(s, "HH:mm:ss"))
+          ? existingSchedule.schedules.map(s => convertUTCTimeToLocal(s))
           : [dayjs("08:00:00", "HH:mm:ss")];
         form.setFieldsValue({
           schedules: initialSchedules,
@@ -192,7 +228,7 @@ export default function ScheduleSecuence({
         sat: values.sat ? 1 : 0,
       };
 
-      const schedulesArray = Array.isArray(values.schedules) ? values.schedules.map((s: any) => s ? s.format("HH:mm:ss") : null).filter((s: any) => s !== null) : [];
+      const schedulesArray = Array.isArray(values.schedules) ? values.schedules.map((s: any) => s ? convertLocalTimeToUTC(s) : null).filter((s: any) => s !== null) : [];
 
       if (schedulesArray.length === 0) {
         AnatomyNotification.error(notification, {
@@ -339,12 +375,13 @@ AnatomyNotification.error(notification, {
         <Form.List name="schedules">
           {(fields, { add, remove }) => (
             <>
+
               {fields.map(({ key, name, ...restField }) => (
                 <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
                   <Form.Item
                     {...restField}
                     name={[name]}
-                    label={`${Strings.labelSchedule} ${key + 1}`}
+                    label={`${Strings.labelSchedule} ${key + 1} (Hora local)`}
                     rules={[{ required: true, message: Strings.requiredSchedule }]}
                   >
                     <TimePicker format="HH:mm:ss" style={{ width: '150px' }} />

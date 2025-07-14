@@ -162,7 +162,7 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
-      console.log("executionsData", executionsData);
+      // console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {

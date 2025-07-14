@@ -346,12 +346,6 @@ const CardTypesPage = () => {
     };
 
     const statusColor = getStatusColor(nodeDatum.status);
-
-    // Debug logging for Card Type nodes
-    if (nodeDatum.nodeType === "cardType") {
-      console.log('Card Type node data:', nodeDatum);
-      console.log('Card Type color property:', nodeDatum.color);
-    }
     
     // Get color for node based on status, type, or card type's custom color
     const fillColor = statusColor

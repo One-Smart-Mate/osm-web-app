@@ -108,7 +108,6 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
 
   // Get counts
   const assignmentCount = nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] : null;
-  const totalAssignmentCount = nodeDatum.id !== "0" ? calculateTotalAssignments(nodeDatum, assignmentCounts) : null;
   const totalCardCount = nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
 
   // Check if node or children have assignments
@@ -124,21 +123,9 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
   // Default fill color
   const fillColor = isLeafNode ? "#FFFF00" : "#145695";
 
-  // Display text with both assignments and cards count
-  let displayText = nodeDatum.name;
-  const counts = [];
-  
-  if (totalAssignmentCount && totalAssignmentCount > 0) {
-    counts.push(`${totalAssignmentCount} asign`);
-  }
-  
-  if (totalCardCount && totalCardCount > 0) {
-    counts.push(`${totalCardCount} cards`);
-  }
-  
-  if (counts.length > 0) {
-    displayText += ` (${counts.join(', ')})`;
-  }
+  // Display text with only card count (matching LevelsPage format)
+  const displayText = nodeDatum.name + 
+    (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
 
   const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
     e.stopPropagation();
@@ -245,7 +232,6 @@ const LevelsReadOnly = () => {
       const response = await getLevels(location.state.siteId).unwrap();
 
       const activeNodes = response.filter((node: any) => !node.deletedAt);
-      console.log(`Filtering nodes: ${response.length} total, ${activeNodes.length} active, ${response.length - activeNodes.length} deleted`);
 
       const hierarchyData = buildHierarchy(activeNodes);
 
@@ -293,6 +279,7 @@ const LevelsReadOnly = () => {
       const assignmentPromises = response.map(async (level) => {
         try {
           // Fetch CILT assignments for this level
+          
           const ciltAssignmentsResponse = await fetch(
             `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
             {

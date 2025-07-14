@@ -2,6 +2,13 @@ import React from "react";
 import { Modal, Table, Button, Empty } from "antd";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
 import Strings from "../../../utils/localizations/Strings";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+// Extend dayjs with UTC and timezone plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface ViewSchedulesModalProps {
   visible: boolean;
@@ -20,6 +27,23 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
     sequenceId,
     { skip: !visible || !sequenceId }
   );
+
+  // Function to convert UTC time to local time for display
+  const convertUTCTimeToLocal = (utcTime: string): string => {
+    if (!utcTime) return '';
+    
+    // Get user's timezone
+    const userTimezone = dayjs.tz.guess();
+    
+    // Create a UTC datetime with today's date and the UTC time
+    const utcDateTime = dayjs().utc().hour(parseInt(utcTime.split(':')[0])).minute(parseInt(utcTime.split(':')[1])).second(parseInt(utcTime.split(':')[2] || '0'));
+    
+    // Convert to local timezone
+    const localDateTime = utcDateTime.tz(userTimezone);
+    
+    // Return formatted time
+    return localDateTime.format("HH:mm");
+  };
 
   // Helper function to format schedule type
   const getScheduleTypeDescription = (scheduleType: string) => {
@@ -54,7 +78,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
 
   // Helper function to get a human-readable description of the schedule
   const getScheduleDescription = (schedule: any) => {
-    const time = schedule.schedule ? schedule.schedule.substring(0, 5) : '';
+    const time = schedule.schedule ? convertUTCTimeToLocal(schedule.schedule) : '';
     const endDate = schedule.endDate ? ` ${Strings.until} ${schedule.endDate.substring(0, 10)}` : '';
     
     switch (schedule.scheduleType) {
@@ -98,9 +122,9 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
   // Helper function to extract time for sorting
   const getTimeForSorting = (schedule: any) => {
     if (!schedule.schedule) return '';
-    // Extract time portion (HH:MM) from schedule
-    const time = schedule.schedule.substring(0, 5);
-    return time;
+    // Convert UTC time to local time for sorting
+    const localTime = convertUTCTimeToLocal(schedule.schedule);
+    return localTime;
   };
 
   // Define columns for the table
@@ -113,10 +137,10 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
       sorter: (a: any, b: any) => getScheduleTypeDescription(a.scheduleType).localeCompare(getScheduleTypeDescription(b.scheduleType)),
     },
     {
-      title: 'Hora',
+      title: Strings.hour,
       dataIndex: 'schedule',
       key: 'schedule',
-      render: (text: string) => text ? text.substring(0, 5) : '-',
+      render: (text: string) => text ? convertUTCTimeToLocal(text) : '-',
       sorter: (a: any, b: any) => {
         const timeA = getTimeForSorting(a);
         const timeB = getTimeForSorting(b);
@@ -141,7 +165,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
       onCancel={onCancel}
       footer={[
         <Button key="close" onClick={onCancel}>
-          Cerrar
+          {Strings.close}
         </Button>,
       ]}
       width={800}

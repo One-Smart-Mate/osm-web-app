@@ -59,23 +59,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   useEffect(() => {
     fetchResponsibles();
   }, [cilt, getSiteResponsibles]);
-  
-  // Debug effect to track cilt changes
-  useEffect(() => {
-    if (cilt) {
-      console.log('CILT data changed:', {
-        id: cilt.id,
-        ciltName: cilt.ciltName,
-        creatorId: cilt.creatorId,
-        creatorName: cilt.creatorName,
-        reviewerId: cilt.reviewerId,
-        reviewerName: cilt.reviewerName,
-        approvedById: cilt.approvedById,
-        approvedByName: cilt.approvedByName,
-        siteId: cilt.siteId
-      });
-    }
-  }, [cilt]);
 
   const fetchResponsibles = async () => {
     if (cilt && cilt.siteId) {
@@ -90,7 +73,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         setLoading(false);
       }
     } else {
-      console.log('No cilt or siteId available for fetching responsibles');
       setResponsibles([]);
     }
   };
