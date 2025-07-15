@@ -33,6 +33,7 @@ const SystemHealth = React.lazy(
 );
 const SitesPage = React.lazy(() => import("../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../pages/charts/ChartsPage"));
+const CiltChartsPage = React.lazy(() => import("../pages/ciltCharts/CiltCharts"));
 const PositionsPage = React.lazy(
   () => import("../pages/positions/PositionsPage")
 );
@@ -128,6 +129,14 @@ const chartsRoute = new Route(
   <ChartsPage />,
   <BsBarChartLine />,
   Strings.dashboard
+);
+
+const ciltChartsRoute = new Route(
+  "Gráficas CILT",
+  Constants.ROUTES_PATH.ciltCharts,
+  <CiltChartsPage />,
+  <BsBarChartLine />,
+  Strings.cilt
 );
 
 const sitesRoute = new Route(
@@ -255,6 +264,7 @@ const routes: Route[] = [
   ciltTypesRoute,
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
+  ciltChartsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
 ];
 
@@ -295,6 +305,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltReportsRoute.path,
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
+    }),
+    getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
     }),
   ];
   return items;
@@ -397,6 +413,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltReportsRoute.path,
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
+    }),
+    getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
     }),
   ];
   return items;

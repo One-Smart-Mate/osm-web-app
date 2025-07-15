@@ -1685,6 +1685,26 @@ class StringsBase {
   static successfullyCompleted = "successfullyCompleted";
   static passwordResetSuccess = "passwordResetSuccess";
   static hour = "hour";
+
+  // CILT Charts module
+  static ciltChartsSB = "ciltChartsSB";
+  static ciltChartsOf = "ciltChartsOf";
+  static executionCiltChart = "executionCiltChart";
+  static complianceCiltChart = "complianceCiltChart";
+  static timeCiltChart = "timeCiltChart";
+  static anomaliesCiltChart = "anomaliesCiltChart";
+  static programmed = "programmed";
+  static executed = "executed";
+  static assigned = "assigned";
+  static standardTime = "standardTime";
+  static realTime = "realTime";
+  static efficiency = "efficiency";
+  static executedCount = "executedCount";
+  static anomaliesDetected = "anomaliesDetected";
+  static executionChartTooltip = "executionChartTooltip";
+  static complianceChartTooltip = "complianceChartTooltip";
+  static timeChartTooltip = "timeChartTooltip";
+  static anomaliesChartTooltip = "anomaliesChartTooltip";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

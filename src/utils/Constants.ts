@@ -89,6 +89,7 @@ const ROUTES_PATH = {
   ciltLevelAssignaments: 'cilt-level-assignaments',
   ciltSequences: 'cilt-sequences',
   ciltReports: 'cilt-reports',
+  ciltCharts: 'cilt-charts',
   amDiscardReasons: 'am-discard-reasons'
 }
 

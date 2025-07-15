@@ -13,6 +13,7 @@ const Positions = "/positions";
 const AmDiscardReasons = "/am-discard-reasons";
 export const ResetPasswordRoute = "/reset-password";
 const Charts = "/charts";
+const CiltCharts = "/cilt-charts";
 export const UnauthorizedRoute = "/unauthorized";
 const SystemHealth = "/system-health";
 
@@ -41,6 +42,7 @@ export default {
   Login,
   CardDetails,
   Charts,
+  CiltCharts,
   AdminPrefix,
   SysadminPrefix,
   LocalAdminPrefix,
