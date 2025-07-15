@@ -1682,6 +1682,8 @@ const resources = {
       complianceChartTooltip: "Shows assigned vs executed CILT procedures by person",
       timeChartTooltip: "Shows standard time vs real execution time",
       anomaliesChartTooltip: "Shows anomalies detected during CILT execution",
+      compliance: "Compliance",
+      timeMinSeg: "Time (min:sec)",
     },
   },
   es: {
@@ -3377,6 +3379,8 @@ const resources = {
       complianceChartTooltip: "Muestra procedimientos CILT asignados vs ejecutados por persona",
       timeChartTooltip: "Muestra tiempo estándar vs tiempo real de ejecución",
       anomaliesChartTooltip: "Muestra anomalías detectadas durante la ejecución de CILT",
+      compliance: "Cumplimiento",
+      timeMinSeg: "Tiempo (min:seg)",
     },
   },
 };

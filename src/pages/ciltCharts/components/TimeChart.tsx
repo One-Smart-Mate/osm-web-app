@@ -78,10 +78,10 @@ const TimeChart = ({ filters }: TimeChartProps) => {
           }}
         >
           <p className="font-medium">{label}</p>
-          <p className="text-blue-500">Tiempo STD: {data?.standardTimeDisplay}</p>
-          <p className="text-orange-500">Ejecutado: {data?.realTimeDisplay}</p>
-          <p className="text-gray-500">Ejecutados: {data?.executedCount}</p>
-          <p className="text-green-500">Eficiencia: {data?.efficiencyPercentage?.toFixed(1)}%</p>
+          <p className="text-blue-500">{Strings.standardTime}: {data?.standardTimeDisplay}</p>
+          <p className="text-orange-500">{Strings.executed}: {data?.realTimeDisplay}</p>
+          <p className="text-gray-500">{Strings.executedCount}: {data?.executedCount}</p>
+          <p className="text-green-500">{Strings.efficiency}: {data?.efficiencyPercentage?.toFixed(1)}%</p>
         </div>
       );
     }
@@ -109,7 +109,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
           domain={[0, 'dataMax']}
           tickCount={5}
           scale="linear"
-          label={{ value: 'Tiempo (min:seg)', angle: -90, position: 'insideLeft' }}
+          label={{ value: Strings.timeMinSeg, angle: -90, position: 'insideLeft' }}
         />
         <XAxis
           dataKey="date"
@@ -123,7 +123,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
         <Bar
           dataKey="standardTimeMinutes"
           fill="#3b82f6"
-          name="Tiempo STD"
+          name={Strings.standardTime}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -136,7 +136,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
         <Bar
           dataKey="realTimeMinutes"
           fill="#f97316"
-          name="Ejecutado"
+          name={Strings.executed}
         >
           {chartData.map((_, index) => (
             <Cell

@@ -62,7 +62,7 @@ const AnomaliesChart = ({ filters }: AnomaliesChartProps) => {
           }}
         >
           <p className="font-medium">{label}</p>
-          <p className="text-blue-500">Asignadas: {data?.asignadas}</p>
+          <p className="text-blue-500">{Strings.assigned}: {data?.asignadas}</p>
         </div>
       );
     }
@@ -90,7 +90,7 @@ const AnomaliesChart = ({ filters }: AnomaliesChartProps) => {
           domain={[0, 'dataMax']}
           tickCount={5}
           scale="linear"
-          label={{ value: 'Anomalías', angle: -90, position: 'insideLeft' }}
+          label={{ value: Strings.anomaliesDetected, angle: -90, position: 'insideLeft' }}
         />
         <XAxis
           dataKey="date"
@@ -104,7 +104,7 @@ const AnomaliesChart = ({ filters }: AnomaliesChartProps) => {
         <Bar
           dataKey="asignadas"
           fill="#3b82f6"
-          name="Asignadas"
+          name={Strings.assigned}
         >
           {chartData.map((_, index) => (
             <Cell

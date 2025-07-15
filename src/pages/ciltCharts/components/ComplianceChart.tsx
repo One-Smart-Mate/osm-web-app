@@ -63,9 +63,9 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           }}
         >
           <p className="font-medium">{label}</p>
-          <p className="text-blue-500">Asignadas: {data?.assigned}</p>
-          <p className="text-red-500">Ejecutadas: {data?.executed}</p>
-          <p className="text-green-500">Cumplimiento: {data?.compliancePercentage?.toFixed(1)}%</p>
+          <p className="text-blue-500">{Strings.assigned}: {data?.assigned}</p>
+          <p className="text-red-500">{Strings.executed}: {data?.executed}</p>
+          <p className="text-green-500">{Strings.compliance}: {data?.compliancePercentage?.toFixed(1)}%</p>
         </div>
       );
     }
@@ -107,7 +107,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
         <Bar
           dataKey="assigned"
           fill="#3b82f6"
-          name="Asignadas"
+          name={Strings.assigned}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -120,7 +120,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
         <Bar
           dataKey="executed"
           fill="#ef4444"
-          name="Ejecutadas"
+          name={Strings.executed}
         >
           {chartData.map((_, index) => (
             <Cell

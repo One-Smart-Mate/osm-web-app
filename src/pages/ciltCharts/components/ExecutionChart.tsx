@@ -62,8 +62,8 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
           }}
         >
           <p className="font-medium">{label}</p>
-          <p className="text-blue-500">Programado: {payload[0]?.value}</p>
-          <p className="text-green-500">Ejecutado: {payload[1]?.value}</p>
+          <p className="text-blue-500">{Strings.programmed}: {payload[0]?.value}</p>
+          <p className="text-green-500">{Strings.executed}: {payload[1]?.value}</p>
         </div>
       );
     }
@@ -105,7 +105,7 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
         <Bar
           dataKey="programmed"
           fill="#3b82f6"
-          name="Programado"
+          name={Strings.programmed}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -118,7 +118,7 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
         <Bar
           dataKey="executed"
           fill="#10b981"
-          name="Ejecutado"
+          name={Strings.executed}
         >
           {chartData.map((_, index) => (
             <Cell

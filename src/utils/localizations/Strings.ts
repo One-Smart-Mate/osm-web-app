@@ -1696,7 +1696,6 @@ class StringsBase {
   static programmed = "programmed";
   static executed = "executed";
   static assigned = "assigned";
-  static standardTime = "standardTime";
   static realTime = "realTime";
   static efficiency = "efficiency";
   static executedCount = "executedCount";
@@ -1705,6 +1704,8 @@ class StringsBase {
   static complianceChartTooltip = "complianceChartTooltip";
   static timeChartTooltip = "timeChartTooltip";
   static anomaliesChartTooltip = "anomaliesChartTooltip";
+  static compliance = "compliance";
+  static timeMinSeg = "timeMinSeg";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
