@@ -1,7 +1,6 @@
-import { NotificationInstance } from "antd/es/notification/interface";
+import type { NotificationInstance } from "antd/es/notification/interface";
 import { format } from "date-fns";
 import CryptoJS from "crypto-js";
-import { useTranslation } from "react-i18next";
 
 /**
  * Notification types for the application

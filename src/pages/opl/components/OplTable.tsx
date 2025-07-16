@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Space, Button, Badge } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
+import { useGetOplTypesMutation } from "../../../services/oplTypesService";
 import type { ColumnsType } from "antd/es/table";
 import Strings from "../../../utils/localizations/Strings";
 
@@ -18,6 +19,31 @@ const OplTable: React.FC<OplTableProps> = ({
   onEdit,
   onDetails,
 }) => {
+  const [getOplTypes] = useGetOplTypesMutation();
+  const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
+
+  useEffect(() => {
+    fetchOplTypes();
+  }, []);
+
+  const fetchOplTypes = async () => {
+    try {
+      const response = await getOplTypes().unwrap();
+      const typesMap = Array.isArray(response) 
+        ? response.reduce((acc, type) => {
+            if (type.documentType) {
+              acc[type.id] = type.documentType;
+            }
+            return acc;
+          }, {} as { [key: number]: string })
+        : {};
+      setOplTypesMap(typesMap);
+    } catch (error) {
+      console.error("Error fetching OPL types:", error);
+      setOplTypesMap({});
+    }
+  };
+
   const columns: ColumnsType<OplMstr> = [
     {
       title: Strings.oplTableTitleColumn,
@@ -42,21 +68,17 @@ const OplTable: React.FC<OplTableProps> = ({
     },
     { 
       title: Strings.oplTableTypeColumn,
-      dataIndex: "oplType",
-      key: "oplType",
-      render: (type) => (
-        <Badge
-          color={type === "opl" ? "blue" : "green"}
-          text={
-            type === "opl" ? Strings.oplTableOplType : Strings.oplTableSopType
-          }
-        />
-      ),
-      filters: [
-        { text: Strings.oplTableOplType, value: "opl" },
-        { text: Strings.oplTableSopType, value: "sop" },
-      ],
-      onFilter: (value, record) => record.oplType === value,
+      dataIndex: "oplTypeId",
+      key: "oplTypeId",
+      render: (typeId) => {
+        const typeName = typeId && oplTypesMap[typeId] ? oplTypesMap[typeId] : Strings.oplFormNotAssigned;
+        return (
+          <Badge
+            color="blue"
+            text={typeName}
+          />
+        );
+      },
       responsive: ['sm'],
     },
     {

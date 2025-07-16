@@ -15,7 +15,6 @@ import {
 } from "../../../services/oplTypesService";
 import {
   CreateOplType,
-  UpdateOplType,
 } from "../../../data/oplTypes/oplTypes.request";
 
 interface OplTypeFormProps {

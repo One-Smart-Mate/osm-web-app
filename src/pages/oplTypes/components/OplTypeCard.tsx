@@ -42,8 +42,8 @@ const OplTypeCard = ({ oplType, onComplete }: CardProps) => {
         title={Strings.status}
         label={
           <Badge
-            status={getStatusAndText(oplType.status).status}
-            text={getStatusAndText(oplType.status).text}
+            status={getStatusAndText(oplType.status || 'A').status}
+            text={getStatusAndText(oplType.status || 'A').text}
           />
         }
       />

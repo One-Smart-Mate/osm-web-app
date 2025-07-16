@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { OplTypes } from "../../../data/oplTypes/oplTypes";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyTooltip from "../../components/AnatomyTooltip";
-import { BsCardText, BsFileText } from "react-icons/bs";
+import { BsFileText } from "react-icons/bs";
 import { useGetStatusMutation } from "../../../services/statusService";
 import { Status } from "../../../data/status/status";
 
