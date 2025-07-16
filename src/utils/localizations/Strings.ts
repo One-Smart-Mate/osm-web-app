@@ -906,6 +906,15 @@ class StringsBase {
   static seconds = "seconds";
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
+  static oplTypesSB = "oplTypesSB";
+  static oplTypesOf = "oplTypesOf";
+  static documentType = "documentType";
+  static oplTypeDescription = "oplTypeDescription";
+  static createOplType = "createOplType";
+  static updateOplType = "updateOplType";
+  static documentTypeTooLong = "documentTypeTooLong";
+  static invalidId = "invalidId";
+  static requiredDocumentType = "requiredDocumentType";
   static ciltTypesSB = "ciltTypesSB";
   static ciltTypesOf = "ciltTypesOf";
   static ciltTypesDescription = "ciltTypesDescription";

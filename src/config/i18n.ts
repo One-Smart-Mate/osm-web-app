@@ -880,6 +880,15 @@ const resources = {
       oplSB: "OPL",
       oplDescription:
         "This page contains information about One Point Lessons (OPL).",
+      oplTypesSB: "OPL Types",
+      oplTypesOf: "OPL Types of",
+      documentType: "Document Type",
+      oplTypeDescription: "Type Description",
+      createOplType: "Create OPL Type",
+      updateOplType: "Update OPL Type",
+    documentTypeTooLong: "Document type must be 50 characters or less",
+    invalidId: "Invalid ID",
+      requiredDocumentType: "Document type is required",
       ciltTypesSB: "CILT Types",
       ciltTypesOf: "CILT Types of",
       ciltTypesDescription:
@@ -2564,6 +2573,15 @@ const resources = {
       oplSB: "OPL",
       oplDescription:
         "Esta página contiene información sobre One Point Lessons (OPL).",
+      oplTypesSB: "Tipos de OPL",
+      oplTypesOf: "Tipos de OPL de",
+      documentType: "Tipo de Documento",
+      oplTypeDescription: "Descripción del Tipo",
+      createOplType: "Crear Tipo de OPL",
+      updateOplType: "Actualizar Tipo de OPL",
+    documentTypeTooLong: "El tipo de documento debe tener 50 caracteres o menos",
+    invalidId: "ID inválido",
+      requiredDocumentType: "El tipo de documento es requerido",
       ciltTypesSB: "Tipos de CILT",
       ciltTypesOf: "Tipos de CILT de",
       ciltTypesDescription:

@@ -48,6 +48,7 @@ const CiltSequencesPage = React.lazy(
   () => import("../pages/cilt/CiltSequencesPage")
 );
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
+const OplTypesPage = React.lazy(() => import("../pages/oplTypes/OplTypesPage"));
 const CiltTypesPage = React.lazy(
   () => import("../pages/ciltTypes/CiltTypesPage")
 );
@@ -187,6 +188,14 @@ const oplRoute = new Route(
   Strings.cilt
 );
 
+const oplTypesRoute = new Route(
+  Strings.oplTypesSB,
+  Constants.ROUTES_PATH.oplTypes,
+  <OplTypesPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
 const ciltTypesRoute = new Route(
   Strings.ciltTypesSB,
   Constants.ROUTES_PATH.ciltTypes,
@@ -261,6 +270,7 @@ const routes: Route[] = [
   systemHealthRoute,
   ciltProceduresRoute,
   oplRoute,
+  oplTypesRoute,
   ciltTypesRoute,
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
@@ -389,6 +399,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: oplRoute.path,
       icon: oplRoute.icon,
       section: oplRoute.section,
+    }),
+    getItemV2({
+      label: oplTypesRoute.label,
+      key: oplTypesRoute.path,
+      icon: oplTypesRoute.icon,
+      section: oplTypesRoute.section,
     }),
     getItemV2({
       label: ciltTypesRoute.label,
