@@ -129,6 +129,7 @@ export const CILTReports = () => {
   const [columnWidths, setColumnWidths] = useState({
     siteExecutionId: 60,
     route: 80,
+    ciltName: 150,
     secuenceColor: 120,
     secuenceSchedule: 140,
     duration: 80,
@@ -162,7 +163,7 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
-      // console.log("executionsData", executionsData);
+      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -191,6 +192,10 @@ export const CILTReports = () => {
             .includes(searchTerm.toLowerCase()) ??
             false) ||
           (execution.ciltTypeName
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.ciltMstr?.ciltName
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ??
             false) ||
@@ -289,6 +294,20 @@ export const CILTReports = () => {
       onHeaderCell: () => ({
         width: columnWidths.route,
         onResize: handleResize('route'),
+      }),
+    },
+    {
+      title: Strings.ciltMstrNameLabel,
+      dataIndex: ["ciltMstr", "ciltName"],
+      key: "ciltName",
+      render: (text) => text || Strings.oplFormNotAssigned,
+      width: columnWidths.ciltName,
+      ellipsis: { showTitle: true },
+      sorter: (a, b) => (a.ciltMstr?.ciltName || "").localeCompare(b.ciltMstr?.ciltName || ""),
+      filterSearch: true,
+      onHeaderCell: () => ({
+        width: columnWidths.ciltName,
+        onResize: handleResize('ciltName'),
       }),
     },
     {
@@ -459,7 +478,7 @@ export const CILTReports = () => {
               }}
             >
               <Input
-                placeholder="Search by ID, route, sequence, type, standard OK..."
+                placeholder="Search by ID, route, CILT name, sequence, type, standard OK..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 prefix={<SearchOutlined />}
