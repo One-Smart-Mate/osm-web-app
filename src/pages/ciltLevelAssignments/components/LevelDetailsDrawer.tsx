@@ -1295,6 +1295,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           onCancel={handleViewSchedulesCancel}
           sequenceId={selectedSequenceForViewSchedules.id}
           sequenceName={selectedSequenceForViewSchedules.secuenceList}
+          zIndex={1100}
         />
       )}
     </>
