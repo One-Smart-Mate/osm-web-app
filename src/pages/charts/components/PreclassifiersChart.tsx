@@ -149,17 +149,13 @@ const PreclassifiersChart = ({
           <YAxis 
             dataKey={"totalCards"} 
             // Force integer values and prevent duplicates
-            tickFormatter={(value: any) => Math.floor(Number(value)).toString()}
+            tickFormatter={(value: any) => Math.round(Number(value)).toString()}
             allowDecimals={false}
             // Set domain to use more vertical space
-            domain={[0, (dataMax: number) => Math.max(5, dataMax * 1.2)]}
-            // Use dynamic ticks based on data
-            ticks={(() => {
-              const maxValue = Math.max(...preclassifiers.map(item => item.totalCards));
-              const tickCount = 5;
-              const step = Math.ceil(maxValue / (tickCount - 1));
-              return Array.from({length: tickCount}, (_, i) => i * step);
-            })()}
+            domain={[0, 'dataMax']}
+            tickCount={5}
+            scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <XAxis
             dataKey={"preclassifier"}

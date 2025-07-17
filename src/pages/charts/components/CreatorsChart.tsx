@@ -197,9 +197,9 @@ const CreatorsChart = ({
             tickFormatter={(value: any) => Math.round(Number(value)).toString()}
             allowDecimals={false}
             domain={[0, 'dataMax']}
-            // Fix for duplicate tick values on y-axis by using a custom tick count
             tickCount={5}
             scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <XAxis
             dataKey={"creator"}

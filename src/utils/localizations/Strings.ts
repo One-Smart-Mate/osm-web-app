@@ -906,6 +906,15 @@ class StringsBase {
   static seconds = "seconds";
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
+  static oplTypesSB = "oplTypesSB";
+  static oplTypesOf = "oplTypesOf";
+  static documentType = "documentType";
+  static oplTypeDescription = "oplTypeDescription";
+  static createOplType = "createOplType";
+  static updateOplType = "updateOplType";
+  static documentTypeTooLong = "documentTypeTooLong";
+  static invalidId = "invalidId";
+  static requiredDocumentType = "requiredDocumentType";
   static ciltTypesSB = "ciltTypesSB";
   static ciltTypesOf = "ciltTypesOf";
   static ciltTypesDescription = "ciltTypesDescription";
@@ -1685,6 +1694,27 @@ class StringsBase {
   static successfullyCompleted = "successfullyCompleted";
   static passwordResetSuccess = "passwordResetSuccess";
   static hour = "hour";
+
+  // CILT Charts module
+  static ciltChartsSB = "ciltChartsSB";
+  static ciltChartsOf = "ciltChartsOf";
+  static executionCiltChart = "executionCiltChart";
+  static complianceCiltChart = "complianceCiltChart";
+  static timeCiltChart = "timeCiltChart";
+  static anomaliesCiltChart = "anomaliesCiltChart";
+  static programmed = "programmed";
+  static executed = "executed";
+  static assigned = "assigned";
+  static realTime = "realTime";
+  static efficiency = "efficiency";
+  static executedCount = "executedCount";
+  static anomaliesDetected = "anomaliesDetected";
+  static executionChartTooltip = "executionChartTooltip";
+  static complianceChartTooltip = "complianceChartTooltip";
+  static timeChartTooltip = "timeChartTooltip";
+  static anomaliesChartTooltip = "anomaliesChartTooltip";
+  static compliance = "compliance";
+  static timeMinSeg = "timeMinSeg";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

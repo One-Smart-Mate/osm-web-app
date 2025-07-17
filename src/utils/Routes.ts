@@ -11,8 +11,10 @@ const Cards = "/cards";
 const TagsFastPassword = "/tags-fast-password";
 const Positions = "/positions";
 const AmDiscardReasons = "/am-discard-reasons";
+const OplTypes = "/opl-types";
 export const ResetPasswordRoute = "/reset-password";
 const Charts = "/charts";
+const CiltCharts = "/cilt-charts";
 export const UnauthorizedRoute = "/unauthorized";
 const SystemHealth = "/system-health";
 
@@ -41,6 +43,7 @@ export default {
   Login,
   CardDetails,
   Charts,
+  CiltCharts,
   AdminPrefix,
   SysadminPrefix,
   LocalAdminPrefix,
@@ -50,5 +53,6 @@ export default {
   CardType,
   Positions,
   AmDiscardReasons,
+  OplTypes,
   PublicCardDetailsRoute
 };

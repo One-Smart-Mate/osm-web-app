@@ -33,6 +33,7 @@ const SystemHealth = React.lazy(
 );
 const SitesPage = React.lazy(() => import("../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../pages/charts/ChartsPage"));
+const CiltChartsPage = React.lazy(() => import("../pages/ciltCharts/CiltCharts"));
 const PositionsPage = React.lazy(
   () => import("../pages/positions/PositionsPage")
 );
@@ -47,6 +48,7 @@ const CiltSequencesPage = React.lazy(
   () => import("../pages/cilt/CiltSequencesPage")
 );
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
+const OplTypesPage = React.lazy(() => import("../pages/oplTypes/OplTypesPage"));
 const CiltTypesPage = React.lazy(
   () => import("../pages/ciltTypes/CiltTypesPage")
 );
@@ -130,6 +132,14 @@ const chartsRoute = new Route(
   Strings.dashboard
 );
 
+const ciltChartsRoute = new Route(
+  "Gráficas CILT",
+  Constants.ROUTES_PATH.ciltCharts,
+  <CiltChartsPage />,
+  <BsBarChartLine />,
+  Strings.cilt
+);
+
 const sitesRoute = new Route(
   Strings.sitesSB,
   Constants.ROUTES_PATH.sites,
@@ -174,6 +184,14 @@ const oplRoute = new Route(
   Strings.oplSB,
   Constants.ROUTES_PATH.opl,
   <OplPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
+const oplTypesRoute = new Route(
+  Strings.oplTypesSB,
+  Constants.ROUTES_PATH.oplTypes,
+  <OplTypesPage />,
   <BsNodePlus />,
   Strings.cilt
 );
@@ -252,9 +270,11 @@ const routes: Route[] = [
   systemHealthRoute,
   ciltProceduresRoute,
   oplRoute,
+  oplTypesRoute,
   ciltTypesRoute,
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
+  ciltChartsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
 ];
 
@@ -295,6 +315,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltReportsRoute.path,
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
+    }),
+    getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
     }),
   ];
   return items;
@@ -375,6 +401,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       section: oplRoute.section,
     }),
     getItemV2({
+      label: oplTypesRoute.label,
+      key: oplTypesRoute.path,
+      icon: oplTypesRoute.icon,
+      section: oplTypesRoute.section,
+    }),
+    getItemV2({
       label: ciltTypesRoute.label,
       key: ciltTypesRoute.path,
       icon: ciltTypesRoute.icon,
@@ -397,6 +429,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltReportsRoute.path,
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
+    }),
+    getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
     }),
   ];
   return items;

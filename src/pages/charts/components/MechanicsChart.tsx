@@ -387,76 +387,116 @@ const MechanicsChart = ({
 
   // Component for separated view using original logic
   const SeparatedChart = () => (
-    <ResponsiveContainer width={"100%"} height={"100%"}>
-      <BarChart data={transformedData} margin={{ bottom: 50 }}>
-        <Legend content={<MethodologiesLegend />} verticalAlign="top" />
-        <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip 
-          content={<CustomTooltip />} 
-          cursor={false}
-          isAnimationActive={false}
-          allowEscapeViewBox={{ x: true, y: true }}
-          wrapperStyle={{ 
-            zIndex: 9999, 
-            pointerEvents: 'none',
-            filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))'
-          }}
-        />
-        <YAxis 
-          tickFormatter={(value: any) => Math.round(Number(value)).toString()}
-          allowDecimals={false}
-          domain={[0, 'dataMax']}
-          tickCount={5}
-          scale="linear"
-        />
-        <XAxis
-          dataKey={"mechanic"}
-          angle={-15}
-          textAnchor="end"
-          className="md:text-sm text-xs"
-        />
-        
-        {/* Create stacked bars for on time cards */}
-        {methodologies.map((methodology) => (
-          <Bar
-            key={`${methodology.methodology}_onTime`}
-            dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_onTime`}
-            stackId="onTime"
-            stroke="black"
-            strokeWidth={0.5}
-            fill={`#${methodology.color}`}
-            onClick={(data) => handleOnClick(data, 'onTime', methodology.methodology)}
-          >
-            {transformedData.map((_, index) => (
-              <Cell
-                key={`cell-${methodology.methodology}-onTime-${index}`}
-                className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
-              />
-            ))}
-          </Bar>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <ResponsiveContainer width={"100%"} height={"100%"}>
+        <BarChart data={transformedData} margin={{ bottom: 80 }}>
+          <Legend content={<MethodologiesLegend />} verticalAlign="top" />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip 
+            content={<CustomTooltip />} 
+            cursor={false}
+            isAnimationActive={false}
+            allowEscapeViewBox={{ x: true, y: true }}
+            wrapperStyle={{ 
+              zIndex: 9999, 
+              pointerEvents: 'none',
+              filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))'
+            }}
+          />
+          <YAxis 
+            tickFormatter={(value: any) => Math.round(Number(value)).toString()}
+            allowDecimals={false}
+            domain={[0, 'dataMax']}
+            tickCount={5}
+            scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
+          />
+          <XAxis
+            dataKey={"mechanic"}
+            angle={-15}
+            textAnchor="end"
+            className="md:text-sm text-xs"
+            dy={14}
+          />
+          
+          {/* Create stacked bars for on time cards */}
+          {methodologies.map((methodology) => (
+            <Bar
+              key={`${methodology.methodology}_onTime`}
+              dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_onTime`}
+              stackId="onTime"
+              stroke="black"
+              strokeWidth={0.5}
+              fill={`#${methodology.color}`}
+              onClick={(data) => handleOnClick(data, 'onTime', methodology.methodology)}
+            >
+              {transformedData.map((_, index) => (
+                <Cell
+                  key={`cell-${methodology.methodology}-onTime-${index}`}
+                  className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
+                />
+              ))}
+            </Bar>
+          ))}
+          
+          {/* Create stacked bars for overdue cards */}
+          {methodologies.map((methodology) => (
+            <Bar
+              key={`${methodology.methodology}_overdue`}
+              dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_overdue`}
+              stackId="overdue"
+              stroke="black"
+              strokeWidth={0.5}
+              fill={`#${methodology.color}`}
+              onClick={(data) => handleOnClick(data, 'overdue', methodology.methodology)}
+            >
+              {transformedData.map((_, index) => (
+                <Cell
+                  key={`cell-${methodology.methodology}-overdue-${index}`}
+                  className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
+                />
+              ))}
+            </Bar>
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+      
+      {/* Labels positioned above the names */}
+      <div 
+        style={{ 
+          position: 'absolute', 
+          bottom: '95px', 
+          left: '0', 
+          right: '0', 
+          display: 'flex', 
+          justifyContent: 'space-around',
+          paddingLeft: '60px',
+          paddingRight: '20px'
+        }}
+      >
+        {transformedData.map((data, index) => (
+          <div key={`label-container-${index}`} style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            minWidth: '80px'
+          }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {data.onTime_total > 0 && (
+                <span style={{ fontSize: '8px', textAlign: 'center' }}>
+                  {Strings.onTimeTags}
+                </span>
+              )}
+              {data.overdue_total > 0 && (
+                <span style={{ fontSize: '8px', textAlign: 'center' }}>
+                  {Strings.overdueTags}
+                </span>
+              )}
+            </div>
+          </div>
         ))}
-        
-        {/* Create stacked bars for overdue cards */}
-        {methodologies.map((methodology) => (
-          <Bar
-            key={`${methodology.methodology}_overdue`}
-            dataKey={`${methodology.methodology.toLowerCase().replace(/\s/g, '_')}_overdue`}
-            stackId="overdue"
-            stroke="black"
-            strokeWidth={0.5}
-            fill={`#${methodology.color}`}
-            onClick={(data) => handleOnClick(data, 'overdue', methodology.methodology)}
-          >
-            {transformedData.map((_, index) => (
-              <Cell
-                key={`cell-${methodology.methodology}-overdue-${index}`}
-                className="transform transition-transform duration-200 hover:opacity-70 cursor-pointer"
-              />
-            ))}
-          </Bar>
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+      </div>
+    </div>
   );
 
   return (
@@ -496,12 +536,14 @@ const MechanicsChart = ({
             domain={[0, 'dataMax']}
             tickCount={5}
             scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <XAxis
             dataKey={"mechanic"}
             angle={-15}
             textAnchor="end"
             className="md:text-sm text-xs"
+            dy={14}
           />
           
                     {/* Render combined bars */}

@@ -27,6 +27,7 @@ import { useGetOplLevelsByLevelIdQuery, useDeleteOplLevelMutation } from "../../
 import { useGetPositionUsersQuery } from "../../../services/positionService";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
 import { useDeleteCiltMstrPositionLevelMutation } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
+import { useGetOplTypesMutation } from "../../../services/oplTypesService";
 import AnatomyNotification from "../../components/AnatomyNotification";
 import { Responsible } from "../../../data/user/user";
 import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
@@ -43,7 +44,7 @@ interface ExtendedOplLevel {
   siteId: number;
   reviewerId: number;
   reviewerName: string;
-  oplType: string;
+  oplTypeId: number; // Changed from oplType: string to oplTypeId: number
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -191,6 +192,37 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [error, setError] = useState<any>(null);
   const [deleteCiltAssignment, { isLoading: isDeleting }] = useDeleteCiltMstrPositionLevelMutation();
   const [deleteOplLevel, { isLoading: isDeletingOpl }] = useDeleteOplLevelMutation();
+  const [getOplTypes] = useGetOplTypesMutation();
+  const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
+
+  useEffect(() => {
+    fetchOplTypes();
+  }, []);
+
+  const fetchOplTypes = async () => {
+    try {
+      const response = await getOplTypes().unwrap();
+      const typesMap = Array.isArray(response) 
+        ? response.reduce((acc, type) => {
+            if (type.documentType) {
+              acc[type.id] = type.documentType;
+            }
+            return acc;
+          }, {} as { [key: number]: string })
+        : {};
+      setOplTypesMap(typesMap);
+    } catch (error) {
+      console.error("Error fetching OPL types:", error);
+      setOplTypesMap({});
+    }
+  };
+
+  const getOplTypeName = (oplTypeId: number | null | undefined): string => {
+    if (!oplTypeId || !oplTypesMap[oplTypeId]) {
+      return Strings.oplFormNotAssigned;
+    }
+    return oplTypesMap[oplTypeId];
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -752,7 +784,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           </Col>
           <Col xs={24} sm={12}>
             <Card size="small" title={Strings.type}>
-              <Typography.Text>{selectedOpl.oplType ? selectedOpl.oplType.toUpperCase() : 'OPL'}</Typography.Text>
+              <Typography.Text>{getOplTypeName(selectedOpl.oplTypeId)}</Typography.Text>
             </Card>
           </Col>
         </Row>
@@ -887,7 +919,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                 ]}
               >
                 <div style={{ minHeight: '100px' }}>
-                  <p><strong>{Strings.type}:</strong> {opl.oplType ? opl.oplType.toUpperCase() : 'OPL'}</p>
+                  <p><strong>{Strings.type}:</strong> {getOplTypeName(opl.oplTypeId)}</p>
                   <p><strong>{Strings.objective}:</strong> {opl.objetive || Strings.notSpecified}</p>
                   <p><strong>{Strings.creator}:</strong> {opl.creatorName || Strings.notSpecified}</p>
                 </div>
@@ -1263,6 +1295,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
           onCancel={handleViewSchedulesCancel}
           sequenceId={selectedSequenceForViewSchedules.id}
           sequenceName={selectedSequenceForViewSchedules.secuenceList}
+          zIndex={1100}
         />
       )}
     </>

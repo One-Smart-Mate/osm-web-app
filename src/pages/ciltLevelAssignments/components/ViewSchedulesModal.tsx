@@ -15,6 +15,7 @@ interface ViewSchedulesModalProps {
   onCancel: () => void;
   sequenceId: number;
   sequenceName: string;
+  zIndex?: number;
 }
 
 const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
@@ -22,6 +23,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
   onCancel,
   sequenceId,
   sequenceName,
+  zIndex = 1000,
 }) => {
   const { data: schedules, isLoading, error } = useGetSchedulesBySequenceQuery(
     sequenceId,
@@ -169,6 +171,7 @@ const ViewSchedulesModal: React.FC<ViewSchedulesModalProps> = ({
         </Button>,
       ]}
       width={800}
+      zIndex={zIndex}
     >
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: '16px' }}>

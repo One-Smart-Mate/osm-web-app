@@ -30,6 +30,7 @@ import { useGetOplDetailsByOplMutation } from "../../../services/cilt/oplDetails
 import { useCreateOplMstrMutation } from "../../../services/cilt/oplMstrService";
 import { useCreateOplDetailMutation } from "../../../services/cilt/oplDetailsService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
+import { useGetOplTypesMutation } from "../../../services/oplTypesService";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import {
   OplDetail,
@@ -65,10 +66,12 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   const [createOplMstr] = useCreateOplMstrMutation();
   const [createOplDetail] = useCreateOplDetailMutation();
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
+  const [getOplTypes] = useGetOplTypesMutation();
 
   const [opls, setOpls] = useState<OplMstr[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
 
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [currentOplDetails, setCurrentOplDetails] = useState<OplDetail[]>([]);
@@ -92,6 +95,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     if (isVisible) {
       fetchOpls();
       fetchResponsibles();
+      fetchOplTypes();
     } else {
       setSearchText("");
     }
@@ -119,6 +123,24 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
       console.error("Error fetching responsibles:", error);
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  const fetchOplTypes = async () => {
+    try {
+      const response = await getOplTypes().unwrap();
+      const typesMap = Array.isArray(response) 
+        ? response.reduce((acc, type) => {
+            if (type.documentType) {
+              acc[type.id] = type.documentType;
+            }
+            return acc;
+          }, {} as { [key: number]: string })
+        : {};
+      setOplTypesMap(typesMap);
+    } catch (error) {
+      console.error("Error fetching OPL types:", error);
+      setOplTypesMap({});
     }
   };
 
@@ -216,7 +238,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
         creatorName: creator?.name || "", // Provide empty string as default
         reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined, // Must use undefined to match the DTO type
         reviewerName: reviewer?.name || "", // Provide empty string as default
-        oplType: values.oplType || "opl", // Default to 'opl'
+        oplTypeId: values.oplTypeId ? Number(values.oplTypeId) : undefined, // Use oplTypeId instead of oplType
         createdAt: new Date().toISOString(),
         siteId: siteIdToUse, // Usar el siteId obtenido y validado
       };
@@ -419,19 +441,17 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     },
     {
       title: Strings.oplSelectionModalTypeColumn,
-      dataIndex: "oplType",
-      key: "oplType",
-      render: (type: string) => (
-        <Badge
-          color={type === "opl" ? "blue" : "green"}
-          text={type === "opl" ? "OPL" : "SOP"}
-        />
-      ),
-      filters: [
-        { text: "OPL", value: "opl" },
-        { text: "SOP", value: "sop" },
-      ],
-      onFilter: (value: any, record: OplMstr) => record.oplType === value,
+      dataIndex: "oplTypeId",
+      key: "oplTypeId",
+      render: (typeId: number) => {
+        const typeName = typeId && oplTypesMap[typeId] ? oplTypesMap[typeId] : "Not assigned";
+        return (
+          <Badge
+            color="blue"
+            text={typeName}
+          />
+        );
+      },
       width: "15%",
     },
     {
