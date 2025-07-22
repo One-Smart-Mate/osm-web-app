@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Table, Typography, Spin, Badge, Card, Empty, Tooltip } from 'antd';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Modal, Table, Typography, Spin, Card, Empty, Tooltip, Button, Input, Pagination } from 'antd';
+import { SearchOutlined} from '@ant-design/icons';
 import { CiltMstr } from '../../../data/cilt/ciltMstr/ciltMstr';
 import { useGetCiltMstrPositionLevelsByCiltMstrIdQuery } from '../../../services/cilt/assignaments/ciltMstrPositionsLevelsService';
 import { useGetlevelMutation } from '../../../services/levelService';
+import { useGetSchedulesBySequenceQuery } from '../../../services/cilt/ciltSecuencesScheduleService';
 import Strings from '../../../utils/localizations/Strings';
 import type { ColumnsType } from 'antd/es/table';
+import ViewSchedulesModal from '../../ciltLevelAssignments/components/ViewSchedulesModal';
 
 interface CiltPositionsLevelsModalProps {
   visible: boolean;
@@ -23,9 +26,83 @@ interface PositionLevelData {
   nodeResponsableName: string;
   status: string;
   createdAt: string;
+  ciltMstr?: ExtendedCiltMstr;
 }
 
-const { Text, Title } = Typography;
+// Extended interface for CiltMstr that includes sequences
+interface ExtendedCiltMstr extends CiltMstr {
+  sequences?: CiltSequence[];
+}
+
+// Interface for sequence data structure from API response
+interface CiltSequence {
+  id: number;
+  siteId?: number;
+  siteName?: string;
+  areaId?: number;
+  areaName?: string;
+  positionId?: number;
+  positionName?: string;
+  ciltMstrId?: number;
+  ciltMstrName?: string;
+  levelId?: number | null;
+  levelName?: string | null;
+  route?: string | null;
+  order?: number;
+  secuenceList: string;
+  secuenceColor: string;
+  ciltTypeId?: number;
+  ciltTypeName: string;
+  referenceOplSop?: number;
+  standardTime: number;
+  standardOk: string;
+  remediationOplSop?: number;
+  toolsRequired: string | null;
+  specialWarning: string | null;
+  stoppageReason?: number;
+  machineStopped: number;
+  quantityPicturesCreate?: number;
+  quantityPicturesClose?: number;
+  referencePoint?: string | null;
+  selectableWithoutProgramming?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string | null;
+  deletedAt?: string | null;
+  status: string;
+}
+
+const { Text } = Typography;
+
+// Component for the schedule button
+interface ScheduleButtonProps {
+  sequence: CiltSequence;
+  onViewSchedules: (sequence: CiltSequence) => void;
+}
+
+const ScheduleButton = ({ sequence, onViewSchedules }: ScheduleButtonProps) => {
+  const { data: schedules = [], isLoading } = useGetSchedulesBySequenceQuery(sequence.id, {
+    refetchOnMountOrArgChange: true,
+    skip: !sequence.id
+  });
+
+  if (isLoading) {
+    return <Button type="default" loading size="small">{Strings.viewSchedules}</Button>;
+  }
+
+  if (!schedules.length) {
+    return <Button type="default" disabled size="small">{Strings.noSchedulesFound}</Button>;
+  }
+
+  return (
+    <Button 
+      type="default" 
+      size="small"
+      onClick={() => onViewSchedules(sequence)}
+    >
+      {Strings.viewSchedules}
+    </Button>
+  );
+};
 
 const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
   visible,
@@ -34,6 +111,15 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
 }) => {
   const [processedData, setProcessedData] = useState<PositionLevelData[]>([]);
   const [loadingLevels, setLoadingLevels] = useState(false);
+  
+  // States for sequence modals
+  const [selectedCiltMstr, setSelectedCiltMstr] = useState<ExtendedCiltMstr | null>(null);
+  const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
+  const [sequenceSearchText, setSequenceSearchText] = useState("");
+  const [sequencePage, setSequencePage] = useState(1);
+  const [viewSchedulesVisible, setViewSchedulesVisible] = useState(false);
+  const [selectedSequenceForViewSchedules, setSelectedSequenceForViewSchedules] = useState<CiltSequence | null>(null);
+  const sequencePageSize = 4;
 
   const { data: assignmentData, isLoading, error } = useGetCiltMstrPositionLevelsByCiltMstrIdQuery(
     cilt?.id || 0,
@@ -99,6 +185,7 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
           nodeResponsableName: item.position?.nodeResponsableName || Strings.noResponsible,
           status: item.status || 'A',
           createdAt: item.createdAt || '',
+          ciltMstr: item.ciltMstr,
         };
       });
 
@@ -117,12 +204,56 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
         nodeResponsableName: item.position?.nodeResponsableName || Strings.noResponsible,
         status: item.status || 'A',
         createdAt: item.createdAt || '',
+        ciltMstr: item.ciltMstr,
       }));
       setProcessedData(processed);
     } finally {
       setLoadingLevels(false);
     }
   };
+
+  // Functions to handle sequence modals
+  const showSequenceList = (ciltMstr: ExtendedCiltMstr) => {
+    setSelectedCiltMstr(ciltMstr);
+    setSequenceListModalVisible(true);
+  };
+
+  const showViewSchedules = (sequence: CiltSequence) => {
+    setSelectedSequenceForViewSchedules(sequence);
+    setViewSchedulesVisible(true);
+  };
+
+  const handleViewSchedulesCancel = () => {
+    setViewSchedulesVisible(false);
+    setSelectedSequenceForViewSchedules(null);
+  };
+
+  // Helper function to get paginated items
+  const getPaginatedItems = (items: any[] = [], page: number, size: number) => {
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+    return items.slice(startIndex, endIndex);
+  };
+
+  // Get active sequences for the selected CILT master
+  const activeSequences = useMemo(() => {
+    if (!selectedCiltMstr?.sequences) return [];
+    return selectedCiltMstr.sequences.filter((seq: CiltSequence) => seq.status === 'A');
+  }, [selectedCiltMstr]);
+  
+  // Filter sequences based on search text
+  const filteredSequences = useMemo(() => {
+    if (!sequenceSearchText.trim()) {
+      return activeSequences;
+    }
+    
+    const searchLower = sequenceSearchText.toLowerCase();
+    return activeSequences.filter((sequence: CiltSequence) => {
+      const sequenceText = sequence.secuenceList.toLowerCase();
+      const typeText = sequence.ciltTypeName.toLowerCase();
+      return sequenceText.includes(searchLower) || typeText.includes(searchLower);
+    });
+  }, [activeSequences, sequenceSearchText]);
 
   const columns: ColumnsType<PositionLevelData> = [
     {
@@ -173,16 +304,34 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
       title: Strings.responsible,
       dataIndex: 'nodeResponsableName',
       key: 'nodeResponsableName',
-      width: 140,
+      width: 100,
       render: (name) => <Text>{name}</Text>,
     },
     {
-      title: Strings.creationDate,
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: Strings.actions,
+      key: 'actions',
       width: 120,
-      render: (date) => date ? new Date(date).toLocaleDateString() : Strings.ciltMstrNA,
-      sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      render: (_, record) => (
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {record.ciltMstr?.sequences && record.ciltMstr.sequences.length > 0 ? (
+            <Button 
+              type="primary" 
+              size="small"
+              onClick={() => showSequenceList(record.ciltMstr!)}
+            >
+              {Strings.viewSequences}
+            </Button>
+          ) : (
+            <Button 
+              type="default" 
+              size="small"
+              disabled
+            >
+              {Strings.noSequencesFound}
+            </Button>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -219,37 +368,18 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
 
     return (
       <div>
-        <Card size="small" style={{ marginBottom: 16, backgroundColor: '#f8f9fa' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <Title level={5} style={{ margin: 0, color: '#1890ff' }}>
-                {cilt?.ciltName || Strings.ciltMstrNA}
-              </Title>
-              <Text type="secondary">
-                {Strings.total}: {processedData.length} {Strings.ciltPositionsLevelsAssignments}
-              </Text>
-            </div>
-            <Badge 
-              count={processedData.length} 
-              style={{ backgroundColor: '#52c41a' }}
-              showZero
-            />
-          </div>
-        </Card>
-
         <Table
           columns={columns}
           dataSource={processedData}
           rowKey="id"
           pagination={{
-            pageSize: 8,
-            showSizeChanger: true,
+            pageSize: 50,
+            showSizeChanger: false,
             showQuickJumper: true,
-            pageSizeOptions: ['8', '15', '25', '50'],
             showTotal: (total, range) => 
               `${range[0]}-${range[1]} de ${total} ${Strings.ciltPositionsLevelsAssignments}`,
           }}
-          scroll={{ x: 800 }}
+          scroll={{ x: 1000 }}
           size="small"
           bordered
         />
@@ -258,17 +388,122 @@ const CiltPositionsLevelsModal: React.FC<CiltPositionsLevelsModalProps> = ({
   };
 
   return (
-    <Modal
-      title={`${Strings.ciltPositionsLevelsTitle} - ${cilt?.ciltName || ''}`}
-      open={visible}
-      onCancel={onCancel}
-      footer={null}
-      width={1000}
-      style={{ top: 20 }}
-      destroyOnClose
-    >
-      {renderContent()}
-    </Modal>
+    <>
+      <Modal
+        title={`${Strings.ciltPositionsLevelsTitle} - ${cilt?.ciltName || ''}`}
+        open={visible}
+        onCancel={onCancel}
+        footer={null}
+        width={1000}
+        style={{ top: 20 }}
+        destroyOnClose
+      >
+        {renderContent()}
+      </Modal>
+      
+      {/* Sequence List Modal */}
+      <Modal
+        title={<div style={{ whiteSpace: 'pre-wrap', paddingRight: '24px' }}>{`${Strings.sequences}: ${selectedCiltMstr?.ciltName || ''}`}</div>}
+        open={sequenceListModalVisible}
+        onCancel={() => setSequenceListModalVisible(false)}
+        footer={null}
+        width={1000}
+        style={{ top: 20 }}
+        bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
+        zIndex={1050}
+      >
+        {activeSequences.length > 0 ? (
+          <div>
+            <div style={{ marginBottom: '16px' }}>
+              <Input
+                placeholder={Strings.ciltCardListSearchPlaceholder}
+                prefix={<SearchOutlined />}
+                value={sequenceSearchText}
+                onChange={(e) => {
+                  setSequenceSearchText(e.target.value);
+                  setSequencePage(1); 
+                }}
+                allowClear
+              />
+            </div>
+            
+            {filteredSequences.length > 0 ? (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {getPaginatedItems(filteredSequences, sequencePage, sequencePageSize).map((sequence: CiltSequence) => (
+                    <div key={sequence.id} style={{ width: '80%', marginBottom: '16px' }}>
+                      <Card
+                        style={{ 
+                          paddingTop: '16px',
+                          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.15)',
+                          border: '1px solid #e8e8e8',
+                          width: '100%'
+                        }}
+                        title={
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+                            <div 
+                              style={{ 
+                                width: '16px', 
+                                height: '16px', 
+                                borderRadius: '50%', 
+                                backgroundColor: `#${sequence.secuenceColor || '000000'}`,
+                                flexShrink: 0
+                              }} 
+                            />
+                            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'pre-wrap' }}>
+                              {sequence.secuenceList}
+                            </div>
+                          </div>
+                        }
+                      >
+                        <div className="mb-2">
+                          <Text strong>{Strings.ciltTypeName}: </Text>
+                          <Text>{sequence.ciltTypeName}</Text>
+                        </div>
+                        <div className="mb-2">
+                          <Text strong>{Strings.standardTime}: </Text>
+                          <Text>{Math.floor(sequence.standardTime / 60)}:{(sequence.standardTime % 60).toString().padStart(2, '0')} min</Text>
+                        </div>
+                        <div style={{ marginTop: '12px', textAlign: 'center', display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                          <ScheduleButton sequence={sequence} onViewSchedules={showViewSchedules} />
+                        </div>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+                
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Pagination
+                    current={sequencePage}
+                    pageSize={sequencePageSize}
+                    total={filteredSequences.length}
+                    onChange={setSequencePage}
+                    showSizeChanger={false}
+                  />
+                </div>
+              </>
+            ) : (
+              <Empty description={Strings.noSequencesFound} />
+            )}
+          </div>
+        ) : (
+          <div className="text-center p-4">
+            <Text>{Strings.noSequencesFound}</Text>
+          </div>
+        )}
+      </Modal>
+
+      {/* View Schedules Modal */}
+      {selectedSequenceForViewSchedules && (
+        <ViewSchedulesModal
+          visible={viewSchedulesVisible}
+          onCancel={handleViewSchedulesCancel}
+          sequenceId={selectedSequenceForViewSchedules.id}
+          sequenceName={selectedSequenceForViewSchedules.secuenceList}
+          zIndex={1100}
+        />
+      )}
+    </>
   );
 };
 

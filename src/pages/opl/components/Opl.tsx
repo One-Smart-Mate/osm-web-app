@@ -14,7 +14,7 @@ import {
   useUpdateOplDetailOrderMutation,
 } from "../../../services/cilt/oplDetailsService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
-import { OplMstr, CreateOplMstrDTO } from "../../../data/cilt/oplMstr/oplMstr";
+import { OplMstr, CreateOplMstrDTO, UpdateOplMstrDTO } from "../../../data/cilt/oplMstr/oplMstr";
 import {
   OplDetail,
   CreateOplDetailsDTO,
@@ -32,10 +32,13 @@ import Strings from "../../../utils/localizations/Strings";
 
 import SearchBar from "../../../components/common/SearchBar";
 import { fileValidationCache } from "./OplMediaUploader";
+import { useTranslation } from "react-i18next";
+import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 const Opl = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [detailForm] = Form.useForm();
 
@@ -139,7 +142,7 @@ const Opl = (): React.ReactElement => {
       reviewerId: reviewer ? reviewer.id : undefined,
       creatorName: creator ? creator.name : record.creatorName,
       reviewerName: reviewer ? reviewer.name : record.reviewerName,
-      oplType: record.oplType || "opl",
+      oplTypeId: record.oplTypeId,
     };
   };
 
@@ -243,42 +246,44 @@ const Opl = (): React.ReactElement => {
         : null;
 
       if (currentOpl) {
-        const updatePayload: any = {
-          id: currentOpl.id,
-          title: values.title,
-          objetive: values.objetive,
-          creatorId: values.creatorId ? Number(values.creatorId) : undefined,
-          creatorName: creator?.name || undefined,
-          reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined,
-          reviewerName: reviewer?.name || undefined,
-          oplType: values.oplType,
-          updatedAt: new Date().toISOString(),
-          siteId: values.siteId || Number(siteId) || null,
-        };
+        const updatePayload = new UpdateOplMstrDTO(
+          currentOpl.id,
+          new Date().toISOString(),
+          values.siteId || Number(siteId) || null,
+          values.title,
+          values.objetive,
+          values.creatorId ? Number(values.creatorId) : undefined,
+          creator?.name || undefined,
+          values.reviewerId ? Number(values.reviewerId) : undefined,
+          reviewer?.name || undefined,
+          values.oplTypeId ? Number(values.oplTypeId) : undefined
+        );
 
         await updateOplMstr(updatePayload).unwrap();
-        notification.success({
-          message: "Success",
-          description: Strings.oplSuccessUpdated,
-        });
+        AnatomyNotification.success(
+          notification,
+          AnatomyNotificationType.UPDATE,
+          t
+        );
       } else {
-        const createPayload: CreateOplMstrDTO = {
-          title: values.title,
-          objetive: values.objetive,
-          creatorId: values.creatorId ? Number(values.creatorId) : undefined,
-          creatorName: creator?.name || undefined,
-          reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined,
-          reviewerName: reviewer?.name || undefined,
-          oplType: values.oplType,
-          createdAt: new Date().toISOString(),
-          siteId: values.siteId || Number(siteId) || null,
-        };
+        const createPayload = new CreateOplMstrDTO(
+          values.title,
+          new Date().toISOString(),
+          values.siteId || Number(siteId) || null,
+          values.objetive,
+          values.creatorId ? Number(values.creatorId) : undefined,
+          creator?.name || undefined,
+          values.reviewerId ? Number(values.reviewerId) : undefined,
+          reviewer?.name || undefined,
+          values.oplTypeId ? Number(values.oplTypeId) : undefined
+        );
 
         await createOplMstr(createPayload).unwrap();
-        notification.success({
-          message: "Success",
-          description: Strings.oplSuccessCreated,
-        });
+        AnatomyNotification.success(
+          notification,
+          AnatomyNotificationType.REGISTER,
+          t
+        );
       }
 
       setIsModalVisible(false);

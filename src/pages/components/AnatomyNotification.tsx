@@ -1,4 +1,4 @@
-import { NotificationInstance } from "antd/es/notification/interface";
+import type { NotificationInstance } from "antd/es/notification/interface";
 import { format } from "date-fns";
 import CryptoJS from "crypto-js";
 
@@ -15,24 +15,24 @@ export enum AnatomyNotificationType {
 /**
  * Get success message based on notification type
  */
-const getSuccessMessage = (type: AnatomyNotificationType): string => {
+const getSuccessMessage = (type: AnatomyNotificationType, t: (key: string) => string): string => {
   if (type == AnatomyNotificationType.REGISTER) {
-    return "Successfully registered";
+    return t("successfullyRegistered");
   }
 
   if (type == AnatomyNotificationType.UPDATE) {
-    return "Successfully updated";
+    return t("successfullyUpdated");
   }
 
   if (type == AnatomyNotificationType.SUCCESS_DELETE) {
-    return "Successfully deleted";
+    return t("successfullyDeleted");
   }
 
   if (type == AnatomyNotificationType.RESET_PASSWORD) {
-    return "Your password has been reset successfully. You can now log in with your new password";
+    return t("passwordResetSuccess");
   }
 
-  return "Successfully completed";
+  return t("successfullyCompleted");
 };
 
 /**
@@ -230,10 +230,28 @@ class AnatomyNotification {
   /**
    * Display success notification
    */
-  static success(notification: NotificationInstance, value: AnatomyNotificationType) {
+  static success(
+    notification: NotificationInstance, 
+    value: AnatomyNotificationType, 
+    t?: (key: string) => string
+  ) {
+    // Default translation function if none provided
+    const translate = t || ((key: string) => {
+      // Fallback to English if no translation function provided
+      const fallbacks: Record<string, string> = {
+        successfullyRegistered: "Successfully registered",
+        successfullyUpdated: "Successfully updated",
+        successfullyDeleted: "Successfully deleted",
+        passwordResetSuccess: "Your password has been reset successfully. You can now log in with your new password",
+        successfullyCompleted: "Successfully completed",
+        success: "Success!"
+      };
+      return fallbacks[key] || key;
+    });
+
     notification.open({
-      message: "Success!",
-      description: getSuccessMessage(value),
+      message: translate("success"),
+      description: getSuccessMessage(value, translate),
       type: "success",
     });
   }

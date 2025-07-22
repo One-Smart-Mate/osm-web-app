@@ -14,6 +14,7 @@ import {
 
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
 import { useGetOplMstrBySiteMutation } from "../../../services/cilt/oplMstrService";
+import { useGetOplTypesMutation } from "../../../services/oplTypesService";
 import Strings from "../../../utils/localizations/Strings";
 import { CaretRightOutlined } from "@ant-design/icons";
 
@@ -41,6 +42,8 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
   const [selectedOpl, setSelectedOpl] = useState<OplMstr | null>(null);
   const [getOplMstrBySite, { data: opls, isLoading: isLoadingOpls }] =
     useGetOplMstrBySiteMutation();
+  const [getOplTypes] = useGetOplTypesMutation();
+  const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
   const [oplDetailsVisible, setOplDetailsVisible] = useState(false);
   const [currentOplDetails, setCurrentOplDetails] = useState<any[]>([]);
   const [oplDropdownOpen, setOplDropdownOpen] = useState(false);
@@ -48,6 +51,7 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
   React.useEffect(() => {
     if (isVisible && siteId) {
       fetchOpls();
+      fetchOplTypes();
     }
   }, [isVisible, siteId]);
 
@@ -61,6 +65,31 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
         description: Strings.oplErrorLoadingDetails,
       });
     }
+  };
+
+  const fetchOplTypes = async () => {
+    try {
+      const response = await getOplTypes().unwrap();
+      const typesMap = Array.isArray(response) 
+        ? response.reduce((acc, type) => {
+            if (type.documentType) {
+              acc[type.id] = type.documentType;
+            }
+            return acc;
+          }, {} as { [key: number]: string })
+        : {};
+      setOplTypesMap(typesMap);
+    } catch (error) {
+      console.error("Error fetching OPL types:", error);
+      setOplTypesMap({});
+    }
+  };
+
+  const getOplTypeName = (oplTypeId: number | null | undefined): string => {
+    if (!oplTypeId || !oplTypesMap[oplTypeId]) {
+      return Strings.oplFormNotAssigned;
+    }
+    return oplTypesMap[oplTypeId];
   };
 
   const handleSubmit = async () => {
@@ -269,14 +298,10 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
                       <Select.Option
                         key={opl.id}
                         value={opl.id}
-                        label={`${opl.title} (${
-                          opl.oplType ? opl.oplType.toUpperCase() : "OPL"
-                        })`}
+                        label={`${opl.title} (${getOplTypeName(opl.oplTypeId)})`}
                       >
                         <div className="flex justify-between items-center">
-                          <span>{`${opl.title} (${
-                            opl.oplType ? opl.oplType.toUpperCase() : "OPL"
-                          })`}</span>
+                          <span>{`${opl.title} (${getOplTypeName(opl.oplTypeId)})`}</span>
                           <Button
                             type="primary"
                             size="small"
@@ -309,9 +334,7 @@ const OplAssignmentDrawer: React.FC<OplAssignmentDrawerProps> = ({
                   </p>
                   <p>
                     <strong>{Strings.type}:</strong>{" "}
-                    {selectedOpl.oplType
-                      ? selectedOpl.oplType.toUpperCase()
-                      : "OPL"}
+                    {getOplTypeName(selectedOpl.oplTypeId)}
                   </p>
                   <p>
                     <strong>{Strings.creator}:</strong>{" "}

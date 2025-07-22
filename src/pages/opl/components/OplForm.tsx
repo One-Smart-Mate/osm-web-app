@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Select, Spin, Typography, Button } from "antd";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
+import { useGetOplTypesMutation } from "../../../services/oplTypesService";
+import { OplTypes } from "../../../data/oplTypes/oplTypes";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,11 +28,35 @@ const OplForm: React.FC<OplFormProps> = ({
 }) => {
   const location = useLocation();
   const siteId = location.state?.siteId || null;
-  React.useEffect(() => {
+  const [getOplTypes] = useGetOplTypesMutation();
+  const [oplTypes, setOplTypes] = useState<OplTypes[]>([]);
+  const [loadingOplTypes, setLoadingOplTypes] = useState(false);
+
+  useEffect(() => {
     if (siteId) {
       form.setFieldsValue({ siteId: Number(siteId) });
     }
   }, [siteId, form]);
+
+  useEffect(() => {
+    handleGetOplTypes();
+  }, []);
+
+  const handleGetOplTypes = async () => {
+    try {
+      setLoadingOplTypes(true);
+      const response = await getOplTypes().unwrap();
+      const activeOplTypes = Array.isArray(response) 
+        ? response.filter(type => type.status === 'A')
+        : [];
+      setOplTypes(activeOplTypes);
+    } catch (error) {
+      console.error("Error fetching OPL types:", error);
+      setOplTypes([]);
+    } finally {
+      setLoadingOplTypes(false);
+    }
+  };
 
   return (
     <Spin spinning={loadingUsers}>
@@ -64,13 +90,27 @@ const OplForm: React.FC<OplFormProps> = ({
         </Form.Item>
 
         <Form.Item
-          name="oplType"
+          name="oplTypeId"
           label={Strings.oplFormTypeLabel}
           rules={[{ required: true, message: Strings.oplFormTypeRequired }]}
         >
-          <Select placeholder={Strings.oplFormTypePlaceholder}>
-            <Option value="opl">{Strings.oplFormTypeOpl}</Option>
-            <Option value="sop">{Strings.oplFormTypeSop}</Option>
+          <Select 
+            placeholder={Strings.oplFormTypePlaceholder}
+            loading={loadingOplTypes}
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children as unknown as string)
+                ?.toLowerCase()
+                .includes(input.toLowerCase())
+            }
+          >
+            {oplTypes.map((oplType) => (
+              <Option key={oplType.id} value={oplType.id}>
+                {oplType.documentType}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 

@@ -129,7 +129,8 @@ export const CILTReports = () => {
   const [columnWidths, setColumnWidths] = useState({
     siteExecutionId: 60,
     route: 80,
-    secuenceColor: 60,
+    ciltName: 150,
+    secuenceColor: 120,
     secuenceSchedule: 140,
     duration: 80,
     standardOk: 200,
@@ -162,7 +163,7 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
-      // console.log("executionsData", executionsData);
+      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -191,6 +192,10 @@ export const CILTReports = () => {
             .includes(searchTerm.toLowerCase()) ??
             false) ||
           (execution.ciltTypeName
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ??
+            false) ||
+          (execution.ciltMstr?.ciltName
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ??
             false) ||
@@ -292,24 +297,53 @@ export const CILTReports = () => {
       }),
     },
     {
-      title: Strings.color,
-      dataIndex: "secuenceColor",
-      key: "secuenceColor",
-      render: (color) => (
-        <div
-          style={{
-            backgroundColor:
-              color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`,
-            width: "20px",
-            height: "20px",
-            borderRadius: "50%",
-            border: "1px solid #d9d9d9",
-            margin: "auto",
-          }}
-        />
-      ),
+      title: Strings.ciltMstrNameLabel,
+      dataIndex: ["ciltMstr", "ciltName"],
+      key: "ciltName",
+      render: (text) => text || Strings.oplFormNotAssigned,
+      width: columnWidths.ciltName,
+      ellipsis: { showTitle: true },
+      sorter: (a, b) => (a.ciltMstr?.ciltName || "").localeCompare(b.ciltMstr?.ciltName || ""),
+      filterSearch: true,
+      onHeaderCell: () => ({
+        width: columnWidths.ciltName,
+        onResize: handleResize('ciltName'),
+      }),
+    },
+    {
+      title: "Tipo CILT",
+      dataIndex: "ciltTypeName",
+      key: "ciltTypeName",
+      render: (typeName, record) => {
+        const color = record.secuenceColor;
+        const backgroundColor = color && color.startsWith("#") ? color : `#${color || "f0f0f0"}`;
+        
+        // Calculate text color based on background brightness
+        const getTextColor = (bgColor: string) => {
+          const hex = bgColor.replace('#', '');
+          const r = parseInt(hex.substr(0, 2), 16);
+          const g = parseInt(hex.substr(2, 2), 16);
+          const b = parseInt(hex.substr(4, 2), 16);
+          const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+          return brightness > 128 ? '#000000' : '#ffffff';
+        };
+
+        return (
+          <Tag
+            style={{
+              backgroundColor,
+              color: getTextColor(backgroundColor),
+              border: `1px solid ${backgroundColor}`,
+              margin: 0,
+            }}
+          >
+            {typeName || Strings.oplFormNotAssigned}
+          </Tag>
+        );
+      },
       width: columnWidths.secuenceColor,
       align: "center",
+      sorter: (a, b) => (a.ciltTypeName || "").localeCompare(b.ciltTypeName || ""),
       onHeaderCell: () => ({
         width: columnWidths.secuenceColor,
         onResize: handleResize('secuenceColor'),
@@ -444,7 +478,7 @@ export const CILTReports = () => {
               }}
             >
               <Input
-                placeholder="Search by ID, route, sequence, type, standard OK..."
+                placeholder="Search by ID, route, CILT name, sequence, type, standard OK..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 prefix={<SearchOutlined />}

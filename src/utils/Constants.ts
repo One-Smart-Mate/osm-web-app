@@ -64,6 +64,11 @@ const nodeEndBridgeCollapserd = "_collapsed";
 
 const osName = 'WEB' as 'WEB';
 
+// Platform constants to match backend DTO
+const OS_WEB = 'WEB';
+const OS_ANDROID = 'ANDROID';
+const OS_IOS = 'IOS';
+
 const es = "ES";
 const en = "EN";
 
@@ -84,11 +89,13 @@ const ROUTES_PATH = {
   technicalSupport: 'technicalSupport',
   ciltProcedures: 'cilt-procedures',
   opl: 'opl',
+  oplTypes: 'opl-types',
   ciltTypes: 'cilt-types',
   ciltFrecuencies: 'cilt-frecuencies',
   ciltLevelAssignaments: 'cilt-level-assignaments',
   ciltSequences: 'cilt-sequences',
   ciltReports: 'cilt-reports',
+  ciltCharts: 'cilt-charts',
   amDiscardReasons: 'am-discard-reasons'
 }
 
@@ -142,6 +149,9 @@ export default {
   optionUpdate,
   optionPosition,
   osName,
+  OS_WEB,
+  OS_ANDROID,
+  OS_IOS,
   es,
   en,
   ROUTES_PATH,

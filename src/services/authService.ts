@@ -7,6 +7,7 @@ export interface UpdateLastLoginDTO {
   userId: number;
   date: string;
   platform: string;
+  timezone?: string;
 }
 
 export const authService = apiSlice.injectEndpoints({

@@ -1,3 +1,26 @@
+// Interface for the nested ciltMstr object
+export interface CiltMstr {
+  id: number;
+  siteId: number;
+  order: number;
+  ciltName: string;
+  ciltDescription: string;
+  ciltDueDate: string | null;
+  creatorId: number;
+  creatorName: string;
+  reviewerId: number;
+  reviewerName: string;
+  approvedById: number;
+  approvedByName: string;
+  standardTime: number;
+  status: string;
+  urlImgLayout: string | null;
+  dateOfLastUsed: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface CiltSequenceExecution {
   id: number;
   siteId: number | null;
@@ -43,6 +66,10 @@ export interface CiltSequenceExecution {
   createdAt: string | null;
   updatedAt: string | null;
   deletedAt: string | null;
+  // Add the nested ciltMstr object
+  ciltMstr?: CiltMstr;
+  // Add evidences array
+  evidences?: any[];
 }
 
 export class CreateCiltSequencesExecutionDTO {

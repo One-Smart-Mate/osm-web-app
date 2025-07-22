@@ -211,6 +211,7 @@ const DefinitiveUsersChart = ({
             // Fix for duplicate tick values on y-axis by using a custom tick count
             tickCount={5}
             scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <XAxis
             dataKey={"definitiveUser"}

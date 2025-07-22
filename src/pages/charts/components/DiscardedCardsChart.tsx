@@ -9,7 +9,7 @@ import useDarkMode from '../../../utils/hooks/useDarkMode';
 import Constants from '../../../utils/Constants';
 
 interface DiscardedCardData {
-  responsibleName: string;
+  creatorName: string;
   discardReason: string;
   cardTypeName: string;
   totalCards: string;
@@ -71,11 +71,11 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
       
       if (!isDiscarded) return false;
       
-      // Filter by selected user - check both responsableName and mechanicName
+      // Filter by selected user - check creatorName, responsableName and mechanicName
       if (selectedUser !== Strings.empty) {
-        const userMatches = card.responsableName === selectedUser || 
-                           card.mechanicName === selectedUser ||
-                           card.creatorName === selectedUser;
+        const userMatches = card.creatorName === selectedUser ||
+                           card.responsableName === selectedUser || 
+                           card.mechanicName === selectedUser;
         if (!userMatches) return false;
       }
       
@@ -143,7 +143,7 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
     }
 
     // Get unique users and discard reasons
-    const users = [...new Set(filteredData.map(item => item.responsibleName))];
+    const users = [...new Set(filteredData.map(item => item.creatorName))];
     const reasons = [...new Set(filteredData.map(item => item.discardReason))];
     
     setDiscardReasons(reasons);
@@ -160,7 +160,7 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
       // Fill with actual data
       let userTotal = 0;
       filteredData
-        .filter(item => item.responsibleName === user)
+        .filter(item => item.creatorName === user)
         .forEach(item => {
           const count = parseInt(item.totalCards) || 0;
           userEntry[item.discardReason] = count;
@@ -285,6 +285,9 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
             tickFormatter={(value: any) => Math.round(Number(value)).toString()}
             allowDecimals={false}
             domain={[0, 'dataMax']}
+            tickCount={5}
+            scale="linear"
+            label={{ value: Strings.cards, angle: -90, position: 'insideLeft' }}
           />
           <Tooltip 
             content={<CustomTooltip />} 
