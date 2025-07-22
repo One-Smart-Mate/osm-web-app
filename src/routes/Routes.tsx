@@ -382,18 +382,18 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: siteUsersRoute.icon,
       section: siteUsersRoute.section,
     }),
-    getItemV2({
-      label: positionsRoute.label,
-      key: positionsRoute.path,
-      icon: positionsRoute.icon,
-      section: positionsRoute.section,
-    }),
-    getItemV2({
-      label: ciltProceduresRoute.label,
-      key: ciltProceduresRoute.path,
-      icon: ciltProceduresRoute.icon,
-      section: ciltProceduresRoute.section,
-    }),
+    // getItemV2({
+    //   label: positionsRoute.label,
+    //   key: positionsRoute.path,
+    //   icon: positionsRoute.icon,
+    //   section: positionsRoute.section,
+    // }),
+    // getItemV2({
+    //   label: ciltProceduresRoute.label,
+    //   key: ciltProceduresRoute.path,
+    //   icon: ciltProceduresRoute.icon,
+    //   section: ciltProceduresRoute.section,
+    // }),
     getItemV2({
       label: oplRoute.label,
       key: oplRoute.path,
@@ -406,36 +406,36 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: oplTypesRoute.icon,
       section: oplTypesRoute.section,
     }),
-    getItemV2({
-      label: ciltTypesRoute.label,
-      key: ciltTypesRoute.path,
-      icon: ciltTypesRoute.icon,
-      section: ciltTypesRoute.section,
-    }),
-    getItemV2({
-      label: ciltFrecuenciesRoute.label,
-      key: ciltFrecuenciesRoute.path,
-      icon: ciltFrecuenciesRoute.icon,
-      section: ciltFrecuenciesRoute.section,
-    }),
-    getItemV2({
-      label: ciltLevelAssignamentsRoute.label,
-      key: ciltLevelAssignamentsRoute.path,
-      icon: ciltLevelAssignamentsRoute.icon,
-      section: ciltLevelAssignamentsRoute.section,
-    }),
-    getItemV2({
-      label: ciltReportsRoute.label,
-      key: ciltReportsRoute.path,
-      icon: ciltReportsRoute.icon,
-      section: ciltReportsRoute.section,
-    }),
-    getItemV2({
-      label: ciltChartsRoute.label,
-      key: ciltChartsRoute.path,
-      icon: ciltChartsRoute.icon,
-      section: ciltChartsRoute.section,
-    }),
+    // getItemV2({
+    //   label: ciltTypesRoute.label,
+    //   key: ciltTypesRoute.path,
+    //   icon: ciltTypesRoute.icon,
+    //   section: ciltTypesRoute.section,
+    // }),
+    // getItemV2({
+    //   label: ciltFrecuenciesRoute.label,
+    //   key: ciltFrecuenciesRoute.path,
+    //   icon: ciltFrecuenciesRoute.icon,
+    //   section: ciltFrecuenciesRoute.section,
+    // }),
+    // getItemV2({
+    //   label: ciltLevelAssignamentsRoute.label,
+    //   key: ciltLevelAssignamentsRoute.path,
+    //   icon: ciltLevelAssignamentsRoute.icon,
+    //   section: ciltLevelAssignamentsRoute.section,
+    // }),
+    // getItemV2({
+    //   label: ciltReportsRoute.label,
+    //   key: ciltReportsRoute.path,
+    //   icon: ciltReportsRoute.icon,
+    //   section: ciltReportsRoute.section,
+    // }),
+    // getItemV2({
+    //   label: ciltChartsRoute.label,
+    //   key: ciltChartsRoute.path,
+    //   icon: ciltChartsRoute.icon,
+    //   section: ciltChartsRoute.section,
+    // }),
   ];
   return items;
 };
