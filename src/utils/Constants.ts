@@ -64,6 +64,11 @@ const nodeEndBridgeCollapserd = "_collapsed";
 
 const osName = 'WEB' as 'WEB';
 
+// Platform constants to match backend DTO
+const OS_WEB = 'WEB';
+const OS_ANDROID = 'ANDROID';
+const OS_IOS = 'IOS';
+
 const es = "ES";
 const en = "EN";
 
@@ -144,6 +149,9 @@ export default {
   optionUpdate,
   optionPosition,
   osName,
+  OS_WEB,
+  OS_ANDROID,
+  OS_IOS,
   es,
   en,
   ROUTES_PATH,
