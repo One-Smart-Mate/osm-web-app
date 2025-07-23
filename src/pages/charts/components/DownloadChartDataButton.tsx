@@ -28,21 +28,21 @@ const DownloadChartDataButton = ({
   // Format card data for detailed export
   const formatCardDataForExport = (cards: CardInterface[]) => {
     return cards.map(card => ({
-      'Número de Tarjeta': card.siteCardId || 'N/A',
-      'Tipo de Tarjeta': card.cardTypeName || 'N/A',
-      [Strings.status]: card.status === 'A' ? 'Abierta' : 'Cerrada',
+      [Strings.exportCardNumber]: card.siteCardId || 'N/A',
+      [Strings.exportCardType]: card.cardTypeName || 'N/A',
+      [Strings.status]: card.status === 'A' ? Strings.open : Strings.closed,
       [Strings.mechanic]: card.mechanicName || Strings.noMechanic,
       [Strings.responsible]: card.responsableName || Strings.noResponsible,
-      [Strings.area]: card.areaName || 'N/A',
+      [Strings.area]: card.areaName || Strings.noArea,
       [Strings.location]: card.cardLocation || 'N/A',
-      'Preclasificador': card.preclassifierDescription || 'N/A',
+      [Strings.exportPreclassifier]: card.preclassifierDescription || 'N/A',
       [Strings.description]: card.commentsAtCardCreation || 'N/A',
-      'Fecha Creación': card.createdAt ? new Date(card.createdAt).toLocaleDateString('es-ES') : 'N/A',
-      'Fecha Cierre': card.cardDefinitiveSolutionDate ? new Date(card.cardDefinitiveSolutionDate).toLocaleDateString('es-ES') : 'Pendiente',
+      [Strings.exportCreationDate]: card.createdAt ? new Date(card.createdAt).toLocaleDateString('es-ES') : 'N/A',
+      [Strings.closureDate]: card.cardDefinitiveSolutionDate ? new Date(card.cardDefinitiveSolutionDate).toLocaleDateString('es-ES') : Strings.pending,
       [Strings.priority]: card.priorityDescription || 'N/A',
       [Strings.creator]: card.creatorName || 'N/A',
-      'Solución': card.commentsAtCardDefinitiveSolution || 'Pendiente',
-      'Días Abierta': card.createdAt ? 
+      [Strings.solution]: card.commentsAtCardDefinitiveSolution || Strings.pending,
+      [Strings.daysOpen]: card.createdAt ? 
         Math.floor((new Date().getTime() - new Date(card.createdAt).getTime()) / (1000 * 3600 * 24)) : 0
     }));
   };
@@ -91,8 +91,8 @@ const DownloadChartDataButton = ({
     setLoading(true);
     try {
       notification.info({
-        message: "Generando Reporte Completo",
-        description: "Recopilando y organizando todos los datos...",
+        message: Strings.generatingCompleteReport,
+        description: Strings.compilingAndOrganizingData,
         duration: 2,
       });
 
@@ -119,25 +119,25 @@ const DownloadChartDataButton = ({
 
              // Sheet 1: Quick Summary (Only the 4 main fields requested)
        const quickSummaryData = filteredCards.map(card => ({
-         'Número de Tarjeta': card.siteCardId || 'N/A',
-         'Tipo de Tarjeta': card.cardTypeName || 'N/A',
-         [Strings.status]: card.status === 'A' ? 'Abierta' : 'Cerrada',
+         [Strings.exportCardNumber]: card.siteCardId || 'N/A',
+         [Strings.exportCardType]: card.cardTypeName || 'N/A',
+         [Strings.status]: card.status === 'A' ? Strings.open : Strings.closed,
          [Strings.mechanic]: card.mechanicName || Strings.noMechanic
        }));
        let quickSummarySheet = XLSX.utils.json_to_sheet(quickSummaryData);
        quickSummarySheet = applyBasicStyling(quickSummarySheet, quickSummaryData);
-       XLSX.utils.book_append_sheet(workbook, quickSummarySheet, "⚡ Resumen Rápido");
+       XLSX.utils.book_append_sheet(workbook, quickSummarySheet, Strings.quickSummary);
 
        // Sheet 2: Complete Card Details (Main sheet with all the info the user requested)
        const cardDetailsData = formatCardDataForExport(filteredCards);
        let cardDetailsSheet = XLSX.utils.json_to_sheet(cardDetailsData);
        cardDetailsSheet = applyBasicStyling(cardDetailsSheet, cardDetailsData);
-       XLSX.utils.book_append_sheet(workbook, cardDetailsSheet, "📋 Detalles Completos");
+       XLSX.utils.book_append_sheet(workbook, cardDetailsSheet, Strings.completeDetails);
 
              // Sheet 3: Summary by Card Type
        const cardTypeSummary: any[] = [];
        const cardTypeGroups = filteredCards.reduce((acc: any, card) => {
-         const type = card.cardTypeName || 'Sin Tipo';
+         const type = card.cardTypeName || Strings.noType;
          if (!acc[type]) {
            acc[type] = { total: 0, open: 0, closed: 0, withMechanic: 0 };
          }
@@ -148,25 +148,25 @@ const DownloadChartDataButton = ({
          return acc;
        }, {});
 
-       Object.entries(cardTypeGroups).forEach(([type, stats]: [string, any]) => {
-         cardTypeSummary.push({
-           'Tipo de Tarjeta': type,
-           'Total': stats.total,
-           'Abiertas': stats.open,
-           'Cerradas': stats.closed,
-           '% Completadas': `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
-           'Con Mecánico': stats.withMechanic,
-           '% Asignadas': `${((stats.withMechanic / stats.total) * 100).toFixed(1)}%`
-         });
-       });
+               Object.entries(cardTypeGroups).forEach(([type, stats]: [string, any]) => {
+          cardTypeSummary.push({
+            [Strings.exportCardType]: type,
+            [Strings.total]: stats.total,
+            [Strings.open]: stats.open,
+            [Strings.closed]: stats.closed,
+            [Strings.percentCompleted]: `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
+            [Strings.withMechanic]: stats.withMechanic,
+            [Strings.percentAssigned]: `${((stats.withMechanic / stats.total) * 100).toFixed(1)}%`
+          });
+        });
        let summarySheet = XLSX.utils.json_to_sheet(cardTypeSummary);
        summarySheet = applyBasicStyling(summarySheet, cardTypeSummary);
-       XLSX.utils.book_append_sheet(workbook, summarySheet, "📊 Resumen por Tipo");
+       XLSX.utils.book_append_sheet(workbook, summarySheet, Strings.summaryByType);
 
        // Sheet 4: Mechanics Performance
        const mechanicsSummary: any[] = [];
        const mechanicsGroups = filteredCards.reduce((acc: any, card) => {
-         const mechanic = card.mechanicName || 'Sin Asignar';
+         const mechanic = card.mechanicName || Strings.noAssigned;
          if (!acc[mechanic]) {
            acc[mechanic] = { total: 0, open: 0, closed: 0, types: new Set() };
          }
@@ -179,22 +179,22 @@ const DownloadChartDataButton = ({
 
        Object.entries(mechanicsGroups).forEach(([mechanic, stats]: [string, any]) => {
          mechanicsSummary.push({
-           'Mecánico': mechanic,
-           'Total': stats.total,
-           'Abiertas': stats.open,
-           'Cerradas': stats.closed,
-           '% Completadas': `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
-           'Tipos': Array.from(stats.types).join(', ')
+           [Strings.mechanic]: mechanic,
+           [Strings.total]: stats.total,
+           [Strings.open]: stats.open,
+           [Strings.closed]: stats.closed,
+           [Strings.percentCompleted]: `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
+           [Strings.types]: Array.from(stats.types).join(', ')
          });
        });
        let mechanicsSheet = XLSX.utils.json_to_sheet(mechanicsSummary);
        mechanicsSheet = applyBasicStyling(mechanicsSheet, mechanicsSummary);
-       XLSX.utils.book_append_sheet(workbook, mechanicsSheet, "👷 Análisis Mecánicos");
+       XLSX.utils.book_append_sheet(workbook, mechanicsSheet, Strings.mechanicsAnalysis);
 
        // Sheet 5: Areas Performance
       const areasSummary: any[] = [];
       const areasGroups = filteredCards.reduce((acc: any, card) => {
-        const area = card.areaName || 'Sin Área';
+        const area = card.areaName || Strings.noArea;
         if (!acc[area]) {
           acc[area] = { total: 0, open: 0, closed: 0, types: new Set() };
         }
@@ -206,18 +206,18 @@ const DownloadChartDataButton = ({
       }, {});
 
       Object.entries(areasGroups).forEach(([area, stats]: [string, any]) => {
-        areasSummary.push({
-          'Área': area,
-          'Total': stats.total,
-          'Abiertas': stats.open,
-          'Cerradas': stats.closed,
-          '% Completadas': `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
-          'Tipos': Array.from(stats.types).join(', ')
-        });
+                                   areasSummary.push({
+                         [Strings.area]: area,
+             [Strings.total]: stats.total,
+             [Strings.open]: stats.open,
+             [Strings.closed]: stats.closed,
+             [Strings.percentCompleted]: `${((stats.closed / stats.total) * 100).toFixed(1)}%`,
+             [Strings.types]: Array.from(stats.types).join(', ')
+          });
       });
       let areasSheet = XLSX.utils.json_to_sheet(areasSummary);
       areasSheet = applyBasicStyling(areasSheet, areasSummary);
-      XLSX.utils.book_append_sheet(workbook, areasSheet, "🏭 Análisis Áreas");
+      XLSX.utils.book_append_sheet(workbook, areasSheet, Strings.areasAnalysis);
 
       // Generate and download file
       const excelBuffer = XLSX.write(workbook, { 
@@ -246,14 +246,14 @@ const DownloadChartDataButton = ({
       window.URL.revokeObjectURL(url);
 
       notification.success({
-        message: "¡Reporte Descargado!",
-        description: `Excel completo con ${Object.keys(workbook.Sheets).length} hojas generado exitosamente`,
+        message: Strings.reportDownloaded,
+        description: Strings.completeExcelWithSheets.replace('{count}', Object.keys(workbook.Sheets).length.toString()),
         duration: 4,
       });
 
     } catch (error) {
       console.error("Download error:", error);
-      handleErrorNotification("Error al generar el reporte");
+      handleErrorNotification(Strings.errorGeneratingReport);
     } finally {
       setLoading(false);
     }
@@ -267,7 +267,7 @@ const DownloadChartDataButton = ({
       onClick={handleDownload}
       size="large"
          >
-       {loading ? "Generando Excel..." : Strings.downloadData}
+               {loading ? Strings.loading : Strings.downloadData}
      </Button>
   );
 };
