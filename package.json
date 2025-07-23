@@ -15,6 +15,7 @@
     "@reduxjs/toolkit": "^2.8.1",
     "@tailwindcss/vite": "^4.1.6",
     "@types/react-resizable": "^3.0.8",
+    "@types/xlsx": "^0.0.35",
     "@zip.js/zip.js": "^2.7.62",
     "antd": "^5.25.1",
     "crypto-js": "^4.2.0",
@@ -39,7 +40,8 @@
     "react-router-dom": "^7.6.0",
     "recharts": "^2.15.3",
     "use-debounce": "^10.0.4",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.6",

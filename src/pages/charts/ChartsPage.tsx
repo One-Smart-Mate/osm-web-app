@@ -114,7 +114,12 @@ const ChartsPage = () => {
       content={
         <div>
           <div className="flex items-end justify-end">
-            <DownloadChartDataButton siteId={siteId} />
+            <DownloadChartDataButton 
+              siteId={siteId} 
+              startDate={startDate}
+              endDate={endDate}
+              cardTypeName={selectedCardType}
+            />
           </div>
           <Space className="w-full flex flex-wrap gap-2 mb-1 md:mb-0 pb-2">
             <RangePicker presets={rangePresets} onChange={onRangeChange} />
