@@ -7,6 +7,7 @@ import {
 } from "../../../services/cardService";
 import { handleErrorNotification } from "../../../utils/Notifications";
 import { CardInterface } from "../../../data/card/card";
+import Strings from "../../../utils/localizations/Strings";
 
 interface DownloadChartDataButtonProps {
   siteId: string;
@@ -28,18 +29,18 @@ const DownloadChartDataButton = ({
   const formatCardDataForExport = (cards: CardInterface[]) => {
     return cards.map(card => ({
       'Número de Tarjeta': card.siteCardId || 'N/A',
-      'Tipo de Tarjeta': card.cardTypeName || 'N/A', 
-      'Estado': card.status === 'A' ? 'Abierta' : 'Cerrada',
-      'Mecánico Asignado': card.mechanicName || 'Sin asignar',
-      'Responsable': card.responsableName || 'Sin asignar',
-      'Área': card.areaName || 'N/A',
-      'Ubicación': card.cardLocation || 'N/A',
+      'Tipo de Tarjeta': card.cardTypeName || 'N/A',
+      [Strings.status]: card.status === 'A' ? 'Abierta' : 'Cerrada',
+      [Strings.mechanic]: card.mechanicName || Strings.noMechanic,
+      [Strings.responsible]: card.responsableName || Strings.noResponsible,
+      [Strings.area]: card.areaName || 'N/A',
+      [Strings.location]: card.cardLocation || 'N/A',
       'Preclasificador': card.preclassifierDescription || 'N/A',
-      'Descripción': card.commentsAtCardCreation || 'N/A',
+      [Strings.description]: card.commentsAtCardCreation || 'N/A',
       'Fecha Creación': card.createdAt ? new Date(card.createdAt).toLocaleDateString('es-ES') : 'N/A',
       'Fecha Cierre': card.cardDefinitiveSolutionDate ? new Date(card.cardDefinitiveSolutionDate).toLocaleDateString('es-ES') : 'Pendiente',
-      'Prioridad': card.priorityDescription || 'N/A',
-      'Creador': card.creatorName || 'N/A',
+      [Strings.priority]: card.priorityDescription || 'N/A',
+      [Strings.creator]: card.creatorName || 'N/A',
       'Solución': card.commentsAtCardDefinitiveSolution || 'Pendiente',
       'Días Abierta': card.createdAt ? 
         Math.floor((new Date().getTime() - new Date(card.createdAt).getTime()) / (1000 * 3600 * 24)) : 0
@@ -120,8 +121,8 @@ const DownloadChartDataButton = ({
        const quickSummaryData = filteredCards.map(card => ({
          'Número de Tarjeta': card.siteCardId || 'N/A',
          'Tipo de Tarjeta': card.cardTypeName || 'N/A',
-         'Estado': card.status === 'A' ? 'Abierta' : 'Cerrada',
-         'Mecánico Asignado': card.mechanicName || 'Sin asignar'
+         [Strings.status]: card.status === 'A' ? 'Abierta' : 'Cerrada',
+         [Strings.mechanic]: card.mechanicName || Strings.noMechanic
        }));
        let quickSummarySheet = XLSX.utils.json_to_sheet(quickSummaryData);
        quickSummarySheet = applyBasicStyling(quickSummarySheet, quickSummaryData);
@@ -265,9 +266,9 @@ const DownloadChartDataButton = ({
       loading={loading}
       onClick={handleDownload}
       size="large"
-    >
-      {loading ? "Generando Excel..." : "Descargar Datos Completos"}
-    </Button>
+         >
+       {loading ? "Generando Excel..." : Strings.downloadData}
+     </Button>
   );
 };
 
