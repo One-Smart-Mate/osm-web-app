@@ -496,6 +496,33 @@ class StringsBase {
 
   static downloadData = "downloadData";
 
+  // Export functionality strings
+  static generatingCompleteReport = "generatingCompleteReport";
+  static compilingAndOrganizingData = "compilingAndOrganizingData";
+  static reportDownloaded = "reportDownloaded";
+  static completeExcelWithSheets = "completeExcelWithSheets";
+  static quickSummary = "quickSummary";
+  static completeDetails = "completeDetails";
+  static summaryByType = "summaryByType";
+  static mechanicsAnalysis = "mechanicsAnalysis";
+  static areasAnalysis = "areasAnalysis";
+  static exportCardNumber = "exportCardNumber";
+  static exportCardType = "exportCardType";
+  static withMechanic = "withMechanic";
+  static percentCompleted = "percentCompleted";
+  static percentAssigned = "percentAssigned";
+  static types = "types";
+  static pending = "pending";
+  static noType = "noType";
+  static noAssigned = "noAssigned";
+  static noArea = "noArea";
+  static exportPreclassifier = "exportPreclassifier";
+  static exportCreationDate = "exportCreationDate";
+  static closureDate = "closureDate";
+  static solution = "solution";
+  static daysOpen = "daysOpen";
+  static errorGeneratingReport = "errorGeneratingReport";
+
   // Presets de selector de rango
   static last7days = "last7days";
   static last14days = "last14days";

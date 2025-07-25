@@ -53,16 +53,8 @@ const LoginPage = () => {
 
   const onFinish = async (values: any) => {
     try {
-      // Detect user's timezone
-      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      
       const data = await login(
-        new LoginRequest(
-          values.email, 
-          values.password, 
-          userTimezone, 
-          Constants.OS_WEB
-        )
+        new LoginRequest(values.email, values.password)
       ).unwrap();
 
       if (isValidUser(data)) {

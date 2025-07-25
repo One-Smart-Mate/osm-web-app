@@ -37,14 +37,10 @@ const useUserActivity = () => {
     try {
       // Use requestIdleCallback if available for better performance
       const sendUpdate = async () => {
-        // Detect user's timezone
-        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        
         await updateLastLogin({
           userId: Number(user.userId),
           date: new Date().toISOString(),
-          platform: Constants.OS_WEB,
-          timezone: userTimezone
+          platform: Constants.osName || 'web'
         }).unwrap();
         
         lastUpdateRef.current = now;
