@@ -42,7 +42,7 @@ const useUserActivity = () => {
         
         await updateLastLogin({
           userId: Number(user.userId),
-          date: new Date().toISOString(),
+          date: new Date().toISOString(), // Send as ISO string to match backend example
           platform: Constants.OS_WEB,
           timezone: userTimezone
         }).unwrap();
