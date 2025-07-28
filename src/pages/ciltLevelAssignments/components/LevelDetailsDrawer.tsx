@@ -26,11 +26,12 @@ import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { useGetOplLevelsByLevelIdQuery, useDeleteOplLevelMutation } from "../../../services/cilt/assignaments/oplLevelService";
 import { useGetPositionUsersQuery } from "../../../services/positionService";
 import { useGetSchedulesBySequenceQuery } from "../../../services/cilt/ciltSecuencesScheduleService";
-import { useDeleteCiltMstrPositionLevelMutation } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
+import { useDeleteCiltMstrPositionLevelMutation, useGetCiltMstrPositionLevelsByLevelIdQuery } from "../../../services/cilt/assignaments/ciltMstrPositionsLevelsService";
 import { useGetOplTypesMutation } from "../../../services/oplTypesService";
 import AnatomyNotification from "../../components/AnatomyNotification";
 import { Responsible } from "../../../data/user/user";
 import ScheduleSecuence from "../../cilt/components/ScheduleSecuence";
+import { CiltMstrPositionLevelWithRelations } from "../../../data/cilt/assignaments/ciltMstrPositionsLevels";
 
 
 // Extended interface for OPL with details from API response
@@ -172,7 +173,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState("cilt");
   const [searchText, setSearchText] = useState("");
-  const [selectedCiltMstr, setSelectedCiltMstr] = useState<ExtendedCiltMstr | null>(null);
+  const [selectedCiltMstr, setSelectedCiltMstr] = useState<(CiltMstr & { sequences?: any[] }) | null>(null);
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(null);
   const [ciltDetailsModalVisible, setCiltDetailsModalVisible] = useState(false);
   const [sequenceListModalVisible, setSequenceListModalVisible] = useState(false);
@@ -187,13 +188,21 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const pageSize = 4;
   const sequencePageSize = 4;
 
-  const [levelAssignments, setLevelAssignments] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
   const [deleteCiltAssignment, { isLoading: isDeleting }] = useDeleteCiltMstrPositionLevelMutation();
   const [deleteOplLevel, { isLoading: isDeletingOpl }] = useDeleteOplLevelMutation();
   const [getOplTypes] = useGetOplTypesMutation();
   const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
+
+  // Use RTK Query instead of manual fetch
+  const { 
+    data: levelAssignments = [], 
+    isLoading, 
+    error, 
+    refetch: refetchLevelAssignments 
+  } = useGetCiltMstrPositionLevelsByLevelIdQuery(levelId || 0, { 
+    skip: !levelId,
+    refetchOnMountOrArgChange: true 
+  });
 
   useEffect(() => {
     fetchOplTypes();
@@ -224,54 +233,12 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     return oplTypesMap[oplTypeId];
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!levelId) return;
-      
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        const apiUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
-        
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': '*/*',
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status} ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        const assignments = data.data || data;
-        setLevelAssignments(Array.isArray(assignments) ? assignments : []);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [levelId]);
-  
-  
-  interface ExtendedCiltMstr extends CiltMstr {
-    sequences?: CiltSequence[];
-  }
-
-  
-  const showCiltDetails = (ciltMstr: CiltMstr) => {
+  const showCiltDetails = (ciltMstr: CiltMstr & { sequences?: any[] }) => {
     setSelectedCiltMstr(ciltMstr);
     setCiltDetailsModalVisible(true);
   };
 
-  const showSequenceList = (ciltMstr: CiltMstr) => {
+  const showSequenceList = (ciltMstr: CiltMstr & { sequences?: any[] }) => {
     setSelectedCiltMstr(ciltMstr);
     setSequenceListModalVisible(true);
   };
@@ -313,7 +280,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     });
   };
 
-  const handleDeleteAssignment = (assignment: any) => {
+  const handleDeleteAssignment = (assignment: CiltMstrPositionLevelWithRelations) => {
     Modal.confirm({
       title: Strings.ciltAssignmentDeleteConfirmTitle,
       content: Strings.ciltAssignmentDeleteFromCiltConfirmContent,
@@ -329,7 +296,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             description: Strings.ciltAssignmentDeleteSuccess,
           });
           // Refresh the data by re-fetching
-          await refreshLevelAssignments();
+          refetchLevelAssignments();
         } catch (error: any) {
           // Log and show error notification using AnatomyNotification
           AnatomyNotification.error(notification, error, Strings.ciltAssignmentDeleteError);
@@ -338,7 +305,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     });
   };
 
-  const handleDeletePositionAssignment = (assignment: any) => {
+  const handleDeletePositionAssignment = (assignment: CiltMstrPositionLevelWithRelations) => {
     Modal.confirm({
       title: Strings.ciltAssignmentDeleteConfirmTitle,
       content: Strings.ciltAssignmentDeleteFromPositionConfirmContent,
@@ -354,7 +321,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
             description: Strings.ciltAssignmentDeleteSuccess,
           });
           // Refresh the data by re-fetching
-          await refreshLevelAssignments();
+          refetchLevelAssignments();
         } catch (error: any) {
           // Log and show error notification using AnatomyNotification
           AnatomyNotification.error(notification, error, Strings.ciltAssignmentDeleteError);
@@ -384,32 +351,6 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         }
       },
     });
-  };
-
-  const refreshLevelAssignments = async () => {
-    if (!levelId) return;
-    
-    setIsLoading(true);
-    try {
-      const apiUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': '*/*',
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const assignments = data.data || data;
-        setLevelAssignments(Array.isArray(assignments) ? assignments : []);
-      }
-    } catch (err) {
-      console.error('Error refetching data:', err);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const getImageUrl = (url: string | null | undefined): string => {
@@ -479,7 +420,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
       <div>
         {/* Single column layout */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {paginatedData.map((assignment: any) => (
+          {paginatedData.map((assignment: CiltMstrPositionLevelWithRelations) => (
             <Card
               key={assignment.id}
               style={{ 
@@ -517,7 +458,11 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                   <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     <Button 
                       type="primary" 
-                      onClick={() => showCiltDetails(assignment.ciltMstr)}
+                      onClick={() => {
+                        if (assignment.ciltMstr) {
+                          showCiltDetails(assignment.ciltMstr);
+                        }
+                      }}
                     >
                       Ver detalles
                     </Button>
@@ -525,7 +470,11 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                     {assignment.ciltMstr?.sequences && assignment.ciltMstr.sequences.length > 0 && (
                       <Button 
                         type="primary" 
-                        onClick={() => showSequenceList(assignment.ciltMstr)}
+                        onClick={() => {
+                          if (assignment.ciltMstr) {
+                            showSequenceList(assignment.ciltMstr);
+                          }
+                        }}
                       >
                         {Strings.viewSequences}
                       </Button>
@@ -594,9 +543,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     const filteredPositions = positionSearchText.trim() 
       ? positionAssignments.filter(assignment => {
           const positionName = assignment.position?.name?.toLowerCase() || '';
-          const positionCode = assignment.position?.code?.toLowerCase() || '';
+          const positionDescription = assignment.position?.description?.toLowerCase() || '';
           const searchLower = positionSearchText.toLowerCase();
-          return positionName.includes(searchLower) || positionCode.includes(searchLower);
+          return positionName.includes(searchLower) || positionDescription.includes(searchLower);
         })
       : positionAssignments;
     
@@ -622,7 +571,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
         </div>
 
         <Row gutter={[16, 16]}>
-          {paginatedData.map((assignment: any) => (
+          {paginatedData.map((assignment: CiltMstrPositionLevelWithRelations) => (
             <Col xs={24} sm={24} md={12} lg={12} xl={12} key={assignment.id}>
               <Card
                 title={
@@ -669,7 +618,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                   </Button>
                 </div>
                 <div style={{ marginTop: '8px', display: 'none' }}>
-                  <PositionUsers positionId={assignment.position?.id.toString()} />
+                  <PositionUsers positionId={assignment.position?.id?.toString() || ""} />
                 </div>
               </Card>
             </Col>
@@ -1021,7 +970,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   // Get active sequences for the selected CILT master
   const activeSequences = useMemo(() => {
     if (!selectedCiltMstr?.sequences) return [];
-    return selectedCiltMstr.sequences.filter(seq => seq.status === 'A');
+    return selectedCiltMstr.sequences.filter((seq: any) => seq.status === 'A');
   }, [selectedCiltMstr]);
   
   // Filter sequences based on search text
@@ -1031,7 +980,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     }
     
     const searchLower = sequenceSearchText.toLowerCase();
-    return activeSequences.filter(sequence => {
+    return activeSequences.filter((sequence: any) => {
       const sequenceText = sequence.secuenceList.toLowerCase();
       const typeText = sequence.ciltTypeName.toLowerCase();
       return sequenceText.includes(searchLower) || typeText.includes(searchLower);

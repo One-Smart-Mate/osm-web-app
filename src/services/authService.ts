@@ -5,8 +5,9 @@ import { apiSlice } from "./apiSlice";
 // DTO for updating last login/activity
 export interface UpdateLastLoginDTO {
   userId: number;
-  date: string;
+  date: Date | string; // Backend expects Date but we send as ISO string
   platform: string;
+  timezone?: string;
 }
 
 export const authService = apiSlice.injectEndpoints({
@@ -24,7 +25,7 @@ export const authService = apiSlice.injectEndpoints({
       query: (data) => ({
         url: "/auth/update-last-login",
         method: "POST",
-        body: data,
+        body: data, // Send data as-is since we're already sending ISO strings
       }),
       transformResponse: (response: { data: any }, _, __) => response.data,
     }),

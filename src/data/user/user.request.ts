@@ -1,10 +1,14 @@
 export class LoginRequest {
   email: string;
   password: string;
+  timezone?: string;
+  platform?: string;
 
-  constructor(email: string, password: string) {
+  constructor(email: string, password: string, timezone?: string, platform?: string) {
     this.email = email.trim();
     this.password = password;
+    this.timezone = timezone;
+    this.platform = platform;
   }
 }
 

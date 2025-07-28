@@ -25,10 +25,14 @@ const useUserActivityLite = () => {
     }
 
     try {
+      // Detect user's timezone
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
       await updateLastLogin({
         userId: Number(user.userId),
-        date: new Date().toISOString(),
-        platform: Constants.osName || 'web'
+        date: new Date().toISOString(), // Send as ISO string to match backend example
+        platform: Constants.OS_WEB,
+        timezone: userTimezone
       }).unwrap();
       
       lastUpdateRef.current = now;
