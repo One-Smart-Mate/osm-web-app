@@ -1,3 +1,6 @@
+import { CiltMstr } from "../ciltMstr/ciltMstr";
+import { Position } from "../../postiions/positions";
+
 export interface CiltMstrPositionLevel {
     id: number;
     siteId: number;
@@ -8,6 +11,14 @@ export interface CiltMstrPositionLevel {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string | null;
+  }
+
+  // Extended interface for API responses that include relations
+  export interface CiltMstrPositionLevelWithRelations extends CiltMstrPositionLevel {
+    ciltMstr?: CiltMstr & {
+      sequences?: any[]; // CiltSequence[] - avoiding circular dependency
+    };
+    position?: Position;
   }
   
   export class CreateCiltMstrPositionLevelDTO {

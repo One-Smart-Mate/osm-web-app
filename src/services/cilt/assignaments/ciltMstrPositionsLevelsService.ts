@@ -1,5 +1,6 @@
 import {
   CiltMstrPositionLevel,
+  CiltMstrPositionLevelWithRelations,
   CreateCiltMstrPositionLevelDTO,
   UpdateCiltMstrPositionLevelDTO,
 } from "../../../data/cilt/assignaments/ciltMstrPositionsLevels";
@@ -7,23 +8,23 @@ import { apiSlice } from "../../apiSlice";
 
 export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllCiltMstrPositionLevels: builder.query<CiltMstrPositionLevel[], void>({
+    getAllCiltMstrPositionLevels: builder.query<CiltMstrPositionLevelWithRelations[], void>({
       query: () => "/cilt-mstr-position-levels/all",
     }),
 
-    getCiltMstrPositionLevelById: builder.query<CiltMstrPositionLevel, number>({
+    getCiltMstrPositionLevelById: builder.query<CiltMstrPositionLevelWithRelations, number>({
       query: (id) => `/cilt-mstr-position-levels/${id}`,
     }),
 
     getCiltMstrPositionLevelsBySiteId: builder.query<
-      CiltMstrPositionLevel[],
+      CiltMstrPositionLevelWithRelations[],
       number
     >({
       query: (siteId) => `/cilt-mstr-position-levels/site/${siteId}`,
     }),
 
     getCiltMstrPositionLevelsByCiltMstrId: builder.query<
-      CiltMstrPositionLevel[],
+      CiltMstrPositionLevelWithRelations[],
       number
     >({
       query: (ciltMstrId) =>
@@ -37,7 +38,7 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
     }),
 
     getCiltMstrPositionLevelsByPositionId: builder.query<
-      CiltMstrPositionLevel[],
+      CiltMstrPositionLevelWithRelations[],
       number
     >({
       query: (positionId) =>
@@ -58,7 +59,7 @@ export const ciltMstrPositionLevelsService = apiSlice.injectEndpoints({
     }),
 
     getCiltMstrPositionLevelsByLevelId: builder.query<
-      CiltMstrPositionLevel[],
+      CiltMstrPositionLevelWithRelations[],
       string | number
     >({
       query: (levelId) => ({
