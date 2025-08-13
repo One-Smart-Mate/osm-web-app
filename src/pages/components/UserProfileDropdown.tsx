@@ -68,14 +68,14 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
     navigator.clipboard.writeText(generatedPassword).then(() => {
       notification.success({
         message: Strings.success,
-        description: Strings.fastPasswordCopied,
-        duration: 2,
+        description: `Fast password "${generatedPassword}" copiado al portapapeles`,
+        duration: 3,
       });
     }).catch(() => {
       notification.error({
         message: Strings.error,
-        description: Strings.fastPasswordCopyFailed,
-        duration: 2,
+        description: "Error al copiar fast password al portapapeles",
+        duration: 3,
       });
     });
   };
@@ -129,11 +129,21 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       );
 
       // Update user with new fast password
-      await updateUser(updateData).unwrap();
+      console.log("🔍 Updating user with fast password:", newFastPassword);
+      console.log("🔍 Update data being sent:", updateData);
+      
+      const updateResult = await updateUser(updateData).unwrap();
+      console.log("✅ User update successful:", updateResult);
       
       // Set the generated password and show modal
       setGeneratedPassword(newFastPassword);
       setFastPasswordModalVisible(true);
+      
+      notification.success({
+        message: Strings.success,
+        description: `Fast password actualizado: ${newFastPassword}`,
+        duration: 4,
+      });
       
     } catch (error: any) {
       console.error("Error generating fast password:", error);

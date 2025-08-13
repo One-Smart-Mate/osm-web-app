@@ -1742,6 +1742,27 @@ class StringsBase {
   static anomaliesChartTooltip = "anomaliesChartTooltip";
   static compliance = "compliance";
   static timeMinSeg = "timeMinSeg";
+  
+  // Fast Login and Session Lock strings
+  static fastLoginModalTitle = "fastLoginModalTitle";
+  static fastLoginModalDescription = "fastLoginModalDescription";
+  static fastLoginModalWarning = "fastLoginModalWarning";
+  static fastLoginModalPlaceholder = "fastLoginModalPlaceholder";
+  static fastLoginSuccess = "fastLoginSuccess";
+  static fastLoginError = "fastLoginError";
+  static fastLoginErrorValidation = "fastLoginErrorValidation";
+  static lockSession = "lockSession";
+  static unlockSession = "unlockSession";
+  static sessionLocked = "sessionLocked";
+  static sessionLockConfirmTitle = "sessionLockConfirmTitle";
+  static sessionLockConfirmContent = "sessionLockConfirmContent";
+  static sessionLockConfirmDescription = "sessionLockConfirmDescription";
+  static blockButton = "blockButton";
+  static sessionLockedLoginTitle = "sessionLockedLoginTitle";
+  static sessionLockedWarning = "sessionLockedWarning";
+  static fastLoginButtonText = "fastLoginButtonText";
+  static fastPasswordAlphabeticValidation = "fastPasswordAlphabeticValidation";
+  static fastPasswordLoginComplete = "fastPasswordLoginComplete";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

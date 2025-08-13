@@ -38,15 +38,13 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const handleClick = useCallback(
     (item: any) => {
-      if (isSessionLocked) return; // Prevent navigation when locked
       setSelectedKey(item.key);
       navigate(buildRoute(item.key));
     },
-    [navigate, isSessionLocked]
+    [navigate]
   );
 
   const handleToggleCollapse = () => {
-    if (isSessionLocked) return; // Prevent toggle when locked
     toggleCollapse();
   };
 
@@ -73,16 +71,15 @@ const SideBar: React.FC<SideBarProps> = ({
           transition: "left 0.2s ease",
           padding: "0 10px",
           background: token.colorBgContainer,
-          opacity: isSessionLocked ? 0.5 : 1,
-          pointerEvents: isSessionLocked ? 'none' : 'auto',
+
         }}
       >
         {collapsed ? (
           <MenuUnfoldOutlined
             style={{
               fontSize: 20,
-              cursor: isSessionLocked ? 'not-allowed' : 'pointer',
-              color: isSessionLocked ? token.colorTextDisabled : token.colorPrimaryHover,
+              cursor: 'pointer',
+              color: token.colorPrimaryHover,
             }}
             onClick={handleToggleCollapse}
           />
@@ -90,8 +87,8 @@ const SideBar: React.FC<SideBarProps> = ({
           <MenuFoldOutlined
             style={{ 
               fontSize: 20, 
-              cursor: isSessionLocked ? 'not-allowed' : 'pointer',
-              color: isSessionLocked ? token.colorTextDisabled : token.colorText,
+              cursor: 'pointer',
+              color: token.colorText,
             }}
             onClick={handleToggleCollapse}
           />
@@ -110,25 +107,9 @@ const SideBar: React.FC<SideBarProps> = ({
           boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
           transition: "width 0.2s ease",
           overflow: "auto",
-          opacity: isSessionLocked ? 0.4 : 1,
-          pointerEvents: isSessionLocked ? 'none' : 'auto',
         }}
       >
-        {/* Overlay when locked */}
-        {isSessionLocked && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
-              zIndex: 100,
-              pointerEvents: "all",
-            }}
-          />
-        )}
+
         
         <div
           style={{
@@ -155,7 +136,7 @@ const SideBar: React.FC<SideBarProps> = ({
                   style={{
                     padding: "10px 20px",
                     fontSize: 12,
-                    color: isSessionLocked ? token.colorTextDisabled : "#8C8C8C",
+                    color: "#8C8C8C",
                   }}
                 >
                   {section}
@@ -166,7 +147,7 @@ const SideBar: React.FC<SideBarProps> = ({
                 .map((item) => (
                   <Tooltip
                     key={item.key}
-                    title={collapsed && !isSessionLocked ? item.label : undefined}
+                    title={collapsed ? item.label : undefined}
                     placement="right"
                   >
                     <div
@@ -176,23 +157,23 @@ const SideBar: React.FC<SideBarProps> = ({
                         display: "flex",
                         alignItems: "center",
                         padding: "10px 20px",
-                        cursor: isSessionLocked ? 'not-allowed' : 'pointer',
+                        cursor: 'pointer',
                         transition: "background 0.2s",
                         background:
-                          selectedKey === item.key && !isSessionLocked
+                          selectedKey === item.key
                             ? token.colorLinkActive
                             : "transparent",
                         position: "relative",
-                        color: isSessionLocked ? token.colorTextDisabled : token.colorText,
+                        color: token.colorText,
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedKey !== item.key && !isSessionLocked) {
+                        if (selectedKey !== item.key) {
                           (e.currentTarget as HTMLDivElement).style.background =
                             token.colorLinkHover;
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (selectedKey !== item.key && !isSessionLocked) {
+                        if (selectedKey !== item.key) {
                           (e.currentTarget as HTMLDivElement).style.background =
                             "transparent";
                         }
@@ -200,8 +181,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     >
                       <span 
                         style={{ 
-                          fontSize: 18,
-                          opacity: isSessionLocked ? 0.5 : 1
+                          fontSize: 18
                         }}
                       >
                         {item.icon}
@@ -209,14 +189,13 @@ const SideBar: React.FC<SideBarProps> = ({
                       {!collapsed && (
                         <span 
                           style={{ 
-                            marginLeft: 15,
-                            opacity: isSessionLocked ? 0.5 : 1
+                            marginLeft: 15
                           }}
                         >
                           {item.label}
                         </span>
                       )}
-                      {selectedKey === item.key && !isSessionLocked && (
+                      {selectedKey === item.key && (
                         <div
                           style={{
                             position: "absolute",
@@ -239,10 +218,9 @@ const SideBar: React.FC<SideBarProps> = ({
             style={{
               padding: "10px 20px",
               fontSize: 12,
-              color: isSessionLocked ? token.colorTextDisabled : "#8C8C8C",
+              color: "#8C8C8C",
               position: "absolute",
               bottom: 10,
-              opacity: isSessionLocked ? 0.5 : 1,
             }}
           >
            {Strings.tagVersion}

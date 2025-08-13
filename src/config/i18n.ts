@@ -1618,7 +1618,7 @@ const resources = {
       discardedCardsBreakdownByReason: "Breakdown by reason",
       discardedCardsErrorLoading: "Error loading discarded tags data",
       discardedCardsNoData: "No discarded tags data available",
-      discardedCardslCardsTitle: "Discarded Tags",
+      discardedCardslCardsTitle: "Canceled Tags",
       
       // CILT Positions Levels Modal strings
       ciltPositionsLevelsTitle: "Positions / Levels",
@@ -1720,6 +1720,27 @@ const resources = {
       anomaliesChartTooltip: "Shows anomalies detected during CILT execution",
       compliance: "Compliance",
       timeMinSeg: "Time (min:sec)",
+      
+      // Fast Login and Session Lock strings
+      fastLoginModalTitle: "Fast Login",
+      fastLoginModalDescription: "Enter your Fast Password to login quickly:",
+      fastLoginModalWarning: "This will perform a complete login with your account.",
+      fastLoginModalPlaceholder: "Fast password (e.g: LOAv)",
+      fastLoginSuccess: "Login Successful",
+      fastLoginError: "Incorrect fast password. Please verify and try again.",
+      fastLoginErrorValidation: "Incorrect fast password. Make sure that:\n• Your user has a fast password configured\n• You are entering exactly 4 alphabetic characters\n• The fast password is correct",
+      lockSession: "Lock Session",
+      unlockSession: "Start Session",
+      sessionLocked: "Session Locked",
+      sessionLockConfirmTitle: "Lock Session",
+      sessionLockConfirmContent: "Are you sure you want to lock the current session?",
+      sessionLockConfirmDescription: "This will close your current session and require a fast password to access again.",
+      blockButton: "Lock",
+      sessionLockedLoginTitle: "Session Locked - Fast Login",
+      sessionLockedWarning: "You must enter a valid fast password to access.",
+      fastLoginButtonText: "Start Session",
+      fastPasswordAlphabeticValidation: "The fast password must contain only alphabetic characters (A-Z, a-z)",
+      fastPasswordLoginComplete: "This will perform a complete login with your account.",
     },
   },
   es: {
@@ -3351,7 +3372,7 @@ const resources = {
       discardedCardsBreakdownByReason: "Desglose por motivo",
       discardedCardsErrorLoading: "Error al cargar datos de tarjetas descartadas",
       discardedCardsNoData: "No hay datos de tarjetas descartadas disponibles",
-      discardedCardslCardsTitle: "Tarjetas Descartadas",
+      discardedCardslCardsTitle: "Canceled Canceladas",
       
       // CILT Positions Levels Modal strings
       ciltPositionsLevelsTitle: "Posiciones / Niveles",
@@ -3453,6 +3474,27 @@ const resources = {
       anomaliesChartTooltip: "Muestra anomalías detectadas durante la ejecución de CILT",
       compliance: "Cumplimiento",
       timeMinSeg: "Tiempo (min:seg)",
+      
+      // Fast Login and Session Lock strings
+      fastLoginModalTitle: "Login Rápido",
+      fastLoginModalDescription: "Ingrese su Fast Password para hacer login rápido:",
+      fastLoginModalWarning: "Esto realizará un login completo con su cuenta.",
+      fastLoginModalPlaceholder: "Fast password (ej: LOAv)",
+      fastLoginSuccess: "Login Exitoso",
+      fastLoginError: "Fast password incorrecto. Verifique e intente nuevamente.",
+      fastLoginErrorValidation: "Fast password incorrecto. Asegúrese de que:\n• Su usuario tenga un fast password configurado\n• Esté ingresando exactamente 4 caracteres alfabéticos\n• El fast password sea correcto",
+      lockSession: "Bloquear Sesión",
+      unlockSession: "Iniciar Sesión",
+      sessionLocked: "Sesión Bloqueada",
+      sessionLockConfirmTitle: "Bloquear Sesión",
+      sessionLockConfirmContent: "¿Está seguro de que desea bloquear la sesión actual?",
+      sessionLockConfirmDescription: "Esto cerrará su sesión actual y requerirá un fast password para acceder nuevamente.",
+      blockButton: "Bloquear",
+      sessionLockedLoginTitle: "Sesión Bloqueada - Login Rápido",
+      sessionLockedWarning: "Debe ingresar un fast password válido para acceder.",
+      fastLoginButtonText: "Iniciar Sesión",
+      fastPasswordAlphabeticValidation: "El fast password debe contener solo caracteres alfabéticos (A-Z, a-z)",
+      fastPasswordLoginComplete: "Esto realizará un login completo con su cuenta.",
     },
   },
 };

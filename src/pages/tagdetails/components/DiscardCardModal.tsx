@@ -84,9 +84,8 @@ const DiscardCardModal = ({
         managerId: Number(currentUser.userId),
         managerName: String(currentUser.name),
         cardManagerCloseDate: new Date().toISOString(),
-        ...(values.commentsManagerAtCardClose?.trim() && {
-          commentsManagerAtCardClose: values.commentsManagerAtCardClose.trim()
-        })
+        // discardReason: omitted to let backend handle it properly
+        commentsManagerAtCardClose: values.commentsManagerAtCardClose?.trim() || null
       };
 
       console.log("🔍 Final Discard DTO:", discardDto);

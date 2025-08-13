@@ -69,6 +69,12 @@ const OS_WEB = 'WEB';
 const OS_ANDROID = 'ANDROID';
 const OS_IOS = 'IOS';
 
+const PLATFORM = {
+  WEB: OS_WEB,
+  ANDROID: OS_ANDROID,
+  IOS: OS_IOS,
+};
+
 const es = "ES";
 const en = "EN";
 
@@ -152,6 +158,7 @@ export default {
   OS_WEB,
   OS_ANDROID,
   OS_IOS,
+  PLATFORM,
   es,
   en,
   ROUTES_PATH,
