@@ -133,6 +133,7 @@ export const CILTReports = () => {
     secuenceColor: 120,
     secuenceSchedule: 140,
     duration: 80,
+    timeStatus: 100,
     standardOk: 200,
     status: 80,
     actions: 120,
@@ -163,7 +164,6 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
-      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -180,37 +180,44 @@ export const CILTReports = () => {
       setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when clearing search
     } else {
       const filtered = executions.filter(
-        (execution) =>
-          // Filter by any searchable field including IDs
-          String(execution.id).includes(searchTerm) ||
-          String(execution.siteExecutionId).includes(searchTerm) ||
-          String(execution.ciltId).includes(searchTerm) ||
-          (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceList
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.ciltTypeName
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.ciltMstr?.ciltName
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.standardOk
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceStart
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceStop
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false)
+        (execution) => {
+          const timeStatus = getTimeStatus(execution.secuenceSchedule, execution.status);
+          const timeStatusText = timeStatus === 'onTime' ? Strings.onTime : Strings.pastDue;
+          
+          return (
+            // Filter by any searchable field including IDs
+            String(execution.id).includes(searchTerm) ||
+            String(execution.siteExecutionId).includes(searchTerm) ||
+            String(execution.ciltId).includes(searchTerm) ||
+            (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceList
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.ciltTypeName
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.ciltMstr?.ciltName
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.standardOk
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceStart
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceStop
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            timeStatusText.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
       );
       setFilteredExecutions(filtered);
       setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when searching
@@ -244,6 +251,20 @@ export const CILTReports = () => {
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  // Calculate time status for CILT execution
+  const getTimeStatus = (secuenceSchedule: string | null, status: string | null): 'onTime' | 'overdue' => {
+    if (!secuenceSchedule || !status) return 'onTime';
+    
+    // If execution is completed (status "R"), it's considered on time regardless
+    if (status === "R") return 'onTime';
+    
+    // For active executions (status "A"), check if current time is past scheduled time
+    const scheduledDate = new Date(secuenceSchedule);
+    const currentDate = new Date();
+    
+    return currentDate > scheduledDate ? 'overdue' : 'onTime';
   };
 
   const showDetailsModal = (execution: CiltSequenceExecution) => {
@@ -385,6 +406,33 @@ export const CILTReports = () => {
       }),
     },
     {
+      title: "Estado Tiempo",
+      dataIndex: "timeStatus",
+      key: "timeStatus",
+      render: (_, record) => {
+        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
+        return timeStatus === 'onTime' ? (
+          <Tag color="green">{Strings.onTime}</Tag>
+        ) : (
+          <Tag color="red">{Strings.pastDue}</Tag>
+        );
+      },
+      width: columnWidths.timeStatus,
+      align: "center",
+      filters: [
+        { text: Strings.onTime, value: "onTime" },
+        { text: Strings.pastDue, value: "overdue" },
+      ],
+      onFilter: (value, record) => {
+        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
+        return timeStatus === value;
+      },
+      onHeaderCell: () => ({
+        width: columnWidths.timeStatus,
+        onResize: handleResize('timeStatus'),
+      }),
+    },
+    {
       title: Strings.standardOk,
       dataIndex: "standardOk",
       key: "standardOk",
@@ -478,7 +526,7 @@ export const CILTReports = () => {
               }}
             >
               <Input
-                placeholder="Search by ID, route, CILT name, sequence, type, standard OK..."
+                placeholder="Search by ID, route, CILT name, sequence, type, standard OK, time status..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 prefix={<SearchOutlined />}
