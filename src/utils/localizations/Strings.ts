@@ -1763,6 +1763,9 @@ class StringsBase {
   static fastLoginButtonText = "fastLoginButtonText";
   static fastPasswordAlphabeticValidation = "fastPasswordAlphabeticValidation";
   static fastPasswordLoginComplete = "fastPasswordLoginComplete";
+  static noCiltstOShow = "noCiltstOShow";
+  static order = "order";
+  static lastUsed = "lastUsed";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -1,5 +1,5 @@
-import React from "react";
-import { Table, Badge, Button, Space, Modal, notification } from "antd";
+import React, { useState, useRef } from "react";
+import { Table, Badge, Button, Space, Modal, notification, Tag } from "antd";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { getStatusAndText } from "../../../utils/Extensions";
 import Strings from "../../../utils/localizations/Strings";
@@ -35,6 +35,10 @@ const CiltTable: React.FC<CiltTableProps> = ({
   onDelete,
 }) => {
   const [deleteCiltMstr, { isLoading: isDeleting }] = useDeleteCiltMstrMutation();
+  
+  // State for table filters
+  const [tableFilters, setTableFilters] = useState<Record<string, any>>({});
+  const [tableKey, setTableKey] = useState(0);
 
   const handleDelete = (cilt: CiltMstr) => {
     Modal.confirm({
@@ -61,6 +65,14 @@ const CiltTable: React.FC<CiltTableProps> = ({
         }
       },
     });
+  };
+
+  // Handle clear all filters
+  const handleClearFilters = () => {
+    setTableFilters({});
+    
+    // Force complete table re-render to reset all filters
+    setTableKey(prev => prev + 1);
   };
 
   const columns: ColumnsType<CiltMstr> = [
@@ -171,28 +183,57 @@ const CiltTable: React.FC<CiltTableProps> = ({
   const DEFAULT_PAGE_SIZE = 100;
 
   return (
-    <Table
-      dataSource={ciltList}
-      columns={columns}
-      rowKey={(record) => String(record.id)}
-      loading={loading}
-      pagination={{
-        current: currentPage,
-        pageSize: DEFAULT_PAGE_SIZE,
-        total: ciltList.length,
-        showSizeChanger: true,
-        pageSizeOptions: ["20", "50", "100", "200"],
-        showTotal: (total) => `Total ${total} registros`,
-        onChange: (page) => {
-          console.log("Changing to page:", page);
-          onTableChange({ current: page, pageSize: DEFAULT_PAGE_SIZE });
-        },
-      }}
-      onChange={onTableChange}
-      bordered
-      size="middle"
-      scroll={{ x: true }}
-    />
+    <div>
+      {/* Filter controls */}
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "flex-end", 
+        alignItems: "center", 
+        gap: 8, 
+        marginBottom: 16 
+      }}>
+        <Button
+          type="default"
+          onClick={handleClearFilters}
+          disabled={Object.keys(tableFilters).length === 0}
+        >
+          Limpiar Filtros
+        </Button>
+        {Object.keys(tableFilters).length > 0 && (
+          <Tag color="blue">
+            Filtros activos: {Object.keys(tableFilters).length}
+          </Tag>
+        )}
+      </div>
+
+      {/* Table */}
+      <Table
+        key={tableKey}
+        dataSource={ciltList}
+        columns={columns}
+        rowKey={(record) => String(record.id)}
+        loading={loading}
+        pagination={{
+          current: currentPage,
+          pageSize: DEFAULT_PAGE_SIZE,
+          total: ciltList.length,
+          showSizeChanger: true,
+          pageSizeOptions: ["20", "50", "100", "200"],
+          showTotal: (total) => `Total ${total} registros`,
+          onChange: (page) => {
+            console.log("Changing to page:", page);
+            onTableChange({ current: page, pageSize: DEFAULT_PAGE_SIZE });
+          },
+        }}
+        onChange={(paginationConfig, filters) => {
+          onTableChange(paginationConfig);
+          setTableFilters(filters);
+        }}
+        bordered
+        size="middle"
+        scroll={{ x: true }}
+      />
+    </div>
   );
 };
 

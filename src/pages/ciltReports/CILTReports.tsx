@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Table, Input, Spin, Typography, Button, Tag } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Resizable } from 'react-resizable';
@@ -111,6 +111,7 @@ const ResizableTitle = (props: any) => {
 };
 
 export const CILTReports = () => {
+  const tableRef = useRef<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [executions, setExecutions] = useState<CiltSequenceExecution[]>([]);
@@ -124,6 +125,10 @@ export const CILTReports = () => {
     current: 1,
     pageSize: 100,
   });
+
+  // State for table filters
+  const [tableFilters, setTableFilters] = useState<Record<string, any>>({});
+  const [tableKey, setTableKey] = useState(0);
 
   // State for column widths
   const [columnWidths, setColumnWidths] = useState({
@@ -227,6 +232,15 @@ export const CILTReports = () => {
   // Handle refresh
   const handleRefresh = () => {
     loadExecutions();
+  };
+
+  // Handle clear all filters
+  const handleClearFilters = () => {
+    setTableFilters({});
+    setPagination(prev => ({ ...prev, current: 1 }));
+    
+    // Force complete table re-render to reset all filters
+    setTableKey(prev => prev + 1);
   };
 
   // Format date
@@ -506,7 +520,14 @@ export const CILTReports = () => {
               <div>
                 <Text strong>{siteName}</Text>
               </div>
-              <div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <Button
+                  type="default"
+                  onClick={handleClearFilters}
+                  disabled={Object.keys(tableFilters).length === 0}
+                >
+                  Limpiar Filtros
+                </Button>
                 <Button
                   type="primary"
                   icon={<ReloadOutlined />}
@@ -533,15 +554,24 @@ export const CILTReports = () => {
                 allowClear
                 style={{ width: 400 }}
               />
-              <Text style={{ marginLeft: "auto" }}>
-                {Strings.total}: {filteredExecutions.length}{" "}
-                {Strings.executions}
-              </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+                {Object.keys(tableFilters).length > 0 && (
+                  <Tag color="blue">
+                    Filtros activos: {Object.keys(tableFilters).length}
+                  </Tag>
+                )}
+                <Text>
+                  {Strings.total}: {filteredExecutions.length}{" "}
+                  {Strings.executions}
+                </Text>
+              </div>
             </div>
           </div>
 
           <Spin spinning={loading}>
             <Table
+              key={tableKey}
+              ref={tableRef}
               dataSource={filteredExecutions}
               columns={columns}
               rowKey={(record) => String(record.id)}
@@ -552,11 +582,12 @@ export const CILTReports = () => {
                 showSizeChanger: false,
                 showQuickJumper: false,
               }}
-              onChange={(paginationConfig) => {
+              onChange={(paginationConfig, filters) => {
                 setPagination({
                   current: paginationConfig.current || 1,
                   pageSize: 100,
                 });
+                setTableFilters(filters);
               }}
               bordered
               size="middle"

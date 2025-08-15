@@ -1741,6 +1741,9 @@ const resources = {
       fastLoginButtonText: "Start Session",
       fastPasswordAlphabeticValidation: "The fast password must contain only alphabetic characters (A-Z, a-z)",
       fastPasswordLoginComplete: "This will perform a complete login with your account.",
+      noCiltstOShow: "No CILTs to show",
+      order: "Order",
+      lastUsed: "Last Used",
     },
   },
   es: {
@@ -3495,6 +3498,9 @@ const resources = {
       fastLoginButtonText: "Iniciar Sesión",
       fastPasswordAlphabeticValidation: "El fast password debe contener solo caracteres alfabéticos (A-Z, a-z)",
       fastPasswordLoginComplete: "Esto realizará un login completo con su cuenta.",
+      noCiltstOShow: "No hay CILTs para mostrar",
+      order: "Orden",
+      lastUsed: "Último Uso",
     },
   },
 };
