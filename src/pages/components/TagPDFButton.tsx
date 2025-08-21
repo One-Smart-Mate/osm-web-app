@@ -32,6 +32,8 @@ const TagPDFDocument = ({
   site,
 }: TagPDFDocumentProps): React.ReactElement => {
   const { card, evidences } = data;
+
+
   const cardStatus = getCardStatusAndText(
     card.status,
     card.cardDueDate,
@@ -43,7 +45,6 @@ const TagPDFDocument = ({
   const videosAtCreation = evidences.filter((e) => e.evidenceType == Strings.VICR);
   const audiosAtCreation = evidences.filter((e) => e.evidenceType == Strings.AUCR);
 
-
   const imagesAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.IMPS);
   const videosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.VIPS);
   const audiosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.AUPS);
@@ -51,6 +52,19 @@ const TagPDFDocument = ({
   const imagesAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.IMCL);
   const videosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.VICL);
   const audiosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.AUCL);
+
+  console.log('PDF Generation: Images at creation:', imagesAtCreation.length);
+  if (imagesAtCreation.length > 0) {
+    console.log('PDF Generation: Creation image URLs:', imagesAtCreation.map(img => img.evidenceName));
+  }
+  console.log('PDF Generation: Provisional images:', imagesAtProvisionalSolution.length);
+  if (imagesAtProvisionalSolution.length > 0) {
+    console.log('PDF Generation: Provisional image URLs:', imagesAtProvisionalSolution.map(img => img.evidenceName));
+  }
+  console.log('PDF Generation: Definitive images:', imagesAtDefinitiveSolution.length);
+  if (imagesAtDefinitiveSolution.length > 0) {
+    console.log('PDF Generation: Definitive image URLs:', imagesAtDefinitiveSolution.map(img => img.evidenceName));
+  }
 
 
   const showEvidencesAtCreation = (): boolean => {
@@ -91,7 +105,10 @@ const TagPDFDocument = ({
 
           {site?.logo && (
             <View>
-              <Image style={styles.logo} src={site.logo} />
+              <Image 
+                style={styles.logo} 
+                src={site.logo} 
+              />
             </View>
           )}
         </View>
@@ -413,7 +430,15 @@ const TagPDFDocument = ({
                 <View style={styles.imageGrid}>
                   {imagesAtCreation.map((value, index) => (
                     <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
+                      <Image 
+                        style={styles.image} 
+                        src={{
+                          uri: value.evidenceName,
+                          method: 'GET',
+                          headers: {}
+                        }}
+                        cache={false}
+                      />
                     </View>
                   ))}
                 </View>
@@ -482,7 +507,15 @@ const TagPDFDocument = ({
                 <View style={styles.imageGrid}>
                   {imagesAtProvisionalSolution.map((value, index) => (
                     <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
+                      <Image 
+                        style={styles.image} 
+                        src={{
+                          uri: value.evidenceName,
+                          method: 'GET',
+                          headers: {}
+                        }}
+                        cache={false}
+                      />
                     </View>
                   ))}
                 </View>
@@ -551,7 +584,15 @@ const TagPDFDocument = ({
                 <View style={styles.imageGrid}>
                   {imagesAtDefinitiveSolution.map((value, index) => (
                     <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
+                      <Image 
+                        style={styles.image} 
+                        src={{
+                          uri: value.evidenceName,
+                          method: 'GET',
+                          headers: {}
+                        }}
+                        cache={false}
+                      />
                     </View>
                   ))}
                 </View>
@@ -606,7 +647,8 @@ const styles = StyleSheet.create({
   imageGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: 8,
     padding: 16,
   },
   sectionContainer: {
@@ -687,8 +729,10 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
+    objectFit: 'cover',
+    borderRadius: 4,
   },
 });
 

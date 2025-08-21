@@ -25,7 +25,7 @@ import MainContainer from "../layouts/MainContainer";
 import InfoTagCard from "./components/InfoTagCard";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
-import TagPDFButton from "../components/TagPDFButton";
+import TagPrintPDF from "../components/TagPrintPDF";
 import AnatomyNotification from "../components/AnatomyNotification";
 import DiscardCardModal from "./components/DiscardCardModal";
 
@@ -110,6 +110,8 @@ const TagDetailsPage = () => {
         cardDefinitiveSolutionDate: response.cardDefinitiveSolutionDate
       };
 
+      console.log("AAAAAAAAAA", cardDetail.evidences);
+
       setData(cardDetail);
       if (cardDetail.card && cardDetail.card.siteId && cardDetail.card.siteId !== "") {
         dispatch(setSiteId(cardDetail.card.siteId));
@@ -157,7 +159,7 @@ const TagDetailsPage = () => {
                 >
                   {Strings.discardCard}
                 </Button>
-                <TagPDFButton site={site} data={data} />
+                <TagPrintPDF site={site} data={data} />
               </>
             )}
           </div>
