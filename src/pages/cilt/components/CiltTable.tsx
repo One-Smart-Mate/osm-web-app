@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState} from "react";
 import { Table, Badge, Button, Space, Modal, notification, Tag } from "antd";
 import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 import { getStatusAndText } from "../../../utils/Extensions";

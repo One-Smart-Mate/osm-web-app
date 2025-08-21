@@ -80,7 +80,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
   }, [filters]);
 
   // Handle bar click to open drawer with CILTs for that date
-  const handleBarClick = async (data: any, barType: string) => {
+  const handleBarClick = async (data: any) => {
     if (!filters.siteId || !siteCilts) return;
 
     setIsLoadingCilts(true);
@@ -93,6 +93,8 @@ const TimeChart = ({ filters }: TimeChartProps) => {
       
       // Filter executions by the selected date and that have been executed (for time chart)
       const executionsForDate = executions.filter(execution => {
+        if (!execution.secuenceSchedule) return false;
+        
         const executionDate = new Date(execution.secuenceSchedule).toLocaleDateString('es-ES', {
           day: '2-digit',
           month: '2-digit'
@@ -183,7 +185,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
           dataKey="standardTimeMinutes"
           fill="#3b82f6"
           name={Strings.standardTime}
-          onClick={(data) => handleBarClick(data, 'standardTimeMinutes')}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -197,7 +199,7 @@ const TimeChart = ({ filters }: TimeChartProps) => {
           dataKey="realTimeMinutes"
           fill="#f97316"
           name={Strings.executed}
-          onClick={(data) => handleBarClick(data, 'realTimeMinutes')}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell

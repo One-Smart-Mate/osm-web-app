@@ -7,8 +7,8 @@ import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { buildRoute, getUserSiderOptions, navigateWithState } from "../../routes/RoutesExtensions";
 import { useLocation } from "react-router-dom";
-import { useAppSelector } from "../../core/store";
-import { selectIsSessionLocked } from "../../core/genericReducer";
+
+
 
 interface SideBarProps {
   collapsed: boolean;
@@ -22,7 +22,7 @@ const SideBar: React.FC<SideBarProps> = ({
   const { token } = theme.useToken();
   const navigate = navigateWithState();
   const location = useLocation();
-  const isSessionLocked = useAppSelector(selectIsSessionLocked);
+
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);

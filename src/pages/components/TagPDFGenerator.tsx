@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "antd";
 import { BsFilePdf } from "react-icons/bs";
 import html2canvas from "html2canvas";
@@ -218,8 +218,6 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
       });
 
       console.log('Canvas generated, creating PDF...');
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
       // Create PDF
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -553,7 +551,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {videosAtCreation.map((value, index) => (
+                    {videosAtCreation.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 
@@ -576,7 +574,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {audiosAtCreation.map((value, index) => (
+                    {audiosAtCreation.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 
@@ -609,11 +607,11 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'flex-start' }}>
-                    {imagesAtProvisionalSolution.map((value, index) => (
+                    {imagesAtProvisionalSolution.map((image, index) => (
                       <img
                         key={index}
-                                                src={value.evidenceName}
-                        data-original-url={value.evidenceName}
+                        src={image.evidenceName}
+                        data-original-url={image.evidenceName}
                         alt={`Evidence ${index + 1}`}
                         style={{
                           width: '120px',
@@ -636,7 +634,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {videosAtProvisionalSolution.map((value, index) => (
+                    {videosAtProvisionalSolution.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 
@@ -659,7 +657,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {audiosAtProvisionalSolution.map((value, index) => (
+                    {audiosAtProvisionalSolution.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 
@@ -692,11 +690,11 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'flex-start' }}>
-                    {imagesAtDefinitiveSolution.map((value, index) => (
+                    {imagesAtDefinitiveSolution.map((image, index) => (
                       <img
                         key={index}
-                                                src={value.evidenceName}
-                        data-original-url={value.evidenceName}
+                        src={image.evidenceName}
+                        data-original-url={image.evidenceName}
                         alt={`Evidence ${index + 1}`}
                         style={{
                           width: '120px',
@@ -719,7 +717,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {videosAtDefinitiveSolution.map((value, index) => (
+                    {videosAtDefinitiveSolution.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 
@@ -742,7 +740,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
                     <div style={{ flex: 1, height: '0.5px', backgroundColor: '#8c8c8c' }}></div>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                    {audiosAtDefinitiveSolution.map((value, index) => (
+                    {audiosAtDefinitiveSolution.map((_, index) => (
                       <div key={index} style={{ 
                         padding: '8px 12px', 
                         backgroundColor: '#f5f5f5', 

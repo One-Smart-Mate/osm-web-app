@@ -61,8 +61,8 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
   }, [filters]);
 
   // Handle bar click to open drawer with CILTs for user
-  const handleBarClick = (data: any, barType: string) => {
-    if (!siteCilts) return;
+  const handleBarClick = (data: any) => {
+    if (!siteCilts) return; 
 
     setSelectedUser(data.userName);
     setSelectedCilts(siteCilts); // Show all site CILTs for now
@@ -131,7 +131,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           dataKey="assigned"
           fill="#3b82f6"
           name={Strings.assigned}
-          onClick={(data) => handleBarClick(data, 'assigned')}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -145,7 +145,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           dataKey="executed"
           fill="#ef4444"
           name={Strings.executed}
-          onClick={(data) => handleBarClick(data, 'executed')}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell

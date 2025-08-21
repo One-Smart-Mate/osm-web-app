@@ -6,7 +6,6 @@ import {
   Document,
   StyleSheet,
   Image,
-  PDFDownloadLink,
   Link,
   pdf
 } from "@react-pdf/renderer";

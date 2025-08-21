@@ -65,7 +65,7 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
   }, [filters]);
 
   // Handle bar click to open drawer with CILTs for that date
-  const handleBarClick = async (data: any, barType: string) => {
+  const handleBarClick = async (data: any) => {
     if (!filters.siteId || !siteCilts) return;
 
     setIsLoadingCilts(true);
@@ -77,8 +77,9 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
       const executions = await getExecutionsBySite(filters.siteId.toString()).unwrap();
       
       // Filter executions by the selected date
-      const selectedDateFormatted = data.originalDate || data.date;
       const executionsForDate = executions.filter(execution => {
+        if (!execution.secuenceSchedule) return false;
+        
         const executionDate = new Date(execution.secuenceSchedule).toLocaleDateString('es-ES', {
           day: '2-digit',
           month: '2-digit'
@@ -166,7 +167,7 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
             dataKey="programmed"
             fill="#3b82f6"
             name={Strings.programmed}
-            onClick={(data) => handleBarClick(data, 'programmed')}
+            onClick={(data) => handleBarClick(data)}
           >
             {chartData.map((_, index) => (
               <Cell
@@ -180,7 +181,7 @@ const ExecutionChart = ({ filters }: ExecutionChartProps) => {
             dataKey="executed"
             fill="#10b981"
             name={Strings.executed}
-            onClick={(data) => handleBarClick(data, 'executed')}
+            onClick={(data) => handleBarClick(data)}
           >
             {chartData.map((_, index) => (
               <Cell

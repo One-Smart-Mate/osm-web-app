@@ -1,8 +1,6 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "antd";
 import { BsFilePdf } from "react-icons/bs";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import Strings from "../../utils/localizations/Strings";
 import moment from "moment";
 import { CardDetailsInterface } from "../../data/card/card";
@@ -652,7 +650,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {videosAtCreation.map((value, index) => (
+                  {videosAtCreation.map((_, index) => (
                     <div key={index} className="evidence-link">
                       VIDEO_{index + 1}
                     </div>
@@ -669,7 +667,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {audiosAtCreation.map((value, index) => (
+                  {audiosAtCreation.map((_, index) => (
                     <div key={index} className="evidence-link">
                       AUDIO_{index + 1}
                     </div>
@@ -696,10 +694,10 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {imagesAtProvisionalSolution.map((value, index) => (
+                  {imagesAtProvisionalSolution.map((_, index) => (
                     <img
                       key={index}
-                      src={value.evidenceName}
+                      src={_.evidenceName}
                       alt={`Evidence ${index + 1}`}
                       className="evidence-image"
                     />
@@ -716,7 +714,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {videosAtProvisionalSolution.map((value, index) => (
+                  {videosAtProvisionalSolution.map((_, index) => (
                     <div key={index} className="evidence-link">
                       VIDEO_{index + 1}
                     </div>
@@ -733,7 +731,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {audiosAtProvisionalSolution.map((value, index) => (
+                  {audiosAtProvisionalSolution.map((_, index) => (
                     <div key={index} className="evidence-link">
                       AUDIO_{index + 1}
                     </div>
@@ -760,10 +758,10 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {imagesAtDefinitiveSolution.map((value, index) => (
+                    {imagesAtDefinitiveSolution.map((_, index) => (
                     <img
                       key={index}
-                      src={value.evidenceName}
+                      src={_.evidenceName}
                       alt={`Evidence ${index + 1}`}
                       className="evidence-image"
                     />
@@ -780,7 +778,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {videosAtDefinitiveSolution.map((value, index) => (
+                  {videosAtDefinitiveSolution.map((_, index) => (
                     <div key={index} className="evidence-link">
                       VIDEO_{index + 1}
                     </div>
@@ -797,7 +795,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                   <div className="line"></div>
                 </div>
                 <div className="evidence-grid">
-                  {audiosAtDefinitiveSolution.map((value, index) => (
+                  {audiosAtDefinitiveSolution.map((_, index) => (
                     <div key={index} className="evidence-link">
                       AUDIO_{index + 1}
                     </div>
