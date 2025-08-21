@@ -25,7 +25,7 @@ import MainContainer from "../layouts/MainContainer";
 import InfoTagCard from "./components/InfoTagCard";
 import { useGetSiteMutation } from "../../services/siteService";
 import { SiteUpdateForm } from "../../data/site/site";
-import TagPrintPDF from "../components/TagPrintPDF";
+import TagPDFButton from "../components/TagPDFButton";
 import AnatomyNotification from "../components/AnatomyNotification";
 import DiscardCardModal from "./components/DiscardCardModal";
 
@@ -159,7 +159,7 @@ const TagDetailsPage = () => {
                 >
                   {Strings.discardCard}
                 </Button>
-                <TagPrintPDF site={site} data={data} />
+                <TagPDFButton site={site} data={data} />
               </>
             )}
           </div>
