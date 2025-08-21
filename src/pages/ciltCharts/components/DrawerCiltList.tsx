@@ -42,12 +42,14 @@ const DrawerCiltList: React.FC<DrawerCiltListProps> = ({
              title={
          <div className="text-sm font-medium text-black">
            <Typography.Title level={5}>{title}</Typography.Title>
-           <div className="flex flex-wrap">
-             <Typography.Text>
-               {Strings.date}
-               {Strings.colon} <span className="font-normal">{date}</span>
-             </Typography.Text>
-           </div>
+           {date && (
+             <div className="flex flex-wrap">
+               <Typography.Text>
+                 {Strings.date}
+                 {Strings.colon} <span className="font-normal">{date}</span>
+               </Typography.Text>
+             </div>
+           )}
            <div className="flex flex-wrap">
              <Typography.Text>
                {Strings.type} {Strings.colon}

@@ -26,7 +26,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
   const [getComplianceData] = useGetCiltComplianceChartDataMutation();
   const [chartData, setChartData] = useState<any[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<string>("");
+  const [, setSelectedUser] = useState<string>("");
   const [selectedCilts, setSelectedCilts] = useState<CiltMstr[]>([]);
   const isDarkMode = useDarkMode();
   const textClass = isDarkMode ? 'text-white' : 'text-black';
@@ -165,7 +165,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
       cilts={selectedCilts}
       isLoading={false}
       title={Strings.complianceCiltChart}
-      date={selectedUser}
+      date=""
       chartType="Compliance"
     />
   </>
