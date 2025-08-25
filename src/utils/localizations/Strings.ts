@@ -1446,6 +1446,17 @@ class StringsBase {
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 
+  // User additional fields
+  static phoneNumber = "phoneNumber";
+  static phoneNumberTooltip = "phoneNumberTooltip";
+  static requiredPhoneNumber = "requiredPhoneNumber";
+  static invalidPhoneNumber = "invalidPhoneNumber";
+  static language = "language";
+  static languageTooltip = "languageTooltip";
+  static selectLanguage = "selectLanguage";
+  static spanish = "spanish";
+  static english = "english";
+
   //NEW UPDATE
   static start = "start";
   static eachPlace = "eachPlace";

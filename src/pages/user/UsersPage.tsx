@@ -61,11 +61,12 @@ const UsersPage = () => {
 
   const search = useCallback((item: UserCardInfo, query: string): boolean => {
     const normalizedQuery = query.toLowerCase();
-    const { name, email } = item;
+    const { name, email, phoneNumber } = item;
 
     return (
       email.toLowerCase().includes(normalizedQuery) ||
-      name.toLowerCase().includes(normalizedQuery)
+      name.toLowerCase().includes(normalizedQuery) ||
+      (phoneNumber && phoneNumber.toLowerCase().includes(normalizedQuery))
     );
   }, []);
 

@@ -10,6 +10,8 @@ import {
   BsDiagram2,
   BsMailbox,
   BsPersonLinesFill,
+  BsTelephone,
+  BsGlobe,
 } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import { formatDate } from "../../../utils/Extensions";
@@ -57,6 +59,22 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
         label={user.email}
         icon={<BsMailbox />}
       />
+
+      {user.phoneNumber && (
+        <AnatomySection
+          title={Strings.phoneNumber}
+          label={user.phoneNumber}
+          icon={<BsTelephone />}
+        />
+      )}
+
+      {user.translation && (
+        <AnatomySection
+          title={Strings.language}
+          label={user.translation === "ES" ? Strings.spanish : Strings.english}
+          icon={<BsGlobe />}
+        />
+      )}
 
       <AnatomySection
         title={Strings.lastActivityWeb}

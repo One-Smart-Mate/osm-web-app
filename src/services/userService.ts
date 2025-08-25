@@ -39,26 +39,13 @@ export const userService = apiSlice.injectEndpoints({
     }),
     createUser: builder.mutation<void, CreateUser>({
       query: (user) => {
-        // Get current language and convert to uppercase (ES or EN)
-        // Default to 'EN' if language detection fails
-        let currentLang = Constants.en;
-        
-        try {
-          // Get language from i18next
-          if (i18next.language) {
-            currentLang = i18next.language.split("-")[0].toUpperCase();
-            // Ensure it's only ES or EN
-            currentLang = currentLang === Constants.es ? Constants.es : Constants.en;
-          }
-        } catch (error) {
-          // Default to EN if there's an error
-          currentLang = Constants.en;
-        }
+        // Use the user's chosen translation or default to ES if not provided
+        const translation = user.translation || Constants.es;
         
         return {
           url: "/users/create",
           method: "POST",
-          body: { ...user, translation: currentLang },
+          body: { ...user, translation },
         };
       },
     }),
