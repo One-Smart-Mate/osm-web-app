@@ -2,7 +2,7 @@ import { Checkbox, Form, FormInstance, Input, Select, Button, App as AntApp } fr
 import { Role, UserCardInfo } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyTooltip from "../../components/AnatomyTooltip";
-import { BsLock, BsMailbox, BsPerson, BsCopy, BsKey, BsTelephone, BsGlobe } from "react-icons/bs";
+import { BsLock, BsMailbox, BsPerson, BsCopy, BsKey, BsTelephone} from "react-icons/bs";
 import { validateEmailPromise } from "../../../utils/Extensions";
 import { useEffect, useState } from "react";
 import { useGetRolesMutation } from "../../../services/roleService";
