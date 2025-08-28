@@ -110,6 +110,8 @@ const TagDetailsPage = () => {
         cardDefinitiveSolutionDate: response.cardDefinitiveSolutionDate
       };
 
+      console.log("AAAAAAAAAA", cardDetail.evidences);
+
       setData(cardDetail);
       if (cardDetail.card && cardDetail.card.siteId && cardDetail.card.siteId !== "") {
         dispatch(setSiteId(cardDetail.card.siteId));

@@ -94,6 +94,8 @@ export class UserCardInfo {
   id: string;
   name: string;
   email: string;
+  phoneNumber?: string;
+  translation?: string;
   lastLoginWeb?: string;
   lastLoginApp?: string;
   roles: Role[];
@@ -113,11 +115,15 @@ export class UserCardInfo {
     lastLoginApp?: string,
     status?: string,
     uploadCardDataWithDataNet?: number,
-    uploadCardEvidenceWithDataNet?: number
+    uploadCardEvidenceWithDataNet?: number,
+    phoneNumber?: string,
+    translation?: string
   ) {
     this.id = id;
     this.name = name;
     this.email = email;
+    this.phoneNumber = phoneNumber;
+    this.translation = translation;
     this.roles = roles;
     this.sites = sites;
     this.positions = positions;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Page,
   Text,
@@ -6,9 +6,11 @@ import {
   Document,
   StyleSheet,
   Image,
-  PDFDownloadLink,
-  Link
+  Link,
+  pdf
 } from "@react-pdf/renderer";
+import { Button } from "antd";
+import { BsFilePdf } from "react-icons/bs";
 import Strings from "../../utils/localizations/Strings";
 import moment from "moment";
 import  { CardDetailsInterface } from "../../data/card/card";
@@ -19,19 +21,41 @@ import {
   getDaysSince,
 } from "../../utils/Extensions";
 import { SiteUpdateForm } from "../../data/site/site";
-import { Button } from "antd";
-import { BsFilePdf } from "react-icons/bs";
 
 interface TagPDFDocumentProps {
   data: CardDetailsInterface;
   site?: SiteUpdateForm;
 }
 
+// Function to get file extension
+const getFileExtension = (url: string): string => {
+  const match = url.match(/\.([a-zA-Z0-9]+)(\?|$)/);
+  return match ? match[1].toLowerCase() : 'jpg';
+};
+
+// Function to create proxy URL for images
+const createProxyUrl = (url: string): string | null => {
+  if (!url) return null;
+  
+  const extension = getFileExtension(url);
+  const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+  
+  if (!validExtensions.includes(extension)) {
+    console.warn(`Invalid file extension: ${extension}`);
+    return null;
+  }
+
+  // Use images.weserv.nl as proxy (same as core-web-app)
+  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&output=${extension}`;
+};
+
 const TagPDFDocument = ({
   data,
   site,
 }: TagPDFDocumentProps): React.ReactElement => {
   const { card, evidences } = data;
+
+
   const cardStatus = getCardStatusAndText(
     card.status,
     card.cardDueDate,
@@ -43,7 +67,6 @@ const TagPDFDocument = ({
   const videosAtCreation = evidences.filter((e) => e.evidenceType == Strings.VICR);
   const audiosAtCreation = evidences.filter((e) => e.evidenceType == Strings.AUCR);
 
-
   const imagesAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.IMPS);
   const videosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.VIPS);
   const audiosAtProvisionalSolution = evidences.filter((e) => e.evidenceType == Strings.AUPS);
@@ -51,6 +74,19 @@ const TagPDFDocument = ({
   const imagesAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.IMCL);
   const videosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.VICL);
   const audiosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.AUCL);
+
+  console.log('PDF Generation: Images at creation:', imagesAtCreation.length);
+  if (imagesAtCreation.length > 0) {
+    console.log('PDF Generation: Creation image URLs:', imagesAtCreation.map(img => img.evidenceName));
+  }
+  console.log('PDF Generation: Provisional images:', imagesAtProvisionalSolution.length);
+  if (imagesAtProvisionalSolution.length > 0) {
+    console.log('PDF Generation: Provisional image URLs:', imagesAtProvisionalSolution.map(img => img.evidenceName));
+  }
+  console.log('PDF Generation: Definitive images:', imagesAtDefinitiveSolution.length);
+  if (imagesAtDefinitiveSolution.length > 0) {
+    console.log('PDF Generation: Definitive image URLs:', imagesAtDefinitiveSolution.map(img => img.evidenceName));
+  }
 
 
   const showEvidencesAtCreation = (): boolean => {
@@ -91,7 +127,10 @@ const TagPDFDocument = ({
 
           {site?.logo && (
             <View>
-              <Image style={styles.logo} src={site.logo} />
+              <Image 
+                style={styles.logo} 
+                src={createProxyUrl(site.logo) || site.logo} 
+              />
             </View>
           )}
         </View>
@@ -411,11 +450,17 @@ const TagPDFDocument = ({
                   <View style={styles.lineSmall} />
                 </View>
                 <View style={styles.imageGrid}>
-                  {imagesAtCreation.map((value, index) => (
-                    <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
-                    </View>
-                  ))}
+                  {imagesAtCreation.map((value, index) => {
+                    const proxyUrl = createProxyUrl(value.evidenceName);
+                    return proxyUrl ? (
+                      <View key={index}>
+                        <Image 
+                          style={styles.image} 
+                          src={proxyUrl}
+                        />
+                      </View>
+                    ) : null;
+                  })}
                 </View>
               </View>
             )}
@@ -482,7 +527,10 @@ const TagPDFDocument = ({
                 <View style={styles.imageGrid}>
                   {imagesAtProvisionalSolution.map((value, index) => (
                     <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
+                      <Image 
+                        style={styles.image} 
+                        src={createProxyUrl(value.evidenceName) || value.evidenceName}
+                      />
                     </View>
                   ))}
                 </View>
@@ -551,7 +599,10 @@ const TagPDFDocument = ({
                 <View style={styles.imageGrid}>
                   {imagesAtDefinitiveSolution.map((value, index) => (
                     <View key={index}>
-                      <Image style={styles.image} src={value.evidenceName} />
+                      <Image 
+                        style={styles.image} 
+                        src={createProxyUrl(value.evidenceName) || value.evidenceName}
+                      />
                     </View>
                   ))}
                 </View>
@@ -606,7 +657,8 @@ const styles = StyleSheet.create({
   imageGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: 8,
     padding: 16,
   },
   sectionContainer: {
@@ -687,20 +739,57 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
+    objectFit: 'cover',
+    borderRadius: 4,
   },
 });
 
-const TagPDFButton = ({ site, data }: TagPDFDocumentProps) => (
-  <PDFDownloadLink
-    document={<TagPDFDocument data={data} site={site} />}
-    fileName={`TAG_${data.card.siteCardId}.pdf`}
-  >
-    <Button type="primary" icon={<BsFilePdf />}>
-      {Strings.sharePDF}
+const TagPDFButton = ({ site, data }: TagPDFDocumentProps) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateAndDownloadPDF = async () => {
+    if (isGenerating) return;
+
+    setIsGenerating(true);
+    
+    try {
+      console.log('Generating PDF with proxy images...');
+      
+      // Generate PDF blob using the same method as core-web-app
+      const blob = await pdf(<TagPDFDocument data={data} site={site} />).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `TAG_${data.card.siteCardId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      console.log('PDF downloaded successfully!');
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <Button 
+      type="primary" 
+      icon={<BsFilePdf />}
+      onClick={generateAndDownloadPDF}
+      loading={isGenerating}
+      disabled={isGenerating}
+    >
+      {isGenerating ? 'Generando PDF...' : Strings.sharePDF}
     </Button>
-  </PDFDownloadLink>
-);
+  );
+};
 
 export default TagPDFButton;

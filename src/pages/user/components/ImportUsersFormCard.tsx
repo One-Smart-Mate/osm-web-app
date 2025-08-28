@@ -28,6 +28,10 @@ const ImportUsersFormCard = ({ form }: FormProps) => {
             </p>
             <p className="ant-upload-text">{Strings.dragFile}</p>
             <p className="ant-upload-hint">{Strings.singleUpload}</p>
+            <p className="ant-upload-hint" style={{ fontSize: '12px', color: '#666' }}>
+              Required columns: Name, Email, Role<br/>
+              Optional columns: PhoneNumber, Translation (ES/EN)
+            </p>
           </Dragger>
         </Form.Item>
       </Form>

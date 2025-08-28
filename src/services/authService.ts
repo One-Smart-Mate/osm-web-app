@@ -10,11 +10,27 @@ export interface UpdateLastLoginDTO {
   timezone?: string;
 }
 
+// DTO for fast login with fast password
+export interface FastLoginDTO {
+  fastPassword: string;
+  platform: string;
+  timezone?: string;
+}
+
 export const authService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<User, LoginRequest>({
       query: (credentials) => ({
         url: "/auth/login",
+        method: "POST",
+        body: { ...credentials },
+      }),
+      transformResponse: (response: { data: User }, _, __) => response.data,
+      invalidatesTags: ["User"],
+    }),
+    fastLogin: builder.mutation<User, FastLoginDTO>({
+      query: (credentials) => ({
+        url: "/auth/login-fast",
         method: "POST",
         body: { ...credentials },
       }),
@@ -32,4 +48,4 @@ export const authService = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useUpdateLastLoginMutation } = authService;
+export const { useLoginMutation, useFastLoginMutation, useUpdateLastLoginMutation } = authService;

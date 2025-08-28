@@ -12,8 +12,11 @@ import {
   TooltipProps,
 } from "recharts";
 import { useGetCiltComplianceChartDataMutation, CiltChartFilters } from "../../../services/chartService";
+import { useGetCiltMstrBySiteQuery } from "../../../services/cilt/ciltMstrService";
 import Strings from "../../../utils/localizations/Strings";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import DrawerCiltList from "./DrawerCiltList";
+import { CiltMstr } from "../../../data/cilt/ciltMstr/ciltMstr";
 
 export interface ComplianceChartProps {
   filters: CiltChartFilters;
@@ -22,8 +25,17 @@ export interface ComplianceChartProps {
 const ComplianceChart = ({ filters }: ComplianceChartProps) => {
   const [getComplianceData] = useGetCiltComplianceChartDataMutation();
   const [chartData, setChartData] = useState<any[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [, setSelectedUser] = useState<string>("");
+  const [selectedCilts, setSelectedCilts] = useState<CiltMstr[]>([]);
   const isDarkMode = useDarkMode();
   const textClass = isDarkMode ? 'text-white' : 'text-black';
+
+  // Get site CILTs data
+  const { data: siteCilts } = useGetCiltMstrBySiteQuery(
+    filters.siteId?.toString() || '',
+    { skip: !filters.siteId }
+  );
 
   const handleGetData = async () => {
     try {
@@ -48,6 +60,15 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
     handleGetData();
   }, [filters]);
 
+  // Handle bar click to open drawer with CILTs for user
+  const handleBarClick = (data: any) => {
+    if (!siteCilts) return; 
+
+    setSelectedUser(data.userName);
+    setSelectedCilts(siteCilts); // Show all site CILTs for now
+    setDrawerOpen(true);
+  };
+
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
@@ -66,6 +87,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           <p className="text-blue-500">{Strings.assigned}: {data?.assigned}</p>
           <p className="text-red-500">{Strings.executed}: {data?.executed}</p>
           <p className="text-green-500">{Strings.compliance}: {data?.compliancePercentage?.toFixed(1)}%</p>
+          <p className="text-gray-500 text-xs mt-1">Click to see CILTs</p>
         </div>
       );
     }
@@ -73,7 +95,8 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
   };
 
   return (
-    <ResponsiveContainer width={"100%"} height={"100%"}>
+    <>
+      <ResponsiveContainer width={"100%"} height={"100%"}>
       <BarChart data={chartData} margin={{ bottom: 60 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip 
@@ -108,6 +131,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           dataKey="assigned"
           fill="#3b82f6"
           name={Strings.assigned}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -121,6 +145,7 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
           dataKey="executed"
           fill="#ef4444"
           name={Strings.executed}
+          onClick={(data) => handleBarClick(data)}
         >
           {chartData.map((_, index) => (
             <Cell
@@ -132,8 +157,19 @@ const ComplianceChart = ({ filters }: ComplianceChartProps) => {
         
         <Legend />
       </BarChart>
-    </ResponsiveContainer>
-  );
+      </ResponsiveContainer>
+
+    <DrawerCiltList
+      open={drawerOpen}
+      onClose={() => setDrawerOpen(false)}
+      cilts={selectedCilts}
+      isLoading={false}
+      title={Strings.complianceCiltChart}
+      date=""
+      chartType="Compliance"
+    />
+  </>
+);
 };
 
 export default ComplianceChart; 

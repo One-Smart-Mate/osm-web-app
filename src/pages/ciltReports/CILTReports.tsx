@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Table, Input, Spin, Typography, Button, Tag } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Resizable } from 'react-resizable';
@@ -111,6 +111,7 @@ const ResizableTitle = (props: any) => {
 };
 
 export const CILTReports = () => {
+  const tableRef = useRef<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [executions, setExecutions] = useState<CiltSequenceExecution[]>([]);
@@ -125,6 +126,10 @@ export const CILTReports = () => {
     pageSize: 100,
   });
 
+  // State for table filters
+  const [tableFilters, setTableFilters] = useState<Record<string, any>>({});
+  const [tableKey, setTableKey] = useState(0);
+
   // State for column widths
   const [columnWidths, setColumnWidths] = useState({
     siteExecutionId: 60,
@@ -133,6 +138,7 @@ export const CILTReports = () => {
     secuenceColor: 120,
     secuenceSchedule: 140,
     duration: 80,
+    timeStatus: 100,
     standardOk: 200,
     status: 80,
     actions: 120,
@@ -163,7 +169,6 @@ export const CILTReports = () => {
       const executionsData = await getCiltSequenceExecutionsBySite(
         siteId
       ).unwrap();
-      console.log("executionsData", executionsData);
       setExecutions(executionsData);
       setFilteredExecutions(executionsData);
     } catch (error) {
@@ -180,37 +185,44 @@ export const CILTReports = () => {
       setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when clearing search
     } else {
       const filtered = executions.filter(
-        (execution) =>
-          // Filter by any searchable field including IDs
-          String(execution.id).includes(searchTerm) ||
-          String(execution.siteExecutionId).includes(searchTerm) ||
-          String(execution.ciltId).includes(searchTerm) ||
-          (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceList
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.ciltTypeName
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.ciltMstr?.ciltName
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.standardOk
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceStart
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false) ||
-          (execution.secuenceStop
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false)
+        (execution) => {
+          const timeStatus = getTimeStatus(execution.secuenceSchedule, execution.status);
+          const timeStatusText = timeStatus === 'onTime' ? Strings.onTime : Strings.pastDue;
+          
+          return (
+            // Filter by any searchable field including IDs
+            String(execution.id).includes(searchTerm) ||
+            String(execution.siteExecutionId).includes(searchTerm) ||
+            String(execution.ciltId).includes(searchTerm) ||
+            (execution.route?.toLowerCase().includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceList
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.ciltTypeName
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.ciltMstr?.ciltName
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.standardOk
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceStart
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            (execution.secuenceStop
+              ?.toLowerCase()
+              .includes(searchTerm.toLowerCase()) ??
+              false) ||
+            timeStatusText.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
       );
       setFilteredExecutions(filtered);
       setPagination(prev => ({ ...prev, current: 1 })); // Reset to first page when searching
@@ -220,6 +232,15 @@ export const CILTReports = () => {
   // Handle refresh
   const handleRefresh = () => {
     loadExecutions();
+  };
+
+  // Handle clear all filters
+  const handleClearFilters = () => {
+    setTableFilters({});
+    setPagination(prev => ({ ...prev, current: 1 }));
+    
+    // Force complete table re-render to reset all filters
+    setTableKey(prev => prev + 1);
   };
 
   // Format date
@@ -244,6 +265,20 @@ export const CILTReports = () => {
     return `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
+  // Calculate time status for CILT execution
+  const getTimeStatus = (secuenceSchedule: string | null, status: string | null): 'onTime' | 'overdue' => {
+    if (!secuenceSchedule || !status) return 'onTime';
+    
+    // If execution is completed (status "R"), it's considered on time regardless
+    if (status === "R") return 'onTime';
+    
+    // For active executions (status "A"), check if current time is past scheduled time
+    const scheduledDate = new Date(secuenceSchedule);
+    const currentDate = new Date();
+    
+    return currentDate > scheduledDate ? 'overdue' : 'onTime';
   };
 
   const showDetailsModal = (execution: CiltSequenceExecution) => {
@@ -385,6 +420,33 @@ export const CILTReports = () => {
       }),
     },
     {
+      title: "Estado Tiempo",
+      dataIndex: "timeStatus",
+      key: "timeStatus",
+      render: (_, record) => {
+        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
+        return timeStatus === 'onTime' ? (
+          <Tag color="green">{Strings.onTime}</Tag>
+        ) : (
+          <Tag color="red">{Strings.pastDue}</Tag>
+        );
+      },
+      width: columnWidths.timeStatus,
+      align: "center",
+      filters: [
+        { text: Strings.onTime, value: "onTime" },
+        { text: Strings.pastDue, value: "overdue" },
+      ],
+      onFilter: (value, record) => {
+        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
+        return timeStatus === value;
+      },
+      onHeaderCell: () => ({
+        width: columnWidths.timeStatus,
+        onResize: handleResize('timeStatus'),
+      }),
+    },
+    {
       title: Strings.standardOk,
       dataIndex: "standardOk",
       key: "standardOk",
@@ -458,7 +520,14 @@ export const CILTReports = () => {
               <div>
                 <Text strong>{siteName}</Text>
               </div>
-              <div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <Button
+                  type="default"
+                  onClick={handleClearFilters}
+                  disabled={Object.keys(tableFilters).length === 0}
+                >
+                  Limpiar Filtros
+                </Button>
                 <Button
                   type="primary"
                   icon={<ReloadOutlined />}
@@ -478,22 +547,31 @@ export const CILTReports = () => {
               }}
             >
               <Input
-                placeholder="Search by ID, route, CILT name, sequence, type, standard OK..."
+                placeholder="Search by ID, route, CILT name, sequence, type, standard OK, time status..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 prefix={<SearchOutlined />}
                 allowClear
                 style={{ width: 400 }}
               />
-              <Text style={{ marginLeft: "auto" }}>
-                {Strings.total}: {filteredExecutions.length}{" "}
-                {Strings.executions}
-              </Text>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+                {Object.keys(tableFilters).length > 0 && (
+                  <Tag color="blue">
+                    Filtros activos: {Object.keys(tableFilters).length}
+                  </Tag>
+                )}
+                <Text>
+                  {Strings.total}: {filteredExecutions.length}{" "}
+                  {Strings.executions}
+                </Text>
+              </div>
             </div>
           </div>
 
           <Spin spinning={loading}>
             <Table
+              key={tableKey}
+              ref={tableRef}
               dataSource={filteredExecutions}
               columns={columns}
               rowKey={(record) => String(record.id)}
@@ -504,11 +582,12 @@ export const CILTReports = () => {
                 showSizeChanger: false,
                 showQuickJumper: false,
               }}
-              onChange={(paginationConfig) => {
+              onChange={(paginationConfig, filters) => {
                 setPagination({
                   current: paginationConfig.current || 1,
                   pageSize: 100,
                 });
+                setTableFilters(filters);
               }}
               bordered
               size="middle"

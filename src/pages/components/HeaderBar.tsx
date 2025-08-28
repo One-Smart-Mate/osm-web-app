@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import NotificationDropdown from "./NotificationDropdown";
 import UserProfileDropdown from "./UserProfileDropdown";
 import User from "../../data/user/user";
 import LanguageDropdown from "./LanguageDropdown";
-import { Switch, theme, Button } from "antd";
-import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import { Switch, theme, Button, Modal } from "antd";
+import { LockOutlined, UnlockOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Constants from "../../utils/Constants";
+import Strings from "../../utils/localizations/Strings";
 import { useAppDispatch, useAppSelector } from "../../core/store";
-import { selectIsSessionLocked, toggleSessionLock } from "../../core/genericReducer";
-import { useNavigate, useLocation } from "react-router-dom";
+import { selectIsSessionLocked, setSessionLocked } from "../../core/genericReducer";
+import { logOut } from "../../core/authReducer";
+import { useSessionStorage } from "../../core/useSessionStorage";
+// import { useNavigate } from "react-router-dom"; // Not needed, using window.location.href
+import FastLoginModal from "./FastLoginModal";
 
 interface HeaderBarProps {
   user: User;
@@ -23,9 +27,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
 }) => {
   const { token } = theme.useToken();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const isSessionLocked = useAppSelector(selectIsSessionLocked);
+  const [showFastLoginModal, setShowFastLoginModal] = useState(false);
+  const [, , clearSessionUser] = useSessionStorage(Constants.SESSION_KEYS.user);
   
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(() => {
     const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
@@ -33,8 +37,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   });
 
   const toggleDarkMode = (enabled: boolean) => {
-    if (isSessionLocked) return; // Prevent toggle when locked
-    
     const body = document.body;
     body.classList.add("fade-out");
     console.log("Dark mode enabled:", enabled);
@@ -49,15 +51,72 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   };
 
   const handleLockSession = () => {
-    dispatch(toggleSessionLock());
-    
-    if (!isSessionLocked) {
-      // Locking session - navigate to TagsFastPassword
-      const targetPath = `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.tagsFastPassword}`;
-      navigate(targetPath, {
-        state: location.state // Preserve current location state
+    if (isSessionLocked) {
+      // If already locked, show fast login modal directly
+      setShowFastLoginModal(true);
+    } else {
+      // Show confirmation modal
+      Modal.confirm({
+        title: Strings.sessionLockConfirmTitle,
+        icon: <ExclamationCircleOutlined />,
+        content: (
+          <div>
+            <p>{Strings.sessionLockConfirmContent}</p>
+            <p style={{ fontSize: '12px', color: '#666' }}>
+              {Strings.sessionLockConfirmDescription}
+            </p>
+          </div>
+        ),
+        okText: Strings.blockButton,
+        cancelText: Strings.cancel,
+        okType: 'danger',
+        onOk: () => {
+          handleSessionLock();
+        },
+        onCancel: () => {
+          // Do nothing, just close the modal
+        },
       });
     }
+  };
+
+  const handleSessionLock = () => {
+    // Clear user session
+    clearSessionUser();
+    dispatch(logOut(null));
+    
+    // Set session as locked
+    dispatch(setSessionLocked(true));
+    
+    // Show fast login modal persistently
+    setShowFastLoginModal(true);
+  };
+
+  const handleFastLoginSuccess = () => {
+    console.log("🔍 HeaderBar handleFastLoginSuccess called");
+    
+    // Close the modal first
+    setShowFastLoginModal(false);
+    
+    // Redirect to charts with full page reload to ensure fresh state
+    const chartsUrl = `${window.location.origin}/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`;
+    console.log("🔍 Redirecting to:", chartsUrl);
+    console.log("🔍 Current session locked state:", isSessionLocked);
+    
+    // Small delay to ensure modal closes and state is updated
+    setTimeout(() => {
+      console.log("🔍 Executing redirect to charts...");
+      window.location.href = chartsUrl;
+    }, 300);
+  };
+
+  const handleFastLoginCancel = () => {
+    // For locked sessions, don't allow cancel - modal stays open
+    if (isSessionLocked) {
+      return;
+    }
+    
+    setShowFastLoginModal(false);
   };
 
   return (
@@ -77,7 +136,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         zIndex: 1000,
         transition: "width 0.2s ease",
         backgroundColor: token.colorBgContainer,
-        opacity: isSessionLocked ? 0.7 : 1,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -85,9 +143,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           style={{ 
             width: 140, 
             marginRight: "10px", 
-            marginLeft: "20px",
-            pointerEvents: isSessionLocked ? 'none' : 'auto',
-            opacity: isSessionLocked ? 0.5 : 1
+            marginLeft: "20px"
           }}
         >
           <LanguageDropdown />
@@ -106,7 +162,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           className="lock-session-button"
         >
           <span style={{ textDecoration: 'none' }}>
-            {isSessionLocked ? 'Reanudar Sesión' : 'Bloquear Sesión'}
+            {isSessionLocked ? Strings.unlockSession : Strings.lockSession}
           </span>
         </Button>
       </div>
@@ -114,9 +170,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       <div 
         style={{ 
           display: "flex", 
-          alignItems: "center",
-          pointerEvents: isSessionLocked ? 'none' : 'auto',
-          opacity: isSessionLocked ? 0.5 : 1
+          alignItems: "center"
         }}
       >
         <Switch
@@ -125,21 +179,26 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           unCheckedChildren="Light mode"
           style={{ marginRight: 10 }}
           onChange={toggleDarkMode}
-          disabled={isSessionLocked}
         />
 
-        <div style={{ pointerEvents: isSessionLocked ? 'none' : 'auto' }}>
+        <div>
           <NotificationDropdown />
         </div>
         <div 
           style={{ 
-            marginLeft: "20px",
-            pointerEvents: isSessionLocked ? 'none' : 'auto'
+            marginLeft: "20px"
           }}
         >
           <UserProfileDropdown user={user} />
         </div>
       </div>
+
+      {/* Fast Login Modal */}
+      <FastLoginModal
+        isVisible={showFastLoginModal}
+        onSuccess={handleFastLoginSuccess}
+        onCancel={handleFastLoginCancel}
+      />
     </div>
   );
 };

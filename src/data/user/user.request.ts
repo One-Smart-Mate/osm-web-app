@@ -1,3 +1,5 @@
+import Constants from "../../utils/Constants";
+
 export class LoginRequest {
   email: string;
   password: string;
@@ -29,6 +31,8 @@ export class CreateUser {
   uploadCardDataWithDataNet: number;
   uploadCardEvidenceWithDataNet: number;
   roles: number[];
+  phoneNumber?: string;
+  translation?: string;
 
   constructor(
     name: string,
@@ -37,7 +41,9 @@ export class CreateUser {
     password: string,
     uploadCardDataWithDataNet: number,
     uploadCardEvidenceWithDataNet: number,
-    roles: number[]
+    roles: number[],
+    phoneNumber?: string,
+    translation?: string
   ) {
     this.name = name;
     this.email = email;
@@ -46,6 +52,14 @@ export class CreateUser {
     this.uploadCardDataWithDataNet = uploadCardDataWithDataNet;
     this.uploadCardEvidenceWithDataNet = uploadCardEvidenceWithDataNet;
     this.roles = roles;
+    
+    // Include phoneNumber if provided (can be empty string)
+    if (phoneNumber !== undefined && phoneNumber !== null) {
+      this.phoneNumber = phoneNumber.trim() || "";
+    }
+    
+    // Ensure translation is valid ES or EN, default to ES
+    this.translation = (translation === Constants.en) ? Constants.en : Constants.es;
   }
 }
 
@@ -60,6 +74,9 @@ export class UpdateUser {
   roles: number[];
   status: string;
   fastPassword?: string;
+  phoneNumber?: string;
+  translation?: string;
+  // NOTE: Backend now DOES support translation in UpdateUserDTO!
 
   constructor(
     id: number,
@@ -71,7 +88,9 @@ export class UpdateUser {
     uploadCardEvidenceWithDataNet: number,
     roles: number[],
     status: string,
-    fastPassword?: string
+    fastPassword?: string,
+    phoneNumber?: string,
+    translation?: string
   ) {
     this.id = id;
     this.name = name;
@@ -82,7 +101,19 @@ export class UpdateUser {
     this.uploadCardEvidenceWithDataNet = uploadCardEvidenceWithDataNet;
     this.roles = roles;
     this.status = status;
-    this.fastPassword = fastPassword;
+    
+    // Only include fastPassword if it's provided and not empty
+    if (fastPassword && fastPassword.trim()) {
+      this.fastPassword = fastPassword;
+    }
+    
+    // Include phoneNumber if provided (can be empty string for updates)
+    if (phoneNumber !== undefined && phoneNumber !== null) {
+      this.phoneNumber = phoneNumber.trim() || "";
+    }
+    
+    // Ensure translation is valid ES or EN, default to ES
+    this.translation = (translation === Constants.en) ? Constants.en : Constants.es;
   }
 }
 

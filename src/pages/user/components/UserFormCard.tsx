@@ -2,7 +2,7 @@ import { Checkbox, Form, FormInstance, Input, Select, Button, App as AntApp } fr
 import { Role, UserCardInfo } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyTooltip from "../../components/AnatomyTooltip";
-import { BsLock, BsMailbox, BsPerson, BsCopy, BsKey } from "react-icons/bs";
+import { BsLock, BsMailbox, BsPerson, BsCopy, BsKey, BsTelephone, BsGlobe } from "react-icons/bs";
 import { validateEmailPromise } from "../../../utils/Extensions";
 import { useEffect, useState } from "react";
 import { useGetRolesMutation } from "../../../services/roleService";
@@ -55,9 +55,16 @@ const UserFormCard = ({
         name: initialValues.name,
         email: initialValues.email,
         id: initialValues.id,
+        phoneNumber: initialValues.phoneNumber,
+        translation: initialValues.translation || Constants.es,
         roles: initialValues.roles.filter((rol,_) => rol.name != Constants.ihSisAdmin).map((rol, _) => rol.id),
         status: initialValues.status,
         enableEvidences: initialValues.uploadCardDataWithDataNet && initialValues.uploadCardEvidenceWithDataNet
+      });
+    } else {
+      // Set default values for new user creation
+      form.setFieldsValue({
+        translation: Constants.es
       });
     }
   };
@@ -65,6 +72,11 @@ const UserFormCard = ({
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active, key: 1 },
     { value: Strings.inactiveValue, label: Strings.inactive, key: 2 },
+  ];
+
+  const languageOptions = [
+    { value: Constants.es, label: Strings.spanish, key: 1 },
+    { value: Constants.en, label: Strings.english, key: 2 },
   ];
 
   const handleGenerateFastPassword = () => {
@@ -151,6 +163,46 @@ const UserFormCard = ({
             />
           </Form.Item>
           <AnatomyTooltip title={Strings.userEmailTooltip} />
+        </div>
+        <div className="flex flex-row flex-wrap">
+          <Form.Item
+            name="phoneNumber"
+            label={Strings.phoneNumber}
+            className="flex-1"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value || value.trim() === '') {
+                    return Promise.resolve(); // Allow empty
+                  }
+                  if (!/^[0-9]{10,15}$/.test(value)) {
+                    return Promise.reject(new Error(Strings.invalidPhoneNumber));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input
+              maxLength={15}
+              addonBefore={<BsTelephone />}
+              placeholder={Strings.phoneNumber}
+            />
+          </Form.Item>
+          <AnatomyTooltip title={Strings.phoneNumberTooltip} />
+          <Form.Item
+            name="translation"
+            label={Strings.language}
+            className="flex-1"
+            rules={[]}
+          >
+            <Select
+              placeholder={Strings.selectLanguage}
+              options={languageOptions}
+              // Backend now supports translation updates!
+            />
+          </Form.Item>
+          <AnatomyTooltip title={Strings.languageTooltip} />
         </div>
         <div className="flex flex-row flex-wrap">
           <Form.Item

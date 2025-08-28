@@ -103,13 +103,21 @@ const { Text } = Typography;
 interface ScheduleButtonProps {
   sequence: CiltSequence;
   onViewSchedules: (sequence: CiltSequence) => void;
+  refreshKey?: number; // Add refresh key prop
 }
 
-const ScheduleButton = ({ sequence, onViewSchedules }: ScheduleButtonProps) => {
-  const { data: schedules = [], isLoading } = useGetSchedulesBySequenceQuery(sequence.id, {
+const ScheduleButton = ({ sequence, onViewSchedules, refreshKey }: ScheduleButtonProps) => {
+  const { data: schedules = [], isLoading, refetch } = useGetSchedulesBySequenceQuery(sequence.id, {
     refetchOnMountOrArgChange: true,
     skip: !sequence.id
   });
+
+  // Refetch schedules when refreshKey changes
+  React.useEffect(() => {
+    if (refreshKey !== undefined && refreshKey > 0) {
+      refetch();
+    }
+  }, [refreshKey, refetch]);
 
   if (isLoading) {
     return <Button type="default" loading>{Strings.viewSchedules}</Button>;
@@ -185,6 +193,7 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [sequenceSearchText, setSequenceSearchText] = useState("");
   const [sequencePage, setSequencePage] = useState(1);
+  const [refreshSchedules, setRefreshSchedules] = useState(0); // Force refresh counter for schedules
   const pageSize = 4;
   const sequencePageSize = 4;
 
@@ -261,6 +270,9 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
     setSelectedSequenceForViewSchedules(null);
   };
 
+  // Note: handleScheduleChange would be used if ViewSchedulesModal supported onScheduleChange prop
+  // For now, we only refresh on new schedule creation
+
   const showScheduleSequence = (sequence: CiltSequence) => {
     setSelectedSequenceForSchedule(sequence);
     setScheduleSecuenceVisible(true);
@@ -274,6 +286,10 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
   const handleScheduleSequenceSuccess = () => {
     setScheduleSecuenceVisible(false);
     setSelectedSequenceForSchedule(null);
+    
+    // Force refresh of all schedule buttons
+    setRefreshSchedules(prev => prev + 1);
+    
     notification.success({
       message: Strings.success,
       description: Strings.successScheduleCreated,
@@ -1071,7 +1087,11 @@ const LevelDetailsDrawer: React.FC<LevelDetailsDrawerProps> = ({
                           >
                             {Strings.scheduleSequence}
                           </Button>
-                          <ScheduleButton sequence={sequence} onViewSchedules={showViewSchedules} />
+                          <ScheduleButton 
+                            sequence={sequence} 
+                            onViewSchedules={showViewSchedules} 
+                            refreshKey={refreshSchedules}
+                          />
                         </div>
                       </Card>
                     </div>

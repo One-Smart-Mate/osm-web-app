@@ -88,7 +88,7 @@ const amDiscardReasonsRoute = new Route(
   Constants.ROUTES_PATH.amDiscardReasons,
   <AmDiscardReasonsPage />,
   <BsCardChecklist />,
-  Strings.dashboard
+  Strings.catalogs
 );
 
 // Common routes
@@ -113,7 +113,7 @@ const levelsReadOnlyRoute = new Route(
   Constants.ROUTES_PATH.levelsReadOnly,
   <LevelsReadOnly />,
   <BsDiagram3 />,
-  Strings.catalogs
+  Strings.dashboard
 );
 
 const tagsRoute = new Route(
@@ -137,7 +137,7 @@ const ciltChartsRoute = new Route(
   Constants.ROUTES_PATH.ciltCharts,
   <CiltChartsPage />,
   <BsBarChartLine />,
-  Strings.cilt
+  Strings.dashboard
 );
 
 const sitesRoute = new Route(
@@ -287,16 +287,16 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       section: chartsRoute.section,
     }),
     getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
+    }),
+    getItemV2({
       label: tagsRoute.label,
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
-    }),
-    getItemV2({
-      label: amDiscardReasonsRoute.label,
-      key: amDiscardReasonsRoute.path,
-      icon: amDiscardReasonsRoute.icon,
-      section: amDiscardReasonsRoute.section,
     }),
     getItemV2({
       label: levelsReadOnlyRoute.label,
@@ -316,23 +316,24 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
     }),
-    getItemV2({
-      label: ciltChartsRoute.label,
-      key: ciltChartsRoute.path,
-      icon: ciltChartsRoute.icon,
-      section: ciltChartsRoute.section,
-    }),
   ];
   return items;
 };
 
 const localSisAdminRoutesSiderOptions = (): ItemType[] => {
   const items: MenuProps["items"] = [
+    // Panel section
     getItemV2({
       label: chartsRoute.label,
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: ciltChartsRoute.label,
+      key: ciltChartsRoute.path,
+      icon: ciltChartsRoute.icon,
+      section: ciltChartsRoute.section,
     }),
     getItemV2({
       label: tagsRoute.label,
@@ -341,17 +342,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       section: tagsRoute.section,
     }),
     getItemV2({
-      label: amDiscardReasonsRoute.label,
-      key: amDiscardReasonsRoute.path,
-      icon: amDiscardReasonsRoute.icon,
-      section: amDiscardReasonsRoute.section,
-    }),
-    getItemV2({
       label: levelsReadOnlyRoute.label,
       key: levelsReadOnlyRoute.path,
       icon: levelsReadOnlyRoute.icon,
       section: levelsReadOnlyRoute.section,
     }),
+    // Catálogos section
     getItemV2({
       label: sitesRoute.label,
       key: sitesRoute.path,
@@ -371,16 +367,16 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       section: cardTypesRoute.section,
     }),
     getItemV2({
+      label: amDiscardReasonsRoute.label,
+      key: amDiscardReasonsRoute.path,
+      icon: amDiscardReasonsRoute.icon,
+      section: amDiscardReasonsRoute.section,
+    }),
+    getItemV2({
       label: prioritiesRoute.label,
       key: prioritiesRoute.path,
       icon: prioritiesRoute.icon,
       section: prioritiesRoute.section,
-    }),
-    getItemV2({
-      label: siteUsersRoute.label,
-      key: siteUsersRoute.path,
-      icon: siteUsersRoute.icon,
-      section: siteUsersRoute.section,
     }),
     getItemV2({
       label: positionsRoute.label,
@@ -388,6 +384,14 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: positionsRoute.icon,
       section: positionsRoute.section,
     }),
+    // Cuentas section
+    getItemV2({
+      label: siteUsersRoute.label,
+      key: siteUsersRoute.path,
+      icon: siteUsersRoute.icon,
+      section: siteUsersRoute.section,
+    }),
+    // CILT section
     getItemV2({
       label: ciltProceduresRoute.label,
       key: ciltProceduresRoute.path,
@@ -429,12 +433,6 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltReportsRoute.path,
       icon: ciltReportsRoute.icon,
       section: ciltReportsRoute.section,
-    }),
-    getItemV2({
-      label: ciltChartsRoute.label,
-      key: ciltChartsRoute.path,
-      icon: ciltChartsRoute.icon,
-      section: ciltChartsRoute.section,
     }),
   ];
   return items;

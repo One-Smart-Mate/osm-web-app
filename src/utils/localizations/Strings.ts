@@ -1446,6 +1446,17 @@ class StringsBase {
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 
+  // User additional fields
+  static phoneNumber = "phoneNumber";
+  static phoneNumberTooltip = "phoneNumberTooltip";
+  static requiredPhoneNumber = "requiredPhoneNumber";
+  static invalidPhoneNumber = "invalidPhoneNumber";
+  static language = "language";
+  static languageTooltip = "languageTooltip";
+  static selectLanguage = "selectLanguage";
+  static spanish = "spanish";
+  static english = "english";
+
   //NEW UPDATE
   static start = "start";
   static eachPlace = "eachPlace";
@@ -1742,6 +1753,30 @@ class StringsBase {
   static anomaliesChartTooltip = "anomaliesChartTooltip";
   static compliance = "compliance";
   static timeMinSeg = "timeMinSeg";
+  
+  // Fast Login and Session Lock strings
+  static fastLoginModalTitle = "fastLoginModalTitle";
+  static fastLoginModalDescription = "fastLoginModalDescription";
+  static fastLoginModalWarning = "fastLoginModalWarning";
+  static fastLoginModalPlaceholder = "fastLoginModalPlaceholder";
+  static fastLoginSuccess = "fastLoginSuccess";
+  static fastLoginError = "fastLoginError";
+  static fastLoginErrorValidation = "fastLoginErrorValidation";
+  static lockSession = "lockSession";
+  static unlockSession = "unlockSession";
+  static sessionLocked = "sessionLocked";
+  static sessionLockConfirmTitle = "sessionLockConfirmTitle";
+  static sessionLockConfirmContent = "sessionLockConfirmContent";
+  static sessionLockConfirmDescription = "sessionLockConfirmDescription";
+  static blockButton = "blockButton";
+  static sessionLockedLoginTitle = "sessionLockedLoginTitle";
+  static sessionLockedWarning = "sessionLockedWarning";
+  static fastLoginButtonText = "fastLoginButtonText";
+  static fastPasswordAlphabeticValidation = "fastPasswordAlphabeticValidation";
+  static fastPasswordLoginComplete = "fastPasswordLoginComplete";
+  static noCiltstOShow = "noCiltstOShow";
+  static order = "order";
+  static lastUsed = "lastUsed";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

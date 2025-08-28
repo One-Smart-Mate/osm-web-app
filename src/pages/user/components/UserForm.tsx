@@ -14,6 +14,7 @@ import {
   useUpdateUserMutation,
 } from "../../../services/userService";
 import { CreateUser, UpdateUser } from "../../../data/user/user.request";
+import Constants from "../../../utils/Constants";
 
 interface UserFormProps {
   formType: UserFormType;
@@ -71,7 +72,9 @@ const UserForm = ({
           values.password,
           enableEvidences,
           enableEvidences,
-          values.roles
+          values.roles,
+          values.phoneNumber,
+          values.translation
         )
       ).unwrap();
 
@@ -104,7 +107,9 @@ const UserForm = ({
           enableEvidences,
           values.roles,
           values.status,
-          values.fastPassword
+          values.fastPassword,
+          values.phoneNumber,
+          values.translation
         )
       ).unwrap();
       
