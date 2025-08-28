@@ -66,7 +66,7 @@ const UsersPage = () => {
     return (
       email.toLowerCase().includes(normalizedQuery) ||
       name.toLowerCase().includes(normalizedQuery) ||
-      (phoneNumber && phoneNumber.toLowerCase().includes(normalizedQuery))
+      Boolean(phoneNumber && phoneNumber.toLowerCase().includes(normalizedQuery))
     );
   }, []);
 
