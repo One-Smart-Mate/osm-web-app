@@ -14,7 +14,6 @@ import {
   useUpdateUserMutation,
 } from "../../../services/userService";
 import { CreateUser, UpdateUser } from "../../../data/user/user.request";
-import Constants from "../../../utils/Constants";
 
 interface UserFormProps {
   formType: UserFormType;
