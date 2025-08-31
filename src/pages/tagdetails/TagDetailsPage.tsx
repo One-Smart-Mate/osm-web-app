@@ -152,13 +152,15 @@ const TagDetailsPage = () => {
           <div className="w-full sm:w-auto flex justify-start sm:justify-end gap-2">
             {data && (
               <>
-                <Button
-                  type="primary"
-                  danger
-                  onClick={() => setIsDiscardModalVisible(true)}
-                >
-                  {Strings.discardCard}
-                </Button>
+                {data.card.status !== 'C' && data.card.status !== 'R' && data.card.status !== 'C/R' && (
+                  <Button
+                    type="primary"
+                    danger
+                    onClick={() => setIsDiscardModalVisible(true)}
+                  >
+                    {Strings.discardCard}
+                  </Button>
+                )}
                 <TagPDFButton site={site} data={data} />
               </>
             )}
