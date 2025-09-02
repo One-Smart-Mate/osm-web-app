@@ -422,12 +422,12 @@ const resources = {
       levelsof: "Levels of",
 
 
-      // CILT Sequences Page
-      ciltSequencesPageTitle: "CILT Sequences: {{ciltName}}",
+      // Procedure Sequences Page
+      ciltSequencesPageTitle: "Procedure Sequences: {{ciltName}}",
       loadingText: "Loading...",
-      ciltNoSequencesAssociated: "This CILT \"{{ciltName}}\" has no associated sequences.",
+      ciltNoSequencesAssociated: "This Procedure \"{{ciltName}}\" has no associated sequences.",
       notificationInfoTitle: "Information",
-      errorLoadingCiltOrSequences: "Error loading CILT or sequences",
+      errorLoadingCiltOrSequences: "Error loading Procedure or sequences",
       noOplAssociatedWithSequence: "No OPL associated with this sequence.",
       oplNoMultimediaFiles: "The OPL \"{{oplTitle}}\" has no multimedia files.",
       errorTargetSequenceInvalidOrder: "Error: The target sequence does not have a valid order number.",
@@ -867,19 +867,19 @@ const resources = {
       permissionsError:
         "You do not have permission to access this application.",
 
-      // CILT related strings
-      createCiltProcedure: "Create CILT procedure",
-      createCiltProcedureForPosition: "Create CILT procedure for",
-      ciltName: "CILT name",
-      registerCiltNameRequiredValidation: "Please enter the CILT name",
+      // Procedure related strings
+      createCiltProcedure: "Create procedure",
+      createCiltProcedureForPosition: "Create procedure for",
+      ciltName: "Procedure name",
+      registerCiltNameRequiredValidation: "Please enter the procedure name",
       registerCiltNameMaxLengthValidation: "Name cannot exceed 100 characters",
-      registerCiltNamePlaceholer: "Enter CILT name",
-      ciltDescription: "CILT description",
+      registerCiltNamePlaceholer: "Enter procedure name",
+      ciltDescription: "Procedure description",
       registerCiltDescriptionRequiredValidation:
-        "Please enter the CILT description",
+        "Please enter the procedure description",
       registerCiltDescriptionMaxLengthValidation:
         "Description cannot exceed 500 characters",
-      registerCiltDescriptionPlaceholer: "Enter CILT description",
+      registerCiltDescriptionPlaceholer: "Enter procedure description",
       standardTime: "Standard time",
       registerCiltStandardTimeRequiredValidation:
         "Please enter the standard time",
@@ -900,9 +900,9 @@ const resources = {
       selectCreator: "Select a creator",
       selectReviewer: "Select a reviewer",
       selectApprover: "Select an approver",
-      ciltProceduresSB: "CILT Procedures",
+      ciltProceduresSB: "Procedures",
       ciltProceduresDescription:
-        "This page contains information about CILT procedures and their implementation.",
+        "This page contains information about procedures and their implementation.",
       seconds: "seconds",
       oplSB: "OPL",
       oplDescription:
@@ -916,34 +916,34 @@ const resources = {
     documentTypeTooLong: "Document type must be 50 characters or less",
     invalidId: "Invalid ID",
       requiredDocumentType: "Document type is required",
-      ciltTypesSB: "CILT Types",
-      ciltTypesOf: "CILT Types of",
+      ciltTypesSB: "Procedure Types",
+      ciltTypesOf: "Procedure Types of",
       ciltTypesDescription:
-        "This page contains information about different types of CILT.",
-      ciltFrecuenciesSB: "CILT Frequencies",
-      ciltFrecuenciesOf: "CILT Frequencies of",
+        "This page contains information about different types of procedures.",
+      ciltFrecuenciesSB: "Procedure Frequencies",
+      ciltFrecuenciesOf: "Procedure Frequencies of",
       ciltFrecuenciesDescription:
-        "This page contains information about CILT frequencies.",
+        "This page contains information about procedure frequencies.",
 
     
       searchByName: "Search by name",
-      addNewCiltType: "Add new type of CILT",
-      errorLoadingNewTypesCilt: "Error loading CILT types",
-      typeCiltUpdated: "Type Cilt Updated",
-      errorUpdatingCiltType: "Error updating CILT type",
-      ciltTypeAdded: "Cilt type added",
-      errorAddingCiltType: "Error adding CILT type",
-      noCiltTypes: "There are no CILT types to display.",
+      addNewCiltType: "Add new type of procedure",
+      errorLoadingNewTypesCilt: "Error loading procedure types",
+      typeCiltUpdated: "Procedure type updated",
+      errorUpdatingCiltType: "Error updating procedure type",
+      ciltTypeAdded: "Procedure type added",
+      errorAddingCiltType: "Error adding procedure type",
+      noCiltTypes: "There are no procedure types to display.",
       obligatoryName: "The name is obligatory",
-      editCiltType: "Edit Cilt Type",
-      addCiltType: "Add Cilt Type",
+      editCiltType: "Edit Procedure Type",
+      addCiltType: "Add Procedure Type",
       errorNoSiteId: "A site Id is obligatory",
       clearFilters: "Clear filters",
 
    
       frequencyCode: "Frequency Code",
-      addNewCiltFrequency: "Add New Cilt Frequency",
-      editCiltFrequency: "Edit Cilt Frequency",
+      addNewCiltFrequency: "Add New Procedure Frequency",
+      editCiltFrequency: "Edit Procedure Frequency",
       addCiltFrequency: "Add Frequency",
       ciltFrequencyAdded: "Frequency added successfully",
       ciltFrequencyUpdated: "Frequency updated successfully",
@@ -955,11 +955,11 @@ const resources = {
       obligatoryDescription: "Description is required",
       searchbyDescriptionOrCode: "Search by code or description",
 
-      // CILT Master strings
-      ciltMstrPageTitle: "CILT Procedures",
-      ciltMstrCreateSuccess: "CILT procedure created successfully",
-      ciltCloneSuccess: "CILT procedure cloned successfully",
-      ciltCloneError: "Error cloning CILT procedure",
+      // Procedure Master strings
+      ciltMstrPageTitle: "Procedures",
+      ciltMstrCreateSuccess: "Procedure created successfully",
+      ciltCloneSuccess: "Procedure cloned successfully",
+      ciltCloneError: "Error cloning procedure",
       fastPasswordModalTitle: "Fast Password Generated",
       fastPasswordModalDescription: "Your fast password has been generated and updated successfully:",
       fastPasswordModalWarning: "Please copy this password before closing the modal. You can use it for quick access.",
@@ -968,15 +968,15 @@ const resources = {
       siteIdRequired: "Site ID is required to generate fast password",
       withSequences: "with {count} sequences",
       ciltMstrSelectPositionTitle: "Select a position",
-      ciltMstrCreateButtonLabel: "Create CILT procedure",
-      ciltMstrCreateModalTitle: "Create CILT procedure",
+      ciltMstrCreateButtonLabel: "Create procedure",
+      ciltMstrCreateModalTitle: "Create procedure",
       ciltMstrPositionLabel: "Position",
-      // CILT Edit Modal strings
-      ciltMstrEditModalTitle: "Edit CILT",
+      // Procedure Edit Modal strings
+      ciltMstrEditModalTitle: "Edit Procedure",
       ciltMstrSaveChangesButton: "Save Changes",
       ciltMstrCancelButton: "Cancel",
       ciltMstrUpdateError: "Error updating. Please try again.",
-      ciltMstrNameLabel: "CILT Name",
+      ciltMstrNameLabel: "Procedure Name",
       ciltMstrNameRequired: "Please enter the name!",
       ciltMstrDescriptionLabel: "Description",
       ciltMstrStandardTimeLabel: "Standard Time in seconds",
@@ -989,8 +989,8 @@ const resources = {
       ciltMstrStatusSuspended: "Suspended",
       ciltMstrStatusCanceled: "Canceled",
 
-      // CILT Details Modal strings
-      ciltMstrDetailsModalTitle: "CILT Details",
+      // Procedure Details Modal strings
+      ciltMstrDetailsModalTitle: "Procedure Details",
       ciltMstrCloseButton: "Close",
       ciltMstrDetailsNameLabel: "Name",
       ciltMstrDetailsDescriptionLabel: "Description",
@@ -1007,7 +1007,7 @@ const resources = {
       ciltMstrNotAvailable: "Not available",
       ciltMstrNA: "N/A",
 
-      // CILT Card List strings
+      // Procedure Card List strings
       ciltMstrListNameColumn: "Name",
       ciltMstrListDescriptionColumn: "Description",
       ciltMstrListCreatorColumn: "Creator",
@@ -1022,20 +1022,20 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspended",
       ciltMstrListCanceledFilter: "Canceled",
       ciltMstrCreateSequenceButton: "Create Sequence",
-      ciltMstrDeleteSuccess: "CILT procedure deleted successfully",
-      ciltMstrDeleteError: "Error deleting CILT procedure",
-      ciltMstrDeleteConfirmTitle: "Delete CILT Procedure",
-      ciltMstrDeleteConfirmContent: "Are you sure you want to delete this CILT procedure? This action cannot be undone.",
-      ciltSequenceDeleteSuccess: "CILT sequence deleted successfully",
-      ciltSequenceDeleteError: "Error deleting CILT sequence",
-      ciltSequenceDeleteConfirmTitle: "Delete CILT Sequence",
-      ciltSequenceDeleteConfirmContent: "Are you sure you want to delete this CILT sequence? This action cannot be undone.",
-      ciltAssignmentDeleteSuccess: "CILT assignment removed successfully",
-      ciltAssignmentDeleteError: "Error removing CILT assignment",
-      ciltAssignmentDeleteConfirmTitle: "Remove CILT Assignment",
-      ciltAssignmentDeleteConfirmContent: "Are you sure you want to remove this CILT assignment from this level? This will not delete the CILT procedure itself.",
-      ciltAssignmentDeleteFromCiltConfirmContent: "Are you sure you want to remove this CILT assignment? The related position will also be removed from this assignment.",
-      ciltAssignmentDeleteFromPositionConfirmContent: "Are you sure you want to remove this position assignment? The related CILT procedure will also be removed from this assignment.",
+      ciltMstrDeleteSuccess: "Procedure deleted successfully",
+      ciltMstrDeleteError: "Error deleting procedure",
+      ciltMstrDeleteConfirmTitle: "Delete Procedure",
+      ciltMstrDeleteConfirmContent: "Are you sure you want to delete this procedure? This action cannot be undone.",
+      ciltSequenceDeleteSuccess: "Procedure sequence deleted successfully",
+      ciltSequenceDeleteError: "Error deleting procedure sequence",
+      ciltSequenceDeleteConfirmTitle: "Delete Procedure Sequence",
+      ciltSequenceDeleteConfirmContent: "Are you sure you want to delete this procedure sequence? This action cannot be undone.",
+      ciltAssignmentDeleteSuccess: "Procedure assignment removed successfully",
+      ciltAssignmentDeleteError: "Error removing procedure assignment",
+      ciltAssignmentDeleteConfirmTitle: "Remove Procedure Assignment",
+      ciltAssignmentDeleteConfirmContent: "Are you sure you want to remove this procedure assignment from this level? This will not delete the procedure itself.",
+      ciltAssignmentDeleteFromCiltConfirmContent: "Are you sure you want to remove this procedure assignment? The related position will also be removed from this assignment.",
+      ciltAssignmentDeleteFromPositionConfirmContent: "Are you sure you want to remove this position assignment? The related procedure will also be removed from this assignment.",
       addFiles: "Add/Remove Files",
 
       // OPL related strings
@@ -1175,15 +1175,15 @@ const resources = {
       oplSuccessMediaAdded: "{type} detail added successfully",
       oplErrorAddingMedia: "Error adding {type} detail",
 
-      // CreateCiltSequenceModal strings
-      createCiltSequenceModalTitle: "Create CILT Sequence",
+      // CreateProcedureSequenceModal strings
+      createCiltSequenceModalTitle: "Create Procedure Sequence",
       createCiltSequenceModalSuccess: "Success",
       createCiltSequenceModalSuccessDescription:
-        "CILT sequence created successfully",
+        "Procedure sequence created successfully",
       createCiltSequenceModalError: "Error",
       createCiltSequenceModalErrorDescription:
-        "Error creating CILT sequence",
-      createCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+        "Error creating procedure sequence",
+      createCiltSequenceModalErrorLoadingTypes: "Error loading procedure types",
       createCiltSequenceModalErrorLoadingFrequencies:
         "Error loading frequencies",
       createCiltSequenceModalErrorNoFrequency:
@@ -1197,10 +1197,10 @@ const resources = {
         "Please select at least one frequency",
       createCiltSequenceModalDefaultSiteName: "Site",
 
-      // EditCiltSequenceModal strings
-      editCiltSequenceModalCiltTypeLabel: "CILT Type",
-      editCiltSequenceModalCiltTypeRequired: "CILT type is required",
-      editCiltSequenceModalCiltTypePlaceholder: "Select CILT type",
+      // EditProcedureSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "Procedure Type",
+      editCiltSequenceModalCiltTypeRequired: "Procedure type is required",
+      editCiltSequenceModalCiltTypePlaceholder: "Select procedure type",
       editCiltSequenceModalLevelLabel: "Level",
       editCiltSequenceModalLevelRequired: "Level is required",
       editCiltSequenceModalSelectLevel: "Select level",
@@ -1228,14 +1228,14 @@ const resources = {
       editCiltSequenceModalQuantityPicturesCloseRequired:
         "Quantity Pictures Close is required",
       editCiltSequenceModalToolsRequiredLabel: "Tools Required",
-      // EditCiltSequenceModal strings
-      editCiltSequenceModalTitle: "Edit CILT Sequence",
+      // EditProcedureSequenceModal strings
+      editCiltSequenceModalTitle: "Edit Procedure Sequence",
       editCiltSequenceModalSuccess: "Success",
       editCiltSequenceModalSuccessDescription:
-        "CILT sequence updated successfully",
+        "Procedure sequence updated successfully",
       editCiltSequenceModalError: "Error",
-      editCiltSequenceModalErrorDescription: "Error updating CILT sequence",
-      editCiltSequenceModalErrorLoadingTypes: "Error loading CILT types",
+      editCiltSequenceModalErrorDescription: "Error updating procedure sequence",
+      editCiltSequenceModalErrorLoadingTypes: "Error loading procedure types",
       editCiltSequenceModalPositionLabel: "Position",
       editCiltSequenceModalPositionPlaceholder: "Select position",
       editCiltSequenceModalReferenceOplPlaceholder: "Select reference OPL/SOP",
@@ -1249,7 +1249,7 @@ const resources = {
       editCiltSequenceModalToolsRequiredPlaceholder: "Enter tools required",
       editCiltSequenceModalStandardOkPlaceholder: "Enter standard OK",
 
-      // CiltCardList strings
+      // ProcedureCardList strings
       ciltCardListSequencesModalTitle: "Sequences of {ciltName}",
       ciltCardListCloseButton: "Close",
       ciltCardListCreateNewSequenceButton: "Create New Sequence",
@@ -1257,7 +1257,7 @@ const resources = {
         "Search sequences...",
       ciltCardListTotalSequences: "Total: {count} sequences",
       ciltCardListNoSequencesAssociated:
-        "No sequences associated with this CILT.",
+        "No sequences associated with this procedure.",
       ciltCardListNoSequencesMatchingSearch:
         "No sequences match your search criteria.",
       ciltCardListSequenceLabel: "Sequence {order}",
@@ -1270,7 +1270,7 @@ const resources = {
       ciltCardListEditSequenceButton: "Edit Sequence",
       ciltCardListSequenceDetailsModalTitle: "Sequence Details",
       ciltCardListPositionLabel: "Position:",
-      ciltCardListCiltTypeLabel: "CILT Type:",
+      ciltCardListCiltTypeLabel: "Procedure Type:",
       ciltCardListColorLabel: "Color:",
       ciltCardListRequiredToolsLabel: "Required Tools:",
       ciltCardListStoppageReasonLabel: "Stoppage Reason:",
@@ -1331,27 +1331,27 @@ const resources = {
       oplSelectionModalErrorOpl: "Error creating OPL / SOP",
       oplSearchBarPlaceholder: "Search OPL / SOP",
       
-      // CILT Table strings
+      // Procedure Table strings
       createSequence: "Create Sequence",
       viewSequences: "View Sequences",
       ciltSequences: "Sequences",
       information: "Information",
       
-      // CILT Sequences strings
+      // Procedure Sequences strings
       sequences: "Sequences",
       sequence: "Sequence",
       createNewSequence: "Create New Sequence",
       searchByDescriptionOrderOrTime: "Search by description, order or time",
-      noSequencesForCilt: "No sequences associated with this CILT.",
+      noSequencesForCilt: "No sequences associated with this procedure.",
       noSequencesMatchSearch: "No sequences match your search.",
-      thisGroup: "This CILT",
+      thisGroup: "This procedure",
       noSequencesYet: "doesn't have sequences yet. You can create a new sequence using the \"Create New Sequence\" button.",
       viewDetails: "View Details",
       detailsOf: "Details of",
       editSequence: "Edit Sequence",
 
-      // CILT Details and OPL strings
-      ciltType: "CILT Type",
+      // Procedure Details and OPL strings
+      ciltType: "Procedure Type",
   
       requiredTools: "Required Tools",
       stoppageReason: "Stoppage Reason",
@@ -1371,7 +1371,7 @@ const resources = {
       browserNotSupportVideo: "Your browser doesn't support video playback.",
       viewReferenceOpl: "View Reference OPL",
       viewRemediationOpl: "View Remediation OPL",
-      cilt: "CILT",
+      cilt: "Procedure",
       selectedUsersList: "Selected Users:",
       ciltMstrLastUpdated: "Last Updated:",
       lastLoginWeb: "Last login web",
@@ -1382,7 +1382,7 @@ const resources = {
       imageLoadError: "Error uploading image",
       warningImageUpload: "Warning: image not uploaded correctly",
       scheduleSecuence: "Schedule Sequence",
-      confirmCloneCiltMstrMessage: "Are you sure you want to clone the CILT?",
+      confirmCloneCiltMstrMessage: "Are you sure you want to clone the procedure?",
       confirmCloneSecuencesMessage: "All sequences will also be cloned",
       draft: "Draft",
       totalUsersCreated: "Total number of users created",
@@ -1400,42 +1400,42 @@ const resources = {
       repeat : "Repeat",
       repeatEach : "Repeat each",
 
-      ciltDueDate: "CILT Due Date",
-      ciltDueDatePlaceholder: "CILT Due Date",
+      ciltDueDate: "Procedure Due Date",
+      ciltDueDatePlaceholder: "Procedure Due Date",
       
       // Level Details Drawer
       errorLoadingData: "Error loading data",
-      noCiltProceduresAssigned: "No CILT procedures assigned to this level",
+      noCiltProceduresAssigned: "No procedures assigned to this level",
       noPositionsAssigned: "No positions assigned to this level",
       andMore: "And",
       more: "more",
       functionalityInDevelopment: "This functionality is under development",
-      ciltProcedures: "CILT Procedures",
-      ciltTypeName: "CILT Type",
-      ciltDetails: "CILT Details",
-      noCiltAssignedToLevel: "No CILT procedures assigned to this level",
+      ciltProcedures: "Procedures",
+      ciltTypeName: "Procedure Type",
+      ciltDetails: "Procedure Details",
+      noCiltAssignedToLevel: "No procedures assigned to this level",
       noPositionsAssignedToLevel: "No positions assigned to this level",
       noSequencesFound: "No sequences found",
       sequenceDetails: "Sequence Details",
       toolsRequired: "Tools Required",
       machineStopped: "Machine Stopped",
 
-      // CILT Level Assignments
-      assignPositionCiltMstrLevel: "Assign Position CILT",
+      // Procedure Level Assignments
+      assignPositionCiltMstrLevel: "Assign Position Procedure",
       assignOplLevel: "Assign OPL",
       asignamentsSB: "Level Assignments",
-      ciltLevelAssignments: "CILT Level Assignments",
+      ciltLevelAssignments: "Procedure Level Assignments",
       select: "Select",
       
-      // Position and CILT selection modals
+      // Position and Procedure selection modals
       selectPosition: "Select Position",
       searchPosition: "Search positions...",
       errorLoadingPositions: "Error loading positions",
       noPositionsFound: "No positions found",
-      selectCiltMstr: "Select CILT",
-      searchCiltMstr: "Search CILTs...",
-      errorLoadingCiltMstrs: "Error loading CILTs",
-      noCiltMstrsFound: "No CILTs found",
+      selectCiltMstr: "Select Procedure",
+      searchCiltMstr: "Search procedures...",
+      errorLoadingCiltMstrs: "Error loading procedures",
+      noCiltMstrsFound: "No procedures found",
       assignmentSuccess: "Assignment created successfully",
       assignmentError: "Error creating assignment",
       to: "to",
@@ -1459,7 +1459,7 @@ const resources = {
       referencePoint: "Reference Point",
       selectableWithoutProgramming: "Selectable Without Programming",
       createCiltSequenceModalErrorSelectFrequency: "Please select at least one frequency.",
-      ciltMstr: "CILT Procedure",
+      ciltMstr: "Procedure",
       each:"Each",
       theDays:"the",
       since:"since",
@@ -1477,7 +1477,7 @@ const resources = {
       searchOpls: "Search OPLs...",
       viewDocument: "View Document",
       noValidSiteId: "No valid site ID",
-      noValidCiltMstrId: "No valid CILT ID",
+      noValidCiltMstrId: "No valid procedure ID",
       noValidPositionId: "No valid position ID",
       noValidLevelId: "No valid level ID",
       errorForMonthlySchedule: "For monthly programming, you must select a valid day of the month (1-31) or a week of the month.",
@@ -1519,7 +1519,7 @@ const resources = {
       requiredOrder: "Please input the order!",
       errorNoSchedules: "Please add at least one schedule.",
       secuencesOf: "Secuences of",
-      thisCilt: "This CILT",
+      thisCilt: "This procedure",
       noSequences: "No sequences found. You can create a new sequence using the \"Create Sequence\" button.",
       seeAssignments: "See Assignments",
       viewSchedules: "View Schedules",
@@ -1565,7 +1565,7 @@ const resources = {
       loadingSecuenceSchedule: "Loading sequence schedule",
       errorLoadingSecuenceSchedule: "Error loading sequence schedule",
       thereAreNoSchedules: "There are no schedules",
-      ciltReportsSB: "CILT Execution Reports",
+      ciltReportsSB: "Procedure Execution Reports",
       duration: "Duration",
       initialParameter: "Initial Parameter",
       finalParameter: "Final Parameter",
@@ -1620,11 +1620,11 @@ const resources = {
       discardedCardsNoData: "No discarded tags data available",
       discardedCardslCardsTitle: "Canceled Tags",
       
-      // CILT Positions Levels Modal strings
+      // Procedure Positions Levels Modal strings
       ciltPositionsLevelsTitle: "Positions / Levels",
       ciltPositionsLevelsButton: "View Positions / Levels",
       ciltPositionsLevelsAssignments: "assignments",
-      ciltPositionsLevelsNoData: "No positions/levels assigned to this CILT",
+      ciltPositionsLevelsNoData: "No positions/levels assigned to this procedure",
       ciltPositionsLevelsNoAssignments: "No assignments found",
       ciltPositionsLevelsLoadingDetails: "Loading level details...",
       ciltPositionsLevelsErrorLoadingDetails: "Error loading level details",
@@ -1632,7 +1632,7 @@ const resources = {
       readOnly: "Read Only",
       levelsConsultation: "Levels Consultation",
       assignmentSuccessful: "Assignment completed successfully",
-      selectPositionAndCilt: "Please select both a position and a CILT procedure",
+      selectPositionAndCilt: "Please select both a position and a procedure",
       warning: "Warning",
       assign: "Assign",
 
@@ -1700,12 +1700,12 @@ const resources = {
       final: "Final",
       hour: "Hour",
       
-      // CILT Charts module
-      ciltChartsSB: "CILT Charts",
-      ciltChartsOf: "CILT Charts of",
-      executionCiltChart: "CILT Execution",
-      complianceCiltChart: "CILT Compliance per Person",
-      timeCiltChart: "CILT Time",
+      // Procedure Charts module
+      ciltChartsSB: "Procedure Charts",
+      ciltChartsOf: "Procedure Charts of",
+      executionCiltChart: "Procedure Execution",
+      complianceCiltChart: "Procedure Compliance per Person",
+      timeCiltChart: "Procedure Time",
       anomaliesCiltChart: "Anomalies Detected (TAGs)",
       programmed: "Programmed",
       executed: "Executed",
@@ -1714,10 +1714,10 @@ const resources = {
       efficiency: "Efficiency",
       executedCount: "Executed",
       anomaliesDetected: "Anomalies",
-      executionChartTooltip: "Shows programmed vs executed CILT procedures by day",
-      complianceChartTooltip: "Shows assigned vs executed CILT procedures by person",
+      executionChartTooltip: "Shows programmed vs executed procedures by day",
+      complianceChartTooltip: "Shows assigned vs executed procedures by person",
       timeChartTooltip: "Shows standard time vs real execution time",
-      anomaliesChartTooltip: "Shows anomalies detected during CILT execution",
+      anomaliesChartTooltip: "Shows anomalies detected during procedure execution",
       compliance: "Compliance",
       timeMinSeg: "Time (min:sec)",
       
@@ -1741,7 +1741,7 @@ const resources = {
       fastLoginButtonText: "Start Session",
       fastPasswordAlphabeticValidation: "The fast password must contain only alphabetic characters (A-Z, a-z)",
       fastPasswordLoginComplete: "This will perform a complete login with your account.",
-      noCiltstOShow: "No CILTs to show",
+      noCiltstOShow: "No procedures to show",
       order: "Order",
       lastUsed: "Last Used",
       phoneNumber: "Phone Number",
@@ -1753,6 +1753,7 @@ const resources = {
       selectLanguage: "Select Language",
       spanish: "Spanish",
       english: "English",
+      proceduresChartsSB: "Procedures Charts"
     },
   },
   es: {
@@ -2615,21 +2616,21 @@ const resources = {
       enterPassword: "Introduce tu contraseña",
       permissionsError: "No tienes permisos para acceder a esta aplicación.",
 
-      // CILT related strings
-      createCiltProcedure: "Crear procedimiento CILT",
-      createCiltProcedureForPosition: "Crear procedimiento CILT para posición",
-      ciltName: "Nombre del procedimiento CILT",
+      // Procedure related strings
+      createCiltProcedure: "Crear procedimiento",
+      createCiltProcedureForPosition: "Crear procedimiento para posición",
+      ciltName: "Nombre del procedimiento",
       registerCiltNameRequiredValidation:
-        "Por favor, ingresa el nombre del procedimiento CILT",
+        "Por favor, ingresa el nombre del procedimiento",
       registerCiltNameMaxLengthValidation:
-        "Nombre del procedimiento CILT no puede exceder 100 caracteres",
-      registerCiltNamePlaceholer: "Nombre del procedimiento CILT",
-      ciltDescription: "Descripción del procedimiento CILT",
+        "Nombre del procedimiento no puede exceder 100 caracteres",
+      registerCiltNamePlaceholer: "Nombre del procedimiento",
+      ciltDescription: "Descripción del procedimiento",
       registerCiltDescriptionRequiredValidation:
-        "Por favor, ingresa la descripción del procedimiento CILT",
+        "Por favor, ingresa la descripción del procedimiento",
       registerCiltDescriptionMaxLengthValidation:
-        "Descripción del procedimiento CILT no puede exceder 500 caracteres",
-      registerCiltDescriptionPlaceholer: "Descripción del procedimiento CILT",
+        "Descripción del procedimiento no puede exceder 500 caracteres",
+      registerCiltDescriptionPlaceholer: "Descripción del procedimiento",
       standardTime: "Tiempo estándar",
       registerCiltStandardTimeRequiredValidation:
         "Por favor, ingresa el tiempo estándar",
@@ -2653,9 +2654,9 @@ const resources = {
       selectCreator: "Selecciona un creador",
       selectReviewer: "Selecciona un revisor",
       selectApprover: "Selecciona un aprobador",
-      ciltProceduresSB: "Procedimientos CILT",
+      ciltProceduresSB: "Procedimientos",
       ciltProceduresDescription:
-        "Esta página contiene información sobre los procedimientos CILT y su implementación.",
+        "Esta página contiene información sobre los procedimientos y su implementación.",
       seconds: "segundos",
       oplSB: "OPL",
       oplDescription:
@@ -2669,31 +2670,31 @@ const resources = {
     documentTypeTooLong: "El tipo de documento debe tener 50 caracteres o menos",
     invalidId: "ID inválido",
       requiredDocumentType: "El tipo de documento es requerido",
-      ciltTypesSB: "Tipos de CILT",
-      ciltTypesOf: "Tipos de CILT de",
+      ciltTypesSB: "Tipos de Procedimientos",
+      ciltTypesOf: "Tipos de Procedimientos de",
       ciltTypesDescription:
-        "Esta página contiene información sobre diferentes tipos de CILT.",
-      ciltFrecuenciesSB: "Frecuencias de CILT",
-      ciltFrecuenciesOf: "Frecuencias de CILT de",
+        "Esta página contiene información sobre diferentes tipos de procedimientos.",
+      ciltFrecuenciesSB: "Frecuencias de Procedimientos",
+      ciltFrecuenciesOf: "Frecuencias de Procedimientos de",
       ciltFrecuenciesDescription:
-        "Esta página contiene información sobre frecuencias de CILT.",
+        "Esta página contiene información sobre frecuencias de procedimientos.",
 
   
         searchByName: "Buscar por nombre",
-        addNewCiltType: "Agregar nuevo tipo de CILT",
-        errorLoadingNewTypesCilt: "Error al cargar los tipos de CILT",
-        typeCiltUpdated: "Tipo de CILT actualizado",
-        errorUpdatingCiltType: "Error al actualizar el tipo de CILT",
-        ciltTypeAdded: "Tipo de CILT agregado",
-        errorAddingCiltType: "Error al agregar el tipo de CILT",
-        noCiltTypes: "No hay tipos de CILT para mostrar.",
+        addNewCiltType: "Agregar nuevo tipo de procedimiento",
+        errorLoadingNewTypesCilt: "Error al cargar los tipos de procedimientos",
+        typeCiltUpdated: "Tipo de procedimiento actualizado",
+        errorUpdatingCiltType: "Error al actualizar el tipo de procedimiento",
+        ciltTypeAdded: "Tipo de procedimiento agregado",
+        errorAddingCiltType: "Error al agregar el tipo de procedimiento",
+        noCiltTypes: "No hay tipos de procedimientos para mostrar.",
         obligatoryName: "El nombre es obligatorio",
-        editCiltType: "Editar tipo de CILT",
-        addCiltType: "Agregar tipo de CILT",
+        editCiltType: "Editar tipo de procedimiento",
+        addCiltType: "Agregar tipo de procedimiento",
         
         frequencyCode: "Código de frecuencia",
-        addNewCiltFrequency: "Agregar nueva frecuencia de CILT",
-        editCiltFrequency: "Editar frecuencia de CILT",
+        addNewCiltFrequency: "Agregar nueva frecuencia de procedimiento",
+        editCiltFrequency: "Editar frecuencia de procedimiento",
         addCiltFrequency: "Agregar frecuencia",
         ciltFrequencyAdded: "Frecuencia agregada exitosamente",
         ciltFrequencyUpdated: "Frecuencia actualizada exitosamente",
@@ -2705,11 +2706,11 @@ const resources = {
         obligatoryDescription: "La descripción es obligatoria",
         searchbyDescriptionOrCode: "Buscar por código o descripción",
         
-        // CILT Master strings
-      ciltMstrPageTitle: "Procedimientos CILT",
-      ciltMstrCreateSuccess: "Procedimiento CILT creado exitosamente",
-      ciltCloneSuccess: "Procedimiento CILT clonado exitosamente",
-      ciltCloneError: "Error al clonar el procedimiento CILT",
+        // Procedure Master strings
+      ciltMstrPageTitle: "Procedimientos",
+      ciltMstrCreateSuccess: "Procedimiento creado exitosamente",
+      ciltCloneSuccess: "Procedimiento clonado exitosamente",
+      ciltCloneError: "Error al clonar el procedimiento",
       fastPasswordModalTitle: "Contraseña Rápida Generada",
       fastPasswordModalDescription: "Su contraseña rápida ha sido generada y actualizada exitosamente:",
       fastPasswordModalWarning: "Por favor copie esta contraseña antes de cerrar el modal. Puede usarla para acceso rápido.",
@@ -2717,16 +2718,16 @@ const resources = {
       fastPasswordCopyFailed: "Error al copiar al portapapeles",
       siteIdRequired: "Se requiere ID de sitio para generar contraseña rápida",
       ciltMstrSelectPositionTitle: "Selecciona una posición",
-      ciltMstrCreateButtonLabel: "Crear procedimiento CILT",
-      ciltMstrCreateModalTitle: "Crear procedimiento CILT",
+      ciltMstrCreateButtonLabel: "Crear procedimiento",
+      ciltMstrCreateModalTitle: "Crear procedimiento",
       ciltMstrPositionLabel: "Posición",
-      // CILT Edit Modal strings
-      ciltMstrEditModalTitle: "Editar CILT",
+      // Procedure Edit Modal strings
+      ciltMstrEditModalTitle: "Editar Procedimiento",
       ciltMstrSaveChangesButton: "Guardar Cambios",
       ciltMstrCancelButton: "Cancelar",
       ciltMstrUpdateError: "Error al actualizar. Intente de nuevo.",
-      ciltMstrUpdateSuccess: "CILT actualizado correctamente.",
-      ciltMstrNameLabel: "Nombre CILT",
+      ciltMstrUpdateSuccess: "Procedimiento actualizado correctamente.",
+      ciltMstrNameLabel: "Nombre del Procedimiento",
       ciltMstrNameRequired: "Por favor ingrese el nombre!",
       ciltMstrDescriptionLabel: "Descripción",
       ciltMstrStandardTimeLabel: "Tiempo Estándar en segundos",
@@ -2739,8 +2740,8 @@ const resources = {
       ciltMstrStatusSuspended: "Suspendido",
       ciltMstrStatusCanceled: "Cancelado",
 
-      // CILT Details Modal strings
-      ciltMstrDetailsModalTitle: "Detalles del CILT",
+      // Procedure Details Modal strings
+      ciltMstrDetailsModalTitle: "Detalles del Procedimiento",
       ciltMstrCloseButton: "Cerrar",
       ciltMstrDetailsNameLabel: "Nombre",
       ciltMstrDetailsDescriptionLabel: "Descripción",
@@ -2757,7 +2758,7 @@ const resources = {
       ciltMstrNotAvailable: "No disponible",
       ciltMstrNA: "N/D",
 
-      // CILT Card List strings
+      // Procedure Card List strings
       ciltMstrListNameColumn: "Nombre",
       ciltMstrListDescriptionColumn: "Descripción",
       ciltMstrListCreatorColumn: "Creador",
@@ -2772,20 +2773,20 @@ const resources = {
       ciltMstrListSuspendedFilter: "Suspendido",
       ciltMstrListCanceledFilter: "Cancelado",
       ciltMstrCreateSequenceButton: "Crear Secuencia",
-      ciltMstrDeleteSuccess: "Procedimiento CILT eliminado exitosamente",
-      ciltMstrDeleteError: "Error al eliminar el procedimiento CILT",
-      ciltMstrDeleteConfirmTitle: "Eliminar Procedimiento CILT",
-      ciltMstrDeleteConfirmContent: "¿Está seguro de que desea eliminar este procedimiento CILT? Esta acción no se puede deshacer.",
-      ciltSequenceDeleteSuccess: "Secuencia CILT eliminada exitosamente",
-      ciltSequenceDeleteError: "Error al eliminar la secuencia CILT",
-      ciltSequenceDeleteConfirmTitle: "Eliminar Secuencia CILT",
-      ciltSequenceDeleteConfirmContent: "¿Está seguro de que desea eliminar esta secuencia CILT? Esta acción no se puede deshacer.",
-      ciltAssignmentDeleteSuccess: "Asignación CILT removida exitosamente",
-      ciltAssignmentDeleteError: "Error al remover la asignación CILT",
-      ciltAssignmentDeleteConfirmTitle: "Remover Asignación CILT",
-      ciltAssignmentDeleteConfirmContent: "¿Está seguro de que desea remover esta asignación CILT de este nivel? Esto no eliminará el procedimiento CILT en sí.",
-      ciltAssignmentDeleteFromCiltConfirmContent: "¿Está seguro de que desea remover esta asignación CILT? La posición relacionada también será eliminada de esta asignación.",
-      ciltAssignmentDeleteFromPositionConfirmContent: "¿Está seguro de que desea remover esta asignación de posición? El procedimiento CILT relacionado también será eliminado de esta asignación.",
+      ciltMstrDeleteSuccess: "Procedimiento eliminado exitosamente",
+      ciltMstrDeleteError: "Error al eliminar el procedimiento",
+      ciltMstrDeleteConfirmTitle: "Eliminar Procedimiento",
+      ciltMstrDeleteConfirmContent: "¿Está seguro de que desea eliminar este procedimiento? Esta acción no se puede deshacer.",
+      ciltSequenceDeleteSuccess: "Secuencia de procedimiento eliminada exitosamente",
+      ciltSequenceDeleteError: "Error al eliminar la secuencia de procedimiento",
+      ciltSequenceDeleteConfirmTitle: "Eliminar Secuencia de Procedimiento",
+      ciltSequenceDeleteConfirmContent: "¿Está seguro de que desea eliminar esta secuencia de procedimiento? Esta acción no se puede deshacer.",
+      ciltAssignmentDeleteSuccess: "Asignación de procedimiento removida exitosamente",
+      ciltAssignmentDeleteError: "Error al remover la asignación de procedimiento",
+      ciltAssignmentDeleteConfirmTitle: "Remover Asignación de Procedimiento",
+      ciltAssignmentDeleteConfirmContent: "¿Está seguro de que desea remover esta asignación de procedimiento de este nivel? Esto no eliminará el procedimiento en sí.",
+      ciltAssignmentDeleteFromCiltConfirmContent: "¿Está seguro de que desea remover esta asignación de procedimiento? La posición relacionada también será eliminada de esta asignación.",
+      ciltAssignmentDeleteFromPositionConfirmContent: "¿Está seguro de que desea remover esta asignación de posición? El procedimiento relacionado también será eliminado de esta asignación.",
       addFiles: "Agregar/Quitar archivos",
 
       // OPL related strings
@@ -2927,16 +2928,16 @@ const resources = {
       oplSuccessMediaAdded: "{type} agregado con éxito",
       oplErrorAddingMedia: "Error al agregar {type}",
 
-      // CreateCiltSequenceModal strings
-      createCiltSequenceModalTitle: "Crear Secuencia CILT",
+      // CreateProcedureSequenceModal strings
+      createCiltSequenceModalTitle: "Crear Secuencia de Procedimiento",
       createCiltSequenceModalSuccess: "Éxito",
       createCiltSequenceModalSuccessDescription:
-        "Secuencia CILT creada exitosamente",
+        "Secuencia de procedimiento creada exitosamente",
       createCiltSequenceModalError: "Error",
       createCiltSequenceModalErrorDescription:
-        "Error al crear la secuencia CILT",
+        "Error al crear la secuencia de procedimiento",
       createCiltSequenceModalErrorLoadingTypes:
-        "Error al cargar los tipos de CILT",
+        "Error al cargar los tipos de procedimientos",
       createCiltSequenceModalErrorLoadingFrequencies:
         "Error al cargar las frecuencias",
       createCiltSequenceModalErrorNoFrequency:
@@ -2950,10 +2951,10 @@ const resources = {
         "Por favor seleccione al menos una frecuencia",
       createCiltSequenceModalDefaultSiteName: "Sitio",
 
-      // EditCiltSequenceModal strings
-      editCiltSequenceModalCiltTypeLabel: "Tipo de CILT",
-      editCiltSequenceModalCiltTypeRequired: "El tipo de CILT es requerido",
-      editCiltSequenceModalCiltTypePlaceholder: "Seleccione tipo de CILT",
+      // EditProcedureSequenceModal strings
+      editCiltSequenceModalCiltTypeLabel: "Tipo de Procedimiento",
+      editCiltSequenceModalCiltTypeRequired: "El tipo de procedimiento es requerido",
+      editCiltSequenceModalCiltTypePlaceholder: "Seleccione tipo de procedimiento",
       editCiltSequenceModalLevelLabel: "Nivel",
       editCiltSequenceModalLevelRequired: "El nivel es requerido",
       editCiltSequenceModalSelectLevel: "Seleccione nivel",
@@ -2987,16 +2988,16 @@ const resources = {
       editCiltSequenceModalQuantityPicturesCloseRequired:
         "La cantidad de imágenes al cerrar es requerida",
       editCiltSequenceModalToolsRequiredLabel: "Herramientas Requeridas",
-      // EditCiltSequenceModal strings
-      editCiltSequenceModalTitle: "Editar Secuencia CILT",
+      // EditProcedureSequenceModal strings
+      editCiltSequenceModalTitle: "Editar Secuencia de Procedimiento",
       editCiltSequenceModalSuccess: "Éxito",
       editCiltSequenceModalSuccessDescription:
-        "Secuencia CILT actualizada exitosamente",
+        "Secuencia de procedimiento actualizada exitosamente",
       editCiltSequenceModalError: "Error",
       editCiltSequenceModalErrorDescription:
-        "Error al actualizar la secuencia CILT",
+        "Error al actualizar la secuencia de procedimiento",
       editCiltSequenceModalErrorLoadingTypes:
-        "Error al cargar los tipos de CILT",
+        "Error al cargar los tipos de procedimientos",
       editCiltSequenceModalPositionLabel: "Posición",
       editCiltSequenceModalPositionPlaceholder: "Seleccione posición",
       editCiltSequenceModalReferenceOplPlaceholder:
@@ -3012,14 +3013,14 @@ const resources = {
         "Ingrese herramientas requeridas",
       editCiltSequenceModalStandardOkPlaceholder: "Ingrese estándar OK",
 
-      // CiltCardList strings
+      // ProcedureCardList strings
       ciltCardListSequencesModalTitle: "Secuencias de {ciltName}",
       ciltCardListCloseButton: "Cerrar",
       ciltCardListCreateNewSequenceButton: "Crear Nueva Secuencia",
       ciltCardListSearchPlaceholder:
         "Buscar secuencias...",
       ciltCardListTotalSequences: "Total: {count} secuencias",
-      ciltCardListNoSequencesAssociated: "No hay secuencias asociadas a este CILT",
+      ciltCardListNoSequencesAssociated: "No hay secuencias asociadas a este procedimiento",
       ciltCardListNoSequencesMatchingSearch: "No hay secuencias que coincidan con tu búsqueda",
       ciltCardListSequenceLabel: "Secuencia {order}",
       ciltCardListStandardTimeLabel: "Tiempo Estándar:",
@@ -3031,7 +3032,7 @@ const resources = {
       ciltCardListEditSequenceButton: "Editar Secuencia",
       ciltCardListSequenceDetailsModalTitle: "Detalles de la Secuencia",
       ciltCardListPositionLabel: "Posición:",
-      ciltCardListCiltTypeLabel: "Tipo de CILT:",
+      ciltCardListCiltTypeLabel: "Tipo de Procedimiento:",
       ciltCardListColorLabel: "Color:",
       ciltCardListRequiredToolsLabel: "Herramientas Requeridas:",
       ciltCardListStoppageReasonLabel: "Razón de Parada:",
@@ -3090,28 +3091,28 @@ const resources = {
       oplSelectionModalErrorOpl: "Error al crear OPL / SOP",
       oplSearchBarPlaceholder: "Buscar OPL / SOP",
       
-      // CILT Table strings
+      // Procedure Table strings
       createSequence: "Crear Secuencia",
       viewSequences: "Ver Secuencias",
       information: "Información",
       
-      // CILT Sequences strings
+      // Procedure Sequences strings
       sequences: "Secuencias",
       sequence: "Secuencia",
       startDate: "Fecha de inicio",
       endDate: "Fecha final",
       createNewSequence: "Crear Nueva Secuencia",
       searchByDescriptionOrderOrTime: "Buscar por descripción, orden o tiempo",
-      noSequencesForCilt: "No hay secuencias asociadas a este CILT.",
+      noSequencesForCilt: "No hay secuencias asociadas a este procedimiento.",
       noSequencesMatchSearch: "No hay secuencias que coincidan con tu búsqueda.",
-      thisGroup: "Este CILT",
+      thisGroup: "Este procedimiento",
       noSequencesYet: "no cuenta aún con secuencias. Puedes crear una nueva secuencia usando el botón \"Crear Nueva Secuencia\".",
       viewDetails: "Ver Detalles",
       detailsOf: "Detalles de",
       editSequence: "Editar Secuencia",
 
-      // CILT Details and OPL strings
-      ciltType: "Tipo de CILT",
+      // Procedure Details and OPL strings
+      ciltType: "Tipo de Procedimiento",
       requiredTools: "Herramientas Requeridas",
       stoppageReason: "Razón de Parada",
       standardOk: "Estándar OK",
@@ -3130,7 +3131,7 @@ const resources = {
       browserNotSupportVideo: "Su navegador no admite la etiqueta de video.",
       viewReferenceOpl: "Ver OPL de Referencia",
       viewRemediationOpl: "Ver OPL de Remediación",
-      cilt: "CILT",
+      cilt: "Procedimiento",
       selectedUsersList: "Usuarios seleccionados:",
       ciltMstrLastUpdated: "Última actualización:",
 
@@ -3145,7 +3146,7 @@ const resources = {
       scheduleSecuence: "Calendarizar",
       errorNoSiteId: "El id del site es obligatorio",
       clearFilters: "Limpiar filtros",
-      confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento CILT?",
+      confirmCloneCiltMstrMessage: "¿Estas seguro de que quieres clonar el procedimiento?",
       confirmCloneSecuencesMessage: "Todas las secuencias también serán clonadas",
       draft: "Borrador",
       totalUsersCreated: "Total de usuarios creados",
@@ -3163,22 +3164,22 @@ const resources = {
       repeat: "Repetir",
       repeatEach: "Repetir cada",
 
-      ciltDueDate: "Fecha de vencimiento CILT",
-      ciltDueDatePlaceholder: "Fecha de vencimiento CILT",
+      ciltDueDate: "Fecha de vencimiento del procedimiento",
+      ciltDueDatePlaceholder: "Fecha de vencimiento del procedimiento",
       
       // Level Details Drawer
       errorLoadingData: "Error al cargar datos",
-      noCiltProceduresAssigned: "No hay procedimientos CILT asignados a este nivel",
+      noCiltProceduresAssigned: "No hay procedimientos asignados a este nivel",
       noPositionsAssigned: "No hay posiciones asignadas a este nivel",
       andMore: "Y",
       more: "más",
       functionalityInDevelopment: "Esta funcionalidad está en desarrollo",
       
       // Level Details Drawer
-      ciltProcedures: "Procedimientos CILT",
-      ciltTypeName: "Tipo de CILT",
-      ciltDetails: "Detalles del CILT",
-      noCiltAssignedToLevel: "No hay procedimientos CILT asignados a este nivel",
+      ciltProcedures: "Procedimientos",
+      ciltTypeName: "Tipo de Procedimiento",
+      ciltDetails: "Detalles del Procedimiento",
+      noCiltAssignedToLevel: "No hay procedimientos asignados a este nivel",
       noPositionsAssignedToLevel: "No hay posiciones asignadas a este nivel",
       noSequencesFound: "No se encontraron secuencias",
       sequenceDetails: "Detalles de la Secuencia",
@@ -3203,26 +3204,26 @@ const resources = {
       referencePoint: "Punto de referencia",
       selectableWithoutProgramming: "Seleccionable Sin Programación",
       createCiltSequenceModalErrorSelectFrequency: "Por favor seleccione al menos una frecuencia.",
-      asignamentsSB: "Asignaciones Niveles-CILT",
-      ciltLevelAssignments: "Asignaciones Niveles-CILT",
-      assignPositionCiltMstrLevel: "Asignar CILT / Posición",
+      asignamentsSB: "Asignaciones Niveles-Procedimientos",
+      ciltLevelAssignments: "Asignaciones Niveles-Procedimientos",
+      assignPositionCiltMstrLevel: "Asignar Procedimiento / Posición",
       assignOplLevel: "Asignar OPL/SOP",
       
-      // Position and CILT selection modals
+      // Position and Procedure selection modals
       selectPosition: "Seleccionar Posición",
       searchPosition: "Buscar posiciones...",
       errorLoadingPositions: "Error al cargar posiciones",
       noPositionsFound: "No se encontraron posiciones",
-      selectCiltMstr: "Seleccionar CILT",
-      searchCiltMstr: "Buscar CILTs...",
-      errorLoadingCiltMstrs: "Error al cargar CILTs",
-      noCiltMstrsFound: "No se encontraron CILTs",
+      selectCiltMstr: "Seleccionar Procedimiento",
+      searchCiltMstr: "Buscar Procedimientos...",
+      errorLoadingCiltMstrs: "Error al cargar Procedimientos",
+      noCiltMstrsFound: "No se encontraron Procedimientos",
       assignmentSuccess: "Asignación creada exitosamente",
       assignmentError: "Error al crear la asignación",
       to: "a",
       errorOccurred: "Ocurrió un error",
       featureUnderDevelopment: "Funcionalidad en desarrollo",
-      ciltMstr: "Procedimiento CILT",
+      ciltMstr: "Procedimiento",
       each:"Cada",
       theDays: "los",
       since: "desde",
@@ -3241,7 +3242,7 @@ const resources = {
       searchOpls: "Buscar OPLs...",
       viewDocument: "Ver Documento",
       noValidSiteId: "El ID del sitio no es un número válido",
-      noValidCiltMstrId: "El ID del CILT no es un número válido",
+      noValidCiltMstrId: "El ID del procedimiento no es un número válido",
       noValidPositionId: "El ID de la posición no es un número válido",
       noValidLevelId: "El ID del nivel no es un número válido",
       errorForMonthlySchedule: "Para programación mensual, debes seleccionar un día del mes válido (1-31) o una semana del mes.",
@@ -3283,8 +3284,8 @@ const resources = {
       toleranceBeforeMinutes: "Tolerancia antes de minutos",
       toleranceAfterMinutes: "Tolerancia después de minutos",
       secuencesOf: "Secuencias de",
-      errorLoadingCiltOrSequences: "Error al cargar CILT o secuencias",
-      thisCilt: "Este CILT",
+      errorLoadingCiltOrSequences: "Error al cargar procedimiento o secuencias",
+      thisCilt: "Este procedimiento",
       noSequences: "no cuenta aún con secuencias. Puede crear una nueva secuencia utilizando el botón \"Crear Secuencia\".",
       seeAssignments: "Ver Asignaciones",
       viewSchedules: "Ver Calendarizaciones",
@@ -3330,7 +3331,7 @@ const resources = {
       loadingSecuenceSchedule: "Cargando calendarizaciones",
       errorLoadingSecuenceSchedule: "Error al cargar calendarizaciones",
       thereAreNoSchedules: "No hay calendarizaciones",
-      ciltReportsSB: "Reportes de ejecuciones CILT",
+      ciltReportsSB: "Reportes de ejecuciones de procedimientos",
       duration: "Duración",
       initialParameter: "Parámetro Inicial",
       finalParameter: "Parámetro Final",
@@ -3386,11 +3387,11 @@ const resources = {
       discardedCardsNoData: "No hay datos de tarjetas descartadas disponibles",
       discardedCardslCardsTitle: "Canceled Canceladas",
       
-      // CILT Positions Levels Modal strings
+      // Procedure Positions Levels Modal strings
       ciltPositionsLevelsTitle: "Posiciones / Niveles",
       ciltPositionsLevelsButton: "Ver Posiciones / Niveles",
       ciltPositionsLevelsAssignments: "asignaciones",
-      ciltPositionsLevelsNoData: "No hay posiciones/niveles asignados a este CILT",
+      ciltPositionsLevelsNoData: "No hay posiciones/niveles asignados a este procedimiento",
       ciltPositionsLevelsNoAssignments: "No se encontraron asignaciones",
       ciltPositionsLevelsLoadingDetails: "Cargando detalles de niveles...",
       ciltPositionsLevelsErrorLoadingDetails: "Error al cargar detalles de niveles",
@@ -3398,7 +3399,7 @@ const resources = {
       readOnly: "Solo Lectura",
       levelsConsultation: "Consulta de Niveles",
       assignmentSuccessful: "Asignación completada exitosamente",
-      selectPositionAndCilt: "Por favor, seleccione tanto una posición como un procedimiento CILT",
+      selectPositionAndCilt: "Por favor, seleccione tanto una posición como un procedimiento",
       warning: "Advertencia",
       assign: "Asignar",
 
@@ -3466,12 +3467,12 @@ const resources = {
       final: "Final",
       hour: "Hora",
       
-      // CILT Charts module
-      ciltChartsSB: "Gráficas CILT",
-      ciltChartsOf: "Gráficas CILT de",
-      executionCiltChart: "Ejecución CILT",
-      complianceCiltChart: "Cumplimiento CILT x Persona",
-      timeCiltChart: "Tiempo CILT",
+      // Procedure Charts module
+      ciltChartsSB: "Gráficas de Procedimientos",
+      ciltChartsOf: "Gráficas de Procedimientos de",
+      executionCiltChart: "Ejecución de Procedimientos",
+      complianceCiltChart: "Cumplimiento de Procedimientos x Persona",
+      timeCiltChart: "Tiempo de Procedimientos",
       anomaliesCiltChart: "Anomalías Detectadas (TAGs)",
       programmed: "Programado",
       executed: "Ejecutado",
@@ -3480,10 +3481,10 @@ const resources = {
       efficiency: "Eficiencia",
       executedCount: "Ejecutados",
       anomaliesDetected: "Anomalías",
-      executionChartTooltip: "Muestra procedimientos CILT programados vs ejecutados por día",
-      complianceChartTooltip: "Muestra procedimientos CILT asignados vs ejecutados por persona",
+      executionChartTooltip: "Muestra procedimientos programados vs ejecutados por día",
+      complianceChartTooltip: "Muestra procedimientos asignados vs ejecutados por persona",
       timeChartTooltip: "Muestra tiempo estándar vs tiempo real de ejecución",
-      anomaliesChartTooltip: "Muestra anomalías detectadas durante la ejecución de CILT",
+      anomaliesChartTooltip: "Muestra anomalías detectadas durante la ejecución de procedimientos",
       compliance: "Cumplimiento",
       timeMinSeg: "Tiempo (min:seg)",
       
@@ -3507,7 +3508,7 @@ const resources = {
       fastLoginButtonText: "Iniciar Sesión",
       fastPasswordAlphabeticValidation: "El fast password debe contener solo caracteres alfabéticos (A-Z, a-z)",
       fastPasswordLoginComplete: "Esto realizará un login completo con su cuenta.",
-      noCiltstOShow: "No hay CILTs para mostrar",
+      noCiltstOShow: "No hay procedimientos para mostrar",
       order: "Orden",
       lastUsed: "Último Uso",
       phoneNumber: "Número de Teléfono",
@@ -3519,7 +3520,7 @@ const resources = {
       selectLanguage: "Seleccionar Idioma",
       spanish: "Español",
       english: "Inglés",
-
+      proceduresChartsSB: "Gráficas de procedimientos"
     },
   },
 };
