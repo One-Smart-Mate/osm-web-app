@@ -1777,7 +1777,8 @@ class StringsBase {
   static noCiltstOShow = "noCiltstOShow";
   static order = "order";
   static lastUsed = "lastUsed";
-  static proceduresChartsSB = "proceduresChartsSB"
+  static proceduresChartsSB = "proceduresChartsSB";
+  static deleteImgConfirm = "deleteImgConfirm";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

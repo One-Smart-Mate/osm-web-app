@@ -1753,7 +1753,8 @@ const resources = {
       selectLanguage: "Select Language",
       spanish: "Spanish",
       english: "English",
-      proceduresChartsSB: "Procedures Charts"
+      proceduresChartsSB: "Procedures Charts",
+      deleteImgConfirm: "Are you sure you want to delete this image?"
     },
   },
   es: {
@@ -3520,7 +3521,8 @@ const resources = {
       selectLanguage: "Seleccionar Idioma",
       spanish: "Español",
       english: "Inglés",
-      proceduresChartsSB: "Gráficas de procedimientos"
+      proceduresChartsSB: "Gráficas de procedimientos",
+      deleteImgConfirm: "¿Seguro que quieres remover la imagen?"
     },
   },
 };
