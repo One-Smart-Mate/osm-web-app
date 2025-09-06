@@ -26,6 +26,7 @@ export interface AreasChartProps {
   methodologies: Methodology[];
   onClick?: (areaId: number, areaName?: string) => void;
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const AreasChart = ({
@@ -35,6 +36,7 @@ const AreasChart = ({
   endDate,
   methodologies,
   onClick,
+  status,
 }: AreasChartProps) => {
   const [getAreas] = useGetAreasChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -46,6 +48,7 @@ const AreasChart = ({
     siteId: string;
     area?: string;
     cardTypeName: string;
+    status?: string;
   } | null>(null);
   const [areaId, setAreaId] = useState<number | null>(null);
 
@@ -60,6 +63,7 @@ const AreasChart = ({
         siteId,
         startDate,
         endDate,
+        status,
       }).unwrap();
       
       let filteredResponse = response;
@@ -91,11 +95,16 @@ const AreasChart = ({
   
       setTransformedData(transformedData);
   
-      if (transformedData.length > 0 && areaId == null) {
+      // Always set the first area as default when data changes
+      if (transformedData.length > 0) {
         const defaultAreaId = transformedData[0].areaId;
-        setAreaId(defaultAreaId);
-  
-        onClick?.(defaultAreaId, transformedData[0].area);
+        const defaultAreaName = transformedData[0].area;
+        
+        // Set default area if no area is selected or if the current area is not in the new data
+        if (areaId === null || !transformedData.some(item => item.areaId === areaId)) {
+          setAreaId(defaultAreaId);
+          onClick?.(defaultAreaId, defaultAreaName);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -104,7 +113,7 @@ const AreasChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, cardTypeName]);
+  }, [startDate, endDate, cardTypeName, status]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();
@@ -180,6 +189,7 @@ const AreasChart = ({
       siteId,
       area: data.area,
       cardTypeName: cardTypeName,
+      status,
     });
 
   

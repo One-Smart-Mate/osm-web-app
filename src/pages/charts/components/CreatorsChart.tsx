@@ -25,6 +25,7 @@ export interface CreatorsChartProps {
   endDate: string;
   methodologies: Methodology[];
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const CreatorsChart = ({
@@ -33,6 +34,7 @@ const CreatorsChart = ({
   endDate,
   methodologies,
   cardTypeName,
+  status,
 }: CreatorsChartProps) => {
   const [getCreators] = useGetCreatorsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -44,6 +46,7 @@ const CreatorsChart = ({
     siteId: string;
     creator?: string;
     cardTypeName: string;
+    status?: string;
   } | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
@@ -56,6 +59,7 @@ const CreatorsChart = ({
         siteId,
         startDate,
         endDate,
+        status,
       }).unwrap();
       
       let filteredResponse = response;
@@ -91,7 +95,7 @@ const CreatorsChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, cardTypeName]);
+  }, [startDate, endDate, cardTypeName, status]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();
@@ -166,6 +170,7 @@ const CreatorsChart = ({
       siteId,
       creator: data.creator,
       cardTypeName: cardTypeName,
+      status,
     });
     const normalizedCardTypeName = cardTypeName.toLowerCase();
     setSelectedTotalCards(data[normalizedCardTypeName]);

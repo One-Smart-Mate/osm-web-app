@@ -28,6 +28,7 @@ export interface MachinesChartProps {
   methodologies: Methodology[];
   areaId?: number;
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const MachinesChart = ({
@@ -37,6 +38,7 @@ const MachinesChart = ({
   methodologies,
   areaId,
   cardTypeName,
+  status,
 }: MachinesChartProps) => {
   const [getMachines] = useGetMachinesByAreaIdChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -49,6 +51,7 @@ const MachinesChart = ({
     siteId: string;
     nodeName?: string;
     cardTypeName: string;
+    status?: string;
   } | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
@@ -57,7 +60,8 @@ const MachinesChart = ({
 
   const handleGetData = async () => {
     try {
-      if (areaId === undefined) {
+      if (areaId === undefined || areaId === null) {
+        setTransformedData([]);
         return;
       }
     
@@ -66,6 +70,7 @@ const MachinesChart = ({
         startDate,
         endDate,
         areaId,
+        status,
       }).unwrap();
       
       let filteredResponse = response;
@@ -106,7 +111,7 @@ const MachinesChart = ({
   };
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, areaId, cardTypeName]);
+  }, [startDate, endDate, areaId, cardTypeName, status]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();
@@ -179,6 +184,7 @@ const MachinesChart = ({
       siteId,
       nodeName: data.nodeName,
       cardTypeName: cardTypeName,
+      status,
     });
     const normalizedCardTypeName = cardTypeName.toLowerCase();
     setSelectedTotalCards(data[normalizedCardTypeName]);

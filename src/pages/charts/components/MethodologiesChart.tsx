@@ -20,9 +20,10 @@ export interface MethodologiesChartProps {
   methodologies: Methodology[];
   methodologiesCatalog: CardTypesCatalog[];
   cardTypeName?: string | null;
+  status?: string;
 }
 
-const MethodologiesChart = ({ siteId, methodologies: originalMethodologies, cardTypeName }: MethodologiesChartProps) => {
+const MethodologiesChart = ({ siteId, methodologies: originalMethodologies, cardTypeName, status }: MethodologiesChartProps) => {
   // Filtrar metodologías por tipo de tarjeta si está seleccionado
   const methodologies = cardTypeName
     ? originalMethodologies.filter(m => m.methodology.toLowerCase() === cardTypeName.toLowerCase())
@@ -47,7 +48,7 @@ const MethodologiesChart = ({ siteId, methodologies: originalMethodologies, card
   
   const handleOnClick = (data: any) => {
     const cardTypeName = data.payload.methodology;
-    const params = { siteId, cardTypeName };
+    const params = { siteId, cardTypeName, status };
     setSearchParams(params);
     setSelectedTotalCards(data.payload.totalCards);
     setCardTypeName(cardTypeName);
