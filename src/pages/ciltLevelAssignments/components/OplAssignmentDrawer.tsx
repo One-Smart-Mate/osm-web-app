@@ -11,8 +11,6 @@ import {
   Card,
   Empty,
   Image,
-  Descriptions,
-  Badge,
 } from "antd";
 
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
