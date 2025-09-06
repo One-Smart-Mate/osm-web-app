@@ -418,6 +418,9 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
             onChange={handleChange}
             beforeUpload={() => false}
             maxCount={1}
+            showUploadList={{
+              showRemoveIcon: false,
+            }}
             // Custom item render with our own delete button
             itemRender={(originNode, _file) => {
               return (
@@ -425,7 +428,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
                   {originNode}
                   <div className="absolute top-1 right-1 z-10">
                     <Popconfirm
-                      title="Are you sure you want to delete this image?"
+                      title={Strings.deleteImgConfirm}
                       onConfirm={() => {
                         // Clear the file list and firebase URL
                         setFileList([]);

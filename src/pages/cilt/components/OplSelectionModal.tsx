@@ -25,7 +25,7 @@ import {
   FileOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { useGetOplMstrAllMutation } from "../../../services/cilt/oplMstrService";
+import { useGetOplMstrAllMutation, useGetOplMstrBySiteMutation } from "../../../services/cilt/oplMstrService";
 import { useGetOplDetailsByOplMutation } from "../../../services/cilt/oplDetailsService";
 import { useCreateOplMstrMutation } from "../../../services/cilt/oplMstrService";
 import { useCreateOplDetailMutation } from "../../../services/cilt/oplDetailsService";
@@ -62,6 +62,7 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   const currentSiteId = location.state?.siteId;
 
   const [getOplMstrAll] = useGetOplMstrAllMutation();
+  const [getOplMstrBySite] = useGetOplMstrBySiteMutation();
   const [getOplDetailsByOpl] = useGetOplDetailsByOplMutation();
   const [createOplMstr] = useCreateOplMstrMutation();
   const [createOplDetail] = useCreateOplDetailMutation();
@@ -99,12 +100,21 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
     } else {
       setSearchText("");
     }
-  }, [isVisible]);
+  }, [isVisible, propSiteId, currentSiteId]);
 
   const fetchOpls = async () => {
     setLoading(true);
     try {
-      const response = await getOplMstrAll().unwrap();
+      let response;
+      // Use the site from props first, then from location state
+      const siteIdToUse = propSiteId || currentSiteId;
+      
+      if (siteIdToUse) {
+        response = await getOplMstrBySite(String(siteIdToUse)).unwrap();
+      } else {
+        response = await getOplMstrAll().unwrap();
+      }
+      
       setOpls(response || []);
     } catch (error) {
       console.error("Error fetching OPLs:", error);
@@ -116,8 +126,9 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
   const fetchResponsibles = async () => {
     setLoadingUsers(true);
     try {
-      const siteId = 1;
-      const response = await getSiteResponsibles(String(siteId)).unwrap();
+      // Use the site from props first, then from location state, fallback to 1
+      const siteIdToUse = propSiteId || currentSiteId || 1;
+      const response = await getSiteResponsibles(String(siteIdToUse)).unwrap();
       setResponsibles(response || []);
     } catch (error) {
       console.error("Error fetching responsibles:", error);

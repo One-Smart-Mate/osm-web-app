@@ -133,7 +133,7 @@ const chartsRoute = new Route(
 );
 
 const ciltChartsRoute = new Route(
-  "Gráficas CILT",
+  Strings.proceduresChartsSB,
   Constants.ROUTES_PATH.ciltCharts,
   <CiltChartsPage />,
   <BsBarChartLine />,
