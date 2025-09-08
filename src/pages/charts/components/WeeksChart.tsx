@@ -22,9 +22,10 @@ export interface WeeksChartProps {
   startDate?: string;
   endDate?: string;
   cardTypeName?: string | null;
+  status?: string;
 }
 
-const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProps) => {
+const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksChartProps) => {
   const isDarkMode = useDarkMode();
   const [getWeeks] = useGetWeeksChartDataMutation();
   const [getCards] = useGetCardsMutation();
@@ -39,7 +40,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
       // If no filters are applied, use the backend weeks data directly
       if (!hasCardTypeFilter && !startDate && !endDate) {
         console.log('WeeksChart - Using backend weeks data (no filters)');
-        const response = await getWeeks(siteId).unwrap();
+        const response = await getWeeks({ siteId, status }).unwrap();
         
         console.log('WeeksChart - Backend response:', response);
         
@@ -152,7 +153,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName }: WeeksChartProp
 
   useEffect(() => {
     handleGetData();
-  }, [siteId, startDate, endDate, cardTypeName]);
+  }, [siteId, startDate, endDate, cardTypeName, status]);
 
   const textClass = isDarkMode ? 'text-white' : '';
 

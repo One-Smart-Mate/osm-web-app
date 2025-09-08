@@ -54,14 +54,16 @@ export const chartService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPreclassifiersChartData: builder.mutation<
       Preclassifier[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/preclassifiers/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -69,14 +71,16 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getMethodologiesChartData: builder.mutation<
       Preclassifier[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/methodologies/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -84,14 +88,16 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getAreasChartData: builder.mutation<
       Area[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/areas/more/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -99,14 +105,16 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getMachinesChartData: builder.mutation<
       Machine[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/machines/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -120,15 +128,17 @@ export const chartService = apiSlice.injectEndpoints({
         startDate?: string;
         endDate?: string;
         areaId?: number;
+        status?: string;
       }
     >({
-      query: ({ siteId, startDate, endDate, areaId }) => {
+      query: ({ siteId, startDate, endDate, areaId, status }) => {
          const siteIdInt = parseInt(siteId, 10);
         let url = `/card/site/area/machines/${siteIdInt}/${areaId}`;
         const params = [];
 
         if (startDate) params.push(`startDate=${startDate}`);
         if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
 
         if (params.length) {
           url += `?${params.join("&")}`;
@@ -140,14 +150,16 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getCreatorsChartData: builder.mutation<
       Creator[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/creators/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -155,14 +167,16 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getMechanicsChartData: builder.mutation<
       Mechanic[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/mechanics/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
@@ -170,22 +184,30 @@ export const chartService = apiSlice.injectEndpoints({
     }),
     getDefinitiveUsersChartData: builder.mutation<
       DefinitiveUser[],
-      { siteId: string; startDate?: string; endDate?: string }
+      { siteId: string; startDate?: string; endDate?: string; status?: string }
     >({
-      query: ({ siteId, startDate, endDate }) => {
+      query: ({ siteId, startDate, endDate, status }) => {
         let url = `/card/site/definitive-user/${siteId}`;
-        if (startDate || endDate) {
-          url += `?${startDate ? `startDate=${startDate}&` : ""}${
-            endDate ? `endDate=${endDate}` : ""
-          }`;
+        const params = [];
+        if (startDate) params.push(`startDate=${startDate}`);
+        if (endDate) params.push(`endDate=${endDate}`);
+        if (status) params.push(`status=${status}`);
+        if (params.length > 0) {
+          url += `?${params.join('&')}`;
         }
         return url;
       },
       transformResponse: (response: { data: DefinitiveUser[] }) =>
         response.data,
     }),
-    getWeeksChartData: builder.mutation<Weeks[], string>({
-      query: (siteId) => `/card/site/weeks/${siteId}`,
+    getWeeksChartData: builder.mutation<Weeks[], { siteId: string; status?: string }>({
+      query: ({ siteId, status }) => {
+        let url = `/card/site/weeks/${siteId}`;
+        if (status) {
+          url += `?status=${status}`;
+        }
+        return url;
+      },
       transformResponse: (response: { data: Weeks[] }) => response.data,
     }),
 

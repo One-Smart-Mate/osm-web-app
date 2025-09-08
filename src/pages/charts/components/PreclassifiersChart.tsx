@@ -23,13 +23,15 @@ export interface PreclassifiersChartProps {
   startDate: string;
   endDate: string;
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const PreclassifiersChart = ({
   siteId,
   startDate,
   endDate,
-  cardTypeName
+  cardTypeName,
+  status
 }: PreclassifiersChartProps) => {
   const isDarkMode = useDarkMode();
   const [getAnomalies] = useGetPreclassifiersChartDataMutation();
@@ -44,6 +46,7 @@ const PreclassifiersChart = ({
     siteId: string;
     preclassifier?: string;
     cardTypeName: string;
+    status?: string;
   } | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
@@ -55,6 +58,7 @@ const PreclassifiersChart = ({
       siteId,
       preclassifier: data.preclassifier,
       cardTypeName: data.methodology,
+      status,
     });
     setSelectedTotalCards(String(data.totalCards));
     setPreclassifierName(data.preclassifier);
@@ -69,7 +73,7 @@ const PreclassifiersChart = ({
         siteId,
         startDate,
         endDate,
-        // No enviamos cardTypeName porque el backend no lo procesa
+        status,
       }).unwrap();
       
       // Filtrar los datos en el frontend si se ha seleccionado un tipo de tarjeta
@@ -99,7 +103,7 @@ const PreclassifiersChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, cardTypeName]);
+  }, [startDate, endDate, cardTypeName, status]);
 
   // Define text color class based on dark mode
   const textClass = isDarkMode ? 'text-white' : 'text-black';

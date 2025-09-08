@@ -26,6 +26,7 @@ export interface MechanicsChartProps {
   endDate: string;
   methodologies: Methodology[];
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const MechanicsChart = ({
@@ -34,6 +35,7 @@ const MechanicsChart = ({
   endDate,
   methodologies,
   cardTypeName,
+  status,
 }: MechanicsChartProps) => {
   const [getMechanics] = useGetMechanicsChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -59,6 +61,7 @@ const MechanicsChart = ({
         siteId,
         startDate,
         endDate,
+        status,
       }).unwrap();
 
       // Cast response to the new structure since the API now returns the new format
@@ -170,7 +173,7 @@ const MechanicsChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, cardTypeName]);
+  }, [startDate, endDate, cardTypeName, status]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();

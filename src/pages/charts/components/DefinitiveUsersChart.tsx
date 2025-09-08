@@ -25,6 +25,7 @@ export interface DefinitiveUsersChartProps {
   endDate: string;
   methodologies: Methodology[];
   cardTypeName?: string | null;
+  status?: string;
 }
 
 const DefinitiveUsersChart = ({
@@ -33,6 +34,7 @@ const DefinitiveUsersChart = ({
   endDate,
   methodologies,
   cardTypeName,
+  status,
 }: DefinitiveUsersChartProps) => {
   const [getDefinitiveUsers] = useGetDefinitiveUsersChartDataMutation();
   const [transformedData, setTransformedData] = useState<any[]>([]);
@@ -46,6 +48,7 @@ const DefinitiveUsersChart = ({
     siteId: string;
     definitiveUser?: string;
     cardTypeName: string;
+    status?: string;
   } | null>(null);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
@@ -54,30 +57,47 @@ const DefinitiveUsersChart = ({
 
   const handleGetData = async () => {
     try {
-      // Only send basic parameters to API
+      console.log('=== DEFINITIVE USERS PROPS DEBUG ===');
+      console.log('cardTypeName prop received:', cardTypeName);
+      console.log('typeof cardTypeName:', typeof cardTypeName);
+      console.log('cardTypeName === null:', cardTypeName === null);
+      console.log('cardTypeName === undefined:', cardTypeName === undefined);
+      console.log('=====================================');
+      
+      // Always use C,R status for definitive users (closed/resolved cards)
       const response = await getDefinitiveUsers({
         siteId,
         startDate,
         endDate,
-        // Remove cardTypeName from API call
+        status: "C,R",
       }).unwrap();
       
-      // Filter data in frontend if card type is selected
-      let filteredResponse = response;
-      if (cardTypeName) {
-        filteredResponse = response.filter(item => 
+      // Debug log - see what we're getting from backend
+      console.log('Raw definitive users data from API:', response);
+      
+      // First filter out empty/null definitive users
+      let validUserResponse = response.filter((item: any) => 
+        item.definitiveUser && 
+        item.definitiveUser.trim() !== '' && 
+        item.definitiveUser !== null
+      );
+      
+      console.log('After filtering empty users, count:', validUserResponse.length);
+      console.log('Card type filter applied?', cardTypeName);
+      
+      // Apply card type filter ONLY if cardTypeName is provided and not null/empty
+      if (cardTypeName && cardTypeName.trim() !== '') {
+        const beforeFilter = validUserResponse.length;
+        validUserResponse = validUserResponse.filter(item => 
           item.cardTypeName && item.cardTypeName.toLowerCase() === cardTypeName.toLowerCase()
         );
+        console.log(`Card type filter applied: ${beforeFilter} -> ${validUserResponse.length}`);
+      } else {
+        console.log('No card type filter applied - showing all card types');
       }
-      
-      // Debug log
-      console.log('DefinitiveUsersChart - Filtered data:', { 
-        cardTypeFilter: cardTypeName, 
-        totalItems: filteredResponse.length 
-      });
 
       const definitiveUserMap: { [key: string]: any } = {};
-      filteredResponse.forEach((item: any) => {
+      validUserResponse.forEach((item: any) => {
         if (!definitiveUserMap[item.definitiveUser]) {
           definitiveUserMap[item.definitiveUser] = {
             definitiveUser: item.definitiveUser,
@@ -94,6 +114,8 @@ const DefinitiveUsersChart = ({
         (a: any, b: any) => b.totalCards - a.totalCards
       );
 
+      console.log('Final chart data for rendering:', transformedData);
+
       setTransformedData(transformedData);
     } catch (error) {
       console.error('Error fetching definitive users chart data:', error);
@@ -102,7 +124,7 @@ const DefinitiveUsersChart = ({
 
   useEffect(() => {
     handleGetData();
-  }, [startDate, endDate, cardTypeName]);
+  }, [startDate, endDate, cardTypeName, status]);
 
   // Use dark mode hook to determine text color
   const isDarkMode = useDarkMode();
@@ -168,6 +190,18 @@ const DefinitiveUsersChart = ({
   };
 
   const handleOnClick = (data: any, cardTypeName: string) => {
+    console.log('=== DEFINITIVE USERS CLICK DEBUG ===');
+    console.log('Clicked data:', data);
+    console.log('Card type name:', cardTypeName);
+    console.log('Normalized key:', cardTypeName.toLowerCase());
+    
+    const normalizedCardTypeName = cardTypeName.toLowerCase();
+    const individualCount = data[normalizedCardTypeName] || 0;
+    
+    console.log('Individual count for type:', individualCount);
+    console.log('All keys in data:', Object.keys(data));
+    console.log('====================================');
+
     setSearchParams({
       siteId,
       definitiveUser:
@@ -175,9 +209,11 @@ const DefinitiveUsersChart = ({
           ? data.definitiveUser
           : Strings.none,
       cardTypeName: cardTypeName,
+      status: "C,R",
     });
-    const normalizedCardTypeName = cardTypeName.toLowerCase();
-    setSelectedTotalCards(data[normalizedCardTypeName]);
+    
+    // Pass the individual card type count, not the total
+    setSelectedTotalCards(individualCount.toString());
     setSelectedDefinitveUserName(
       data.definitiveUser !== Strings.noDefinitiveUser
         ? data.definitiveUser

@@ -77,6 +77,7 @@ export const cardService = apiSlice.injectEndpoints({
         definitiveUser?: string;
         preclassifier?: string;
         cardTypeName: string;
+        status?: string;
       } | null
     >({
       query: (params) => {
@@ -92,6 +93,7 @@ export const cardService = apiSlice.injectEndpoints({
           definitiveUser,
           preclassifier,
           cardTypeName,
+          status,
         } = params;
 
         const queryParams = new URLSearchParams({
@@ -103,6 +105,7 @@ export const cardService = apiSlice.injectEndpoints({
           ...(mechanic ? { mechanic } : {}),
           ...(creator ? { creator } : {}),
           ...(definitiveUser ? { definitiveUser } : {}),
+          ...(status ? { status } : {}),
         }).toString();
 
         return `card?${queryParams}`;

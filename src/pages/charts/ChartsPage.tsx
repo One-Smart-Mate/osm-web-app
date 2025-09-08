@@ -43,6 +43,7 @@ const ChartsPage = () => {
   const [methodologies, setMethodologies] = useState<Methodology[]>([]);
   const [cardTypes, setCardTypes] = useState<CardTypes[]>([]);
   const [selectedCardType, setSelectedCardType] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>("A");
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(Strings.empty);
   const [endDate, setEndDate] = useState(Strings.empty);
@@ -68,6 +69,7 @@ const ChartsPage = () => {
         siteId,
         startDate,
         endDate,
+        status: selectedStatus,
       }).unwrap(),
       getCardTypes(siteId).unwrap()
     ]);
@@ -82,7 +84,7 @@ const ChartsPage = () => {
     if (location.state?.siteId) {
       handleGetMethodologiesCatalog();
     }
-  }, [location.state?.siteId, startDate, endDate]);
+  }, [location.state?.siteId, startDate, endDate, selectedStatus]);
 
 
   const onRangeChange = (
@@ -102,6 +104,10 @@ const ChartsPage = () => {
   
   const handleCardTypeChange = (value: string | null) => {
     setSelectedCardType(value);
+  };
+
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
   };
 
   return (
@@ -133,6 +139,15 @@ const ChartsPage = () => {
                 ...cardTypes.map((type) => ({ value: type.name, label: type.name }))
               ]}
             />
+            <Select
+              value={selectedStatus}
+              style={{ minWidth: 180 }}
+              onChange={handleStatusChange}
+              options={[
+                { value: "A", label: "Solo Abiertas" },
+                { value: "A,C,R", label: "Abiertas y Cerradas" },
+              ]}
+            />
           </Space>
           {methodologies.length > 0 ? (
             <>
@@ -152,6 +167,7 @@ const ChartsPage = () => {
                             startDate={startDate}
                             endDate={endDate}
                             cardTypeName={selectedCardType}
+                            status={selectedStatus}
                           />
                         </ChartExpander>
                       </div>
@@ -182,6 +198,7 @@ const ChartsPage = () => {
                           startDate={startDate}
                           endDate={endDate}
                           cardTypeName={selectedCardType}
+                          status={selectedStatus}
                         />
                       </div>
                       <div className="md:w-80 w-full h-60">
@@ -190,6 +207,7 @@ const ChartsPage = () => {
                           methodologiesCatalog={methodologiesCatalog}
                           siteId={siteId}
                           cardTypeName={selectedCardType}
+                          status={selectedStatus}
                         />
                       </div>
                     </div>
@@ -212,6 +230,7 @@ const ChartsPage = () => {
                             endDate={endDate}
                             siteId={siteId}
                             cardTypeName={selectedCardType}
+                            status={selectedStatus}
                           />
                         </ChartExpander>
                         <AreasChart
@@ -219,6 +238,7 @@ const ChartsPage = () => {
                           endDate={endDate}
                           methodologies={methodologies}
                           siteId={siteId}
+                          status={selectedStatus}
                           onClick={(superiorId, areaName) => {
                             setSelectedAreaId(superiorId);
                             setSelectedAreaName(areaName || "");
@@ -236,6 +256,7 @@ const ChartsPage = () => {
                       methodologies={methodologies}
                       siteId={siteId}
                       cardTypeName={selectedCardType}
+                      status={selectedStatus}
                       onClick={(superiorId, areaName) => {
                         setSelectedAreaId(superiorId);
                         setSelectedAreaName(areaName || "");
@@ -268,6 +289,7 @@ const ChartsPage = () => {
                             methodologies={methodologies}
                             areaId={selectedAreaId}
                             cardTypeName={selectedCardType}
+                            status={selectedStatus}
                           />
                         </ChartExpander>
                       </div>
@@ -283,6 +305,7 @@ const ChartsPage = () => {
                       methodologies={methodologies}
                       areaId={selectedAreaId}
                       cardTypeName={selectedCardType}
+                      status={selectedStatus}
                     />
                   </div>
                 </Card>
@@ -304,6 +327,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             cardTypeName={selectedCardType}
+                            status={selectedStatus}
                           />
                         </ChartExpander>
                       </div>
@@ -318,6 +342,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       cardTypeName={selectedCardType}
+                      status={selectedStatus}
                     />
                   </div>
                 </Card>
@@ -345,6 +370,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             cardTypeName={selectedCardType}
+                            status={selectedStatus}
                           />
                         </ChartExpander>
                       </div>
@@ -359,6 +385,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       cardTypeName={selectedCardType}
+                      status={selectedStatus}
                     />
                   </div>
                 </Card>
@@ -380,6 +407,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             cardTypeName={selectedCardType}
+                            status={"C,R"}
                           />
                         </ChartExpander>
                       </div>
@@ -394,6 +422,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       cardTypeName={selectedCardType}
+                      status={"C,R"}
                     />
                   </div>
                 </Card>
@@ -411,7 +440,8 @@ const ChartsPage = () => {
                             siteId={siteId} 
                             startDate={startDate}
                             endDate={endDate}
-                            cardTypeName={selectedCardType} 
+                            cardTypeName={selectedCardType}
+                            status={selectedStatus} 
                           />
                         </ChartExpander>
                       </div>
@@ -424,7 +454,8 @@ const ChartsPage = () => {
                       siteId={siteId} 
                       startDate={startDate}
                       endDate={endDate}
-                      cardTypeName={selectedCardType} 
+                      cardTypeName={selectedCardType}
+                      status={selectedStatus} 
                     />
                   </div>
                 </Card>
