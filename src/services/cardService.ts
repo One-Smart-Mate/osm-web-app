@@ -2,6 +2,7 @@ import { CardDetailsInterface, CardInterface } from "../data/card/card";
 import {
   UpdateCardMechanic,
   UpdateCardPriority,
+  CreateCardRequest,
 } from "../data/card/card.request";
 import { Note } from "../data/note";
 import { apiSlice } from "./apiSlice";
@@ -139,6 +140,13 @@ export const cardService = apiSlice.injectEndpoints({
         `/card/fast-password/${siteId}/${fastPassword}`,
       transformResponse: (response: { data: FastPasswordResponse }) => response.data,
     }),
+    createCard: builder.mutation<void, CreateCardRequest>({
+      query: (cardData) => ({
+        url: "/card/create",
+        method: "POST",
+        body: cardData,
+      }),
+    }),
   }),
 });
 
@@ -155,4 +163,5 @@ export const {
   useGetDiscardedCardsByUserQuery,
   useDiscardCardMutation,
   useFindCardsByFastPasswordQuery,
+  useCreateCardMutation,
 } = cardService;

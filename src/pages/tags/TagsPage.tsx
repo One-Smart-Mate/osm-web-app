@@ -9,10 +9,11 @@ import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { useDebounce } from "use-debounce";
 import { handleErrorNotification } from "../../utils/Notifications";
 import TagList from "../components/TagList";
+import CreateCardModal from "./CreateCardModal";
 import { Button, Select, Input, Card, DatePicker, Space, Typography, TimeRangePickerProps, Divider } from "antd";
 import { BsSortDown, BsCalendarRange } from "react-icons/bs";
 import dayjs, { Dayjs } from "dayjs";
-import { FilterOutlined } from "@ant-design/icons";
+import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
 
 type SortOption = 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
 type DateFilterType = 'creation' | 'due' | '';
@@ -50,6 +51,9 @@ const TagsPage = () => {
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const [dateFilterType, setDateFilterType] = useState<DateFilterType>("");
   const [dateRange, setDateRange] = useState<[any, any] | null>(null);
+  
+  // Modal state
+  const [showCreateModal, setShowCreateModal] = useState(false);
   
   const search = useCallback((item: CardInterface, query: string) => {
     const normalizedQuery = query.toLowerCase();
@@ -155,6 +159,19 @@ const TagsPage = () => {
     handleGetCards();
   }, [location.state]);
 
+  const handleOpenCreateModal = () => {
+    setShowCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setShowCreateModal(false);
+  };
+
+  const handleCardCreated = () => {
+    // Refresh the cards list after successful creation
+    handleGetCards();
+  };
+
   const filteredData = useMemo(() => {
     if (!data || !data.length) return [];
 
@@ -218,11 +235,19 @@ const TagsPage = () => {
       isLoading={isLoading}
       content={
         <>
-          {/* Filter section */}
+          {/* Action buttons and Filter section */}
           <Card className="mb-4">
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <Button
                 type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleOpenCreateModal}
+                style={{ borderRadius: '6px' }}
+              >
+                {Strings.createCard || "Create Card"}
+              </Button>
+              <Button
+                type="default"
                 icon={<FilterOutlined />}
                 onClick={() => setShowFilters(!showFilters)}
                 style={{ borderRadius: '6px' }}
@@ -370,6 +395,15 @@ const TagsPage = () => {
 
           {/* Tag list */}
           <TagList data={filteredData} isLoading={isLoading} isResponsive={true} />
+          
+          {/* Create Card Modal */}
+          <CreateCardModal
+            open={showCreateModal}
+            onClose={handleCloseCreateModal}
+            siteId={location.state?.siteId?.toString() || ""}
+            siteName={siteName}
+            onSuccess={handleCardCreated}
+          />
         </>
       }
     />

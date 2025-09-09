@@ -1779,6 +1779,16 @@ class StringsBase {
   static lastUsed = "lastUsed";
   static proceduresChartsSB = "proceduresChartsSB";
   static deleteImgConfirm = "deleteImgConfirm";
+  static createCard = "createCard";
+  static cardTypeLabel = "cardTypeLabel";
+  static selectCardType = "selectCardType";
+  static problemTypeLabel = "problemTypeLabel";
+  static selectProblemType = "selectProblemType";
+  static priorityLabel = "priorityLabel";
+  static selectPriority = "selectPriority";
+  static locationLabel = "locationLabel";
+  static selectLevel = "selectLevel";
+  static describeAnomaly = "describeAnomaly";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
