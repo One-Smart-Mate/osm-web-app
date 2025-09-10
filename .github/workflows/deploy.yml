@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash 
 
     steps:
       - name: Checkout repository
@@ -24,8 +27,8 @@ jobs:
         run: |
           SERVICE_NAME="test-web"
           IMAGE_NAME="$SERVICE_NAME"
-          IMAGE_TAG=$(date +%s)
-          IMAGE="$SERVICE_NAME:$IMAGE_TAG"
+          IMAGE_TAG=${{ github.run_number }} 
+          IMAGE="$IMAGE_NAME:$IMAGE_TAG"
 
           echo "Building Docker image..."
           docker build \
@@ -41,13 +44,13 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
             --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
             --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
-            -t $IMAGE_NAME .
+            -t $IMAGE .
 
           echo "Pushing Docker image to Lightsail..."
           aws lightsail push-container-image \
             --service-name $SERVICE_NAME \
             --label $IMAGE_NAME \
-            --image $IMAGE_NAME \
+            --image $IMAGE \
             --region ${{ secrets.AWS_REGION }}
 
       - name: Deploy to Lightsail
