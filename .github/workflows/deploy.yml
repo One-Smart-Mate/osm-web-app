@@ -29,8 +29,7 @@ jobs:
       # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
-          curl -sSL "https://amazonlightsail.com/ls/docs/en_us/articles/amazon-lightsail-install-software" || true
-          curl -sSL "https://lightsailctl.s3.amazonaws.com/0.14.1/linux-amd64/lightsailctl" -o lightsailctl
+          curl -sSL "https://lightsailctl.s3.us-east-1.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
           chmod +x lightsailctl
           sudo mv lightsailctl /usr/local/bin/
 
@@ -66,16 +65,17 @@ jobs:
       # 6. Deploy container
       - name: Deploy to Lightsail
         run: |
+          IMAGE=":${{ secrets.AWS_SERVICE_NAME }}.web.${{ env.sha }}"
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --containers '{
-              "frontend": {
-                "image": ":${{ secrets.AWS_SERVICE_NAME }}.web.latest",
-                "ports": { "80": "HTTP" }
+            --containers "{
+              \"frontend\": {
+                \"image\": \"$IMAGE\",
+                \"ports\": { \"80\": \"HTTP\" }
               }
-            }' \
-            --public-endpoint '{
-              "containerName": "frontend",
-              "containerPort": 80,
-              "healthCheck": { "path": "/", "intervalSeconds": 10 }
-            }'
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"frontend\",
+              \"containerPort\": 80,
+              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
+            }"
