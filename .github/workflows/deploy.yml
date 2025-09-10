@@ -8,9 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash 
 
     steps:
       - name: Checkout repository
@@ -24,26 +21,40 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Build and push Docker image
+        env:
+          SERVICE_NAME: test-web
+          IMAGE_TAG: ${{ github.run_number }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          VITE_AP_VERSION: ${{ secrets.VITE_AP_VERSION }}
+          VITE_API_SERVICE: ${{ secrets.VITE_API_SERVICE }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_BUCKET: ${{ secrets.VITE_FIREBASE_BUCKET }}
+          VITE_FIREBASE_DOMAIN: ${{ secrets.VITE_FIREBASE_DOMAIN }}
+          VITE_FIREBASE_MEASURE_ID: ${{ secrets.VITE_FIREBASE_MEASURE_ID }}
+          VITE_FIREBASE_MESSAGING_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_ID }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
+          VITE_IMPORT_USERS_EXCEL: ${{ secrets.VITE_IMPORT_USERS_EXCEL }}
+          VITE_PDF_MANUAL_LINK: ${{ secrets.VITE_PDF_MANUAL_LINK }}
         run: |
-          SERVICE_NAME="test-web"
           IMAGE_NAME="$SERVICE_NAME"
-          IMAGE_TAG=${{ github.run_number }} 
           IMAGE="$IMAGE_NAME:$IMAGE_TAG"
 
           echo "Building Docker image..."
           docker build \
-            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
-            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
-            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
-            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
-            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
-            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
-            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
-            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
-            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
-            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
-            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
-            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
+            --build-arg VITE_AP_VERSION=$VITE_AP_VERSION \
+            --build-arg VITE_API_SERVICE=$VITE_API_SERVICE \
+            --build-arg VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY \
+            --build-arg VITE_FIREBASE_APP_ID=$VITE_FIREBASE_APP_ID \
+            --build-arg VITE_FIREBASE_BUCKET=$VITE_FIREBASE_BUCKET \
+            --build-arg VITE_FIREBASE_DOMAIN=$VITE_FIREBASE_DOMAIN \
+            --build-arg VITE_FIREBASE_MEASURE_ID=$VITE_FIREBASE_MEASURE_ID \
+            --build-arg VITE_FIREBASE_MESSAGING_ID=$VITE_FIREBASE_MESSAGING_ID \
+            --build-arg VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID \
+            --build-arg VITE_FIREBASE_VAPID_KEY=$VITE_FIREBASE_VAPID_KEY \
+            --build-arg VITE_IMPORT_USERS_EXCEL=$VITE_IMPORT_USERS_EXCEL \
+            --build-arg VITE_PDF_MANUAL_LINK=$VITE_PDF_MANUAL_LINK \
             -t $IMAGE .
 
           echo "Pushing Docker image to Lightsail..."
@@ -51,11 +62,13 @@ jobs:
             --service-name $SERVICE_NAME \
             --label $IMAGE_NAME \
             --image $IMAGE \
-            --region ${{ secrets.AWS_REGION }}
+            --region $AWS_REGION
 
       - name: Deploy to Lightsail
+        env:
+          SERVICE_NAME: test-web
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          SERVICE_NAME="test-web"
           IMAGE=":$SERVICE_NAME.$SERVICE_NAME"
 
           echo "Deploying container..."
@@ -77,5 +90,7 @@ jobs:
                 "healthyThreshold": 2,
                 "unhealthyThreshold": 2
               }
-            }'
+            }' \
+            --region $AWS_REGION
+
 
