@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail
+name: Deploy Frontend to Lightsail (via Lightsail Registry)
 
 on:
   push:
@@ -12,10 +12,8 @@ jobs:
 
     env:
       sha: ${{ github.sha }}
-      account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       region: ${{ secrets.AWS_REGION }}
-      repo: ${{ secrets.ECR_REPOSITORY }}
-      image_tag: frontend:${{ github.sha }}
+      service: ${{ secrets.AWS_SERVICE_NAME }}
 
     steps:
       # 1. Checkout
@@ -30,17 +28,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl (aseguramos que quede en PATH)
+      # 3. Instalar lightsailctl (binario correcto)
       - name: Install lightsailctl
         run: |
-          curl -s "https://s3.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" \
-            -o lightsailctl
-          chmod +x lightsailctl
-          sudo mv lightsailctl /usr/local/bin/
-          which lightsailctl
-          lightsailctl --version || echo "lightsailctl installed"
+          curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
+          echo "✅ lightsailctl instalado"
+          /usr/local/bin/lightsailctl --help || true
 
-      # 4. Build Docker image
+      # 4. Build de la imagen con variables
       - name: Build Docker image
         run: |
           docker build \
@@ -56,41 +52,31 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t ${{ env.image_tag }} .
+            -t frontend:${{ env.sha }} .
 
-          echo "✅ Imagen Docker construida: ${{ env.image_tag }}"
-          docker images
-
-      # 5. Push de la imagen directamente a Lightsail
-      - name: Push image to Lightsail
-        id: push
+      # 5. Subir la imagen al registry de Lightsail
+      - name: Push Docker image to Lightsail
         run: |
-          echo "🚀 Subiendo imagen ${{ env.image_tag }} a Lightsail..."
-          OUTPUT=$(aws lightsail push-container-image \
-            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
+          echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
+          IMAGE_NAME=$(aws lightsail push-container-image \
+            --region ${{ env.region }} \
+            --service-name ${{ env.service }} \
             --label frontend \
-            --image ${{ env.image_tag }} \
-            --output text) || { echo "❌ Error en push-container-image"; exit 1; }
+            --image frontend:${{ env.sha }} \
+            --output text | tail -n 1)
 
-          IMAGE_ARN=$(echo "$OUTPUT" | grep -oE ':[^ ]+\.frontend\.[0-9]+')
-          if [ -z "$IMAGE_ARN" ]; then
-            echo "❌ No se pudo obtener IMAGE_ARN. Salida de AWS CLI:"
-            echo "$OUTPUT"
-            exit 1
-          fi
+          echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-          echo "IMAGE_ARN=$IMAGE_ARN" >> $GITHUB_ENV
-          echo "✅ Imagen subida a Lightsail: $IMAGE_ARN"
-
-      # 6. Deploy en Lightsail
+      # 6. Deploy en Lightsail usando la imagen registrada
       - name: Deploy to Lightsail
         run: |
-          echo "🚀 Usando imagen: $IMAGE_ARN"
+          echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
-            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
+            --service-name ${{ env.service }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"${IMAGE_ARN}\",
+                \"image\": \"$IMAGE_NAME\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
