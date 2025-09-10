@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail
+name: Deploy Frontend to Lightsail (debug)
 
 on:
   push:
@@ -32,11 +32,10 @@ jobs:
       # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
-          curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" \
-            -o /usr/local/bin/lightsailctl
+          curl -s https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           chmod +x /usr/local/bin/lightsailctl
 
-      # 4. Build de la imagen con variables
+      # 4. Build Docker image
       - name: Build Docker image
         run: |
           docker build \
@@ -54,7 +53,7 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend:${{ env.sha }} .
 
-      # 5. Push a Lightsail (no ECR)
+      # 5. Push a Lightsail con debug extendido
       - name: Push Docker image to Lightsail
         run: |
           set -x
@@ -63,13 +62,20 @@ jobs:
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
-            --image frontend:${{ env.sha }})
+            --image frontend:${{ env.sha }} 2>&1)
 
-          echo "🔍 Salida cruda:"
-          echo "$RAW_OUTPUT"
+          echo "🔍 Salida cruda completa:"
+          echo "$RAW_OUTPUT" | while IFS= read -r line; do
+            echo "👉 $line"
+          done
 
-          # Extraer el nombre real de la imagen
-          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep "Refer to this image as" | awk -F'"' '{print $2}')
+          # Intentar extraer el nombre de la imagen
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep "Refer to this image as" | awk '{print $5}' | tr -d '"')
+
+          if [ -z "$IMAGE_NAME" ]; then
+            echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
+            exit 1
+          fi
 
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
