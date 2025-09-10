@@ -3,7 +3,7 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - develop   # o main, según tu flujo de trabajo
+      - develop
 
 jobs:
   deploy:
