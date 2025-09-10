@@ -29,12 +29,11 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # 3. Instalar lightsailctl
-      - name: Install lightsailctl (corrected path)
+      - name: Install lightsailctl
         run: |
           curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           sudo chmod +x /usr/local/bin/lightsailctl
           lightsailctl --version || echo "⚠️ lightsailctl no muestra versión"
-
 
       # 4. Build Docker image
       - name: Build Docker image
@@ -70,13 +69,16 @@ jobs:
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
-            --image frontend:${{ env.sha }} \
-            --output json)
+            --image frontend:${{ env.sha }})
 
           echo "🔍 Salida cruda completa:"
           echo "$RAW_OUTPUT"
 
-          IMAGE_NAME=$(echo "$RAW_OUTPUT" | jq -r '.containerImage.image // empty')
+          # Depuración extra: mostrar solo la línea con "Refer to this image as"
+          echo "👉 Línea detectada:"
+          echo "$RAW_OUTPUT" | grep "Refer to this image as" || echo "⚠️ No se encontró la línea esperada"
+
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep "Refer to this image as" | awk '{print $5}' | tr -d '"')
 
           if [ -z "$IMAGE_NAME" ]; then
             echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
