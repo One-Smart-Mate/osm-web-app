@@ -3,7 +3,8 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - develop  
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,7 +13,7 @@ jobs:
     steps:
       # 1. Checkout
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       # 2. Configurar AWS CLI
       - name: Configure AWS credentials
@@ -22,14 +23,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl
-      - name: Install Lightsailctl
-        run: |
-          curl -sSL "https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl" -o lightsailctl
-          chmod +x lightsailctl
-          sudo mv lightsailctl /usr/local/bin/
-
-      # 4. Construir imagen Docker
+      # 3. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
@@ -47,7 +41,7 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
             -t frontend-app .
 
-      # 5. Push a Lightsail
+      # 4. Push a Lightsail
       - name: Push Docker image to Lightsail
         run: |
           IMAGE="frontend-app:$(git rev-parse --short HEAD)"
@@ -58,43 +52,20 @@ jobs:
             --region ${{ secrets.AWS_REGION }} \
             --image -
 
-      # 6. Crear containers.json
-      - name: Create containers.json
-        run: |
-          cat > containers.json <<EOF
-          {
-            "web": {
-              "image": ":${{ secrets.AWS_SERVICE_NAME }}.web",
-              "ports": {
-                "80": "HTTP"
-              }
-            }
-          }
-          EOF
-
-      # 7. Crear public-endpoint.json
-      - name: Create public-endpoint.json
-        run: |
-          cat > public-endpoint.json <<EOF
-          {
-            "containerName": "web",
-            "containerPort": 80,
-            "healthCheck": {
-              "path": "/",
-              "intervalSeconds": 10,
-              "timeoutSeconds": 5,
-              "healthyThreshold": 2,
-              "unhealthyThreshold": 2
-            }
-          }
-          EOF
-
-      # 8. Deploy a Lightsail
-      - name: Deploy container to Lightsail
+      # 5. Deploy container
+      - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --containers file://containers.json \
-            --public-endpoint file://public-endpoint.json \
-            --region ${{ secrets.AWS_REGION }}
+            --containers '{
+              "frontend": {
+                "image": "frontend-app:latest",
+                "ports": { "80": "HTTP" }
+              }
+            }' \
+            --public-endpoint '{
+              "containerName": "frontend",
+              "containerPort": 80,
+              "healthCheck": { "path": "/", "intervalSeconds": 10 }
+            }'
 
