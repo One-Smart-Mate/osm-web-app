@@ -62,18 +62,19 @@ jobs:
             -t frontend-app:${{ env.sha }} .
 
       # 6. Push a Lightsail
+            # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
         id: push
         run: |
           IMAGE="frontend-app:${{ env.sha }}"
-          docker tag frontend-app:${{ env.sha }} $IMAGE
+          docker tag frontend-app:${{ env.sha }} frontend-app
 
           echo "⏳ Pushing image to Lightsail..."
           RESPONSE=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image $IMAGE \
+            --image frontend-app \
             --output json 2>&1)
 
           echo "=== RAW AWS RESPONSE START ==="
@@ -89,6 +90,7 @@ jobs:
 
           echo "✅ IMAGE_URI=$IMAGE_URI"
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
 
 
       # 7. Deploy container
