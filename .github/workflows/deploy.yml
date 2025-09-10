@@ -23,7 +23,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Construir imagen Docker
+      # 3. Instalar lightsailctl (necesario para push-container-image)
+      - name: Install lightsailctl
+        run: |
+          curl -sSL "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
+          sudo mv lightsailctl /usr/local/bin/lightsailctl
+          sudo chmod +x /usr/local/bin/lightsailctl
+
+      # 4. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
@@ -41,7 +48,7 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend-app .
 
-      # 4. Push a Lightsail (guardar el resultado en una variable)
+      # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
         id: push
         run: |
@@ -56,7 +63,7 @@ jobs:
           IMAGE_DIGEST=$(echo $RESULT | jq -r '.imageDigest')
           echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
 
-      # 5. Deploy container usando el digest real
+      # 6. Deploy container
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
@@ -72,4 +79,3 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
-
