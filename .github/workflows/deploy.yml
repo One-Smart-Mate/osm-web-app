@@ -42,7 +42,7 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t frontend:${{ env.sha }}
+            -t frontend:${{ env.sha }} .
 
       # 4. Push de la imagen a Lightsail (no ECR)
       - name: Push Docker image to Lightsail
