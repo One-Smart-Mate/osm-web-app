@@ -6,92 +6,74 @@ on:
       - develop
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install lightsailctl
+      - name: Build Docker image
         run: |
-          curl -sSL https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
-          chmod +x /usr/local/bin/lightsailctl
-
-      - name: Build and push Docker image
-        env:
-          SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
-          IMAGE_TAG: ${{ github.run_number }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          VITE_AP_VERSION: ${{ secrets.VITE_AP_VERSION }}
-          VITE_API_SERVICE: ${{ secrets.VITE_API_SERVICE }}
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-          VITE_FIREBASE_BUCKET: ${{ secrets.VITE_FIREBASE_BUCKET }}
-          VITE_FIREBASE_DOMAIN: ${{ secrets.VITE_FIREBASE_DOMAIN }}
-          VITE_FIREBASE_MEASURE_ID: ${{ secrets.VITE_FIREBASE_MEASURE_ID }}
-          VITE_FIREBASE_MESSAGING_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_ID }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
-          VITE_IMPORT_USERS_EXCEL: ${{ secrets.VITE_IMPORT_USERS_EXCEL }}
-          VITE_PDF_MANUAL_LINK: ${{ secrets.VITE_PDF_MANUAL_LINK }}
-        run: |
-          IMAGE_NAME="$SERVICE_NAME"
-          IMAGE="$IMAGE_NAME:$IMAGE_TAG"
-
-          echo "Building Docker image..."
+          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
           docker build \
-            --build-arg VITE_AP_VERSION=$VITE_AP_VERSION \
-            --build-arg VITE_API_SERVICE=$VITE_API_SERVICE \
-            --build-arg VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY \
-            --build-arg VITE_FIREBASE_APP_ID=$VITE_FIREBASE_APP_ID \
-            --build-arg VITE_FIREBASE_BUCKET=$VITE_FIREBASE_BUCKET \
-            --build-arg VITE_FIREBASE_DOMAIN=$VITE_FIREBASE_DOMAIN \
-            --build-arg VITE_FIREBASE_MEASURE_ID=$VITE_FIREBASE_MEASURE_ID \
-            --build-arg VITE_FIREBASE_MESSAGING_ID=$VITE_FIREBASE_MESSAGING_ID \
-            --build-arg VITE_FIREBASE_PROJECT_ID=$VITE_FIREBASE_PROJECT_ID \
-            --build-arg VITE_FIREBASE_VAPID_KEY=$VITE_FIREBASE_VAPID_KEY \
-            --build-arg VITE_IMPORT_USERS_EXCEL=$VITE_IMPORT_USERS_EXCEL \
-            --build-arg VITE_PDF_MANUAL_LINK=$VITE_PDF_MANUAL_LINK \
+            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
+            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
+            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
+            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
+            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
+            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
+            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
+            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
+            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
+            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
+            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
+            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
             -t $IMAGE .
 
-          echo "Pushing Docker image to Lightsail..."
-          aws lightsail push-container-image \
-            --service-name $SERVICE_NAME \
-            --label $IMAGE_NAME \
-            --image $IMAGE \
-            --region $AWS_REGION
-
-      - name: Deploy container
-        env:
-          SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+      - name: Install lightsailctl plugin
         run: |
-          echo "Deploying new container version..."
+          curl -sSL https://s3.us-east-1.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
+
+      - name: Push image to Lightsail
+        run: |
+          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
+          aws lightsail push-container-image \
+            --service-name "${{ secrets.LIGHTSAIL_SERVICE_NAME }}" \
+            --label frontend \
+            --image "$IMAGE" \
+            --region "${{ secrets.AWS_REGION }}"
+
+      - name: Create deployment
+        run: |
+          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
+
+          echo '{
+            "app": {
+              "image": "'"$IMAGE"'",
+              "ports": { "80": "HTTP" }
+            }
+          }' > containers.json
+
+          echo '{
+            "containerName": "app",
+            "containerPort": 80,
+            "healthCheck": {
+              "path": "/",
+              "successCodes": "200-399"
+            }
+          }' > public.json
+
           aws lightsail create-container-service-deployment \
-            --service-name $SERVICE_NAME \
-            --containers "{
-              \"frontend\": {
-                \"image\": \":$SERVICE_NAME.${{ github.run_number }}\",
-                \"ports\": { \"80\": \"HTTP\" }
-              }
-            }" \
-            --public-endpoint "{
-              \"containerName\": \"frontend\",
-              \"containerPort\": 80,
-              \"healthCheck\": {
-                \"path\": \"/\",
-                \"intervalSeconds\": 10,
-                \"timeoutSeconds\": 5,
-                \"healthyThreshold\": 2,
-                \"unhealthyThreshold\": 2
-              }
-            }" \
-            --region $AWS_REGION
+            --service-name "${{ secrets.LIGHTSAIL_SERVICE_NAME }}" \
+            --containers file://containers.json \
+            --public-endpoint file://public.json \
+            --region "${{ secrets.AWS_REGION }}"
