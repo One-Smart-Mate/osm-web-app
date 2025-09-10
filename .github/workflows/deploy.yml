@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail
+name: Deploy Frontend to Lightsail (via Lightsailctl)
 
 on:
   push:
@@ -12,6 +12,10 @@ jobs:
 
     env:
       sha: ${{ github.sha }}
+      account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      region: ${{ secrets.AWS_REGION }}
+      repo: ${{ secrets.ECR_REPOSITORY }}
+      image_tag: frontend-${{ github.sha }}
 
     steps:
       # 1. Checkout
@@ -26,7 +30,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Build de la imagen con variables
+      # 3. Instalar lightsailctl (requerido para push a Lightsail)
+      - name: Install lightsailctl
+        run: |
+          curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
+
+      # 4. Build Docker image
       - name: Build Docker image
         run: |
           docker build \
@@ -42,24 +52,29 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t frontend:${{ env.sha }} .
+            -t ${{ env.image_tag }} .
 
-      # 4. Push de la imagen a Lightsail (no ECR)
-      - name: Push Docker image to Lightsail
+      # 5. Push de la imagen directamente a Lightsail y guardar ARN
+      - name: Push image to Lightsail
+        id: push
         run: |
-          aws lightsail push-container-image \
+          IMAGE_ARN=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label frontend \
-            --image frontend:${{ env.sha }}
+            --image ${{ env.image_tag }} \
+            --output text)
+          echo "IMAGE_ARN=$IMAGE_ARN" >> $GITHUB_ENV
+          echo "✅ Imagen subida a Lightsail: $IMAGE_ARN"
 
-      # 5. Deploy en Lightsail usando la imagen recién subida
+      # 6. Deploy en Lightsail usando el ARN devuelto
       - name: Deploy to Lightsail
         run: |
+          echo "🚀 Usando imagen: $IMAGE_ARN"
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"frontend\",
+                \"image\": \"${IMAGE_ARN}\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
@@ -68,4 +83,3 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
-
