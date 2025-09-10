@@ -36,7 +36,7 @@ jobs:
           aws ecr get-login-password --region ${{ env.region }} \
             | docker login --username AWS --password-stdin ${{ env.account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
 
-      # 4. Build de la imagen
+      # 4. Build de la imagen con 2 tags (sha y latest)
       - name: Build Docker image
         run: |
           docker build \
@@ -52,21 +52,23 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t ${{ env.ecr_repo }}:${{ env.sha }} .
+            -t ${{ env.ecr_repo }}:${{ env.sha }} \
+            -t ${{ env.ecr_repo }}:latest .
 
-      # 5. Push a ECR
+      # 5. Push a ECR (los dos tags)
       - name: Push Docker image to Amazon ECR
         run: |
           docker push ${{ env.ecr_repo }}:${{ env.sha }}
+          docker push ${{ env.ecr_repo }}:latest
 
-      # 6. Deploy en Lightsail
+      # 6. Deploy en Lightsail usando latest
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"${{ env.ecr_repo }}:${{ env.sha }}\",
+                \"image\": \"${{ env.ecr_repo }}:latest\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
