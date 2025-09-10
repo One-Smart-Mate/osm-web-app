@@ -23,7 +23,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl (necesario para push-container-image)
+      # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
           curl -sSL "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
@@ -54,11 +54,11 @@ jobs:
         run: |
           IMAGE="frontend-app:$(git rev-parse --short HEAD)"
           docker tag frontend-app $IMAGE
-          RESULT=$(docker save $IMAGE | aws lightsail push-container-image \
+          RESULT=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image -)
+            --image $IMAGE)
           echo "$RESULT"
           IMAGE_DIGEST=$(echo $RESULT | jq -r '.imageDigest')
           echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
