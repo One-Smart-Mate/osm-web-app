@@ -74,13 +74,22 @@ jobs:
             --label web \
             --region ${{ secrets.AWS_REGION }} \
             --image $IMAGE \
-            --output json)
+            --output json 2>&1)
 
-          echo "AWS RESPONSE: $RESPONSE"
-          IMAGE_URI=$(echo $RESPONSE | jq -r '.containerImage.image')
+          echo "=== RAW AWS RESPONSE START ==="
+          echo "$RESPONSE"
+          echo "=== RAW AWS RESPONSE END ==="
+
+          IMAGE_URI=$(echo "$RESPONSE" | jq -r '.containerImage.image // empty')
+
+          if [ -z "$IMAGE_URI" ]; then
+            echo "❌ No se pudo extraer IMAGE_URI, revisa el log RAW arriba"
+            exit 1
+          fi
+
           echo "✅ IMAGE_URI=$IMAGE_URI"
-
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
 
       # 7. Deploy container
       - name: Deploy to Lightsail
