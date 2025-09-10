@@ -124,6 +124,7 @@ const tagsRoute = new Route(
   Strings.dashboard
 );
 
+
 const chartsRoute = new Route(
   Strings.chartsSB,
   Constants.ROUTES_PATH.charts,

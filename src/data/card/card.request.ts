@@ -49,3 +49,26 @@ export class DiscardCardDto {
     this.commentsManagerAtCardClose = commentsManagerAtCardClose;
   }
 }
+
+export interface CreateCardRequest {
+  siteId: number;
+  cardUUID: string;
+  cardCreationDate: string;
+  nodeId?: number | null;
+  priorityId?: number | null;
+  cardTypeValue?: 'safe' | 'unsafe' | '';
+  cardTypeId: number;
+  preclassifierId: number;
+  creatorId: number;
+  comments?: string | null;
+  evidences: any[];
+  appSo?: string | null;
+  appVersion?: string | null;
+}
+
+export interface NodeCardItem {
+  id: string;
+  name: string;
+  description: string;
+  superiorId?: string | null;
+}
