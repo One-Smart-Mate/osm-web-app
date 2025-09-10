@@ -23,11 +23,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Construir imagen Docker
+      # 3. Obtener commit short SHA
+      - name: Get commit SHA
+        id: vars
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # 4. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
-            -t frontend-app . \
+            -t frontend-app:${{ env.sha }} . \
             --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
             --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
             --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
@@ -41,25 +46,23 @@ jobs:
             --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
             --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }}
 
-      # 4. Push a Lightsail
+      # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
         run: |
-          IMAGE="frontend-app:$(git rev-parse --short HEAD)"
-          docker tag frontend-app $IMAGE
-          docker save $IMAGE | aws lightsail push-container-image \
+          docker save frontend-app:${{ env.sha }} | aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
             --image -
 
-      # 5. Deploy container
+      # 6. Deploy container
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers '{
               "frontend": {
-                "image": ":'"${{ secrets.AWS_SERVICE_NAME }}.web.$(git rev-parse --short HEAD)"'",
+                "image": ":'"${{ secrets.AWS_SERVICE_NAME }}.web.${{ env.sha }}"'",
                 "ports": { "80": "HTTP" }
               }
             }' \
