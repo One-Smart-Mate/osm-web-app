@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail (via Lightsailctl)
+name: Deploy Frontend to Lightsail
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
       account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       region: ${{ secrets.AWS_REGION }}
       repo: ${{ secrets.ECR_REPOSITORY }}
-      image_tag: frontend-${{ github.sha }}
+      image_tag: frontend:${{ github.sha }}
 
     steps:
       # 1. Checkout
@@ -30,10 +30,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl (requerido para push a Lightsail)
+      # 3. Instalar lightsailctl (requerido por AWS Lightsail)
       - name: Install lightsailctl
         run: |
-          curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o /usr/local/bin/lightsailctl
+          curl "https://s3.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" \
+            -o /usr/local/bin/lightsailctl
           chmod +x /usr/local/bin/lightsailctl
 
       # 4. Build Docker image
@@ -54,19 +55,23 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t ${{ env.image_tag }} .
 
-      # 5. Push de la imagen directamente a Lightsail y guardar ARN
+      # 5. Push de la imagen directamente a Lightsail
       - name: Push image to Lightsail
         id: push
         run: |
-          IMAGE_ARN=$(aws lightsail push-container-image \
+          OUTPUT=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label frontend \
             --image ${{ env.image_tag }} \
             --output text)
+
+          # Filtrar solo el ARN que devuelve Lightsail
+          IMAGE_ARN=$(echo "$OUTPUT" | grep -oE ':[^ ]+\.frontend\.[0-9]+')
+
           echo "IMAGE_ARN=$IMAGE_ARN" >> $GITHUB_ENV
           echo "✅ Imagen subida a Lightsail: $IMAGE_ARN"
 
-      # 6. Deploy en Lightsail usando el ARN devuelto
+      # 6. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
           echo "🚀 Usando imagen: $IMAGE_ARN"
