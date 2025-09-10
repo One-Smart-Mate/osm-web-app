@@ -3,21 +3,18 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - develop
+      - develop  
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      # 1. Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
+      # 2. Configurar AWS CLI
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -25,43 +22,79 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install AWS CLI
+      # 3. Instalar lightsailctl
+      - name: Install Lightsailctl
         run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip -o awscliv2.zip
-          sudo ./aws/install --update
-          aws --version
+          curl -sSL "https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl" -o lightsailctl
+          chmod +x lightsailctl
+          sudo mv lightsailctl /usr/local/bin/
 
-      - name: Install lightsailctl
-        run: |
-          curl -sSL "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
-          sudo mv lightsailctl /usr/local/bin/lightsailctl
-          sudo chmod +x /usr/local/bin/lightsailctl
-          lightsailctl --version
-
+      # 4. Construir imagen Docker
       - name: Build Docker image
         run: |
-          IMAGE_NAME="${{ secrets.AWS_SERVICE_NAME }}"
-          IMAGE="$IMAGE_NAME:$(git rev-parse --short HEAD)"
-          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
           docker build \
-            --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
-            --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
-            --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
-            --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
-            --build-arg VITE_FIREBASE_BUCKET="${{ secrets.VITE_FIREBASE_BUCKET }}" \
-            --build-arg VITE_FIREBASE_DOMAIN="${{ secrets.VITE_FIREBASE_DOMAIN }}" \
-            --build-arg VITE_FIREBASE_MEASURE_ID="${{ secrets.VITE_FIREBASE_MEASURE_ID }}" \
-            --build-arg VITE_FIREBASE_MESSAGING_ID="${{ secrets.VITE_FIREBASE_MESSAGING_ID }}" \
-            --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
-            --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
-            --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
-            --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t $IMAGE .
+            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
+            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
+            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
+            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
+            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
+            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
+            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
+            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
+            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
+            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
+            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
+            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
+            -t frontend-app .
 
+      # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
         run: |
-          aws lightsail push-container-image \
+          IMAGE="frontend-app:$(git rev-parse --short HEAD)"
+          docker tag frontend-app $IMAGE
+          docker save $IMAGE | aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --label $(git rev-parse --short HEAD) \
-            --image $IMAGE
+            --label web \
+            --region ${{ secrets.AWS_REGION }} \
+            --image -
+
+      # 6. Crear containers.json
+      - name: Create containers.json
+        run: |
+          cat > containers.json <<EOF
+          {
+            "web": {
+              "image": ":${{ secrets.AWS_SERVICE_NAME }}.web",
+              "ports": {
+                "80": "HTTP"
+              }
+            }
+          }
+          EOF
+
+      # 7. Crear public-endpoint.json
+      - name: Create public-endpoint.json
+        run: |
+          cat > public-endpoint.json <<EOF
+          {
+            "containerName": "web",
+            "containerPort": 80,
+            "healthCheck": {
+              "path": "/",
+              "intervalSeconds": 10,
+              "timeoutSeconds": 5,
+              "healthyThreshold": 2,
+              "unhealthyThreshold": 2
+            }
+          }
+          EOF
+
+      # 8. Deploy a Lightsail
+      - name: Deploy container to Lightsail
+        run: |
+          aws lightsail create-container-service-deployment \
+            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
+            --containers file://containers.json \
+            --public-endpoint file://public-endpoint.json \
+            --region ${{ secrets.AWS_REGION }}
+
