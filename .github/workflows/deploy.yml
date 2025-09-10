@@ -26,20 +26,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl
+      # 3. Instalar lightsailctl desde tar.gz
       - name: Install lightsailctl
         run: |
-          curl -sSL "https://lightsailctl.s3.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
+          echo "⬇️ Descargando lightsailctl..."
+          curl -sSL "https://lightsailctl.amazonaws.com/0.14.3/linux-amd64/lightsailctl.tar.gz" -o lightsailctl.tar.gz
+          tar -xzf lightsailctl.tar.gz
           chmod +x lightsailctl
           sudo mv lightsailctl /usr/local/bin/
-
-      # 3.1 Verificar instalación de lightsailctl
-      - name: Verify lightsailctl
-        run: |
-          echo "Verificando lightsailctl..."
-          which lightsailctl
-          file $(which lightsailctl)
-          lightsailctl --version || echo "⚠️ lightsailctl no muestra versión, pero binario existe"
+          echo "✅ lightsailctl instalado en /usr/local/bin"
+          file /usr/local/bin/lightsailctl
+          /usr/local/bin/lightsailctl --version || echo "⚠️ lightsailctl no muestra versión, pero binario está"
 
       # 4. Construir imagen Docker
       - name: Build Docker image
