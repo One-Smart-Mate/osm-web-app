@@ -61,7 +61,7 @@ jobs:
           docker push ${{ env.ecr_repo }}:${{ env.sha }}
           docker push ${{ env.ecr_repo }}:latest
 
-      # 6. Deploy en Lightsail usando latest + environment
+      # 6. Deploy en Lightsail usando latest
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
@@ -69,25 +69,11 @@ jobs:
             --containers "{
               \"frontend\": {
                 \"image\": \"${{ env.ecr_repo }}:latest\",
-                \"ports\": { \"80\": \"HTTP\" },
-                \"environment\": {
-                  \"VITE_AP_VERSION\": \"${{ secrets.VITE_AP_VERSION }}\",
-                  \"VITE_API_SERVICE\": \"${{ secrets.VITE_API_SERVICE }}\",
-                  \"VITE_FIREBASE_API_KEY\": \"${{ secrets.VITE_FIREBASE_API_KEY }}\",
-                  \"VITE_FIREBASE_APP_ID\": \"${{ secrets.VITE_FIREBASE_APP_ID }}\",
-                  \"VITE_FIREBASE_BUCKET\": \"${{ secrets.VITE_FIREBASE_BUCKET }}\",
-                  \"VITE_FIREBASE_DOMAIN\": \"${{ secrets.VITE_FIREBASE_DOMAIN }}\",
-                  \"VITE_FIREBASE_MEASURE_ID\": \"${{ secrets.VITE_FIREBASE_MEASURE_ID }}\",
-                  \"VITE_FIREBASE_MESSAGING_ID\": \"${{ secrets.VITE_FIREBASE_MESSAGING_ID }}\",
-                  \"VITE_FIREBASE_PROJECT_ID\": \"${{ secrets.VITE_FIREBASE_PROJECT_ID }}\",
-                  \"VITE_FIREBASE_VAPID_KEY\": \"${{ secrets.VITE_FIREBASE_VAPID_KEY }}\",
-                  \"VITE_IMPORT_USERS_EXCEL\": \"${{ secrets.VITE_IMPORT_USERS_EXCEL }}\",
-                  \"VITE_PDF_MANUAL_LINK\": \"${{ secrets.VITE_PDF_MANUAL_LINK }}\"
-                }
+                \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
             --public-endpoint "{
               \"containerName\": \"frontend\",
               \"containerPort\": 80,
-              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 30 }
+              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
