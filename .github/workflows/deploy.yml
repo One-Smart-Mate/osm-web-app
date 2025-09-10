@@ -60,11 +60,12 @@ jobs:
         run: |
           IMAGE="frontend-app:${{ env.sha }}"
           docker tag frontend-app:${{ env.sha }} $IMAGE
-          docker save $IMAGE | lightsailctl push-container-image \
+          aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image -
+            --image $IMAGE
+
 
       # 6. Deploy container
       - name: Deploy to Lightsail
