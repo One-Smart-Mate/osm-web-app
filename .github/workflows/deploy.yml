@@ -29,7 +29,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # 3. Instalar lightsailctl
-      - name: Install lightsailctl
+      - name: Install lightsailctl (corrected path)
         run: |
           curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           sudo chmod +x /usr/local/bin/lightsailctl
@@ -74,11 +74,8 @@ jobs:
           echo "🔍 Salida cruda completa:"
           echo "$RAW_OUTPUT"
 
-          # Depuración extra: mostrar solo la línea con "Refer to this image as"
-          echo "👉 Línea detectada:"
-          echo "$RAW_OUTPUT" | grep "Refer to this image as" || echo "⚠️ No se encontró la línea esperada"
-
-          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep "Refer to this image as" | awk '{print $5}' | tr -d '"')
+          # Extraer correctamente IMAGE_NAME con sed
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | sed -n 's/.*Refer to this image as "\(.*\)" in deployments.*/\1/p')
 
           if [ -z "$IMAGE_NAME" ]; then
             echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
@@ -91,6 +88,7 @@ jobs:
       # 7. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
+          echo "🔎 IMAGE_NAME que se usará en el deploy: $IMAGE_NAME"
           echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
             --service-name ${{ env.service }} \
