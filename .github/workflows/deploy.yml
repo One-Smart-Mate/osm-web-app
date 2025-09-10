@@ -29,9 +29,10 @@ jobs:
       # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
-          curl -sSL "https://lightsailctl.s3.us-east-1.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
+          curl -sSL "https://lightsailctl.s3.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
           chmod +x lightsailctl
           sudo mv lightsailctl /usr/local/bin/
+
 
       # 4. Construir imagen Docker
       - name: Build Docker image
