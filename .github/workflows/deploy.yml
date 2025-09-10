@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail
+name: Deploy Frontend to Lightsail (via ECR)
 
 on:
   push:
@@ -12,6 +12,10 @@ jobs:
 
     env:
       sha: ${{ github.sha }}
+      account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      region: ${{ secrets.AWS_REGION }}
+      repo: ${{ secrets.ECR_REPOSITORY }}
+      ecr_repo: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
 
     steps:
       # 1. Checkout
@@ -26,29 +30,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl dinámicamente desde AWS
-      - name: Install lightsailctl
+      # 3. Login en ECR
+      - name: Login to Amazon ECR
         run: |
-          echo "⬇️ Descargando lightsailctl desde AWS..."
-          curl -sSL "https://amazonlightsail.com/ls/docs/en_us/articles/amazon-lightsail-install-software" -o page.html
-          DOWNLOAD_URL=$(grep -o 'https://[^"]*lightsailctl[^"]*linux-amd64[^"]*' page.html | head -n 1)
+          aws ecr get-login-password --region ${{ env.region }} \
+            | docker login --username AWS --password-stdin ${{ env.account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
 
-          if [ -z "$DOWNLOAD_URL" ]; then
-            echo "❌ No se encontró URL de lightsailctl en la página oficial"
-            cat page.html
-            exit 1
-          fi
-
-          echo "📥 URL encontrada: $DOWNLOAD_URL"
-          curl -sSL "$DOWNLOAD_URL" -o lightsailctl
-          chmod +x lightsailctl
-          sudo mv lightsailctl /usr/local/bin/
-
-          echo "✅ lightsailctl instalado en /usr/local/bin"
-          file /usr/local/bin/lightsailctl
-          /usr/local/bin/lightsailctl --help || echo "⚠️ lightsailctl responde raro"
-
-      # 4. Construir imagen Docker
+      # 4. Build de la imagen
       - name: Build Docker image
         run: |
           docker build \
@@ -64,44 +52,21 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t frontend-app:${{ env.sha }} .
+            -t ${{ env.ecr_repo }}:${{ env.sha }} .
 
-      # 5. Push a Lightsail
-      - name: Push Docker image to Lightsail
-        id: push
+      # 5. Push a ECR
+      - name: Push Docker image to Amazon ECR
         run: |
-          IMAGE="frontend-app:${{ env.sha }}"
-          echo "⏳ Pushing image: $IMAGE ..."
-          RESPONSE=$(aws lightsail push-container-image \
-            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --label web \
-            --region ${{ secrets.AWS_REGION }} \
-            --image $IMAGE \
-            --output json)
+          docker push ${{ env.ecr_repo }}:${{ env.sha }}
 
-          echo "=== RAW AWS RESPONSE START ==="
-          echo "$RESPONSE"
-          echo "=== RAW AWS RESPONSE END ==="
-
-          IMAGE_URI=$(echo "$RESPONSE" | jq -r '.containerImage.image')
-
-          if [ -z "$IMAGE_URI" ] || [ "$IMAGE_URI" = "null" ]; then
-            echo "❌ No se pudo extraer IMAGE_URI"
-            exit 1
-          fi
-
-          echo "✅ IMAGE_URI=$IMAGE_URI"
-          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-
-      # 6. Deploy container
+      # 6. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
-          echo "🚀 Deploying with image: ${IMAGE_URI}"
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"${IMAGE_URI}\",
+                \"image\": \"${{ env.ecr_repo }}:${{ env.sha }}\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
@@ -110,12 +75,3 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
-
-      # 7. Debug - listar imágenes disponibles en el servicio
-      - name: Debug - List Lightsail container images
-        run: |
-          echo "🔍 Listando imágenes disponibles en el servicio..."
-          aws lightsail get-container-images \
-            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --region ${{ secrets.AWS_REGION }} \
-            --output json
