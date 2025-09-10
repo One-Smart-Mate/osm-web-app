@@ -26,7 +26,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl desde S3
+      # 3. Instalar dependencias necesarias
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      # 4. Instalar lightsailctl desde S3
       - name: Install lightsailctl
         run: |
           echo "⬇️ Descargando lightsailctl desde S3..."
@@ -37,7 +43,7 @@ jobs:
           file /usr/local/bin/lightsailctl
           /usr/local/bin/lightsailctl --version || echo "⚠️ lightsailctl no muestra versión, pero binario está"
 
-      # 4. Construir imagen Docker
+      # 5. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
@@ -55,28 +61,36 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend-app:${{ env.sha }} .
 
-      # 5. Push a Lightsail
+      # 6. Push a Lightsail
       - name: Push Docker image to Lightsail
         id: push
         run: |
           IMAGE="frontend-app:${{ env.sha }}"
           docker tag frontend-app:${{ env.sha }} $IMAGE
-          IMAGE_URI=$(aws lightsail push-container-image \
+
+          echo "⏳ Pushing image to Lightsail..."
+          RESPONSE=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
             --image $IMAGE \
-            --output json | jq -r '.containerImage.image')
+            --output json)
+
+          echo "AWS RESPONSE: $RESPONSE"
+          IMAGE_URI=$(echo $RESPONSE | jq -r '.containerImage.image')
+          echo "✅ IMAGE_URI=$IMAGE_URI"
+
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
-      # 6. Deploy container
+      # 7. Deploy container
       - name: Deploy to Lightsail
         run: |
+          echo "🚀 Deploying with image: ${{ env.IMAGE_URI }}"
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"${IMAGE_URI}\",
+                \"image\": \"${{ env.IMAGE_URI }}\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
