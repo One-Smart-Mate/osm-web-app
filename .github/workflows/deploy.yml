@@ -23,32 +23,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl
-      - name: Install lightsailctl
-        run: |
-          curl -sSL "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
-          sudo mv lightsailctl /usr/local/bin/lightsailctl
-          sudo chmod +x /usr/local/bin/lightsailctl
-
-      # 4. Construir imagen Docker
+      # 3. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
-            --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
-            --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
-            --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
-            --build-arg VITE_FIREBASE_BUCKET="${{ secrets.VITE_FIREBASE_BUCKET }}" \
-            --build-arg VITE_FIREBASE_DOMAIN="${{ secrets.VITE_FIREBASE_DOMAIN }}" \
-            --build-arg VITE_FIREBASE_MEASURE_ID="${{ secrets.VITE_FIREBASE_MEASURE_ID }}" \
-            --build-arg VITE_FIREBASE_MESSAGING_ID="${{ secrets.VITE_FIREBASE_MESSAGING_ID }}" \
-            --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
-            --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
-            --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
-            --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
+            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
+            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
+            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
+            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
+            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
+            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
+            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
+            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
+            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
+            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
+            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
+            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
             -t frontend-app .
 
-      # 5. Push a Lightsail
+      # 4. Push a Lightsail
       - name: Push Docker image to Lightsail
         id: push
         run: |
@@ -59,18 +52,19 @@ jobs:
             --label web \
             --region ${{ secrets.AWS_REGION }} \
             --image $IMAGE)
-          echo "$RESULT"
-          IMAGE_DIGEST=$(echo $RESULT | jq -r '.imageDigest')
-          echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
 
-      # 6. Deploy container
+          echo "$RESULT"
+          IMAGE_REF=$(echo $RESULT | grep -o '"image": *"[^"]*"' | cut -d'"' -f4)
+          echo "IMAGE_REF=$IMAGE_REF" >> $GITHUB_ENV
+
+      # 5. Deploy container
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"$IMAGE_DIGEST\",
+                \"image\": \"${IMAGE_REF}\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
