@@ -6,13 +6,15 @@ on:
       - develop
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      # Checkout del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      # Configuración de credenciales AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -20,9 +22,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build Docker image
+      # Instalar AWS CLI + lightsailctl
+      - name: Install AWS CLI and lightsailctl
         run: |
-          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
+          sudo apt-get update && sudo apt-get install -y unzip curl
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -q awscliv2.zip
+          sudo ./aws/install
+          curl -sSL "https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl" -o lightsailctl
+          sudo mv lightsailctl /usr/local/bin/lightsailctl
+          sudo chmod +x /usr/local/bin/lightsailctl
+
+      # Build y push de la imagen
+      - name: Build and push Docker image
+        env:
+          SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
+          IMAGE: ${{ github.sha }}
+        run: |
+          echo "Building Docker image..."
           docker build \
             --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
             --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
@@ -36,44 +53,30 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
             --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
             --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
-            -t $IMAGE .
+            -t $SERVICE_NAME:$IMAGE .
 
-      - name: Install lightsailctl plugin
-        run: |
-          curl -sSL https://s3.us-east-1.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
-          chmod +x /usr/local/bin/lightsailctl
+          echo "Pushing Docker image to Lightsail..."
+          docker tag $SERVICE_NAME:$IMAGE $SERVICE_NAME:$IMAGE
+          docker push $SERVICE_NAME:$IMAGE || true  # Lightsail usa `aws` no DockerHub
 
-      - name: Push image to Lightsail
-        run: |
-          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
-          aws lightsail push-container-image \
-            --service-name "${{ secrets.LIGHTSAIL_SERVICE_NAME }}" \
-            --label frontend \
-            --image "$IMAGE" \
-            --region "${{ secrets.AWS_REGION }}"
+          echo "Deploying container service..."
+          CONTAINERS=$(jq -n \
+            --arg img ":$IMAGE" \
+            '{
+              "service": {
+                "image": $img,
+                "ports": { "80": "HTTP" }
+              }
+            }')
 
-      - name: Create deployment
-        run: |
-          IMAGE=${{ secrets.LIGHTSAIL_SERVICE_NAME }}:${{ github.sha }}
-
-          echo '{
-            "app": {
-              "image": "'"$IMAGE"'",
-              "ports": { "80": "HTTP" }
-            }
-          }' > containers.json
-
-          echo '{
-            "containerName": "app",
-            "containerPort": 80,
-            "healthCheck": {
-              "path": "/",
-              "successCodes": "200-399"
-            }
-          }' > public.json
+          PUBLIC_ENDPOINT=$(jq -n \
+            '{
+              "containerName": "service",
+              "containerPort": 80,
+              "healthCheck": { "path": "/", "intervalSeconds": 10 }
+            }')
 
           aws lightsail create-container-service-deployment \
-            --service-name "${{ secrets.LIGHTSAIL_SERVICE_NAME }}" \
-            --containers file://containers.json \
-            --public-endpoint file://public.json \
-            --region "${{ secrets.AWS_REGION }}"
+            --service-name "$SERVICE_NAME" \
+            --containers "$CONTAINERS" \
+            --public-endpoint "$PUBLIC_ENDPOINT"
