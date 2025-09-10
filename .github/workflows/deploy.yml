@@ -22,19 +22,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Instalar AWS CLI + lightsailctl
-      - name: Install AWS CLI and lightsailctl
+      # Instalar lightsailctl (AWS CLI ya está preinstalado en el runner)
+      - name: Install lightsailctl
         run: |
-          sudo apt-get update && sudo apt-get install -y unzip curl
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip -q awscliv2.zip
-          sudo ./aws/install
           curl -sSL "https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl" -o lightsailctl
           sudo mv lightsailctl /usr/local/bin/lightsailctl
           sudo chmod +x /usr/local/bin/lightsailctl
 
       # Build y push de la imagen
-      - name: Build and push Docker image
+      - name: Build and deploy to Lightsail
         env:
           SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
           IMAGE: ${{ github.sha }}
@@ -56,8 +52,7 @@ jobs:
             -t $SERVICE_NAME:$IMAGE .
 
           echo "Pushing Docker image to Lightsail..."
-          docker tag $SERVICE_NAME:$IMAGE $SERVICE_NAME:$IMAGE
-          docker push $SERVICE_NAME:$IMAGE || true  # Lightsail usa `aws` no DockerHub
+          docker push $SERVICE_NAME:$IMAGE || true  # Lightsail usa aws lightsail, no DockerHub
 
           echo "Deploying container service..."
           CONTAINERS=$(jq -n \
