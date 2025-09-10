@@ -1,10 +1,13 @@
-name: Debug Push to Lightsail
+name: Deploy Frontend to Lightsail
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
 
 jobs:
-  debug:
+  deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -39,6 +42,16 @@ jobs:
           docker build \
             --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
             --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
+            --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
+            --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
+            --build-arg VITE_FIREBASE_BUCKET="${{ secrets.VITE_FIREBASE_BUCKET }}" \
+            --build-arg VITE_FIREBASE_DOMAIN="${{ secrets.VITE_FIREBASE_DOMAIN }}" \
+            --build-arg VITE_FIREBASE_MEASURE_ID="${{ secrets.VITE_FIREBASE_MEASURE_ID }}" \
+            --build-arg VITE_FIREBASE_MESSAGING_ID="${{ secrets.VITE_FIREBASE_MESSAGING_ID }}" \
+            --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
+            --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
+            --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
+            --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend:${{ env.sha }} .
 
       # 5. Verificar que la imagen existe
@@ -47,8 +60,9 @@ jobs:
           echo "🔍 Listando imágenes Docker locales..."
           docker images | grep frontend || echo "⚠️ No se encontró la imagen frontend"
 
-      # 6. Push a Lightsail (debug only)
+      # 6. Push a Lightsail
       - name: Push Docker image to Lightsail
+        id: push
         run: |
           echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
 
@@ -67,6 +81,25 @@ jobs:
           if [ -z "$IMAGE_NAME" ]; then
             echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
             exit 1
-          fi 
+          fi
 
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+      # 7. Deploy en Lightsail
+      - name: Deploy to Lightsail
+        run: |
+          echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
+          aws lightsail create-container-service-deployment \
+            --service-name ${{ env.service }} \
+            --containers "{
+              \"frontend\": {
+                \"image\": \"$IMAGE_NAME\",
+                \"ports\": { \"80\": \"HTTP\" }
+              }
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"frontend\",
+              \"containerPort\": 80,
+              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
+            }"
