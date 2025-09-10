@@ -1,0 +1,78 @@
+name: Deploy Frontend to Lightsail
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build and push Docker image
+        run: |
+          SERVICE_NAME="test-web"
+          IMAGE_NAME="$SERVICE_NAME"
+          IMAGE_TAG=$(date +%s)
+          IMAGE="$SERVICE_NAME:$IMAGE_TAG"
+
+          echo "Building Docker image..."
+          docker build \
+            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
+            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
+            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
+            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
+            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
+            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
+            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
+            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
+            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
+            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
+            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
+            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
+            -t $IMAGE_NAME .
+
+          echo "Pushing Docker image to Lightsail..."
+          aws lightsail push-container-image \
+            --service-name $SERVICE_NAME \
+            --label $IMAGE_NAME \
+            --image $IMAGE_NAME \
+            --region ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to Lightsail
+        run: |
+          SERVICE_NAME="test-web"
+          IMAGE=":$SERVICE_NAME.$SERVICE_NAME"
+
+          echo "Deploying container..."
+          aws lightsail create-container-service-deployment \
+            --service-name $SERVICE_NAME \
+            --containers '{
+              "web": {
+                "image": "'$IMAGE'",
+                "ports": { "80": "HTTP" }
+              }
+            }' \
+            --public-endpoint '{
+              "containerName": "web",
+              "containerPort": 80,
+              "healthCheck": {
+                "path": "/",
+                "intervalSeconds": 10,
+                "timeoutSeconds": 5,
+                "healthyThreshold": 2,
+                "unhealthyThreshold": 2
+              }
+            }'
+
