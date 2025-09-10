@@ -26,7 +26,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Construir imagen Docker
+      # 3. Instalar lightsailctl
+      - name: Install lightsailctl
+        run: |
+          curl -sSL "https://lightsailctl.s3.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
+          chmod +x lightsailctl
+          sudo mv lightsailctl /usr/local/bin/
+
+      # 3.1 Verificar instalación de lightsailctl
+      - name: Verify lightsailctl
+        run: |
+          echo "Verificando lightsailctl..."
+          which lightsailctl
+          file $(which lightsailctl)
+          lightsailctl --version || echo "⚠️ lightsailctl no muestra versión, pero binario existe"
+
+      # 4. Construir imagen Docker
       - name: Build Docker image
         run: |
           docker build \
@@ -44,18 +59,18 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend-app:${{ env.sha }} .
 
-      # 4. Push a Lightsail (sin lightsailctl, usando solo AWS CLI)
+      # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
         run: |
           IMAGE="frontend-app:${{ env.sha }}"
           docker tag frontend-app:${{ env.sha }} $IMAGE
-          docker save $IMAGE | aws lightsail push-container-image \
+          docker save $IMAGE | lightsailctl push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
             --image -
 
-      # 5. Deploy container
+      # 6. Deploy container
       - name: Deploy to Lightsail
         run: |
           IMAGE=":${{ secrets.AWS_SERVICE_NAME }}.web.${{ env.sha }}"
