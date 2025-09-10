@@ -26,11 +26,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl desde tar.gz
+      # 3. Instalar lightsailctl desde S3
       - name: Install lightsailctl
         run: |
-          echo "⬇️ Descargando lightsailctl..."
-          curl -sSL "https://lightsailctl.amazonaws.com/0.14.3/linux-amd64/lightsailctl.tar.gz" -o lightsailctl.tar.gz
+          echo "⬇️ Descargando lightsailctl desde S3..."
+          curl -sSL "https://lightsailctl.s3.us-west-2.amazonaws.com/0.14.3/linux-amd64/lightsailctl.tar.gz" -o lightsailctl.tar.gz
           tar -xzf lightsailctl.tar.gz
           chmod +x lightsailctl
           sudo mv lightsailctl /usr/local/bin/
