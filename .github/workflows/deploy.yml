@@ -36,7 +36,7 @@ jobs:
           aws ecr get-login-password --region ${{ env.region }} \
             | docker login --username AWS --password-stdin ${{ env.account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
 
-      # 4. Build de la imagen con 2 tags (sha y latest)
+      # 4. Build de la imagen con variables y 2 tags (sha y latest)
       - name: Build Docker image
         run: |
           docker build \
