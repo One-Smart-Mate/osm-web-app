@@ -32,7 +32,6 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t frontend-app:${{ env.sha }} . \
             --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
             --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
             --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
@@ -44,7 +43,8 @@ jobs:
             --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
             --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
             --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
-            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }}
+            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
+            -t frontend-app:${{ env.sha }} .
 
       # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
