@@ -32,13 +32,13 @@ jobs:
       - name: Install lightsailctl
         run: |
           curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
-          sudo mv lightsailctl /usr/local/bin/lightsailctl
-          sudo chmod +x /usr/local/bin/lightsailctl
-          lightsailctl --help || true
+          chmod +x lightsailctl
+          sudo mv lightsailctl /usr/local/bin/
 
-      # 4. Build Docker image local
+      # 4. Build Docker image
       - name: Build Docker image
         run: |
+          set -x
           docker build \
             --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
             --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
@@ -57,25 +57,23 @@ jobs:
       # 5. Subir la imagen al registry de Lightsail
       - name: Push Docker image to Lightsail
         run: |
+          set -x
           echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
-          RAW_OUTPUT=$(aws lightsail push-container-image \
+          IMAGE_NAME=$(aws lightsail push-container-image \
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
             --image frontend:${{ env.sha }} \
+            --query 'containerImage.image' \
             --output text)
 
-          echo "🔍 Salida cruda: $RAW_OUTPUT"
-
-          # Extraer solo el nombre válido de la imagen y limpiar comillas
-          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep -o ':[^ ]*frontend[^ ]*' | tr -d '"')
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
-
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
       # 6. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
+          set -x
           echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
             --service-name ${{ env.service }} \
