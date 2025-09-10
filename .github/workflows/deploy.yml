@@ -67,6 +67,6 @@ jobs:
           if [ -z "$IMAGE_NAME" ]; then
             echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
             exit 1
-          fi
+          fi 
 
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
