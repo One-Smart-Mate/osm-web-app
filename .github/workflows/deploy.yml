@@ -3,14 +3,14 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - develop
+      - develop   # o main, según tu flujo de trabajo
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -20,14 +20,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon Lightsail container service
-        run: aws lightsail get-container-services
-
       - name: Build and push Docker image
         run: |
-          IMAGE="osm-web-app"
-          SERVICE_NAME="osm-web-app-service"
+          SERVICE_NAME="test-web"
+          IMAGE_NAME="$SERVICE_NAME"
+          IMAGE_TAG=$(date +%s)
+          IMAGE="$SERVICE_NAME:$IMAGE_TAG"
 
+          echo "Building Docker image..."
           docker build \
             --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
             --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
@@ -41,36 +41,38 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
             --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
             --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
-            -t $IMAGE .
+            -t $IMAGE_NAME .
 
+          echo "Pushing Docker image to Lightsail..."
           aws lightsail push-container-image \
             --service-name $SERVICE_NAME \
-            --label $IMAGE \
-            --image $IMAGE:latest
+            --label $IMAGE_NAME \
+            --image $IMAGE_NAME \
+            --region ${{ secrets.AWS_REGION }}
 
-      - name: Create Lightsail deployment
+      - name: Deploy to Lightsail
         run: |
-          IMAGE="osm-web-app"
-          SERVICE_NAME="osm-web-app-service"
+          SERVICE_NAME="test-web"
+          IMAGE=":$SERVICE_NAME.$SERVICE_NAME"
 
-          DEPLOYMENT=$(aws lightsail get-container-images --service-name $SERVICE_NAME --query "containerImages[-1].image" --output text)
-
+          echo "Deploying container..."
           aws lightsail create-container-service-deployment \
             --service-name $SERVICE_NAME \
-            --containers "{
-              \"frontend\": {
-                \"image\": \"$DEPLOYMENT\",
-                \"ports\": { \"80\": \"HTTP\" }
+            --containers '{
+              "web": {
+                "image": "'$IMAGE'",
+                "ports": { "80": "HTTP" }
               }
-            }" \
-            --public-endpoint "{
-              \"containerName\": \"frontend\",
-              \"containerPort\": 80,
-              \"healthCheck\": {
-                \"path\": \"/\",
-                \"intervalSeconds\": 10,
-                \"timeoutSeconds\": 5,
-                \"healthyThreshold\": 2,
-                \"unhealthyThreshold\": 2
+            }' \
+            --public-endpoint '{
+              "containerName": "web",
+              "containerPort": 80,
+              "healthCheck": {
+                "path": "/",
+                "intervalSeconds": 10,
+                "timeoutSeconds": 5,
+                "healthyThreshold": 2,
+                "unhealthyThreshold": 2
               }
-            }"
+            }'
+
