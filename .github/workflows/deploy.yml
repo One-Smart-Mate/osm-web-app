@@ -27,45 +27,49 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
-            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
-            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
-            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
-            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
-            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
-            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
-            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
-            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
-            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
-            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
-            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
+            --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
+            --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
+            --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
+            --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
+            --build-arg VITE_FIREBASE_BUCKET="${{ secrets.VITE_FIREBASE_BUCKET }}" \
+            --build-arg VITE_FIREBASE_DOMAIN="${{ secrets.VITE_FIREBASE_DOMAIN }}" \
+            --build-arg VITE_FIREBASE_MEASURE_ID="${{ secrets.VITE_FIREBASE_MEASURE_ID }}" \
+            --build-arg VITE_FIREBASE_MESSAGING_ID="${{ secrets.VITE_FIREBASE_MESSAGING_ID }}" \
+            --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
+            --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
+            --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
+            --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend-app .
 
-      # 4. Push a Lightsail
+      # 4. Push a Lightsail (guardar el resultado en una variable)
       - name: Push Docker image to Lightsail
+        id: push
         run: |
           IMAGE="frontend-app:$(git rev-parse --short HEAD)"
           docker tag frontend-app $IMAGE
-          docker save $IMAGE | aws lightsail push-container-image \
+          RESULT=$(docker save $IMAGE | aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image -
+            --image -)
+          echo "$RESULT"
+          IMAGE_DIGEST=$(echo $RESULT | jq -r '.imageDigest')
+          echo "IMAGE_DIGEST=$IMAGE_DIGEST" >> $GITHUB_ENV
 
-      # 5. Deploy container
+      # 5. Deploy container usando el digest real
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --containers '{
-              "frontend": {
-                "image": "frontend-app:latest",
-                "ports": { "80": "HTTP" }
+            --containers "{
+              \"frontend\": {
+                \"image\": \"$IMAGE_DIGEST\",
+                \"ports\": { \"80\": \"HTTP\" }
               }
-            }' \
-            --public-endpoint '{
-              "containerName": "frontend",
-              "containerPort": 80,
-              "healthCheck": { "path": "/", "intervalSeconds": 10 }
-            }'
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"frontend\",
+              \"containerPort\": 80,
+              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
+            }"
 
