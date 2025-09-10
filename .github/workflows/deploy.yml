@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail (via ECR)
+name: Deploy Frontend to Lightsail
 
 on:
   push:
@@ -12,10 +12,6 @@ jobs:
 
     env:
       sha: ${{ github.sha }}
-      account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-      region: ${{ secrets.AWS_REGION }}
-      repo: ${{ secrets.ECR_REPOSITORY }}
-      ecr_repo: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
 
     steps:
       # 1. Checkout
@@ -30,13 +26,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Login en ECR
-      - name: Login to Amazon ECR
-        run: |
-          aws ecr get-login-password --region ${{ env.region }} \
-            | docker login --username AWS --password-stdin ${{ env.account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
-
-      # 4. Build de la imagen con variables y 2 tags (sha y latest)
+      # 3. Build de la imagen con variables
       - name: Build Docker image
         run: |
           docker build \
@@ -52,23 +42,24 @@ jobs:
             --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
             --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
-            -t ${{ env.ecr_repo }}:${{ env.sha }} \
-            -t ${{ env.ecr_repo }}:latest .
+            -t frontend:${{ env.sha }}
 
-      # 5. Push a ECR (los dos tags)
-      - name: Push Docker image to Amazon ECR
+      # 4. Push de la imagen a Lightsail (no ECR)
+      - name: Push Docker image to Lightsail
         run: |
-          docker push ${{ env.ecr_repo }}:${{ env.sha }}
-          docker push ${{ env.ecr_repo }}:latest
+          aws lightsail push-container-image \
+            --service-name ${{ secrets.AWS_SERVICE_NAME }} \
+            --label frontend \
+            --image frontend:${{ env.sha }}
 
-      # 6. Deploy en Lightsail usando latest
+      # 5. Deploy en Lightsail usando la imagen recién subida
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"${{ env.ecr_repo }}:latest\",
+                \"image\": \"frontend\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
@@ -77,3 +68,4 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
+
