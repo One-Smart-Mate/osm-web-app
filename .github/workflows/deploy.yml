@@ -43,33 +43,29 @@ jobs:
 
       # 4. Push a Lightsail
       - name: Push Docker image to Lightsail
-        id: push
         run: |
-          IMAGE="frontend-app:$(git rev-parse --short HEAD)"
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          IMAGE="frontend-app:${SHORT_SHA}"
           docker tag frontend-app $IMAGE
-          RESULT=$(aws lightsail push-container-image \
+          aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image $IMAGE)
-
-          echo "$RESULT"
-          IMAGE_REF=$(echo $RESULT | grep -o '"image": *"[^"]*"' | cut -d'"' -f4)
-          echo "IMAGE_REF=$IMAGE_REF" >> $GITHUB_ENV
+            --image $IMAGE
 
       # 5. Deploy container
       - name: Deploy to Lightsail
         run: |
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
-            --containers "{
-              \"frontend\": {
-                \"image\": \"${IMAGE_REF}\",
-                \"ports\": { \"80\": \"HTTP\" }
+            --containers '{
+              "frontend": {
+                "image": ":'"${{ secrets.AWS_SERVICE_NAME }}"'.web.latest",
+                "ports": { "80": "HTTP" }
               }
-            }" \
-            --public-endpoint "{
-              \"containerName\": \"frontend\",
-              \"containerPort\": 80,
-              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
-            }"
+            }' \
+            --public-endpoint '{
+              "containerName": "frontend",
+              "containerPort": 80,
+              "healthCheck": { "path": "/", "intervalSeconds": 10 }
+            }'
