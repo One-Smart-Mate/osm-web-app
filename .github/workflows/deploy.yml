@@ -4,18 +4,23 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash 
+
+    env:
+      sha: ${{ github.sha }}
+      region: ${{ secrets.AWS_REGION }}
+      service: ${{ secrets.AWS_SERVICE_NAME }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # 1. Checkout
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      # 2. Configurar AWS CLI
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -23,59 +28,78 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build and push Docker image
+      # 3. Instalar lightsailctl
+      - name: Install lightsailctl (corrected path)
         run: |
-          SERVICE_NAME="test-web"
-          IMAGE_NAME="$SERVICE_NAME"
-          IMAGE_TAG=${{ github.run_number }} 
-          IMAGE="$IMAGE_NAME:$IMAGE_TAG"
+          curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          sudo chmod +x /usr/local/bin/lightsailctl
+          lightsailctl --version || echo "⚠️ lightsailctl no muestra versión"
 
-          echo "Building Docker image..."
+      # 4. Build Docker image
+      - name: Build Docker image
+        run: |
           docker build \
-            --build-arg VITE_AP_VERSION=${{ secrets.VITE_AP_VERSION }} \
-            --build-arg VITE_API_SERVICE=${{ secrets.VITE_API_SERVICE }} \
-            --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
-            --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
-            --build-arg VITE_FIREBASE_BUCKET=${{ secrets.VITE_FIREBASE_BUCKET }} \
-            --build-arg VITE_FIREBASE_DOMAIN=${{ secrets.VITE_FIREBASE_DOMAIN }} \
-            --build-arg VITE_FIREBASE_MEASURE_ID=${{ secrets.VITE_FIREBASE_MEASURE_ID }} \
-            --build-arg VITE_FIREBASE_MESSAGING_ID=${{ secrets.VITE_FIREBASE_MESSAGING_ID }} \
-            --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
-            --build-arg VITE_FIREBASE_VAPID_KEY=${{ secrets.VITE_FIREBASE_VAPID_KEY }} \
-            --build-arg VITE_IMPORT_USERS_EXCEL=${{ secrets.VITE_IMPORT_USERS_EXCEL }} \
-            --build-arg VITE_PDF_MANUAL_LINK=${{ secrets.VITE_PDF_MANUAL_LINK }} \
-            -t $IMAGE .
+            --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
+            --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
+            --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
+            --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
+            --build-arg VITE_FIREBASE_BUCKET="${{ secrets.VITE_FIREBASE_BUCKET }}" \
+            --build-arg VITE_FIREBASE_DOMAIN="${{ secrets.VITE_FIREBASE_DOMAIN }}" \
+            --build-arg VITE_FIREBASE_MEASURE_ID="${{ secrets.VITE_FIREBASE_MEASURE_ID }}" \
+            --build-arg VITE_FIREBASE_MESSAGING_ID="${{ secrets.VITE_FIREBASE_MESSAGING_ID }}" \
+            --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
+            --build-arg VITE_FIREBASE_VAPID_KEY="${{ secrets.VITE_FIREBASE_VAPID_KEY }}" \
+            --build-arg VITE_IMPORT_USERS_EXCEL="${{ secrets.VITE_IMPORT_USERS_EXCEL }}" \
+            --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
+            -t frontend:${{ env.sha }} .
 
-          echo "Pushing Docker image to Lightsail..."
-          aws lightsail push-container-image \
-            --service-name $SERVICE_NAME \
-            --label $IMAGE_NAME \
-            --image $IMAGE \
-            --region ${{ secrets.AWS_REGION }}
+      # 5. Verificar que la imagen existe
+      - name: Debug docker images
+        run: |
+          echo "🔍 Listando imágenes Docker locales..."
+          docker images | grep frontend || echo "⚠️ No se encontró la imagen frontend"
 
+      # 6. Push a Lightsail
+      - name: Push Docker image to Lightsail
+        id: push
+        run: |
+          echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
+
+          RAW_OUTPUT=$(aws lightsail push-container-image \
+            --region ${{ env.region }} \
+            --service-name ${{ env.service }} \
+            --label frontend \
+            --image frontend:${{ env.sha }})
+
+          echo "🔍 Salida cruda completa:"
+          echo "$RAW_OUTPUT"
+
+          # Extraer correctamente IMAGE_NAME con sed
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | sed -n 's/.*Refer to this image as "\(.*\)" in deployments.*/\1/p')
+
+          if [ -z "$IMAGE_NAME" ]; then
+            echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
+            exit 1
+          fi
+
+          echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+      # 7. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
-          SERVICE_NAME="test-web"
-          IMAGE=":$SERVICE_NAME.$SERVICE_NAME"
-
-          echo "Deploying container..."
+          echo "🔎 IMAGE_NAME que se usará en el deploy: $IMAGE_NAME"
+          echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
-            --service-name $SERVICE_NAME \
-            --containers '{
-              "web": {
-                "image": "'$IMAGE'",
-                "ports": { "80": "HTTP" }
+            --service-name ${{ env.service }} \
+            --containers "{
+              \"frontend\": {
+                \"image\": \"$IMAGE_NAME\",
+                \"ports\": { \"80\": \"HTTP\" }
               }
-            }' \
-            --public-endpoint '{
-              "containerName": "web",
-              "containerPort": 80,
-              "healthCheck": {
-                "path": "/",
-                "intervalSeconds": 10,
-                "timeoutSeconds": 5,
-                "healthyThreshold": 2,
-                "unhealthyThreshold": 2
-              }
-            }'
-
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"frontend\",
+              \"containerPort\": 80,
+              \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
+            }"
