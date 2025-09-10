@@ -30,8 +30,7 @@ jobs:
       - name: Install lightsailctl
         run: |
           echo "⬇️ Descargando lightsailctl desde S3..."
-          curl -sSL "https://lightsailctl.s3.us-west-2.amazonaws.com/0.14.3/linux-amd64/lightsailctl.tar.gz" -o lightsailctl.tar.gz
-          tar -xzf lightsailctl.tar.gz
+          curl -sSL "https://lightsailctl.s3.us-west-2.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
           chmod +x lightsailctl
           sudo mv lightsailctl /usr/local/bin/
           echo "✅ lightsailctl instalado en /usr/local/bin"
