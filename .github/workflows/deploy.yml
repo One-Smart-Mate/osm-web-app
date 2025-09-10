@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -20,9 +20,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Install lightsailctl
+        run: |
+          curl -sSL https://lightsailctl.amazonaws.com/0.14.1/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
+
       - name: Build and push Docker image
         env:
-          SERVICE_NAME: test-web
+          SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
           IMAGE_TAG: ${{ github.run_number }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           VITE_AP_VERSION: ${{ secrets.VITE_AP_VERSION }}
@@ -64,33 +69,29 @@ jobs:
             --image $IMAGE \
             --region $AWS_REGION
 
-      - name: Deploy to Lightsail
+      - name: Deploy container
         env:
-          SERVICE_NAME: test-web
+          SERVICE_NAME: ${{ secrets.AWS_SERVICE_NAME }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          IMAGE=":$SERVICE_NAME.$SERVICE_NAME"
-
-          echo "Deploying container..."
+          echo "Deploying new container version..."
           aws lightsail create-container-service-deployment \
             --service-name $SERVICE_NAME \
-            --containers '{
-              "web": {
-                "image": "'$IMAGE'",
-                "ports": { "80": "HTTP" }
+            --containers "{
+              \"frontend\": {
+                \"image\": \":$SERVICE_NAME.${{ github.run_number }}\",
+                \"ports\": { \"80\": \"HTTP\" }
               }
-            }' \
-            --public-endpoint '{
-              "containerName": "web",
-              "containerPort": 80,
-              "healthCheck": {
-                "path": "/",
-                "intervalSeconds": 10,
-                "timeoutSeconds": 5,
-                "healthyThreshold": 2,
-                "unhealthyThreshold": 2
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"frontend\",
+              \"containerPort\": 80,
+              \"healthCheck\": {
+                \"path\": \"/\",
+                \"intervalSeconds\": 10,
+                \"timeoutSeconds\": 5,
+                \"healthyThreshold\": 2,
+                \"unhealthyThreshold\": 2
               }
-            }' \
+            }" \
             --region $AWS_REGION
-
-
