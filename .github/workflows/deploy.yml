@@ -26,13 +26,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl
+      # 3. Instalar lightsailctl (con fallback)
       - name: Install lightsailctl
         run: |
-          curl -sSL "https://lightsailctl.s3.amazonaws.com/0.14.3/linux-amd64/lightsailctl" -o lightsailctl
-          chmod +x lightsailctl
-          sudo mv lightsailctl /usr/local/bin/
+          set -e
+          echo "Descargando lightsailctl..."
+          
+          URL_GLOBAL="https://lightsailctl.s3.amazonaws.com/0.14.3/linux-amd64/lightsailctl"
+          URL_REGION="https://lightsailctl.s3.us-east-1.amazonaws.com/0.14.3/linux-amd64/lightsailctl"
 
+          if curl -fsSL "$URL_GLOBAL" -o lightsailctl; then
+            echo "Descarga desde URL global OK"
+          else
+            echo "Fallo URL global, probando con URL regional..."
+            curl -fsSL "$URL_REGION" -o lightsailctl
+          fi
+
+          chmod +x lightsailctl
+          file lightsailctl
+          ./lightsailctl --help || true
+          sudo mv lightsailctl /usr/local/bin/
 
       # 4. Construir imagen Docker
       - name: Build Docker image
