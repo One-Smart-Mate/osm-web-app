@@ -12,6 +12,7 @@ jobs:
 
     env:
       sha: ${{ github.sha }}
+      account_id: ${{ secrets.AWS_ACCOUNT_ID }}
       region: ${{ secrets.AWS_REGION }}
       service: ${{ secrets.AWS_SERVICE_NAME }}
 
@@ -31,14 +32,12 @@ jobs:
       # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
-          curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" -o lightsailctl
-          chmod +x lightsailctl
-          sudo mv lightsailctl /usr/local/bin/
+          curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" -o /usr/local/bin/lightsailctl
+          chmod +x /usr/local/bin/lightsailctl
 
-      # 4. Build Docker image
+      # 4. Build de la imagen
       - name: Build Docker image
         run: |
-          set -x
           docker build \
             --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
             --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
@@ -59,21 +58,23 @@ jobs:
         run: |
           set -x
           echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
-          IMAGE_NAME=$(aws lightsail push-container-image \
+          RAW_OUTPUT=$(aws lightsail push-container-image \
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
             --image frontend:${{ env.sha }} \
-            --query 'containerImage.image' \
-            --output text)
+            --output json)
 
+          echo "🔍 Salida cruda:"
+          echo "$RAW_OUTPUT"
+
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | jq -r '.containerImage.image')
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-      # 6. Deploy en Lightsail
+      # 6. Hacer deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
-          set -x
           echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
             --service-name ${{ env.service }} \
