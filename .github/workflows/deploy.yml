@@ -1,4 +1,4 @@
-name: Deploy Frontend to Lightsail (via Lightsail Registry)
+name: Deploy Frontend to Lightsail
 
 on:
   push:
@@ -32,10 +32,11 @@ jobs:
       # 3. Instalar lightsailctl
       - name: Install lightsailctl
         run: |
-          curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" -o /usr/local/bin/lightsailctl
+          curl -s "https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl" \
+            -o /usr/local/bin/lightsailctl
           chmod +x /usr/local/bin/lightsailctl
 
-      # 4. Build de la imagen
+      # 4. Build de la imagen con variables
       - name: Build Docker image
         run: |
           docker build \
@@ -53,7 +54,7 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend:${{ env.sha }} .
 
-      # 5. Subir la imagen al registry de Lightsail
+      # 5. Push a Lightsail (no ECR)
       - name: Push Docker image to Lightsail
         run: |
           set -x
@@ -62,17 +63,18 @@ jobs:
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
-            --image frontend:${{ env.sha }} \
-            --output json)
+            --image frontend:${{ env.sha }})
 
           echo "🔍 Salida cruda:"
           echo "$RAW_OUTPUT"
 
-          IMAGE_NAME=$(echo "$RAW_OUTPUT" | jq -r '.containerImage.image')
+          # Extraer el nombre real de la imagen
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep "Refer to this image as" | awk -F'"' '{print $2}')
+
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-      # 6. Hacer deploy en Lightsail
+      # 6. Deploy en Lightsail
       - name: Deploy to Lightsail
         run: |
           echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
