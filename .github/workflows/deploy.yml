@@ -58,14 +58,19 @@ jobs:
       - name: Push Docker image to Lightsail
         run: |
           echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
-          IMAGE_NAME=$(aws lightsail push-container-image \
+          RAW_OUTPUT=$(aws lightsail push-container-image \
             --region ${{ env.region }} \
             --service-name ${{ env.service }} \
             --label frontend \
             --image frontend:${{ env.sha }} \
-            --output text | tail -n 1)
+            --output text)
 
+          echo "🔍 Salida cruda: $RAW_OUTPUT"
+
+          # Extraer solo la parte que empieza con ":"
+          IMAGE_NAME=$(echo "$RAW_OUTPUT" | grep -o ':[^ ]*frontend[^ ]*')
           echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
+
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
       # 6. Deploy en Lightsail usando la imagen registrada
