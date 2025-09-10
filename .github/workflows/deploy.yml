@@ -3,7 +3,7 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:
 
 jobs:
