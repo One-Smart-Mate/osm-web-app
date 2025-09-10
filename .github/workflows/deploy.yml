@@ -57,25 +57,26 @@ jobs:
 
       # 5. Push a Lightsail
       - name: Push Docker image to Lightsail
+        id: push
         run: |
           IMAGE="frontend-app:${{ env.sha }}"
           docker tag frontend-app:${{ env.sha }} $IMAGE
-          aws lightsail push-container-image \
+          IMAGE_URI=$(aws lightsail push-container-image \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --label web \
             --region ${{ secrets.AWS_REGION }} \
-            --image $IMAGE
-
+            --image $IMAGE \
+            --output json | jq -r '.containerImage.image')
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
       # 6. Deploy container
       - name: Deploy to Lightsail
         run: |
-          IMAGE=":${{ secrets.AWS_SERVICE_NAME }}.web.${{ env.sha }}"
           aws lightsail create-container-service-deployment \
             --service-name ${{ secrets.AWS_SERVICE_NAME }} \
             --containers "{
               \"frontend\": {
-                \"image\": \"$IMAGE\",
+                \"image\": \"${IMAGE_URI}\",
                 \"ports\": { \"80\": \"HTTP\" }
               }
             }" \
@@ -84,3 +85,4 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
+
