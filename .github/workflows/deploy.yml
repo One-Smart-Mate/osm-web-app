@@ -29,12 +29,12 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # 3. Instalar lightsailctl
-      - name: Install lightsailctl
+      - name: Install lightsailctl (corrected path)
         run: |
-          curl -s https://s3.us-west-2.amazonaws.com/amazonlightsailctl/latest/linux-amd64/lightsailctl -o lightsailctl
-          sudo mv lightsailctl /usr/local/bin/lightsailctl
+          curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           sudo chmod +x /usr/local/bin/lightsailctl
           lightsailctl --version || echo "⚠️ lightsailctl no muestra versión"
+
 
       # 4. Build Docker image
       - name: Build Docker image
