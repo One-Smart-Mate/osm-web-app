@@ -760,7 +760,7 @@ const CardTypesPage = () => {
                 onComplete={() => {
                   handleCompleteCardTypeForm();
                 }}
-                formType={CardTypeFormType.CREATE}
+                formType={CardTypeFormType._CREATE}
                 data={formData}
               />
             )}
@@ -769,7 +769,7 @@ const CardTypesPage = () => {
                 onComplete={() => {
                   handleCompleteCardTypeForm();
                 }}
-                formType={CardTypeFormType.UPDATE}
+                formType={CardTypeFormType._UPDATE}
                 data={formData}
               />
             )}
@@ -778,7 +778,7 @@ const CardTypesPage = () => {
                 onComplete={() => {
                   handleCompleteCardTypeForm();
                 }}
-                formType={PreclassifierFormType.CREATE}
+                formType={PreclassifierFormType._CREATE}
                 data={formData}
               />
             )}
@@ -787,7 +787,7 @@ const CardTypesPage = () => {
                 onComplete={() => {
                   handleCompleteCardTypeForm();
                 }}
-                formType={PreclassifierFormType.UPDATE}
+                formType={PreclassifierFormType._UPDATE}
                 data={formData}
               />
             )}

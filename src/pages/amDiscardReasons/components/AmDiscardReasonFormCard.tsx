@@ -21,7 +21,7 @@ const AmDiscardReasonFormCard = ({
 }: AmDiscardReasonFormCardProps): React.ReactElement => {
 
   useEffect(() => {
-    if (initialValues && formType === AmDiscardReasonFormType.UPDATE) {
+    if (initialValues && formType === AmDiscardReasonFormType._UPDATE) {
       form.setFieldsValue({
         id: initialValues.id,
         discardReason: initialValues.discardReason,

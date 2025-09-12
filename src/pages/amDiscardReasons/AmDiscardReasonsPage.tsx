@@ -63,7 +63,7 @@ const AmDiscardReasonsPage = () => {
       enableCreateButton={true}
       createButtonComponent={
         <AmDiscardReasonForm
-          formType={AmDiscardReasonFormType.CREATE}
+          formType={AmDiscardReasonFormType._CREATE}
           onComplete={() => handleRefresh()}
         />
       }

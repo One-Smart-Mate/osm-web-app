@@ -73,7 +73,7 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
       onComplete?.();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
     } catch (error) {
       console.error("Error creating priority:", error);
@@ -97,7 +97,7 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
       ).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
     } catch (error) {
       console.error("Error updating company:", error);
       AnatomyNotification.error(notification, error);

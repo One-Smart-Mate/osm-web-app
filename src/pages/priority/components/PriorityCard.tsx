@@ -24,7 +24,7 @@ const PriorityCard = ({ priority, onComplete }: CardProps) => {
       actions={[
         <PriorityForm
           data={priority}
-          formType={PriorityFormType.UPDATE}
+          formType={PriorityFormType._UPDATE}
           onComplete={() => {
             if (onComplete) {
               onComplete();

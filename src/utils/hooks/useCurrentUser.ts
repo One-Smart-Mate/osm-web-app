@@ -22,10 +22,10 @@ const useCurrentUser = () => {
   };
 
   const isIhAdmin = () => {
-    return getUserRol(user) === UserRoles.IHSISADMIN;
+    return getUserRol(user) === UserRoles._IHSISADMIN;
   };
 
-  const rol = getUserRol(user) ?? UserRoles.UNDEFINED;
+  const rol = getUserRol(user) ?? UserRoles._UNDEFINED;
 
   return { user, setUser, isIhAdmin, rol };
 };

@@ -64,7 +64,7 @@ const OplTypesPage = () => {
       enableCreateButton={true}
       createButtonComponent={
         <OplTypeForm
-          formType={OplTypeFormType.CREATE}
+          formType={OplTypeFormType._CREATE}
           onComplete={() => handleGetOplTypes()}
         />
       }

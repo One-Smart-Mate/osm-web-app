@@ -24,7 +24,7 @@ const OplTypeCard = ({ oplType, onComplete }: CardProps) => {
       actions={[
         <OplTypeForm
           data={oplType}
-          formType={OplTypeFormType.UPDATE}
+          formType={OplTypeFormType._UPDATE}
           onComplete={() => {
             if (onComplete) {
               onComplete();

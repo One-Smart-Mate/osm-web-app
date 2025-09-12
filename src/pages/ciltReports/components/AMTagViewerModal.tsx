@@ -157,7 +157,7 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
       setModalOpen(false);
       // Refresh card data after update
       await getCardDetails(String(amTagId));
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      handleSucccessNotification(NotificationSuccess._UPDATE);
     } catch (error) {
       console.log(error);
       handleErrorNotification(error);

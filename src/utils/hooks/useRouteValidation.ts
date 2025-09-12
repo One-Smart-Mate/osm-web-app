@@ -15,8 +15,8 @@ const useRouteValidation = (): boolean => {
   const currentRole = rol;
 
   const accessibleRoutes: Record<UserRoles, (string | RegExp)[]> = {
-    [UserRoles.IHSISADMIN]: ["*"],
-    [UserRoles.LOCALADMIN]: [
+    [UserRoles._IHSISADMIN]: ["*"],
+    [UserRoles._LOCALADMIN]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.tagsFastPassword}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
@@ -34,7 +34,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.amDiscardReasons}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
-    [UserRoles.LOCALSYSADMIN]: [
+    [UserRoles._LOCALSYSADMIN]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.tagsFastPassword}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
@@ -57,7 +57,7 @@ const useRouteValidation = (): boolean => {
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.users}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`),
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)    ],
-    [UserRoles.UNDEFINED]: [
+    [UserRoles._UNDEFINED]: [
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
     `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
     new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)    ],

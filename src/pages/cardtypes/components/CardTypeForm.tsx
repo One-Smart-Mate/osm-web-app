@@ -87,7 +87,7 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
       await createCardType(newCardType).unwrap();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
       form.resetFields();
       onComplete?.();
@@ -125,7 +125,7 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
         values.status || Strings.active.toUpperCase()
       );
       await updateCardType(updatedCardType).unwrap();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
       form.resetFields();
       onComplete?.();
     } catch (error) {

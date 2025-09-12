@@ -43,7 +43,7 @@ const SiteCard = ({ site, onComplete, companyName }: SiteCardProps): React.React
               }
             }}
             companyName={companyName ?? Strings.empty}
-            formType={SiteFormType.UPDATE}
+            formType={SiteFormType._UPDATE}
           />
           <Button
             type="default"

@@ -106,7 +106,7 @@ const SitesPage = () => {
           <SiteForm
             onComplete={() => handleGetSites()}
             companyName={companyName}
-            formType={SiteFormType.CREATE}
+            formType={SiteFormType._CREATE}
           />
         }
         content={

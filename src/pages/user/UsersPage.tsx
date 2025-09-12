@@ -98,7 +98,7 @@ const UsersPage = () => {
       enableBackButton={isIhAdmin()}
       createButtonComponent={
         <UserForm
-          formType={UserFormType.CREATE}
+          formType={UserFormType._CREATE}
           onComplete={() => handleGetUsers()}
         />
       }

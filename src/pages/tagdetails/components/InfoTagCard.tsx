@@ -163,7 +163,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
       }
       setModalOpen(false);
       dispatch(setCardUpdatedIndicator());
-      handleSucccessNotification(NotificationSuccess.UPDATE);
+      handleSucccessNotification(NotificationSuccess._UPDATE);
     } catch (error) {
       console.log(error);
       handleErrorNotification(error);

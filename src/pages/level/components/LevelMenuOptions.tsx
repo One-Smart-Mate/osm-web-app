@@ -29,7 +29,7 @@ const LevelMenuOptions: React.FC<LevelContextMenuProps> = ({
 }) => {
   if (
     !isVisible ||
-    !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN)
+    !(role === UserRoles._IHSISADMIN || role === UserRoles._LOCALSYSADMIN)
   )
     return null;
 

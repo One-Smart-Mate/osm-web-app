@@ -95,7 +95,7 @@ const CiltFrecuenciesPage = () => {
       enableBackButton={isIhAdmin()}
       createButtonComponent={
         <CiltFrequenciesForm
-          formType={CiltFrequenciesFormType.CREATE}
+          formType={CiltFrequenciesFormType._CREATE}
           onComplete={() => fetchCiltFrequencies()}
         />
       }

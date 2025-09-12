@@ -70,7 +70,7 @@ const CompaniesPage = () => {
       createButtonComponent={
         <CompanyForm
           onComplete={() => handleGetCompanies()}
-          formType={CompanyFormType.CREATE}
+          formType={CompanyFormType._CREATE}
         />
       }
       content={

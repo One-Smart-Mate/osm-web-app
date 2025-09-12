@@ -35,7 +35,7 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
       title={<Typography.Title level={5}>{user.name}</Typography.Title>}
       actions={[
         <UserForm
-          formType={UserFormType.UPDATE}
+          formType={UserFormType._UPDATE}
           data={user}
           onComplete={() => {
             if (onComplete) {

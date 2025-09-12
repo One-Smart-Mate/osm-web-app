@@ -64,13 +64,13 @@ export const getUserSiderOptions = (user: User): ItemType[] => {
 
   let routes: ItemType[] = [];
   switch (rol) {
-    case UserRoles.LOCALADMIN:
+    case UserRoles._LOCALADMIN:
       routes = localAdminRoutesSiderOptions();
       break;
-      case UserRoles.LOCALSYSADMIN:
+      case UserRoles._LOCALSYSADMIN:
         routes = localSisAdminRoutesSiderOptions();
       break;
-      case UserRoles.IHSISADMIN:
+      case UserRoles._IHSISADMIN:
         routes = localIHSisAdminRoutesSiderOptions();
       break;
     default:
@@ -96,7 +96,7 @@ export const buildRoute = (path: string): string => {
 
 export const buildInitRoute = (user: User): string => {
   const rol = getUserRol(user);
-  if(rol === UserRoles.IHSISADMIN) {
+  if(rol === UserRoles._IHSISADMIN) {
     return buildRoute(Constants.ROUTES_PATH.companies);
   } else {
     return buildRoute(Constants.ROUTES_PATH.charts);

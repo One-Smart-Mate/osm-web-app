@@ -81,7 +81,7 @@ const UserForm = ({
       onComplete?.();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
     } catch (error) {
       console.error("Error creating priority:", error);
@@ -114,7 +114,7 @@ const UserForm = ({
       
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
     } catch (error) {
       console.error("Error updating user:", error);
       AnatomyNotification.error(notification, error);

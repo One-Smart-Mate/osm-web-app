@@ -65,7 +65,7 @@ const CompanyCard = ({
               onComplete();
             }
           }}
-          formType={CompanyFormType.UPDATE}
+          formType={CompanyFormType._UPDATE}
           data={company}
         />,
       ]}

@@ -262,7 +262,7 @@ const Opl = (): React.ReactElement => {
         await updateOplMstr(updatePayload).unwrap();
         AnatomyNotification.success(
           notification,
-          AnatomyNotificationType.UPDATE,
+          AnatomyNotificationType._UPDATE,
           t
         );
       } else {
@@ -281,7 +281,7 @@ const Opl = (): React.ReactElement => {
         await createOplMstr(createPayload).unwrap();
         AnatomyNotification.success(
           notification,
-          AnatomyNotificationType.REGISTER,
+          AnatomyNotificationType._REGISTER,
           t
         );
       }

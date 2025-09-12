@@ -74,7 +74,7 @@ const ResetPassword = () => {
       ).unwrap();
       setShowChangePasswordSection(true);
       navigate(Routes.Login);
-      handleSucccessNotification(NotificationSuccess.RESET_PASSWORD);
+      handleSucccessNotification(NotificationSuccess._RESET_PASSWORD);
     } catch (error) {
       console.error("[ResetPassword] onChangePasswordFormFinish", error);
       handleErrorNotification(error);

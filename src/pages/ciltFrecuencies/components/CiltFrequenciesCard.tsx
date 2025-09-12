@@ -19,7 +19,7 @@ const CiltFrequenciesCard = ({ item, onComplete }: CiltFrequenciesCardProps): Re
       title={<Typography.Title level={5}>{item.frecuencyCode}</Typography.Title>}
       actions={[
         <CiltFrequenciesForm
-          formType={CiltFrequenciesFormType.UPDATE}
+          formType={CiltFrequenciesFormType._UPDATE}
           data={item}
           onComplete={() => {
             if (onComplete) {

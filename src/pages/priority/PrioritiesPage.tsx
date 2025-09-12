@@ -68,7 +68,7 @@ const PrioritiesPage = () => {
       enableCreateButton={true}
       createButtonComponent={
         <PriorityForm
-          formType={PriorityFormType.CREATE}
+          formType={PriorityFormType._CREATE}
           onComplete={() => handleGetPriorities()}
         />
       }

@@ -64,7 +64,7 @@ const PreclassifierForm = ({
       await createPreclassifier(preclassifier).unwrap();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
       form.resetFields();
       onComplete?.();
@@ -84,7 +84,7 @@ const PreclassifierForm = ({
         status: values.status || Strings.activeStatus,
       };
       await updatePreclassifier(request).unwrap();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
       form.resetFields();
       onComplete?.();
     } catch (error) {

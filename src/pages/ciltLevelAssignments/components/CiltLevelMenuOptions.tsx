@@ -24,7 +24,7 @@ const CiltLevelMenuOptions: React.FC<CiltLevelContextMenuProps> = ({
 }) => {
   if (
     !isVisible ||
-    !(role === UserRoles.IHSISADMIN || role === UserRoles.LOCALSYSADMIN)
+    !(role === UserRoles._IHSISADMIN || role === UserRoles._LOCALSYSADMIN)
   )
     return null;
 

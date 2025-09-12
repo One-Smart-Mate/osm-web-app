@@ -21,7 +21,7 @@ const CiltTypesCard = ({ item, onComplete }: CiltTypesCardProps): React.ReactEle
       title={<Typography.Title level={5}>{item.name}</Typography.Title>}
       actions={[
         <CiltTypesForm
-          formType={CiltTypesFormType.UPDATE}
+          formType={CiltTypesFormType._UPDATE}
           data={item}
           onComplete={() => {
             if (onComplete) {

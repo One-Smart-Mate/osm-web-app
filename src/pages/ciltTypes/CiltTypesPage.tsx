@@ -95,7 +95,7 @@ const CiltTypesPage = () => {
       enableBackButton={isIhAdmin()}
       createButtonComponent={
         <CiltTypesForm
-          formType={CiltTypesFormType.CREATE}
+          formType={CiltTypesFormType._CREATE}
           onComplete={() => fetchCiltTypes()}
         />
       }

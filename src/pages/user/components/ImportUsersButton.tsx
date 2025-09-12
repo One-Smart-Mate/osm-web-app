@@ -35,7 +35,7 @@ const ImportUsersButton = ({
       const response = await importUsers({ file, siteId }).unwrap();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
       if (onComplete) {
         onComplete(response.data.data);

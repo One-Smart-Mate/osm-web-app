@@ -95,7 +95,7 @@ const AmDiscardReasonCard: React.FC<AmDiscardReasonCardProps> = ({
         width={600}
       >
         <AmDiscardReasonForm
-          formType={AmDiscardReasonFormType.UPDATE}
+          formType={AmDiscardReasonFormType._UPDATE}
           amDiscardReason={amDiscardReason}
           onComplete={() => {
             setIsEditModalVisible(false);
