@@ -3,6 +3,7 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
+      - main
       - develop
   workflow_dispatch:
 
@@ -19,8 +20,37 @@ jobs:
       # 1. Checkout
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # 2. Configurar AWS CLI
+      # 2. Get latest tag
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          if [ -z "$TAG" ]; then
+            echo "❌ No tag found. Please create a tag before deploying."
+            exit 1
+          fi
+          echo "Last tag found: $TAG"
+
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            DEPLOY_ENV=production
+            VERSION="$TAG"
+          else
+            DEPLOY_ENV=develop
+            CLEAN_TAG="${TAG#dev-}"
+            VERSION="$CLEAN_TAG-dev"
+          fi
+
+          VERSION="${VERSION#v}"
+          echo "DEPLOY_ENV=$DEPLOY_ENV" >> $GITHUB_ENV
+          echo "APP_VERSION=$VERSION" >> $GITHUB_ENV
+
+          echo "✅ DEPLOY_ENV=$DEPLOY_ENV"
+          echo "✅ APP_VERSION=$VERSION"
+
+      # 3. Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -28,18 +58,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3. Instalar lightsailctl
-      - name: Install lightsailctl (corrected path)
+      # 4. Install lightsailctl
+      - name: Install lightsailctl
         run: |
           curl -s https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl -o /usr/local/bin/lightsailctl
           sudo chmod +x /usr/local/bin/lightsailctl
           lightsailctl --version || echo "⚠️ lightsailctl no muestra versión"
 
-      # 4. Build Docker image
+      # 5. Build Docker image
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg VITE_AP_VERSION="${{ secrets.VITE_AP_VERSION }}" \
+            --build-arg VITE_AP_VERSION="${{ env.APP_VERSION }}" \
             --build-arg VITE_API_SERVICE="${{ secrets.VITE_API_SERVICE }}" \
             --build-arg VITE_FIREBASE_API_KEY="${{ secrets.VITE_FIREBASE_API_KEY }}" \
             --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
@@ -53,17 +83,17 @@ jobs:
             --build-arg VITE_PDF_MANUAL_LINK="${{ secrets.VITE_PDF_MANUAL_LINK }}" \
             -t frontend:${{ env.sha }} .
 
-      # 5. Verificar que la imagen existe
+      # 6. Debug images
       - name: Debug docker images
         run: |
-          echo "🔍 Listando imágenes Docker locales..."
-          docker images | grep frontend || echo "⚠️ No se encontró la imagen frontend"
+          echo "🔍 Local docker images:"
+          docker images | grep frontend || echo "⚠️ No frontend image found"
 
-      # 6. Push a Lightsail
+      # 7. Push Docker image to Lightsail
       - name: Push Docker image to Lightsail
         id: push
         run: |
-          echo "🚀 Subiendo imagen frontend:${{ env.sha }} a Lightsail..."
+          echo "🚀 Pushing frontend:${{ env.sha }} to Lightsail..."
 
           RAW_OUTPUT=$(aws lightsail push-container-image \
             --region ${{ env.region }} \
@@ -71,25 +101,23 @@ jobs:
             --label frontend \
             --image frontend:${{ env.sha }})
 
-          echo "🔍 Salida cruda completa:"
+          echo "🔍 Raw output:"
           echo "$RAW_OUTPUT"
 
-          # Extraer correctamente IMAGE_NAME con sed
           IMAGE_NAME=$(echo "$RAW_OUTPUT" | sed -n 's/.*Refer to this image as "\(.*\)" in deployments.*/\1/p')
 
           if [ -z "$IMAGE_NAME" ]; then
-            echo "⚠️ No se pudo extraer IMAGE_NAME. Revisa la salida cruda arriba."
+            echo "⚠️ Could not extract IMAGE_NAME"
             exit 1
           fi
 
-          echo "✅ Imagen registrada en Lightsail como: $IMAGE_NAME"
+          echo "✅ Image registered in Lightsail as: $IMAGE_NAME"
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
-      # 7. Deploy en Lightsail
+      # 8. Deploy to Lightsail
       - name: Deploy to Lightsail
         run: |
-          echo "🔎 IMAGE_NAME que se usará en el deploy: $IMAGE_NAME"
-          echo "🚀 Haciendo deploy con imagen: $IMAGE_NAME"
+          echo "🔎 Deploying image: $IMAGE_NAME"
           aws lightsail create-container-service-deployment \
             --service-name ${{ env.service }} \
             --containers "{
@@ -103,3 +131,5 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
+
+    environment: ${{ env.DEPLOY_ENV }}
