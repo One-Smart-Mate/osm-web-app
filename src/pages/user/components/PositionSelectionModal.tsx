@@ -9,7 +9,7 @@ import useDarkMode from '../../../utils/hooks/useDarkMode';
 interface PositionSelectionModalProps {
   isVisible: boolean;
   onCancel: () => void;
-  onConfirm: (selectedPositions: Position[]) => void;
+  onConfirm: (_selectedPositions: Position[]) => void;
   positions: Position[];
   loading: boolean;
   userPositions: UserPosition[];

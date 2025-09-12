@@ -11,7 +11,7 @@ interface CiltMstrSelectionModalProps {
   isVisible: boolean;
   siteId: string | number;
   onCancel: () => void;
-  onCiltMstrSelect: (ciltMstr: CiltMstr) => void;
+  onCiltMstrSelect: (_ciltMstr: CiltMstr) => void;
 }
 
 const CiltMstrSelectionModal: React.FC<CiltMstrSelectionModalProps> = ({

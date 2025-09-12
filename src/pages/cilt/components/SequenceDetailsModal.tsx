@@ -10,7 +10,7 @@ interface SequenceDetailsModalProps {
   visible: boolean;
   sequence: CiltSequence | null;
   onCancel: () => void;
-  onViewOpl: (oplId: number | null) => void;
+  onViewOpl: (_oplId: number | null) => void;
 }
 
 const { Text } = Typography;

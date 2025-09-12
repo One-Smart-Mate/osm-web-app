@@ -20,8 +20,8 @@ interface PreclassifierFormProps {
 }
 
 export enum PreclassifierFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const PreclassifierForm = ({
@@ -38,10 +38,10 @@ const PreclassifierForm = ({
   const handleOnSubmit = async (values: any) => {
     setLoading(true);
     switch (formType) {
-      case PreclassifierFormType.CREATE:
+      case PreclassifierFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case PreclassifierFormType.UPDATE:
+      case PreclassifierFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -102,7 +102,7 @@ const PreclassifierForm = ({
           form={form}
           onSubmit={handleOnSubmit}
           initialValues={data}
-          enableStatus={formType == PreclassifierFormType.UPDATE}
+          enableStatus={formType == PreclassifierFormType._UPDATE}
         />
       )}
     </>

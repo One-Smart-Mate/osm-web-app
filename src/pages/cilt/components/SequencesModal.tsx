@@ -27,10 +27,10 @@ interface SequencesModalProps {
   sequences: CiltSequence[];
   loading: boolean;
   onCancel: () => void;
-  onCreateSequence: (cilt: CiltMstr) => void;
-  onViewDetails: (sequence: CiltSequence) => void;
-  onViewOpl: (oplId: number | null) => void;
-  onEditSequence: (sequence: CiltSequence) => void;
+  onCreateSequence: (_cilt: CiltMstr) => void;
+  onViewDetails: (_sequence: CiltSequence) => void;
+  onViewOpl: (_oplId: number | null) => void;
+  onEditSequence: (_sequence: CiltSequence) => void;
 }
 
 const { Text } = Typography;

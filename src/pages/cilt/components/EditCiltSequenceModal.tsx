@@ -286,7 +286,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
       });
 
       onSuccess();
-    } catch (error) {
+    } catch (_error) {
       notification.error({
         message: Strings.editCiltSequenceModalError,
         description: Strings.editCiltSequenceModalErrorDescription,

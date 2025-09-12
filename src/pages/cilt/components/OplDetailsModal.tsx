@@ -48,7 +48,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       let fileName = parts[parts.length - 1];
       fileName = fileName.split("?")[0];
       return fileName;
-    } catch (e) {
+    } catch (_e) {
       return url || "";
     }
   };

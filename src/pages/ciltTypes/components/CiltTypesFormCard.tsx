@@ -8,7 +8,7 @@ interface CiltTypesFormCardProps {
     form: FormInstance;
     enableStatus: boolean;
     initialValues?: CiltType;
-    onSubmit: (values: any) => void;
+    onSubmit: (_values: any) => void;
    
 }
 

@@ -33,7 +33,7 @@ type Color = Extract<
 
 interface FormProps {
   form: FormInstance;
-  onFinish: (values: any) => void;
+  onFinish: (_values: any) => void;
   rol: UserRoles;
   initialValues?: any;
 }

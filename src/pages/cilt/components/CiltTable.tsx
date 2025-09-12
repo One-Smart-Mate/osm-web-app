@@ -13,13 +13,13 @@ interface CiltTableProps {
   ciltList: CiltMstr[];
   loading: boolean;
   currentPage: number;
-  onTableChange: (pagination: TablePaginationConfig) => void;
-  onEdit: (cilt: CiltMstr) => void;
-  onDetails: (cilt: CiltMstr) => void;
-  onNavigateToSequences: (cilt: CiltMstr) => void;
-  onClone: (cilt: CiltMstr) => void;
-  onViewPositionsLevels: (cilt: CiltMstr) => void;
-  onDelete?: (cilt: CiltMstr) => void;
+  onTableChange: (_pagination: TablePaginationConfig) => void;
+  onEdit: (_cilt: CiltMstr) => void;
+  onDetails: (_cilt: CiltMstr) => void;
+  onNavigateToSequences: (_cilt: CiltMstr) => void;
+  onClone: (_cilt: CiltMstr) => void;
+  onViewPositionsLevels: (_cilt: CiltMstr) => void;
+  onDelete?: (_cilt: CiltMstr) => void;
 }
 
 const CiltTable: React.FC<CiltTableProps> = ({

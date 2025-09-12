@@ -46,7 +46,7 @@ export interface InfoTagCardProps {
   data: CardDetailsInterface;
   evidences: Evidences[];
   cardName?: any;
-  onOpenModal?: (modalType: string) => void;
+  onOpenModal?: (_modalType: string) => void;
 }
 
 const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProps) => {

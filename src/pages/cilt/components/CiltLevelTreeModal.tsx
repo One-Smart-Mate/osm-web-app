@@ -9,7 +9,7 @@ interface CiltLevelTreeModalProps {
   onClose: () => void;
   siteId: string;
   siteName: string;
-  onSelectLevel?: (levelData: any) => void;
+  onSelectLevel?: (_levelData: any) => void;
   referenceLevelId?: number; // Optional reference level ID to filter the tree
 }
 

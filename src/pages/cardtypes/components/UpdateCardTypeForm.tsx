@@ -13,7 +13,6 @@ import { useAppSelector } from "../../../core/store";
 import { selectSiteId } from "../../../core/genericReducer";
 import { useEffect, useState } from "react";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
-import { useGetStatusMutation } from "../../../services/statusService";
 import { Responsible } from "../../../data/user/user";
 import { AiOutlinePicture } from "react-icons/ai";
 import { GoDeviceCameraVideo } from "react-icons/go";
@@ -23,7 +22,7 @@ import { notification } from "antd";
 
 interface FormProps {
   form: FormInstance;
-  onFinish: (values: any) => void;
+  onFinish: (_values: any) => void;
   initialValues: any;
 }
 
@@ -31,7 +30,6 @@ type Color = string;
 
 const UpdateCardTypeForm = ({ form, initialValues }: FormProps) => {
   const [getResponsibles] = useGetSiteResponsiblesMutation();
-  const [] = useGetStatusMutation();
   const siteId = useAppSelector(selectSiteId);
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [color, setColor] = useState<Color>("FFFFFF");

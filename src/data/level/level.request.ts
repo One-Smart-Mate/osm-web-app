@@ -80,5 +80,7 @@ export class MoveLevelDto {
   constructor(
     public levelId: number,
     public newSuperiorId: number,
-  ) {}
+  ) {
+    console.log(`MoveLevelDto created with levelId: ${levelId}, newSuperiorId: ${newSuperiorId}`);
+  }
 }

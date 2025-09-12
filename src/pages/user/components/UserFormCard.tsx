@@ -13,7 +13,7 @@ import AnatomyNotification from "../../components/AnatomyNotification";
 interface UserFormCardProps {
   form: FormInstance;
   initialValues?: UserCardInfo;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   enableStatus: boolean;
 }
 

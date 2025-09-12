@@ -13,7 +13,7 @@ import AnatomyNotification, {
 import { ImportUsersData } from "../../../data/user/import.users.response";
 
 interface ImportUsersButtonProps {
-  onComplete?: (data: ImportUsersData) => void;
+  onComplete?: (_data: ImportUsersData) => void;
 }
 
 const ImportUsersButton = ({

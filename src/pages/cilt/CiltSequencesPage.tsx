@@ -91,8 +91,8 @@ export interface DragItem {
 interface DraggableBodyRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   index?: number;
   record: CiltSequence;
-  moveRow: (dragIndex: number, hoverIndex: number) => void;
-  onDropRow: (draggedItem: DragItem) => void;
+  moveRow: (_dragIndex: number, _hoverIndex: number) => void;
+  onDropRow: (_draggedItem: DragItem) => void;
 }
 
 const DraggableBodyRow: React.FC<DraggableBodyRowProps> = ({

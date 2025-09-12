@@ -6,7 +6,7 @@ const { TextArea } = Input;
 
 interface OplTextFormProps {
   form: any;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
 }
 
 const OplTextForm: React.FC<OplTextFormProps> = ({ form, onSubmit }) => {

@@ -11,7 +11,7 @@ interface PositionSelectionModalProps {
   visible: boolean;
   siteId: string;
   onCancel: () => void;
-  onPositionSelect: (position: Position) => void;
+  onPositionSelect: (_position: Position) => void;
 }
 
 const PositionSelectionModal: React.FC<PositionSelectionModalProps> = ({

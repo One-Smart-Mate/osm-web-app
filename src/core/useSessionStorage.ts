@@ -2,7 +2,7 @@ import { notification } from "antd";
 
 export type TUseSessionStorage<T> = [
     () => T | undefined,
-    (value: T) => void,
+    (_value: T) => void,
     () => void,
   ];
 

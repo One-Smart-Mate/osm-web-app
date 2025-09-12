@@ -74,7 +74,7 @@ export const userService = apiSlice.injectEndpoints({
             // Ensure it's only ES or EN
             currentLang = currentLang === Constants.es ? Constants.es : Constants.en;
           }
-        } catch (error) {
+        } catch (_error) {
           // Default to EN if there's an error
           currentLang = Constants.en;
         }

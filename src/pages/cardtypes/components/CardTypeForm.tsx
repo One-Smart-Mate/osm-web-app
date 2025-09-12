@@ -25,8 +25,8 @@ interface CardTypeFormProps {
 }
 
 export enum CardTypeFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
@@ -41,10 +41,10 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
   const handleOnSubmit = async (values: any) => {
     setLoading(true);
     switch (formType) {
-      case CardTypeFormType.CREATE:
+      case CardTypeFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case CardTypeFormType.UPDATE:
+      case CardTypeFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -152,7 +152,7 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
           form={form}
           onSubmit={handleOnSubmit}
           initialValues={data}
-          enableStatus={formType == CardTypeFormType.UPDATE}
+          enableStatus={formType == CardTypeFormType._UPDATE}
         />
       )}
     </>

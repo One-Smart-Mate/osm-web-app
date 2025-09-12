@@ -23,8 +23,8 @@ interface AmDiscardReasonFormProps {
 }
 
 export enum AmDiscardReasonFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const AmDiscardReasonForm = ({ amDiscardReason, onComplete, formType }: AmDiscardReasonFormProps) => {
@@ -47,10 +47,10 @@ const AmDiscardReasonForm = ({ amDiscardReason, onComplete, formType }: AmDiscar
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case AmDiscardReasonFormType.CREATE:
+      case AmDiscardReasonFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case AmDiscardReasonFormType.UPDATE:
+      case AmDiscardReasonFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -112,13 +112,13 @@ const AmDiscardReasonForm = ({ amDiscardReason, onComplete, formType }: AmDiscar
   };
 
   const getTitle = () => {
-    return formType === AmDiscardReasonFormType.CREATE 
-      ? Strings.createAmDiscardReason 
+    return formType === AmDiscardReasonFormType._CREATE
+      ? Strings.createAmDiscardReason
       : Strings.updateAmDiscardReason;
   };
 
   // For UPDATE mode, render only the form without button/modal wrapper
-  if (formType === AmDiscardReasonFormType.UPDATE) {
+  if (formType === AmDiscardReasonFormType._UPDATE) {
     const [form] = Form.useForm();
     return (
       <div>
@@ -145,9 +145,9 @@ const AmDiscardReasonForm = ({ amDiscardReason, onComplete, formType }: AmDiscar
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType === AmDiscardReasonFormType.CREATE ? "primary" : "default"}
+        type={formType === AmDiscardReasonFormType._CREATE ? "primary" : "default"}
       >
-        {formType === AmDiscardReasonFormType.CREATE ? Strings.create : Strings.edit}
+        {formType === AmDiscardReasonFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}

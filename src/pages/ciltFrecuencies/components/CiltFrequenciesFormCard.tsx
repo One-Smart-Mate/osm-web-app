@@ -7,7 +7,7 @@ import { CiltFrequency } from "../../../data/cilt/ciltFrequencies/ciltFrequencie
 interface CiltFrequenciesFormCardProps {
     form: FormInstance;
     initialValues?: CiltFrequency;
-    onSubmit: (values: any) => void;
+    onSubmit: (_values: any) => void;
     enableStatus: boolean;
 }
 

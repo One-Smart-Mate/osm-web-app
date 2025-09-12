@@ -22,8 +22,8 @@ interface CompanyFormProps {
 }
 
 export enum CompanyFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
@@ -46,10 +46,10 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case CompanyFormType.CREATE:
+      case CompanyFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case CompanyFormType.UPDATE:
+      case CompanyFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -79,7 +79,7 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
       ).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
+      AnatomyNotification.success(notification, AnatomyNotificationType._REGISTER);
       setLogo("");
     } catch (error) {
       console.error("Error creating company:", error);
@@ -113,8 +113,8 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
       await updateCompany(companyToUpdate).unwrap();
       setModalOpen(false);
       onComplete?.();
-            AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
-    
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
+
       setLogo("");
     } catch (error) {
       console.error("Error updating company:", error);
@@ -127,8 +127,8 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
 
   return (
     <>
-      <Button onClick={handleOnClickButton} type={formType == CompanyFormType.CREATE ? 'primary' : 'default'}>
-        {formType == CompanyFormType.CREATE ? Strings.create : Strings.edit}
+      <Button onClick={handleOnClickButton} type={formType == CompanyFormType._CREATE ? 'primary' : 'default'}>
+        {formType == CompanyFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}

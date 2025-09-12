@@ -65,8 +65,8 @@ interface DragItem {
 interface DraggableCardProps {
   detail: OplDetail;
   index: number;
-  moveCard: (dragIndex: number, hoverIndex: number) => void;
-  onDropCard: (item: DragItem) => void;
+  moveCard: (_dragIndex: number, _hoverIndex: number) => void;
+  onDropCard: (_item: DragItem) => void;
   children: React.ReactNode;
 }
 
@@ -170,7 +170,7 @@ interface OplViewModalProps {
   currentOpl: OplMstr | null;
   currentDetails: OplDetail[];
   onCancel: () => void;
-  onUpdateDetailOrder?: (detailId: number, newOrder: number) => void;
+  onUpdateDetailOrder?: (_detailId: number, _newOrder: number) => void;
 }
 
 const OplViewModal: React.FC<OplViewModalProps> = ({
@@ -322,13 +322,13 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
       if (fullName.includes('%')) {
         try {
           fullName = decodeURIComponent(fullName);
-        } catch (e) {
+        } catch (_e) {
           // If decoding fails, keep the current name
         }
       }
       
       return fullName;
-    } catch (e) {
+    } catch (_e) {
       // If any error occurs during processing, try a simpler approach
       const parts = url.split('/');
       const fileName = parts[parts.length - 1].split('?')[0];

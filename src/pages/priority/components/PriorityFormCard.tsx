@@ -10,7 +10,7 @@ import { Status } from "../../../data/status/status";
 interface PriorityFormCardProps {
   form: FormInstance;
   initialValues?: Priority;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   enableStatus: boolean;
 }
 

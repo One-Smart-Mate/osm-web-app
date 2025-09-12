@@ -58,7 +58,7 @@ interface CiltAssignmentDrawerProps {
   siteId: string | number;
   placement: "right" | "bottom";
   onClose: () => void;
-  onAssign: (payload: any) => Promise<void>;
+  onAssign: (_payload: any) => Promise<void>;
   selectedNode: any;
   drawerType: "cilt-position" | "opl" | "details";
   isSubmitting?: boolean;

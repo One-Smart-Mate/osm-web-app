@@ -9,7 +9,7 @@ import { AmDiscardReasonFormType } from "./AmDiscardReasonForm";
 interface AmDiscardReasonFormCardProps {
   form: FormInstance;
   initialValues?: AmDiscardReason;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   formType: AmDiscardReasonFormType;
 }
 

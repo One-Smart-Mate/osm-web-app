@@ -16,7 +16,7 @@ interface MainContainerProps {
   enableBackButton?: boolean;
   createButtonComponent?: React.ReactElement,
   onCreateButtonClick?: () => void;
-  onSearchChange?: (value: string) => void;
+  onSearchChange?: (_value: string) => void;
 }
 
 const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading, createButtonComponent }) => {

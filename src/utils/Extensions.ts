@@ -40,7 +40,7 @@ export const generateShortUUID = (): string => {
 export const validateEmail = (
   _: RuleObject,
   value: string,
-  callback: (error?: string) => void
+  callback: (_error?: string) => void
 ) => {
   if (!value || value.trim() === "") {
     callback(Strings.requiredEmail);
@@ -89,7 +89,7 @@ export const getUserRol = (user: User): UserRoles | null => {
     (role) => role === Constants.ihSisAdmin
   );
   if (isihSisAdmin) {
-    return UserRoles.IHSISADMIN;
+    return UserRoles._IHSISADMIN;
   }
   const isLocalSisAdmin = user.roles?.some(
     (role) => role === Constants.localSisAdmin
@@ -99,21 +99,21 @@ export const getUserRol = (user: User): UserRoles | null => {
   );
 
   return isLocalSisAdmin
-    ? UserRoles.LOCALSYSADMIN
+    ? UserRoles._LOCALSYSADMIN
     : isLocalAdmin
-    ? UserRoles.LOCALADMIN
-    : UserRoles.UNDEFINED;
+    ? UserRoles._LOCALADMIN
+    : UserRoles._UNDEFINED;
 };
 
 export const isValidUser = (user: User): boolean => {
-  return getUserRol(user) !== UserRoles.UNDEFINED;
+  return getUserRol(user) !== UserRoles._UNDEFINED;
 }
 
 export const enum UserRoles {
-  IHSISADMIN,
-  LOCALSYSADMIN,
-  LOCALADMIN,
-  UNDEFINED,
+  _IHSISADMIN,
+  _LOCALSYSADMIN,
+  _LOCALADMIN,
+  _UNDEFINED,
 }
 
 export const formatDate = (date: string | null) => {
@@ -268,15 +268,17 @@ export const getCardStatusAndText = (
   switch (input) {
     case "A":
     case "P":
-    case "V":
+    case "V": {
       const isExpired = isExpiredCard(input, duDate);
       return {
         status: "success",
         text: Strings.open,
         dateStatus: isExpired ? Strings.expired : Strings.current,
       };
+    }
 
-    case "R":
+    case "R": {
+
       if (duDate) {
         if (DefiniSolutionDate) {
           const isOnTime = compareDates(DefiniSolutionDate, duDate);
@@ -311,8 +313,9 @@ export const getCardStatusAndText = (
           dateStatus: Strings.onTime, // Default to onTime for resolved cards
         };
       }
+    }
 
-    case "C":
+    case "C": {
       // Closed cards - similar logic to resolved cards
       if (duDate) {
         if (DefiniSolutionDate) {
@@ -348,8 +351,9 @@ export const getCardStatusAndText = (
           dateStatus: Strings.onTime, // Default to onTime for closed cards
         };
       }
+    }
 
-    default:
+    default: {
       // For any other status, apply the expiration logic
       const isExpiredDefault = isExpiredCard(input, duDate);
       return {
@@ -357,6 +361,7 @@ export const getCardStatusAndText = (
         text: Strings.tagStatusCanceled,
         dateStatus: isExpiredDefault ? Strings.expired : Strings.current,
       };
+    }
   }
 };
 

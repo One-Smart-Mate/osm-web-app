@@ -10,7 +10,7 @@ import AnatomyTooltip from "../../../components/AnatomyTooltip";
 interface PreclassifierFormCardProps {
   form: FormInstance;
   initialValues?: any;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   enableStatus: boolean;
 }
 

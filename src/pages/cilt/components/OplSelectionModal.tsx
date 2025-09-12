@@ -48,7 +48,7 @@ import Strings from "../../../utils/localizations/Strings";
 interface OplSelectionModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onSelect: (opl: OplMstr) => void;
+  onSelect: (_opl: OplMstr) => void;
   siteId?: string | number; // Add siteId prop
 }
 
@@ -680,13 +680,13 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
       if (fullName.includes('%')) {
         try {
           fullName = decodeURIComponent(fullName);
-        } catch (e) {
+        } catch (_e) {
           // If decoding fails, keep the current name
         }
       }
       
       return fullName;
-    } catch (e) {
+    } catch (_e) {
       // If any error occurs during processing, try a simpler approach
       const parts = url.split('/');
       const fileName = parts[parts.length - 1].split('?')[0];

@@ -2,7 +2,8 @@ import { notification } from "antd";
 import Strings from "./localizations/Strings";
 
 export const handleErrorNotification = (value: any, text?: string) => {
-  if (value.hasOwnProperty("data") && value.data.hasOwnProperty("message")) {
+  if (Object.prototype.hasOwnProperty.call(value, "data") &&
+  Object.prototype.hasOwnProperty.call(value.data, "message")) {
     notification.open({
       message: "Ups!",
       description: value.data.message,
@@ -34,26 +35,26 @@ export const handleSucccessNotification = (value: NotificationSuccess | string) 
 };
 
 export enum NotificationSuccess {
-  REGISTER,
-  UPDATE,
-  SUCCESS_DELETE,
-  RESET_PASSWORD,
+  _REGISTER,
+  _UPDATE,
+  _SUCCESS_DELETE,
+  _RESET_PASSWORD,
 }
 
 export const getSuccessMessage = (type: NotificationSuccess): string => {
-  if (type == NotificationSuccess.REGISTER) {
+  if (type == NotificationSuccess._REGISTER) {
     return Strings.successfullyRegistered;
   }
 
-  if (type == NotificationSuccess.UPDATE) {
+  if (type == NotificationSuccess._UPDATE) {
     return Strings.successfullyUpdated;
   }
 
-  if (type == NotificationSuccess.SUCCESS_DELETE) {
+  if (type == NotificationSuccess._SUCCESS_DELETE) {
     return Strings.successfullyDeleted;
   }
 
-  if (type == NotificationSuccess.RESET_PASSWORD) {
+  if (type == NotificationSuccess._RESET_PASSWORD) {
     return Strings.passwordResetSuccess;
   }
 

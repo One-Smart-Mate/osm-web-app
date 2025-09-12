@@ -24,8 +24,8 @@ interface SiteFormProps {
 }
 
 export enum SiteFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const SiteForm = ({
@@ -45,7 +45,7 @@ const SiteForm = ({
   const {notification} = AntApp.useApp();
 
   const handleOnClickButton = async () => {
-    if (formType == SiteFormType.UPDATE) {
+    if (formType == SiteFormType._UPDATE) {
       const site = await getSite(data?.id ?? "").unwrap();
       console.log(site);
       setCurrentSite(site);
@@ -63,10 +63,10 @@ const SiteForm = ({
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case SiteFormType.CREATE:
+      case SiteFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case SiteFormType.UPDATE:
+      case SiteFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -108,7 +108,7 @@ const SiteForm = ({
       await registerSite(request).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER)
+      AnatomyNotification.success(notification, AnatomyNotificationType._REGISTER)
       setLogo("");
     } catch (error) {
       console.error("Error creating company:", error);
@@ -152,7 +152,7 @@ const SiteForm = ({
       await updateSite(request).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE)
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE)
       setLogo("");
     } catch (error) {
       console.error("Error updating company:", error);
@@ -168,7 +168,7 @@ const SiteForm = ({
         onClick={handleOnClickButton}
         type='primary'
       >
-        {formType == SiteFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == SiteFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}

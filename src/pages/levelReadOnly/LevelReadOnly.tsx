@@ -76,7 +76,7 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
     return false;
   };
 
-  const calculateTotalAssignments = (node: any, assignmentCounts: { [key: string]: number }): number => {
+  const _calculateTotalAssignments = (node: any, assignmentCounts: { [key: string]: number }): number => {
     const ownAssignments = node.id !== "0" && assignmentCounts[node.id] ? assignmentCounts[node.id] : 0;
 
     if (!node.children || node.children.length === 0) {
@@ -84,7 +84,7 @@ const ReadOnlyNodeElement = ({ nodeDatum, toggleNode, handleShowDetails, cardCou
     }
 
     const childrenAssignments = node.children.reduce(
-      (total: number, child: any) => total + calculateTotalAssignments(child, assignmentCounts),
+      (total: number, child: any) => total + _calculateTotalAssignments(child, assignmentCounts),
       0
     );
 

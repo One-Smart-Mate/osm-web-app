@@ -107,7 +107,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
       // Filter CILT types to only include those with status 'A' (active)
       const activeTypes = response ? response.filter(type => type.status === 'A') : [];
       setCiltTypes(activeTypes);
-    } catch (error) {
+    } catch (_error) {
       notification.error({
         message: Strings.error,
         description: Strings.createCiltSequenceModalErrorLoadingTypes,

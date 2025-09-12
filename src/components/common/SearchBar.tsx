@@ -5,7 +5,7 @@ import Strings from '../../utils/localizations/Strings';
 
 interface SearchBarProps {
   placeholder?: string;
-  onSearch: (value: string) => void;
+  onSearch: (_value: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ placeholder = Strings.searchBarDefaultPlaceholder, onSearch }) => {

@@ -218,6 +218,7 @@ const LevelsPage = () => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
+      console.error("Error fetching levels:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -320,6 +321,7 @@ const LevelsPage = () => {
       setDrawerVisible(true);
       setContextMenuVisible(false);
     } catch (error) {
+      console.error("Error fetching site data:", error);
       throw error;
     }
   };
@@ -368,7 +370,7 @@ const LevelsPage = () => {
 
     payload.name = isRoot ? `${node.name} ${Strings.copy}` : node.name;
     const newNodeData = await createLevel(payload).unwrap();
-    AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+    AnatomyNotification.success(notification, AnatomyNotificationType._REGISTER);
     const parentId = Number(newNodeData.id);
     if (isNaN(parentId)) {
       AnatomyNotification.error(notification, Strings.errorGettingLevelId);
@@ -396,6 +398,7 @@ const LevelsPage = () => {
           await cloneSubtree(selectedNode.data, null, true);
           await handleGetLevels();
         } catch (error) {
+          console.error("Error cloning level:", error);
           throw error;
         } finally {
           setIsCloning(false);
@@ -435,21 +438,22 @@ const LevelsPage = () => {
           values.notify ? 1 : 0
         );
         await createLevel(newNode).unwrap();
-        AnatomyNotification.success(notification, AnatomyNotificationType.REGISTER);
+        AnatomyNotification.success(notification, AnatomyNotificationType._REGISTER);
       } else if (drawerType === "update") {
-        const { superiorId, ...updateValues } = values;
+        const { ...updateValues } = values;
         const updatePayload = {
           ...updateValues,
           id: Number(values.id),
           responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
         };
         await updateLevel(updatePayload).unwrap();
-        AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+        AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
       }
 
       await handleGetLevels();
       handleDrawerClose();
     } catch (error) {
+      console.error("Error submitting form:", error);
       throw error;
     } finally {
       setLoading(false);

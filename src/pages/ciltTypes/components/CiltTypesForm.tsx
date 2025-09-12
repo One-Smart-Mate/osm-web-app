@@ -17,8 +17,8 @@ interface CiltTypesFormProps {
 }
 
 export enum CiltTypesFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const CiltTypesForm = ({
@@ -45,10 +45,10 @@ const CiltTypesForm = ({
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case CiltTypesFormType.CREATE:
+      case CiltTypesFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case CiltTypesFormType.UPDATE:
+      case CiltTypesFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -71,7 +71,7 @@ const CiltTypesForm = ({
       onComplete?.();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
     } catch (error) {
       console.error("Error creating priority:", error);
@@ -96,7 +96,7 @@ const CiltTypesForm = ({
       ).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
     } catch (error) {
       console.error("Error updating company:", error);
       AnatomyNotification.error(notification, error);
@@ -116,16 +116,16 @@ const CiltTypesForm = ({
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == CiltTypesFormType.CREATE ? "primary" : "default"}
+        type={formType == CiltTypesFormType._CREATE ? "primary" : "default"}
       >
-        {formType == CiltTypesFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == CiltTypesFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
 
       <ModalForm
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
         title={
-          formType == CiltTypesFormType.CREATE
+          formType == CiltTypesFormType._CREATE
             ? Strings.addCiltType
             : Strings.editCiltType
         }
@@ -135,7 +135,7 @@ const CiltTypesForm = ({
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={fixedData}
-            enableStatus={formType === CiltTypesFormType.UPDATE}
+            enableStatus={formType === CiltTypesFormType._UPDATE}
           />
 
         )}

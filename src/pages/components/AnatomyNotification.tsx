@@ -6,29 +6,29 @@ import CryptoJS from "crypto-js";
  * Notification types for the application
  */
 export enum AnatomyNotificationType {
-  REGISTER,
-  UPDATE,
-  SUCCESS_DELETE,
-  RESET_PASSWORD,
+  _REGISTER,
+  _UPDATE,
+  _SUCCESS_DELETE,
+  _RESET_PASSWORD,
 }
 
 /**
  * Get success message based on notification type
  */
-const getSuccessMessage = (type: AnatomyNotificationType, t: (key: string) => string): string => {
-  if (type == AnatomyNotificationType.REGISTER) {
+const getSuccessMessage = (type: AnatomyNotificationType, t: (_key: string) => string): string => {
+  if (type == AnatomyNotificationType._REGISTER) {
     return t("successfullyRegistered");
   }
 
-  if (type == AnatomyNotificationType.UPDATE) {
+  if (type == AnatomyNotificationType._UPDATE) {
     return t("successfullyUpdated");
   }
 
-  if (type == AnatomyNotificationType.SUCCESS_DELETE) {
+  if (type == AnatomyNotificationType._SUCCESS_DELETE) {
     return t("successfullyDeleted");
   }
 
-  if (type == AnatomyNotificationType.RESET_PASSWORD) {
+  if (type == AnatomyNotificationType._RESET_PASSWORD) {
     return t("passwordResetSuccess");
   }
 
@@ -195,7 +195,7 @@ class AnatomyNotification {
               return value;
             }, 2);
             errorDetails.push(serializeObj);
-          } catch (serializeError) {
+          } catch (_serializeError) {
             // If serialization fails, use the base values
             errorDetails.push(`Non-serializable object: ${Object.keys(valueOrText).join(', ')}`);
           }
@@ -233,7 +233,7 @@ class AnatomyNotification {
   static success(
     notification: NotificationInstance, 
     value: AnatomyNotificationType, 
-    t?: (key: string) => string
+    t?: (_key: string) => string
   ) {
     // Default translation function if none provided
     const translate = t || ((key: string) => {

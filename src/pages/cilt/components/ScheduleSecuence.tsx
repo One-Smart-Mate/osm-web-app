@@ -52,7 +52,7 @@ const DAYS_LABELS = ["D", "L", "M", "X", "J", "V", "S"];
 interface ScheduleSecuenceProps {
   open: boolean;
   onCancel: () => void;
-  onSave: (data: any) => void;
+  onSave: (_data: any) => void;
   sequenceId?: number;
   ciltId?: number;
   siteId?: number;
@@ -300,6 +300,7 @@ AnatomyNotification.error(notification, {
                 dayValues.fri === 1 ||
                 dayValues.sat === 1)))
         ) {
+          console.log("Valid monthOfYear combination");
         } else {
 AnatomyNotification.error(notification, {
             data: {

@@ -9,7 +9,7 @@ interface LevelTreeModalProps {
   onClose: () => void;
   siteId: string;
   siteName: string;
-  onSelectLevel?: (levelData: any) => void;
+  onSelectLevel?: (_levelData: any) => void;
 }
 
 interface Level {
@@ -143,7 +143,7 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
-    } catch (error) {
+    } catch (_error) {
       // Error handling without logging
     } finally {
       setLoading(false);

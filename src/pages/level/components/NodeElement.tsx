@@ -7,13 +7,13 @@ interface NodeElementProps {
   nodeDatum: any;
   toggleNode: () => void;
   containerRef: React.RefObject<HTMLDivElement> | React.RefObject<null>;
-  setContextMenuVisible: (visible: boolean) => void;
-  setContextMenuPos: (pos: { x: number; y: number }) => void;
-  setSelectedNode: (node: any) => void;
-  handleShowDetails: (nodeId: string) => void;
+  setContextMenuVisible: (_visible: boolean) => void;
+  setContextMenuPos: (_pos: { x: number; y: number }) => void;
+  setSelectedNode: (_node: any) => void;
+  handleShowDetails: (_nodeId: string) => void;
   cardCounts?: { [key: string]: number };
   movingNodeId?: string | null;
-  onMoveNode?: (newParentId: string) => void;
+  onMoveNode?: (_newParentId: string) => void;
 }
 
 const isLeafNode = (node: any) => !node.children || node.children.length === 0;

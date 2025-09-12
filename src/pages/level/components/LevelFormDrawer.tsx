@@ -16,7 +16,7 @@ interface LevelFormDrawerProps {
   formData: any;
   isLoading: boolean;
   handleDrawerClose: () => void;
-  handleSubmit: (values: any) => void;
+  handleSubmit: (_values: any) => void;
   selectedNodeName?: string;
   positionData?: any;  
 }

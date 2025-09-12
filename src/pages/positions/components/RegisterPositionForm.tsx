@@ -112,7 +112,7 @@ const RegisterPositionForm = ({
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
+    } catch (_error) {
       notification.error({
         message: Strings.error,
         description: `${

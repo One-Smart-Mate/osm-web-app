@@ -7,7 +7,7 @@ import Strings from "../../utils/localizations/Strings";
 interface UserSelectionModalProps {
   isVisible: boolean;
   onCancel: () => void;
-  onConfirm: (selectedUserIds: number[]) => void;
+  onConfirm: (_selectedUserIds: number[]) => void;
   users: Responsible[];
   loading: boolean;
   initialSelectedUserIds?: number[];

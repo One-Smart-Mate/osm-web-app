@@ -48,8 +48,8 @@ import AnatomyNotification from "../../components/AnatomyNotification";
 interface SiteFormCardProps {
   form: FormInstance;
   initialValues?: SiteUpdateForm;
-  onSubmit: (values: any) => void;
-  onSuccessUpload?: (url: string) => void;
+  onSubmit: (_values: any) => void;
+  onSuccessUpload?: (_url: string) => void;
 }
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];

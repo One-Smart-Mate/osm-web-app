@@ -12,7 +12,7 @@ interface PositionSelectionModalProps {
   isVisible: boolean;
   siteId: string | number;
   onCancel: () => void;
-  onPositionSelect: (position: Position) => void;
+  onPositionSelect: (_position: Position) => void;
 }
 
 const { Text } = Typography;

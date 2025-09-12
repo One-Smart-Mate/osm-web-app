@@ -10,7 +10,7 @@ import { Status } from "../../../data/status/status";
 interface OplTypeFormCardProps {
   form: FormInstance;
   initialValues?: OplTypes;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   enableStatus: boolean;
 }
 

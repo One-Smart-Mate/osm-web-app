@@ -6,7 +6,7 @@ interface ModalFormProps {
   open: boolean;
   onCancel: () => void;
   title: string;
-  FormComponent: React.ComponentType<{ form: FormInstance }> | ((form: FormInstance) => React.ReactNode);
+  FormComponent: React.ComponentType<{ form: FormInstance }> | ((_form: FormInstance) => React.ReactNode);
   isLoading: boolean;
 }
 
@@ -60,7 +60,7 @@ const ModalForm = ({
   const renderFormComponent = () => {
     if (typeof FormComponent === "function") {
       try {
-        const result = (FormComponent as unknown as (form: FormInstance) => React.ReactNode)(form);
+        const result = (FormComponent as unknown as (_form: FormInstance) => React.ReactNode)(form);
         if (React.isValidElement(result)) {
           return result;
         }

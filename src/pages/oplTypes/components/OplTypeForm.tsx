@@ -24,8 +24,8 @@ interface OplTypeFormProps {
 }
 
 export enum OplTypeFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
@@ -48,10 +48,10 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case OplTypeFormType.CREATE:
+      case OplTypeFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case OplTypeFormType.UPDATE:
+      case OplTypeFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -83,7 +83,7 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
       onComplete?.();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER,
+        AnatomyNotificationType._REGISTER,
         t
       );
     } catch (error) {
@@ -129,7 +129,7 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
       }).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE, t);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE, t);
     } catch (error) {
       AnatomyNotification.error(notification, error);
     } finally {
@@ -141,21 +141,21 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == OplTypeFormType.CREATE ? "primary" : "default"}
+        type={formType == OplTypeFormType._CREATE ? "primary" : "default"}
       >
-        {formType == OplTypeFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == OplTypeFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
-        title={formType == OplTypeFormType.CREATE ? Strings.createOplType : Strings.updateOplType}
+        title={formType == OplTypeFormType._CREATE ? Strings.createOplType : Strings.updateOplType}
         isLoading={isLoading}
         FormComponent={(form: FormInstance) => (
           <OplTypeFormCard
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
-            enableStatus={formType == OplTypeFormType.UPDATE}
+            enableStatus={formType == OplTypeFormType._UPDATE}
           />
         )}
       />

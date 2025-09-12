@@ -8,9 +8,9 @@ import Strings from "../../../utils/localizations/Strings";
 
 interface OplTableProps {
   opls: OplMstr[];
-  onView: (record: OplMstr) => void;
-  onEdit: (record: OplMstr) => void;
-  onDetails: (record: OplMstr) => void;
+  onView: (_record: OplMstr) => void;
+  onEdit: (_record: OplMstr) => void;
+  onDetails: (_record: OplMstr) => void;
 }
 
 const OplTable: React.FC<OplTableProps> = ({

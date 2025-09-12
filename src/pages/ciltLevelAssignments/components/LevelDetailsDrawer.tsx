@@ -102,7 +102,7 @@ const { Text } = Typography;
 // Componente para el botón de calendarizaciones
 interface ScheduleButtonProps {
   sequence: CiltSequence;
-  onViewSchedules: (sequence: CiltSequence) => void;
+  onViewSchedules: (_sequence: CiltSequence) => void;
   refreshKey?: number; // Add refresh key prop
 }
 

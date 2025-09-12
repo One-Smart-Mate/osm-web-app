@@ -35,8 +35,8 @@ import { Company } from "../../../data/company/company";
 interface CompanyFormCardProps {
   form: FormInstance;
   initialValues?: Company;
-  onSubmit: (values: any) => void;
-  onSuccessUpload?: (url: string) => void;
+  onSubmit: (_values: any) => void;
+  onSuccessUpload?: (_url: string) => void;
 }
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];

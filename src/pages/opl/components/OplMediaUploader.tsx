@@ -26,10 +26,10 @@ interface OplMediaUploaderProps {
   fileType: 'imagen' | 'video' | 'pdf' | 'text';
   uploadLoading: boolean;
   onFileChange: UploadProps['onChange'];
-  onPreview: (file: UploadFile) => void;
+  onPreview: (_file: UploadFile) => void;
   onUpload: () => void;
   onCancel: () => void;
-  onRemoveExistingFile?: (file: UploadFile) => void; // For deleting files already on server
+  onRemoveExistingFile?: (_file: UploadFile) => void; // For deleting files already on server
   isDeletingExistingFile?: boolean; // To disable remove button during API call
 }
 

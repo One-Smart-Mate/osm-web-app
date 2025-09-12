@@ -17,8 +17,8 @@ interface CiltFrequenciesFormProps {
 }
 
 export enum CiltFrequenciesFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const CiltFrequenciesForm = ({
@@ -45,10 +45,10 @@ const CiltFrequenciesForm = ({
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case CiltFrequenciesFormType.CREATE:
+      case CiltFrequenciesFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case CiltFrequenciesFormType.UPDATE:
+      case CiltFrequenciesFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -70,7 +70,7 @@ const CiltFrequenciesForm = ({
       onComplete?.();
       AnatomyNotification.success(
         notification,
-        AnatomyNotificationType.REGISTER
+        AnatomyNotificationType._REGISTER
       );
     } catch (error) {
       console.error("Error creating priority:", error);
@@ -94,7 +94,7 @@ const CiltFrequenciesForm = ({
       ).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType.UPDATE);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
     } catch (error) {
       console.error("Error updating company:", error);
       AnatomyNotification.error(notification, error);
@@ -108,16 +108,16 @@ const CiltFrequenciesForm = ({
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == CiltFrequenciesFormType.CREATE ? "primary" : "default"}
+        type={formType == CiltFrequenciesFormType._CREATE ? "primary" : "default"}
       >
-        {formType == CiltFrequenciesFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == CiltFrequenciesFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
 
       <ModalForm
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
         title={
-          formType == CiltFrequenciesFormType.CREATE
+          formType == CiltFrequenciesFormType._CREATE
             ? Strings.addCiltFrequency
             : Strings.editCiltFrequency
         }
@@ -127,7 +127,7 @@ const CiltFrequenciesForm = ({
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
-            enableStatus={formType === CiltFrequenciesFormType.UPDATE}
+            enableStatus={formType === CiltFrequenciesFormType._UPDATE}
           />
 
         )}

@@ -242,7 +242,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     try {
       const date = new Date(dateString);
       return date.toLocaleString();
-    } catch (error) {
+    } catch (_error) {
       return dateString;
     }
   };

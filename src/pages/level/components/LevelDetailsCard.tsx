@@ -39,7 +39,7 @@ const LevelDetailsCard = ({
     try {
       const response = await getLevel(levelId).unwrap();
       setData(response);
-    } catch (error) {
+    } catch (_error) {
       AnatomyNotification.error(notification, Strings.errorFetchingLevelData);
     } finally {
       setIsLoading(false);

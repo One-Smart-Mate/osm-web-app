@@ -65,7 +65,7 @@ const ProceduresModal: React.FC<ProceduresModalProps> = ({
           try {
             const result = await getCiltMstrById(ciltId.toString()).unwrap();
             return result;
-          } catch (error) {
+          } catch (_error) {
             return null;
           }
         });
@@ -78,7 +78,7 @@ const ProceduresModal: React.FC<ProceduresModalProps> = ({
       } else {
         setProcedures([]);
       }
-    } catch (error) {
+    } catch (_error) {
       notification.error({
         message: Strings.error,
         description: Strings.errorOccurred,

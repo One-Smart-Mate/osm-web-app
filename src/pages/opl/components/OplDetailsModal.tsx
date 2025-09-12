@@ -21,12 +21,12 @@ interface OplDetailsModalProps {
   uploadLoading: boolean;
   detailForm: any;
   onCancel: () => void;
-  onTabChange: (key: string) => void;
-  onFileChange: (info: any) => void;
-  onPreview: (file: any) => void;
-  onAddText: (values: any) => void;
-  onAddMedia: (type: "imagen" | "video" | "pdf") => void;
-  onDetailDeleted: (detailId: number) => void; 
+  onTabChange: (_key: string) => void;
+  onFileChange: (_info: any) => void;
+  onPreview: (_file: any) => void;
+  onAddText: (_values: any) => void;
+  onAddMedia: (_type: "imagen" | "video" | "pdf") => void;
+  onDetailDeleted: (_detailId: number) => void; 
 }
 
 const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
@@ -107,13 +107,13 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       if (fullName.includes('%')) {
         try {
           fullName = decodeURIComponent(fullName);
-        } catch (e) {
+        } catch (_e) {
           // If decoding fails, keep the current name
         }
       }
       
       return fullName;
-    } catch (e) {
+    } catch (_e) {
       // If any error occurs during processing, try a simpler approach
       const parts = url.split('/');
       const fileName = parts[parts.length - 1].split('?')[0];

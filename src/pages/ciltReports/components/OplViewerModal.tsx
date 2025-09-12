@@ -46,13 +46,13 @@ const OplViewerModal: React.FC<OplViewerModalProps> = ({ open, oplData, onClose,
       if (fullName.includes('%')) {
         try {
           fullName = decodeURIComponent(fullName);
-        } catch (e) {
+        } catch (_e) {
           // If decoding fails, keep the current name
         }
       }
       
       return fullName;
-    } catch (e) {
+    } catch (_e) {
       const parts = url.split('/');
       const fileName = parts[parts.length - 1].split('?')[0];
       return fileName;

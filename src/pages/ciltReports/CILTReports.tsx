@@ -248,7 +248,7 @@ export const CILTReports = () => {
     if (!dateString) return Strings.oplFormNotAssigned;
     try {
       return format(new Date(dateString), "yyyy-MM-dd HH:mm:ss");
-    } catch (error) {
+    } catch (_error) {
       return Strings.oplFormNotAssigned;
     }
   };

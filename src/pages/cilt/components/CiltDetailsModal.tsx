@@ -8,7 +8,7 @@ interface CiltDetailsModalProps {
   visible: boolean;
   cilt: CiltMstr | null;
   onCancel: () => void;
-  onClone?: (cilt: CiltMstr) => void;
+  onClone?: (_cilt: CiltMstr) => void;
 }
 
 const CiltDetailsModal: React.FC<CiltDetailsModalProps> = ({

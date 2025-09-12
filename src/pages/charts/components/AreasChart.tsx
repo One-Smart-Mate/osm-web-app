@@ -24,7 +24,7 @@ export interface AreasChartProps {
   startDate: string;
   endDate: string;
   methodologies: Methodology[];
-  onClick?: (areaId: number, areaName?: string) => void;
+  onClick?: (_areaId: number, _areaName?: string) => void;
   cardTypeName?: string | null;
   status?: string;
 }

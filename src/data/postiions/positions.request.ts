@@ -12,5 +12,20 @@ export class CreatePosition {
       public description: string | null,
       public status: string | null,
       public userIds?: number[]
-    ) {}
+    ) {
+      console.log("CreatePosition created with values:", {
+        siteId,
+        siteName,
+        siteType,
+        areaId,
+        areaName,
+        levelId,
+        levelName,
+        route,
+        name,
+        description,
+        status,
+        userIds,
+      });
+    }
   }

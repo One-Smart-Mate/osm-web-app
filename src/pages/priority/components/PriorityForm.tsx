@@ -25,8 +25,8 @@ interface PriorityFormProps {
 }
 
 export enum PriorityFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
@@ -49,10 +49,10 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case PriorityFormType.CREATE:
+      case PriorityFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case PriorityFormType.UPDATE:
+      case PriorityFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -110,9 +110,9 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == PriorityFormType.CREATE ? "primary" : "default"}
+        type={formType == PriorityFormType._CREATE ? "primary" : "default"}
       >
-        {formType == PriorityFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == PriorityFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         open={modalIsOpen}
@@ -124,7 +124,7 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
-            enableStatus={formType == PriorityFormType.UPDATE}
+            enableStatus={formType == PriorityFormType._UPDATE}
           />
         )}
       />

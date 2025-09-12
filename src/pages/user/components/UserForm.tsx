@@ -22,8 +22,8 @@ interface UserFormProps {
 }
 
 export enum UserFormType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
+  _CREATE = "CREATE",
+  _UPDATE = "UPDATE",
 }
 
 const UserForm = ({
@@ -50,10 +50,10 @@ const UserForm = ({
 
   const handleOnSubmit = async (values: any) => {
     switch (formType) {
-      case UserFormType.CREATE:
+      case UserFormType._CREATE:
         await handleOnCreate(values);
         break;
-      case UserFormType.UPDATE:
+      case UserFormType._UPDATE:
         await handleOnUpdate(values);
         break;
     }
@@ -127,16 +127,16 @@ const UserForm = ({
     <>
       <Button
         onClick={handleOnClickButton}
-        type={formType == UserFormType.CREATE ? "primary" : "default"}
+        type={formType == UserFormType._CREATE ? "primary" : "default"}
       >
-        {formType == UserFormType.CREATE ? Strings.create : Strings.edit}
+        {formType == UserFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
         key={`${formType}-${data?.id || 'new'}`}
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
         title={
-          formType == UserFormType.CREATE
+          formType == UserFormType._CREATE
             ? Strings.createUser
             : Strings.updateUser
         }
@@ -146,7 +146,7 @@ const UserForm = ({
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
-            enableStatus={formType == UserFormType.UPDATE}
+            enableStatus={formType == UserFormType._UPDATE}
 
           />
         )}

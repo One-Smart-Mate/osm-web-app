@@ -8,9 +8,10 @@ npm run lint || {
 }
 
 echo "✅ Lint passed. Running tests..."
-npm test -- --bail --passWithNoTests || {
+npm test || {
   echo "❌ Tests failed, aborting commit."
   exit 1
 }
 
 echo "🎉 All checks passed! Commit successful."
+

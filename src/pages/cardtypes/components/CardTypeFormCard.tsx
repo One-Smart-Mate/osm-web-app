@@ -31,7 +31,7 @@ type Color = Extract<
 
 interface FormProps {
   form: FormInstance;
-  onSubmit: (values: any) => void;
+  onSubmit: (_values: any) => void;
   initialValues?: any;
   enableStatus: boolean;
 }

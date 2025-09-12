@@ -56,7 +56,7 @@ const CiltTypes = (): React.ReactElement => {
       const data = await getCiltTypesAll().unwrap();
       const filteredBySite = data.filter(item => item.siteId === Number(siteId));
       setCiltTypes(filteredBySite);
-    } catch (error) {
+    } catch (_error) {
       message.error(Strings.errorLoadingNewTypesCilt);
     }
   };

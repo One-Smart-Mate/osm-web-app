@@ -1,4 +1,4 @@
-import { Form, FormInstance, Select } from "antd";
+import { Form, FormInstance, notification, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../core/store";
@@ -9,6 +9,7 @@ import { useUpdateCardMechanicMutation } from "../../../services/cardService";
 import { UserTable } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
+import AnatomyNotification from "../../components/AnatomyNotification";
 
 
 interface FormProps {
@@ -61,7 +62,8 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
   }, [siteId]);
 
   const onFinish = async (values: any) => {
-    const selectedUserId = values.mechanicId;
+    try {
+      const selectedUserId = values.mechanicId;
 
     if (!selectedUserId) {
       return;
@@ -74,7 +76,6 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
       return;
     }
 
-    try {
       const currentUserId = selectedUserId;
       await updateCardMechanic({
         cardId: Number(finalCardId),
@@ -95,7 +96,7 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         return;
       }
     } catch (error) {
-      throw error;
+      AnatomyNotification.error(notification, error);
     }
   };
 

@@ -294,7 +294,7 @@ const CiltLevelAssignaments: React.FC = () => {
               };
             }
             return { levelId: level.id, count: 0, type: 'cilt' };
-          } catch (error) {
+          } catch (_error) {
             // Silently handle CILT fetch errors to reduce console noise
             return { levelId: level.id, count: 0, type: 'cilt' };
           }
@@ -324,7 +324,7 @@ const CiltLevelAssignaments: React.FC = () => {
               };
             }
             return { levelId: level.id, count: 0, type: 'opl' };
-          } catch (error) {
+          } catch (_error) {
             // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
             return { levelId: level.id, count: 0, type: 'opl' };
           }
@@ -439,7 +439,7 @@ const CiltLevelAssignaments: React.FC = () => {
               };
             }
             return { levelId: level.id, count: 0, type: 'cilt' };
-          } catch (error) {
+          } catch (_error) {
             // Silently handle CILT fetch errors to reduce console noise
             return { levelId: level.id, count: 0, type: 'cilt' };
           }
@@ -469,7 +469,7 @@ const CiltLevelAssignaments: React.FC = () => {
               };
             }
             return { levelId: level.id, count: 0, type: 'opl' };
-          } catch (error) {
+          } catch (_error) {
             // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
             return { levelId: level.id, count: 0, type: 'opl' };
           }

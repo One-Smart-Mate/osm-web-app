@@ -63,7 +63,8 @@ const UpdatePositionForm = ({
           ).unwrap();
           setUsers(fetchedResponsibles);
           setResponsibles(fetchedResponsibles);
-        } catch (error) {
+        } catch (_error) {
+          console.error("Error fetching responsibles:", _error);
         } finally {
           setLoading(false);
         }
@@ -136,7 +137,7 @@ const UpdatePositionForm = ({
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
+    } catch (_error) {
       notification.error({
         message: Strings.error,
         description: Strings.positionUpdateError,

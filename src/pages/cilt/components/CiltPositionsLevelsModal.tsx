@@ -76,7 +76,7 @@ const { Text } = Typography;
 // Component for the schedule button
 interface ScheduleButtonProps {
   sequence: CiltSequence;
-  onViewSchedules: (sequence: CiltSequence) => void;
+  onViewSchedules: (_sequence: CiltSequence) => void;
 }
 
 const ScheduleButton = ({ sequence, onViewSchedules }: ScheduleButtonProps) => {

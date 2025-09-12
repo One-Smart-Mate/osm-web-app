@@ -120,7 +120,7 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
       try {
         const cards = await getCards(siteId).unwrap();
         setAllCards(cards || []);
-      } catch (error) {
+      } catch (_error) {
         setAllCards([]);
       }
     };

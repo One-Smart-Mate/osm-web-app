@@ -5,7 +5,7 @@ import Strings from "../../../utils/localizations/Strings";
 
 interface StatusFilterPopoverProps {
   statusFilter: boolean | null;
-  setStatusFilter: (value: boolean | null) => void;
+  setStatusFilter: (_value: boolean | null) => void;
 }
 
 const StatusFilterPopover: React.FC<StatusFilterPopoverProps> = ({

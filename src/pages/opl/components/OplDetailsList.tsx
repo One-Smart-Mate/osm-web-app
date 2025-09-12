@@ -9,7 +9,7 @@ const { Paragraph, Text } = Typography;
 
 interface OplDetailsListProps {
   details: OplDetail[];
-  onDeleteDetail: (detail: OplDetail) => void;
+  onDeleteDetail: (_detail: OplDetail) => void;
 }
 
 const OplDetailsList: React.FC<OplDetailsListProps> = ({
