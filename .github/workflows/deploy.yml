@@ -16,6 +16,8 @@ jobs:
       region: ${{ secrets.AWS_REGION }}
       service: ${{ secrets.AWS_SERVICE_NAME }}
 
+    environment: ${{ github.ref_name == 'main' && 'production' || 'develop' }}
+
     steps:
       # 1. Checkout
       - name: Checkout code
@@ -131,5 +133,3 @@ jobs:
               \"containerPort\": 80,
               \"healthCheck\": { \"path\": \"/\", \"intervalSeconds\": 10 }
             }"
-
-    environment: ${{ env.DEPLOY_ENV }}
