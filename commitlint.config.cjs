@@ -23,7 +23,7 @@ module.exports = {
     "header-max-length": [2, "always", 100],
 
     // Require a scope (e.g., feat(auth), fix(api))
-    "scope-empty": [2, "never"],
+    "scope-empty": [0], // 0 = off, 1 = warning, 2 = error
 
     // Subject must be lowercase or sentence-case
     "subject-case": [2, "always", ["sentence-case", "lower-case"]],
