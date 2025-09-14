@@ -404,18 +404,6 @@ const CiltSequencesPage = () => {
       setSelectedOplDetails(details);
 
       setIsOplDetailsModalVisible(true);
-
-      if (details.filter((detail) => detail.type !== "texto").length === 0) {
-        AnatomyNotification.error(
-          notification,
-          {
-            data: {
-              message: `El OPL "${opl.title}" no tiene archivos multimedia.`,
-            },
-          },
-          "Información"
-        );
-      }
     } catch (error) {
       console.error("Error al cargar detalles de OPL:", error);
     } finally {

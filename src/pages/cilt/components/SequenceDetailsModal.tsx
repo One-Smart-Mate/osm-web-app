@@ -170,16 +170,16 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           </Col>
         </Row>
 
-        <Divider />
+        {/* <Divider /> */}
 
-        <Row gutter={[16, 16]}>
+        {/* <Row gutter={[16, 16]}>
           <Col span={24}>
             <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>
             <div style={{ whiteSpace: 'pre-wrap' }}>
               <Text>{sequence.frecuencyCode || "N/A"}</Text>
             </div>
           </Col>
-        </Row>
+        </Row> */}
 
         <Divider />
 
