@@ -2079,11 +2079,11 @@ const resources = {
       noDueDate: "Sin fecha de vencimiento",
 
       // Tags re-design
-      tagsOf: "Etiquetas de",
+      tagsOf: "Tarjetas de",
       filters: "Filtros",
       status: "Estado ",
       dueDate: "Fecha de vencimiento ",
-      cardType: "Tipo de etiqueta ",
+      cardType: "Tipo de tarjeta ",
       problemType: "Tipo de problema ",
       location: "Ubicación ",
       createdBy: "Creado por ",
