@@ -145,15 +145,14 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
       <div 
         ref={ref}
         className={`draggable-card ${isOver && canDrop ? "hover-over" : ""} ${isDragging ? "dragging" : ""}`}
-        style={{ 
+        style={{
           opacity: isDragging ? 0.6 : 1,
-          transition: "opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease",
-          transform: isOver ? "scale(1.02)" : isDragging ? "scale(0.98)" : "scale(1)",
-          marginBottom: "12px",
+          transition: "opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
+          transform: isOver ? "scale(1.01)" : isDragging ? "scale(0.99)" : "scale(1)",
+          marginBottom: "16px",
           cursor: isDragging ? "grabbing" : "default",
-          boxShadow: isOver ? "0 6px 16px rgba(0, 120, 255, 0.35)" : isDragging ? "0 0 8px rgba(24, 144, 255, 0.6)" : "0 2px 6px rgba(0, 0, 0, 0.12)",
+          boxShadow: isOver ? "0 4px 12px rgba(0, 120, 255, 0.25)" : isDragging ? "0 2px 8px rgba(24, 144, 255, 0.4)" : "none",
           borderRadius: "8px",
-          border: isOver ? "2px solid #1890ff" : isDragging ? "1px dashed #1890ff" : "1px solid #eee",
           position: "relative",
           zIndex: isDragging ? 1000 : 1
         }}
@@ -348,11 +347,10 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
   const renderDetailContent = (detail: OplDetail) => {
     if (detail.type === "texto") {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            margin: 0,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><DragHandle /><FileTextOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplTextType}</Text></Space>}
@@ -363,11 +361,10 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
       );
     } else if (detail.type === "imagen" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            margin: 0,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><DragHandle /><PictureOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplImageType}</Text></Space>}
@@ -391,11 +388,10 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
       );
     } else if (detail.type === "video" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            margin: 0,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><DragHandle /><VideoCameraOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplVideoType}</Text></Space>}
@@ -418,11 +414,10 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
       );
     } else if (detail.type === "pdf" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            margin: 0,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><DragHandle /><FilePdfOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplPdfType}</Text></Space>}
@@ -455,7 +450,7 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
         onCancel={onCancel}
         width={1100}
         style={{ top: 20 }}
-        bodyStyle={{ padding: '24px' }}
+        bodyStyle={{ padding: '0', height: '80vh', display: 'flex', flexDirection: 'column' }}
         className="opl-view-modal"
         destroyOnClose
         footer={[
@@ -464,64 +459,75 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
           </Button>
         ]}
       >
-        <Descriptions bordered column={1}>
-          <Descriptions.Item label={Strings.oplTitle}>
-            {currentOpl?.title || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={Strings.oplObjective}>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{currentOpl?.objetive || '-'}</div>
-          </Descriptions.Item>
-          <Descriptions.Item label={Strings.oplCreatedBy}>
-            {currentOpl?.creatorName || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={Strings.oplReviewedBy}>
-            {currentOpl?.reviewerName || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={Strings.oplCreationDate}>
-            {formatDate(currentOpl?.createdAt)}
-          </Descriptions.Item>
-        </Descriptions>
+        <div style={{
+          height: '100%',
+          overflowY: 'auto',
+          padding: '24px',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <Descriptions bordered column={1} style={{ marginBottom: '16px' }}>
+            <Descriptions.Item label={Strings.oplTitle}>
+              {currentOpl?.title || '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label={Strings.oplObjective}>
+              <div style={{ whiteSpace: 'pre-wrap' }}>{currentOpl?.objetive || '-'}</div>
+            </Descriptions.Item>
+            <Descriptions.Item label={Strings.oplCreatedBy}>
+              {currentOpl?.creatorName || '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label={Strings.oplReviewedBy}>
+              {currentOpl?.reviewerName || '-'}
+            </Descriptions.Item>
+            <Descriptions.Item label={Strings.oplCreationDate}>
+              {formatDate(currentOpl?.createdAt)}
+            </Descriptions.Item>
+          </Descriptions>
 
-        <Divider orientation="left">{Strings.oplContentPreview}</Divider>
-        
-        {sortedDetails && sortedDetails.length > 0 && (
-          <div style={{
-            padding: '10px',
-            marginBottom: '16px',
-            backgroundColor: '#e6f7ff',
-            borderRadius: '4px',
-            border: '1px dashed #1890ff',
-            display: 'flex',
-            alignItems: 'center',
-            boxShadow: '0 2px 6px rgba(24, 144, 255, 0.15)'
-          }}>
-            <MdDragHandle style={{ fontSize: "22px", color: "#1890ff", marginRight: "10px" }} />
-            <div>
-              <Text strong style={{ display: 'block', color: '#1890ff' }}>{Strings.dragToReorder}</Text>
-              <Text type="secondary" style={{ fontSize: '12px' }}>Drag the items to arrange their order</Text>
-            </div>
-          </div>
-        )}
+          <Divider orientation="left">{Strings.oplContentPreview}</Divider>
 
-        {sortedDetails && sortedDetails.length > 0 ? (
-          <DndProvider backend={HTML5Backend}>
-            <div className="opl-details-container" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-              {sortedDetails.map((detail, index) => (
-                <DraggableCard
-                  key={detail.id}
-                  detail={detail}
-                  index={index}
-                  moveCard={moveCard}
-                  onDropCard={handleCardDrop}
-                >
-                  {renderDetailContent(detail)}
-                </DraggableCard>
-              ))}
+          {sortedDetails && sortedDetails.length > 0 && (
+            <div style={{
+              padding: '10px',
+              marginBottom: '16px',
+              backgroundColor: '#e6f7ff',
+              borderRadius: '4px',
+              border: '1px dashed #1890ff',
+              display: 'flex',
+              alignItems: 'center',
+              boxShadow: '0 2px 6px rgba(24, 144, 255, 0.15)',
+              flexShrink: 0
+            }}>
+              <MdDragHandle style={{ fontSize: "22px", color: "#1890ff", marginRight: "10px" }} />
+              <div>
+                <Text strong style={{ display: 'block', color: '#1890ff' }}>{Strings.dragToReorder}</Text>
+                <Text type="secondary" style={{ fontSize: '12px' }}>Drag the items to arrange their order</Text>
+              </div>
             </div>
-          </DndProvider>
-        ) : (
-          <Empty description={Strings.oplNoDetails} />
-        )}
+          )}
+
+          {sortedDetails && sortedDetails.length > 0 ? (
+            <div style={{ flex: 1 }}>
+              <DndProvider backend={HTML5Backend}>
+                <div className="opl-details-container" style={{ padding: '0' }}>
+                  {sortedDetails.map((detail, index) => (
+                    <DraggableCard
+                      key={detail.id}
+                      detail={detail}
+                      index={index}
+                      moveCard={moveCard}
+                      onDropCard={handleCardDrop}
+                    >
+                      {renderDetailContent(detail)}
+                    </DraggableCard>
+                  ))}
+                </div>
+              </DndProvider>
+            </div>
+          ) : (
+            <Empty description={Strings.oplNoDetails} />
+          )}
+        </div>
       </Modal>
       
       {/* PDF Preview Modal */}
