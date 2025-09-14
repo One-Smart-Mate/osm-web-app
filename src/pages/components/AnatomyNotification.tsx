@@ -1,6 +1,7 @@
 import type { NotificationInstance } from "antd/es/notification/interface";
 import { format } from "date-fns";
 import CryptoJS from "crypto-js";
+import Strings from "../../utils/localizations/Strings";
 
 /**
  * Notification types for the application
@@ -13,26 +14,26 @@ export enum AnatomyNotificationType {
 }
 
 /**
- * Get success message based on notification type
+ * Get success message based on notification type using i18n
  */
-const getSuccessMessage = (type: AnatomyNotificationType, t: (_key: string) => string): string => {
+const getSuccessMessage = (type: AnatomyNotificationType): string => {
   if (type == AnatomyNotificationType._REGISTER) {
-    return t("successfullyRegistered");
+    return Strings.successfullyRegistered;
   }
 
   if (type == AnatomyNotificationType._UPDATE) {
-    return t("successfullyUpdated");
+    return Strings.successfullyUpdated;
   }
 
   if (type == AnatomyNotificationType._SUCCESS_DELETE) {
-    return t("successfullyDeleted");
+    return Strings.successfullyDeleted;
   }
 
   if (type == AnatomyNotificationType._RESET_PASSWORD) {
-    return t("passwordResetSuccess");
+    return Strings.passwordResetSuccess;
   }
 
-  return t("successfullyCompleted");
+  return Strings.successfullyCompleted;
 };
 
 /**
@@ -119,14 +120,14 @@ class AnatomyNotification {
     this.handlePrintError(valueOrText);
     if (valueOrText?.data?.message) {
       notification.open({
-        message: "Error!",
+        message: Strings.notificationErrorTitle || "Error!",
         description: valueOrText.data.message,
         type: "error",
       });
     } else {
       notification.open({
-        message: "Error!",
-        description: `${valueOrText || "Unknown error"} ${text || ""}`,
+        message: Strings.notificationErrorTitle || "Error!",
+        description: `${valueOrText || Strings.errorOccurred || "Unknown error"} ${text || ""}`,
         type: "error",
       });
     }
@@ -228,30 +229,15 @@ class AnatomyNotification {
   };
 
   /**
-   * Display success notification
+   * Display success notification with i18n support
    */
   static success(
-    notification: NotificationInstance, 
-    value: AnatomyNotificationType, 
-    t?: (_key: string) => string
+    notification: NotificationInstance,
+    value: AnatomyNotificationType
   ) {
-    // Default translation function if none provided
-    const translate = t || ((key: string) => {
-      // Fallback to English if no translation function provided
-      const fallbacks: Record<string, string> = {
-        successfullyRegistered: "Successfully registered",
-        successfullyUpdated: "Successfully updated",
-        successfullyDeleted: "Successfully deleted",
-        passwordResetSuccess: "Your password has been reset successfully. You can now log in with your new password",
-        successfullyCompleted: "Successfully completed",
-        success: "Success!"
-      };
-      return fallbacks[key] || key;
-    });
-
     notification.open({
-      message: translate("success"),
-      description: getSuccessMessage(value, translate),
+      message: Strings.notificationSuccessTitle || "Success!",
+      description: getSuccessMessage(value),
       type: "success",
     });
   }
