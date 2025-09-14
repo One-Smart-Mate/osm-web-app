@@ -85,7 +85,7 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
 
   const [positionDetailsVisible, setPositionDetailsVisible] = useState(false);
   const [positionToView, setPositionToView] = useState<Position | null>(null);
-  const [showPositionUsers, setShowPositionUsers] = useState(false);
+  const [showPositionUsers] = useState(false);
 
   const [ciltMstrDetailsVisible, setCiltMstrDetailsVisible] = useState(false);
   const [ciltMstrToView, setCiltMstrToView] = useState<CiltMstr | null>(null);
@@ -148,12 +148,6 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
       }
       
       const numericLevelId = Number(levelIdValue);
-      
-      
-      console.log("Datos del nodo seleccionado completo:", JSON.stringify(selectedNode));
-      console.log("ID original del nodo:", nodeId);
-      console.log("ID del nivel limpio:", levelIdValue);
-      console.log("ID del nivel convertido a número:", numericLevelId);
       
       
       if (isNaN(numericSiteId) || numericSiteId <= 0) {
@@ -300,14 +294,6 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                         }}
                       >
                         {Strings.ciltCardListViewDetailsButton}
-                      </Button>
-                      <Button
-                        type="default"
-                        size="small"
-                        onClick={() => setShowPositionUsers(!showPositionUsers)}
-                        className={showPositionUsers ? "text-blue-500" : ""}
-                      >
-                        {Strings.users || "Usuarios"}
                       </Button>
                     </Space>
                   </Col>
