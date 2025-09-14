@@ -414,12 +414,12 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           <Upload
             listType="picture-card"
             fileList={fileList}
-            onPreview={handlePreview}
             onChange={handleChange}
             beforeUpload={() => false}
             maxCount={1}
             showUploadList={{
               showRemoveIcon: false,
+              showPreviewIcon: false,
             }}
             // Custom item render with our own delete button
             itemRender={(originNode, _file) => {

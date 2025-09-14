@@ -1,9 +1,9 @@
-import { Form, Input, Button, notification, Upload, UploadProps, Spin } from "antd";
+import { Form, Input, Button, notification, Upload, UploadProps, Spin, Popconfirm } from "antd";
 import { useCreateCiltMstrMutation, useUpdateCiltMstrMutation } from "../../../services/cilt/ciltMstrService";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
-import { UserOutlined, PlusOutlined } from "@ant-design/icons";
+import { UserOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { uploadFileToFirebaseWithPath } from "../../../config/firebaseUpload";
 import UserSelectionModal from "../../components/UserSelectionModal";
 import type { UploadFile } from "antd/es/upload/interface";
@@ -368,11 +368,43 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
         <Upload
           listType="picture-card"
           fileList={fileList}
-          onPreview={handlePreview}
           onChange={handleChange}
           beforeUpload={() => false}
           maxCount={1}
           className="border-gray-300 p-2 rounded-md"
+          showUploadList={{
+            showPreviewIcon: false,
+            showRemoveIcon: false,
+          }}
+          // Custom item render with our own delete button
+          itemRender={(originNode, _file) => {
+            return (
+              <div className="relative group">
+                {originNode}
+                <div className="absolute top-1 right-1 z-10">
+                  <Popconfirm
+                    title={Strings.deleteImgConfirm}
+                    onConfirm={() => {
+                      // Clear the file list
+                      setFileList([]);
+                      // Also clear the form field value
+                      form.setFieldsValue({ urlImgLayout: undefined });
+                    }}
+                    okText={Strings.yes || "Yes"}
+                    cancelText={Strings.no || "No"}
+                  >
+                    <button
+                      type="button"
+                      className="flex items-center justify-center w-5 h-5 bg-white border border-gray-300 rounded-sm shadow-sm hover:bg-red-50 hover:border-red-300 focus:outline-none"
+                      title="Delete image"
+                    >
+                      <DeleteOutlined className="text-gray-500 hover:text-red-500" style={{ fontSize: '12px' }} />
+                    </button>
+                  </Popconfirm>
+                </div>
+              </div>
+            );
+          }}
         >
           {fileList.length >= 1 ? null : uploadButton}
         </Upload>
