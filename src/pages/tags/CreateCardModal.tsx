@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, Row, Col } from "antd";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card } from "antd";
 import { SaveOutlined, CheckOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
@@ -55,7 +55,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const commentsRef = useRef<HTMLDivElement>(null);
 
   // Función para scroll suave al siguiente paso
-  const scrollToNextStep = (targetRef: React.RefObject<HTMLDivElement>) => {
+  const scrollToNextStep = (targetRef: React.RefObject<HTMLDivElement | null>) => {
     setTimeout(() => {
       if (targetRef.current) {
         targetRef.current.scrollIntoView({
