@@ -28,6 +28,7 @@ import { SiteUpdateForm } from "../../data/site/site";
 import TagPDFButton from "../components/TagPDFButton";
 import AnatomyNotification from "../components/AnatomyNotification";
 import DiscardCardModal from "./components/DiscardCardModal";
+import Constants from "../../utils/Constants";
 
 // Components
 const { Text } = Typography;
@@ -152,7 +153,8 @@ const TagDetailsPage = () => {
           <div className="w-full sm:w-auto flex justify-start sm:justify-end gap-2">
             {data && (
               <>
-                {data.card.status !== 'C' && data.card.status !== 'R' && data.card.status !== 'C/R' && (
+                {/* Only show discard button if card is not discarded (D), closed (C), or resolved (R) */}
+                {data.card.status !== Constants.STATUS_DRAFT && data.card.status !== Constants.STATUS_CANCELED && data.card.status !== Constants.STATUS_RESOLVED && (
                   <Button
                     type="primary"
                     danger

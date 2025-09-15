@@ -69,17 +69,56 @@ const UpdateCardTypeForm = ({ form, initialValues }: FormProps) => {
     handleGetData();
   }, []);
 
+  // Load basic values that don't depend on responsibles
+  useEffect(() => {
+    if (initialValues) {
+      console.log('=== CARD TYPE BASIC FIELDS DEBUG ===');
+      console.log('Initial Values:', initialValues);
+      console.log('Methodology value:', initialValues.methodology);
+      console.log('=====================================');
+
+      const basicFormValues = {
+        id: initialValues.id,
+        name: initialValues.name,
+        description: initialValues.description,
+        methodology: initialValues.methodology,
+        color: initialValues.color || "FFFFFF",
+        status: initialValues.status,
+        // Evidence fields
+        quantityPicturesCreate: initialValues.quantityPicturesCreate,
+        quantityVideosCreate: initialValues.quantityVideosCreate,
+        videosDurationCreate: initialValues.videosDurationCreate,
+        quantityAudiosCreate: initialValues.quantityAudiosCreate,
+        audiosDurationCreate: initialValues.audiosDurationCreate,
+        quantityPicturesPs: initialValues.quantityPicturesPs,
+        quantityVideosPs: initialValues.quantityVideosPs,
+        videosDurationPs: initialValues.videosDurationPs,
+        quantityAudiosPs: initialValues.quantityAudiosPs,
+        audiosDurationPs: initialValues.audiosDurationPs,
+        quantityPicturesClose: initialValues.quantityPicturesClose,
+        quantityVideosClose: initialValues.quantityVideosClose,
+        videosDurationClose: initialValues.videosDurationClose,
+        quantityAudiosClose: initialValues.quantityAudiosClose,
+        audiosDurationClose: initialValues.audiosDurationClose,
+      };
+
+      console.log('Setting basic form values:', basicFormValues);
+      form.setFieldsValue(basicFormValues);
+      setColor(initialValues.color || "FFFFFF");
+    }
+  }, [initialValues, form]);
+
+  // Load responsible field when responsibles are available
   useEffect(() => {
     if (initialValues && responsibles.length > 0) {
       const matchedResponsible = responsibles.find(
         (res) => res.id === initialValues.responsableId
       );
-      form.setFieldsValue({
-        ...initialValues,
-        responsableId: matchedResponsible ? matchedResponsible.id : undefined,
-        color: initialValues.color || "FFFFFF",
-      });
-      setColor(initialValues.color || "FFFFFF");
+
+      if (matchedResponsible) {
+        console.log('Setting responsible:', matchedResponsible);
+        form.setFieldValue('responsableId', matchedResponsible.id);
+      }
     }
   }, [initialValues, responsibles, form]);
 

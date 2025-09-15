@@ -83,9 +83,9 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
         idOfUpdatedBy: Number(currentUserId),
       }).unwrap();
 
-      const isExternalProvider = selectedUser.roles.some(
-        (role) => role.name === Constants.externalProvider
-      );
+      const isExternalProvider = selectedUser.roles &&
+        Array.isArray(selectedUser.roles) &&
+        selectedUser.roles.some((role) => role.name === Constants.externalProvider);
       if (isExternalProvider) {
         await sendCardAssignment({
           userId: Number(selectedUserId),

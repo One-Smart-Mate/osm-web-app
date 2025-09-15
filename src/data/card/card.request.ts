@@ -72,3 +72,35 @@ export interface NodeCardItem {
   description: string;
   superiorId?: string | null;
 }
+
+export type EvidenceType =
+  | 'IMCR' // Image Card Creation
+  | 'IMCL' // Image Card Close
+  | 'IMPS' // Image Provisional Solution
+  | 'VICR' // Video Card Creation
+  | 'VICL' // Video Card Close
+  | 'VIPS' // Video Provisional Solution
+  | 'AUCR' // Audio Card Creation
+  | 'AUCL' // Audio Card Close
+  | 'AUPS'; // Audio Provisional Solution
+
+export interface Evidence {
+  type: EvidenceType;
+  url: string;
+}
+
+export interface UpdateDefinitiveSolutionRequest {
+  cardId: number;
+  userDefinitiveSolutionId: number;
+  userAppDefinitiveSolutionId: number;
+  comments: string;
+  evidences: Evidence[];
+}
+
+export interface UpdateProvisionalSolutionRequest {
+  cardId: number;
+  userProvisionalSolutionId: number;
+  userAppProvisionalSolutionId: number;
+  comments: string;
+  evidences: Evidence[];
+}

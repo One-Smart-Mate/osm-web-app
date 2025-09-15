@@ -27,6 +27,12 @@ export const oplLevelsService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: OplLevel[] }) => response.data,
       providesTags: ["OplLevel"],
     }),
+
+    getAllOplLevels: builder.query<OplLevel[], void>({
+      query: () => "/opl-levels",
+      transformResponse: (response: { data: OplLevel[] }) => response.data,
+      providesTags: ["OplLevel"],
+    }),
   }),
 });
 
@@ -34,4 +40,5 @@ export const {
   useCreateOplLevelMutation,
   useDeleteOplLevelMutation,
   useGetOplLevelsByLevelIdQuery,
+  useGetAllOplLevelsQuery,
 } = oplLevelsService;

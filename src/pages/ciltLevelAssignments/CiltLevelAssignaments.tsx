@@ -240,140 +240,126 @@ const CiltLevelAssignaments: React.FC = () => {
     localStorage.setItem("treeExpandedState", isTreeExpanded.toString());
   }, [isTreeExpanded]);
 
+  // Helper function to get auth headers
+  const getAuthHeaders = () => {
+    const user = sessionStorage.getItem(Constants.SESSION_KEYS.user);
+    const token = user ? JSON.parse(user).token : '';
+    return {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  };
+
+  // Optimized function to fetch assignment counts without 404 errors
+  const fetchAssignmentCountsWithAuth = async (levelIds: string[]) => {
+    const assignmentCountsObj: {[key: string]: number} = {};
+
+    try {
+      // First, fetch all OPL levels at once to create a lookup map (avoids 404s)
+      const allOplLevelsUrl = `${import.meta.env.VITE_API_SERVICE}/opl-levels`;
+      const oplResponse = await fetch(allOplLevelsUrl, {
+        method: 'GET',
+        headers: getAuthHeaders()
+      });
+
+      // Create OPL lookup map by levelId
+      const oplCountsByLevelId: {[key: string]: number} = {};
+      if (oplResponse.ok) {
+        const oplData = await oplResponse.json();
+        const allOplLevels = oplData.data || oplData || [];
+
+        // Count OPL assignments per level
+        allOplLevels.forEach((opl: any) => {
+          const levelIdStr = opl.levelId.toString();
+          oplCountsByLevelId[levelIdStr] = (oplCountsByLevelId[levelIdStr] || 0) + 1;
+        });
+      }
+
+      // Process CILT assignments in batches
+      const batchSize = 5;
+      for (let i = 0; i < levelIds.length; i += batchSize) {
+        const batch = levelIds.slice(i, i + batchSize);
+
+        const batchPromises = batch.map(async (levelId) => {
+          // Fetch CILT assignments for this level
+          const ciltUrl = `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${levelId}?skipOpl=true`;
+
+          let ciltCount = 0;
+          try {
+            const ciltResponse = await fetch(ciltUrl, {
+              method: 'GET',
+              headers: getAuthHeaders()
+            });
+
+            if (ciltResponse.ok) {
+              const ciltData = await ciltResponse.json();
+              const ciltAssignments = ciltData.data || ciltData;
+              ciltCount = Array.isArray(ciltAssignments)
+                ? ciltAssignments.filter(a => a.status === Constants.STATUS_ACTIVE).length
+                : 0;
+            }
+          } catch (_error) {
+            // Handle CILT fetch errors silently
+            ciltCount = 0;
+          }
+
+          // Get OPL count from pre-built lookup map (no additional requests needed)
+          const oplCount = oplCountsByLevelId[levelId] || 0;
+
+          return { levelId, count: ciltCount + oplCount };
+        });
+
+        const batchResults = await Promise.all(batchPromises);
+        batchResults.forEach(result => {
+          assignmentCountsObj[result.levelId] = result.count;
+        });
+
+        // Small delay between batches to avoid overwhelming the server
+        if (i + batchSize < levelIds.length) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+      }
+
+    } catch (error) {
+      console.error('Error fetching assignment counts:', error);
+      // Set all counts to 0 in case of error
+      levelIds.forEach(levelId => {
+        assignmentCountsObj[levelId] = 0;
+      });
+    }
+
+    return assignmentCountsObj;
+  };
+
   const refreshAssignmentCounts = async () => {
     try {
       // Get active nodes from current tree data
-      const getActiveNodesFromTree = (nodes: any[]): any[] => {
-        let activeNodes: any[] = [];
-        
+      const getActiveNodesFromTree = (nodes: any[]): string[] => {
+        let activeNodeIds: string[] = [];
+
         const traverse = (nodeList: any[]) => {
           nodeList.forEach(node => {
             if (node.id !== "0") {
-              activeNodes.push({ id: node.id, name: node.name });
+              activeNodeIds.push(node.id);
             }
             if (node.children && node.children.length > 0) {
               traverse(node.children);
             }
           });
         };
-        
+
         traverse(nodes);
-        return activeNodes;
+        return activeNodeIds;
       };
 
       if (treeData.length === 0) return;
-      
-      const activeNodes = getActiveNodesFromTree(treeData[0].children || []);
-      
-      // Fetch both CILT and OPL assignment counts for tree display
-      const assignmentCountsObj: {[key: string]: number} = {};
-      
-      // Create batched requests with proper error handling for both CILT and OPL
-      const fetchAssignmentCounts = async (levels: any[]) => {
-        // Batch CILT assignments request
-        const ciltPromises = levels.map(async (level) => {
-          try {
-            const ciltResponse = await fetch(
-              `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
-              {
-                method: 'GET',
-                headers: {
-                  'Accept': '*/*',
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-            
-            if (ciltResponse.ok) {
-              const ciltData = await ciltResponse.json();
-              const ciltAssignments = ciltData.data || ciltData;
-              return {
-                levelId: level.id,
-                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === Constants.STATUS_ACTIVE).length : 0,
-                type: 'cilt'
-              };
-            }
-            return { levelId: level.id, count: 0, type: 'cilt' };
-          } catch (_error) {
-            // Silently handle CILT fetch errors to reduce console noise
-            return { levelId: level.id, count: 0, type: 'cilt' };
-          }
-        });
 
-        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
-        const oplPromises = levels.map(async (level) => {
-          try {
-            const oplResponse = await fetch(
-              `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
-              {
-                method: 'GET',
-                headers: {
-                  'Accept': '*/*',
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-            
-            if (oplResponse.ok) {
-              const oplData = await oplResponse.json();
-              const oplAssignments = oplData.data || oplData;
-              return {
-                levelId: level.id,
-                count: Array.isArray(oplAssignments) ? oplAssignments.length : 0,
-                type: 'opl'
-              };
-            }
-            return { levelId: level.id, count: 0, type: 'opl' };
-          } catch (_error) {
-            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
-            return { levelId: level.id, count: 0, type: 'opl' };
-          }
-        });
+      const activeNodeIds = getActiveNodesFromTree(treeData[0].children || []);
 
-        // Execute requests in batches to avoid overwhelming the server
-        const chunkSize = 5; // Process 5 levels at a time to reduce server load
-        const ciltCounts: {[key: string]: number} = {};
-        const oplCounts: {[key: string]: number} = {};
+      // Fetch assignment counts with proper authentication
+      const assignmentCountsObj = await fetchAssignmentCountsWithAuth(activeNodeIds);
 
-        // Process CILT assignments in chunks
-        for (let i = 0; i < ciltPromises.length; i += chunkSize) {
-          const chunk = ciltPromises.slice(i, i + chunkSize);
-          const results = await Promise.all(chunk);
-          results.forEach(result => {
-            ciltCounts[result.levelId] = result.count;
-          });
-          
-          // Small delay between chunks to avoid overwhelming the server
-          if (i + chunkSize < ciltPromises.length) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-          }
-        }
-
-        // Process OPL assignments in chunks
-        for (let i = 0; i < oplPromises.length; i += chunkSize) {
-          const chunk = oplPromises.slice(i, i + chunkSize);
-          const results = await Promise.all(chunk);
-          results.forEach(result => {
-            oplCounts[result.levelId] = result.count;
-          });
-          
-          // Small delay between chunks to avoid overwhelming the server
-          if (i + chunkSize < oplPromises.length) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-          }
-        }
-
-        // Combine CILT and OPL counts for tree display
-        levels.forEach(level => {
-          const ciltCount = ciltCounts[level.id] || 0;
-          const oplCount = oplCounts[level.id] || 0;
-          assignmentCountsObj[level.id] = ciltCount + oplCount;
-        });
-      };
-
-      // Fetch assignment counts for active nodes only
-      await fetchAssignmentCounts(activeNodes);
-      
       // Update state with assignment counts
       setAssignmentCounts(assignmentCountsObj);
     } catch (error) {
@@ -410,115 +396,10 @@ const CiltLevelAssignaments: React.FC = () => {
 
       applyExpandState(hierarchyData);
 
-      // Fetch both CILT and OPL assignment counts for tree display
-      const assignmentCountsObj: {[key: string]: number} = {};
-      
-      // Create batched requests with proper error handling for both CILT and OPL
-      const fetchAssignmentCounts = async (levels: any[]) => {
-        // Batch CILT assignments request
-        const ciltPromises = levels.map(async (level) => {
-          try {
-            const ciltResponse = await fetch(
-              `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
-              {
-                method: 'GET',
-                headers: {
-                  'Accept': '*/*',
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-            
-            if (ciltResponse.ok) {
-              const ciltData = await ciltResponse.json();
-              const ciltAssignments = ciltData.data || ciltData;
-              return {
-                levelId: level.id,
-                count: Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === Constants.STATUS_ACTIVE).length : 0,
-                type: 'cilt'
-              };
-            }
-            return { levelId: level.id, count: 0, type: 'cilt' };
-          } catch (_error) {
-            // Silently handle CILT fetch errors to reduce console noise
-            return { levelId: level.id, count: 0, type: 'cilt' };
-          }
-        });
+      // Fetch assignment counts for active nodes using authenticated requests
+      const activeNodeIds = activeNodes.map(node => node.id);
+      const assignmentCountsObj = await fetchAssignmentCountsWithAuth(activeNodeIds);
 
-        // Batch OPL assignments request (404s are expected for levels without OPL assignments)
-        const oplPromises = levels.map(async (level) => {
-          try {
-            const oplResponse = await fetch(
-              `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
-              {
-                method: 'GET',
-                headers: {
-                  'Accept': '*/*',
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-            
-            if (oplResponse.ok) {
-              const oplData = await oplResponse.json();
-              const oplAssignments = oplData.data || oplData;
-              return {
-                levelId: level.id,
-                count: Array.isArray(oplAssignments) ? oplAssignments.length : 0,
-                type: 'opl'
-              };
-            }
-            return { levelId: level.id, count: 0, type: 'opl' };
-          } catch (_error) {
-            // Silently handle OPL fetch errors (404s are expected for levels without OPL assignments)
-            return { levelId: level.id, count: 0, type: 'opl' };
-          }
-        });
-
-        // Execute requests in batches to avoid overwhelming the server
-        const chunkSize = 5; // Process 5 levels at a time to reduce server load
-        const ciltCounts: {[key: string]: number} = {};
-        const oplCounts: {[key: string]: number} = {};
-
-        // Process CILT assignments in chunks
-        for (let i = 0; i < ciltPromises.length; i += chunkSize) {
-          const chunk = ciltPromises.slice(i, i + chunkSize);
-          const results = await Promise.all(chunk);
-          results.forEach(result => {
-            ciltCounts[result.levelId] = result.count;
-          });
-          
-          // Small delay between chunks to avoid overwhelming the server
-          if (i + chunkSize < ciltPromises.length) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-          }
-        }
-
-        // Process OPL assignments in chunks
-        for (let i = 0; i < oplPromises.length; i += chunkSize) {
-          const chunk = oplPromises.slice(i, i + chunkSize);
-          const results = await Promise.all(chunk);
-          results.forEach(result => {
-            oplCounts[result.levelId] = result.count;
-          });
-          
-          // Small delay between chunks to avoid overwhelming the server
-          if (i + chunkSize < oplPromises.length) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-          }
-        }
-
-        // Combine CILT and OPL counts for tree display
-        levels.forEach(level => {
-          const ciltCount = ciltCounts[level.id] || 0;
-          const oplCount = oplCounts[level.id] || 0;
-          assignmentCountsObj[level.id] = ciltCount + oplCount;
-        });
-      };
-
-      // Fetch assignment counts for active nodes only
-      await fetchAssignmentCounts(activeNodes);
-      
       // Update state with assignment counts
       setAssignmentCounts(assignmentCountsObj);
 

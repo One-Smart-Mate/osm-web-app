@@ -62,8 +62,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           <Card
             style={{
               marginBottom: 16,
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: "1px solid #e8e8e8",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
               borderRadius: "8px",
             }}
             title={
@@ -101,8 +100,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           <Card
             style={{
               marginBottom: 16,
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: "1px solid #e8e8e8",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
               borderRadius: "8px",
             }}
             title={
@@ -140,8 +138,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           <Card
             style={{
               marginBottom: 16,
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: "1px solid #e8e8e8",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
               borderRadius: "8px",
             }}
             title={
@@ -169,8 +166,7 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
           <Card
             style={{
               marginBottom: "16px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: "1px solid #e8e8e8",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
               borderRadius: "8px",
             }}
             title={

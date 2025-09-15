@@ -1,4 +1,4 @@
-import { Card, Tag, theme, Typography } from "antd";
+import { Card, Tag, theme, Typography, Dropdown, Button } from "antd";
 import {
   formatDate,
   getCardStatusAndText,
@@ -8,7 +8,7 @@ import {
 } from "../../../utils/Extensions";
 import { CardInterface, Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import {
   BsActivity,
@@ -20,10 +20,13 @@ import {
   BsNodePlus,
   BsPersonGear,
   BsPinMap,
+  BsThreeDotsVertical,
 } from "react-icons/bs";
 import { buildCardDetailRoute, navigateWithState } from "../../../routes/RoutesExtensions";
 import TagStatus from "../../components/TagStatus";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import CardSolutionModal from "./CardSolutionModal";
+import Constants from "../../../utils/Constants";
 
 interface TagCardProps {
   data: CardInterface;
@@ -39,6 +42,8 @@ const TagCard = ({ data }: TagCardProps) => {
     data.cardCreationDate
   );
   const navigatewithState = navigateWithState();
+  const [solutionModalVisible, setSolutionModalVisible] = useState(false);
+  const [solutionType, setSolutionType] = useState<'provisional' | 'definitive' | null>(null);
 
   const evidenceIndicator = (evidences: Evidences[] = []) => {
     const elements = useMemo(() => {
@@ -65,18 +70,67 @@ const TagCard = ({ data }: TagCardProps) => {
       });
   };
 
+  const handleProvisionalSolution = () => {
+    setSolutionType('provisional');
+    setSolutionModalVisible(true);
+  };
+
+  const handleDefinitiveSolution = () => {
+    setSolutionType('definitive');
+    setSolutionModalVisible(true);
+  };
+
+  const canApplySolution = () => {
+    // Enable solution options for cards that are not discarded, resolved, or closed
+    const isCardDiscarded = data.status === Constants.STATUS_DRAFT; // 'D'
+    const isCardClosed = data.status === Constants.STATUS_RESOLVED || data.status === Constants.STATUS_CANCELED;
+
+    return !isCardDiscarded && !isCardClosed;
+  };
+
+  const dropdownItems = [
+    {
+      key: 'provisional',
+      label: Strings.provisionalSolution || 'Solución Provisional',
+      disabled: !canApplySolution(),
+    },
+    {
+      key: 'definitive',
+      label: Strings.definitiveSolution || 'Solución Definitiva',
+      disabled: !canApplySolution(),
+    },
+  ];
+
+  const handleMenuClick = (info: any) => {
+    // Prevent propagation to parent card
+    if (info.domEvent) {
+      info.domEvent.stopPropagation();
+      info.domEvent.preventDefault();
+    }
+
+    switch (info.key) {
+      case 'provisional':
+        handleProvisionalSolution();
+        break;
+      case 'definitive':
+        handleDefinitiveSolution();
+        break;
+    }
+  };
+
   return (
+    <>
     <Card
       hoverable
       title={
-        <div className="mt-2 flex flex-col items-center">
-          <div className="flex gap-2">
+        <div className="mt-2 flex flex-col items-center relative">
+          <div className="flex gap-2 w-full justify-center relative">
             <Typography.Title level={5}>
               {data.cardTypeMethodologyName} {data.siteCardId}
             </Typography.Title>
             {data.cardTypeColor && (
               <div
-                className="w-10 md:flex-1 rounded-full"
+                className="rounded-full"
                 style={{
                   backgroundColor: `#${data.cardTypeColor}`,
                   width: "1.5rem",
@@ -84,6 +138,38 @@ const TagCard = ({ data }: TagCardProps) => {
                 }}
               />
             )}
+            {/* Three dots menu positioned in top right */}
+            <div
+              className="absolute top-0 right-0"
+              style={{ zIndex: 10 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Dropdown
+                menu={{
+                  items: dropdownItems,
+                  onClick: handleMenuClick
+                }}
+                trigger={['click']}
+                placement="bottomRight"
+                overlayStyle={{ zIndex: 1050 }}
+              >
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<BsThreeDotsVertical />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px',
+                  }}
+                />
+              </Dropdown>
+            </div>
           </div>
           {evidenceIndicator(data.evidences)}
         </div>
@@ -137,6 +223,23 @@ const TagCard = ({ data }: TagCardProps) => {
         icon={<BsPersonGear />}
       />
     </Card>
+
+    {/* Solution Modal */}
+    {solutionModalVisible && solutionType && (
+      <CardSolutionModal
+        visible={solutionModalVisible}
+        onClose={() => {
+          setSolutionModalVisible(false);
+          setSolutionType(null);
+        }}
+        card={data}
+        solutionType={solutionType}
+        onSuccess={() => {
+          // Optionally refresh card data or parent component
+        }}
+      />
+    )}
+  </>
   );
 };
 

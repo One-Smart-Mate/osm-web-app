@@ -306,12 +306,12 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
                         </div>
 
                         {/* Frequencies */}
-                        <div style={{ marginBottom: 8 }}>
+                        {/* <div style={{ marginBottom: 8 }}>
                           <Text type="secondary">
                             {Strings.createCiltSequenceModalFrequenciesTitle}:
                           </Text>{" "}
                           <Text>{sequence.frecuencyCode || "N/A"}</Text>
-                        </div>
+                        </div> */}
 
                         {sequence.toolsRequired && (
                           <div style={{ marginBottom: 8 }}>

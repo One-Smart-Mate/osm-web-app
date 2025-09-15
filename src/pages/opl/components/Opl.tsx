@@ -32,13 +32,11 @@ import Strings from "../../../utils/localizations/Strings";
 
 import SearchBar from "../../../components/common/SearchBar";
 import { fileValidationCache } from "./OplMediaUploader";
-import { useTranslation } from "react-i18next";
 import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 const Opl = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
-  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [detailForm] = Form.useForm();
 
@@ -263,7 +261,6 @@ const Opl = (): React.ReactElement => {
         AnatomyNotification.success(
           notification,
           AnatomyNotificationType._UPDATE,
-          t
         );
       } else {
         const createPayload = new CreateOplMstrDTO(
@@ -282,7 +279,6 @@ const Opl = (): React.ReactElement => {
         AnatomyNotification.success(
           notification,
           AnatomyNotificationType._REGISTER,
-          t
         );
       }
 
