@@ -100,7 +100,7 @@ const AssignPositionsButton = ({
       const positionsToUpdate = [
         ...positionsToAdd.map((p) => {
           // Create a new object without the 'order' property
-          const { order, ...positionWithoutOrder } = p;
+          const { order: _order, ...positionWithoutOrder } = p;
           return {
             ...positionWithoutOrder,
             userIds: [...p.userIds, userIdNumber],
@@ -108,7 +108,7 @@ const AssignPositionsButton = ({
         }),
         ...positionsToRemove.map((p) => {
           // Create a new object without the 'order' property
-          const { order, ...positionWithoutOrder } = p;
+          const { order: _order, ...positionWithoutOrder } = p;
           return {
             ...positionWithoutOrder,
             userIds: p.userIds.filter((id) => id !== userIdNumber),

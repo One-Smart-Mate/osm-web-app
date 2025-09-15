@@ -52,7 +52,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
       const response = await getSiteResponsibles(card.siteId.toString()).unwrap();
       setUsers(response);
     } catch (_error) {
-      handleErrorNotification('Error loading users');
+      handleErrorNotification(Strings.errorLoadingUsers);
     }
   };
 
@@ -85,7 +85,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
 
   const handleSubmit = async (values: any) => {
     if (!user?.userId) {
-      handleErrorNotification('Usuario no identificado');
+      handleErrorNotification(Strings.userNotIdentified);
       return;
     }
 
@@ -95,8 +95,11 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
       for (const file of fileList) {
         if (file.originFileObj) {
           try {
-            // Create a path for the evidence file
-            const path = `cards/${card.cardUUID}/solutions/${Date.now()}_${file.name}`;
+            // Create a path for the evidence file matching Android structure
+            const evidenceType = getEvidenceType(file);
+            const folder = evidenceType.startsWith('IM') ? 'images' :
+                          evidenceType.startsWith('VI') ? 'videos' : 'audios';
+            const path = `site_${card.siteId}/cards/${card.cardUUID}/${folder}/${Date.now()}_${file.name}`;
 
             // Upload to Firebase
             const downloadURL = await uploadFileToFirebaseWithPath(path, file);
@@ -134,7 +137,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
       }
 
       handleSucccessNotification(
-        `${isDefinitive ? 'Solución definitiva' : 'Solución provisional'} aplicada correctamente`
+        `${isDefinitive ? Strings.definitiveSolution : Strings.provisionalSolution} ${Strings.appliedCorrectly}`
       );
 
       onSuccess?.();
@@ -153,7 +156,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
 
   return (
     <Modal
-      title={`${isDefinitive ? 'Solución Definitiva' : 'Solución Provisional'} - ${card.cardTypeMethodologyName} ${card.siteCardId}`}
+      title={`${isDefinitive ? Strings.definitiveSolutionTitle : Strings.provisionalSolutionTitle} - ${card.cardTypeMethodologyName} ${card.siteCardId}`}
       open={visible}
       onCancel={onClose}
       footer={[
@@ -174,7 +177,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
     >
       <Space direction="vertical" style={{ width: '100%' }}>
         <Typography.Text type="secondary">
-          Tarjeta: {card.cardTypeMethodologyName} {card.siteCardId}
+          {Strings.cardLabel} {card.cardTypeMethodologyName} {card.siteCardId}
         </Typography.Text>
 
         <Form
@@ -184,11 +187,11 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
         >
           <Form.Item
             name="responsibleUser"
-            label="Usuario Responsable"
-            rules={[{ required: true, message: 'Seleccione un usuario responsable' }]}
+            label={Strings.responsibleUser}
+            rules={[{ required: true, message: Strings.selectResponsibleUser }]}
           >
             <Select
-              placeholder="Seleccionar usuario responsable"
+              placeholder={Strings.selectResponsibleUserPlaceholder}
               loading={isLoadingUsers}
               showSearch
               filterOption={(input, option) =>
@@ -205,19 +208,19 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
 
           <Form.Item
             name="comments"
-            label="Comentarios"
-            rules={[{ required: true, message: 'Ingrese los comentarios' }]}
+            label={Strings.commentsLabel}
+            rules={[{ required: true, message: Strings.enterComments }]}
           >
             <Input.TextArea
               rows={4}
-              placeholder="Describa la solución aplicada..."
+              placeholder={Strings.describeSolution}
               maxLength={500}
               showCount
             />
           </Form.Item>
 
           <Form.Item
-            label="Evidencias (Opcional)"
+            label={Strings.evidencesOptional}
           >
             <Upload
               multiple
@@ -228,12 +231,12 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
               maxCount={5} // Limit number of files
             >
               <Button icon={<UploadOutlined />}>
-                Seleccionar archivos
+                {Strings.selectFiles}
               </Button>
             </Upload>
             {fileList.length > 0 && (
               <div style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
-                {fileList.length} archivo(s) seleccionado(s)
+                {fileList.length} {Strings.filesSelected}
               </div>
             )}
           </Form.Item>

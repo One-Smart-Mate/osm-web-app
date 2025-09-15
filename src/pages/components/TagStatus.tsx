@@ -19,7 +19,7 @@ const TagStatus = ({ card, justify }: TagStatusProps): React.ReactElement => {
   );
 
   const isCardDiscarded = card.status === Constants.STATUS_DRAFT; // Status 'D' means discarded/cancelled
-  const isCardClosed = card.status === 'R' || card.status === 'C'; // Resolved or Closed
+  const isCardClosed = card.status === Constants.STATUS_RESOLVED || card.status === Constants.STATUS_CANCELED; // Resolved or Closed
 
   // Color logic: Orange for discarded (D), Red for closed/resolved (R,C), Green for open (A,P,V,etc)
   const getStatusColor = () => {

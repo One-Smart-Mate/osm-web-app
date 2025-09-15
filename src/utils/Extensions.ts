@@ -235,7 +235,7 @@ export const getUnifiedTimeStatus = (
   const currentDateObj = new Date();
 
   // For completed items (R, C), check if completion was on time
-  if (status === "R" || status === "C") {
+  if (status === Constants.STATUS_RESOLVED || status === Constants.STATUS_CANCELED) {
     if (!completionDate) {
       // No completion date available, assume on time
       return { isOverdue: false, timeStatus: Strings.onTime };
@@ -284,7 +284,7 @@ export const getCardStatusAndText = (
       };
     }
 
-    case "R": {
+    case Constants.STATUS_RESOLVED: {
       return {
         status: "error",
         text: Strings.closed,
@@ -292,7 +292,7 @@ export const getCardStatusAndText = (
       };
     }
 
-    case "C": {
+    case Constants.STATUS_CANCELED: {
       return {
         status: "error",
         text: Strings.closed,

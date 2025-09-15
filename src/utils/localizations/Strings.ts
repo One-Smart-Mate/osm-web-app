@@ -1789,6 +1789,26 @@ class StringsBase {
   static locationLabel = "locationLabel";
   static selectLevel = "selectLevel";
   static describeAnomaly = "describeAnomaly";
+  static dragItemsText = "dragItemsText"
+  static loadingtagTypes = "loadingtagTypes"
+  static loadingpriorities= "loadingpriorities"
+
+  // Card Solution Modal strings
+  static errorLoadingUsers = "errorLoadingUsers";
+  static userNotIdentified = "userNotIdentified";
+  static appliedCorrectly = "appliedCorrectly";
+  static definitiveSolutionTitle = "definitiveSolutionTitle";
+  static provisionalSolutionTitle = "provisionalSolutionTitle";
+  static cardLabel = "cardLabel";
+  static responsibleUser = "responsibleUser";
+  static selectResponsibleUser = "selectResponsibleUser";
+  static selectResponsibleUserPlaceholder = "selectResponsibleUserPlaceholder";
+  static commentsLabel = "commentsLabel";
+  static enterComments = "enterComments";
+  static describeSolution = "describeSolution";
+  static evidencesOptional = "evidencesOptional";
+  static selectFiles = "selectFiles";
+  static filesSelected = "filesSelected";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -91,7 +91,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   // Track the last selected level to scroll to the next one
   const [lastSelectedLevel, setLastSelectedLevel] = useState<number | null>(null);
 
-  // Scroll automático cuando se selecciona un nivel
   useEffect(() => {
     if (lastSelectedLevel !== null) {
       const nextLevelIndex = lastSelectedLevel + 1;
@@ -342,7 +341,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   };
 
-  // Componente para cards seleccionables (como en Android)
   const SelectableCard = ({
     item,
     isSelected,
@@ -506,7 +504,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             paddingBottom: '8px'
           }}>
             {isLoadingCardTypes ? (
-              <Typography.Text>Cargando tipos de tarjeta...</Typography.Text>
+              <Typography.Text>{Strings.loadingtagTypes}</Typography.Text>
             ) : (
               cardTypes.map(cardType => (
                 <SelectableCard
@@ -563,7 +561,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               paddingBottom: '8px'
             }}>
               {isLoadingPriorities ? (
-                <Typography.Text>Cargando prioridades...</Typography.Text>
+                <Typography.Text>{Strings.loadingpriorities}</Typography.Text>
               ) : (
                 priorities.map(priority => (
                   <SelectableCard

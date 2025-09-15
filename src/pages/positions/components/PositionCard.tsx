@@ -6,9 +6,9 @@ import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 
 interface PositionCardProps {
   position: Position;
-  onViewDetails: (position: Position) => void;
-  onEdit: (position: Position) => void;
-  onViewUsers: (position: Position, buttonElement: HTMLElement) => void;
+  onViewDetails: (_position: Position) => void;
+  onEdit: (_position: Position) => void;
+  onViewUsers: (_position: Position, _buttonElement: HTMLElement) => void;
   isUsersModalOpen: boolean;
 }
 

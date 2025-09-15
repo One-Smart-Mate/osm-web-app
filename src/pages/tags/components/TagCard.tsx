@@ -83,7 +83,7 @@ const TagCard = ({ data }: TagCardProps) => {
   const canApplySolution = () => {
     // Enable solution options for cards that are not discarded, resolved, or closed
     const isCardDiscarded = data.status === Constants.STATUS_DRAFT; // 'D'
-    const isCardClosed = data.status === 'R' || data.status === Constants.STATUS_CANCELED; // 'C'
+    const isCardClosed = data.status === Constants.STATUS_RESOLVED || data.status === Constants.STATUS_CANCELED;
 
     return !isCardDiscarded && !isCardClosed;
   };

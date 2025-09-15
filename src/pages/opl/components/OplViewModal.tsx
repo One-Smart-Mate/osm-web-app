@@ -501,7 +501,7 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
               <MdDragHandle style={{ fontSize: "22px", color: "#1890ff", marginRight: "10px" }} />
               <div>
                 <Text strong style={{ display: 'block', color: '#1890ff' }}>{Strings.dragToReorder}</Text>
-                <Text type="secondary" style={{ fontSize: '12px' }}>Drag the items to arrange their order</Text>
+                <Text type="secondary" style={{ fontSize: '12px' }}>{Strings.dragItemsText}</Text>
               </div>
             </div>
           )}
