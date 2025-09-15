@@ -34,7 +34,6 @@ const PositionUsersList = ({
   useEffect(() => {
     if (anchorElement && modalRef.current) {
       const rect = anchorElement.getBoundingClientRect();
-      const modalRect = modalRef.current.getBoundingClientRect();
 
       // Calculate position to appear near the button
       let top = rect.bottom + 8; // 8px below the button
