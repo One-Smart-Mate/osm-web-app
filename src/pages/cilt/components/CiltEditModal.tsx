@@ -119,28 +119,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     setApproverModalVisible(false);
   };
 
-  // Functions for image upload
-  const getBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as File);
-    }
-
-    // Open the image in a new tab
-    if (file.url) {
-      window.open(file.url);
-    } else if (file.preview) {
-      window.open(file.preview as string);
-    }
-  };
-
   // Handle file selection for image upload
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -414,12 +392,12 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           <Upload
             listType="picture-card"
             fileList={fileList}
-            onPreview={handlePreview}
             onChange={handleChange}
             beforeUpload={() => false}
             maxCount={1}
             showUploadList={{
               showRemoveIcon: false,
+              showPreviewIcon: false,
             }}
             // Custom item render with our own delete button
             itemRender={(originNode, _file) => {

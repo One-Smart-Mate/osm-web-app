@@ -129,11 +129,10 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
     
     if (detail.type === "texto") {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            marginBottom: 16,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><FileTextOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsTextType}</Text></Space>}
@@ -161,11 +160,10 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       );
     } else if (detail.type === "imagen" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            marginBottom: 16,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><PictureOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsImageType}</Text></Space>}
@@ -206,11 +204,10 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       );
     } else if (detail.type === "video" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            marginBottom: 16,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><VideoCameraOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsVideoType}</Text></Space>}
@@ -250,11 +247,10 @@ const OplDetailsModal: React.FC<OplDetailsModalProps> = ({
       );
     } else if (detail.type === "pdf" && detail.mediaUrl) {
       return (
-        <Card 
-          style={{ 
-            marginBottom: 16, 
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            border: '1px solid #e8e8e8',
+        <Card
+          style={{
+            marginBottom: 16,
+            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px'
           }}
           title={<Space><FilePdfOutlined style={{ color: '#1890ff', fontSize: '18px' }} /> <Text strong>{Strings.oplDetailsPdfType}</Text></Space>}

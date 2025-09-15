@@ -201,26 +201,6 @@ export const RESPONSIVE_AVATAR = {
   xxl: 80,
 };
 
-const compareDates = (date1: string, date2: string): boolean => {
-  if (!date1 || !date2) {
-    throw new Error("Both dates must be provided.");
-  }
-
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-
-  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
-    throw new Error("One of the dates is not valid.");
-  }
-
-  const date1Formatted = d1.toISOString().split("T")[0];
-  const date2Formatted = d2.toISOString().split("T")[0];
-
- // console.log("Formatted Date 1:", date1Formatted);
- // console.log("Formatted Date 2:", date2Formatted);
-
-  return date1Formatted <= date2Formatted;
-};
 
 export const getStatusAndText = (
   input: string
@@ -238,128 +218,93 @@ export const getStatusAndText = (
   }
 };
 
+/**
+ * Unified function to calculate time status for any item with due dates
+ * Works for both cards and CILT executions
+ */
+export const getUnifiedTimeStatus = (
+  status: string,
+  dueDate?: string,
+  completionDate?: string
+): { isOverdue: boolean; timeStatus: string } => {
+  if (!dueDate) {
+    return { isOverdue: false, timeStatus: Strings.onTime };
+  }
+
+  const dueDateObj = new Date(dueDate);
+  const currentDateObj = new Date();
+
+  // For completed items (R, C), check if completion was on time
+  if (status === Constants.STATUS_RESOLVED || status === Constants.STATUS_CANCELED) {
+    if (!completionDate) {
+      // No completion date available, assume on time
+      return { isOverdue: false, timeStatus: Strings.onTime };
+    }
+
+    const completionDateObj = new Date(completionDate);
+    // Set time to end of due date for fair comparison
+    dueDateObj.setHours(23, 59, 59, 999);
+
+    const wasOnTime = completionDateObj <= dueDateObj;
+    return {
+      isOverdue: !wasOnTime,
+      timeStatus: wasOnTime ? Strings.onTime : Strings.expired
+    };
+  }
+
+  // For active items, check against current date
+  // Set time to start of day for accurate comparison
+  dueDateObj.setHours(23, 59, 59, 999); // End of due date
+  currentDateObj.setHours(0, 0, 0, 0);   // Start of current date
+
+  const isOverdue = currentDateObj > dueDateObj;
+  return {
+    isOverdue,
+    timeStatus: isOverdue ? Strings.expired : Strings.current
+  };
+};
+
 export const getCardStatusAndText = (
   input: string,
   duDate?: string,
   DefiniSolutionDate?: string,
-  CreatDate?: string
+  _CreatDate?: string
 ): { status: "error" | "success"; text: string; dateStatus: string } => {
-  // Check if card is expired based on the new logic:
-  // Expired = status is NOT 'C' or 'R' AND current date > due date
-  const isExpiredCard = (status: string, dueDate?: string): boolean => {
-    if (!dueDate) return false;
-    
-    // If status is 'C' (Closed) or 'R' (Resolved), card cannot be expired
-    if (status === "C" || status === "R") {
-      return false;
-    }
-    
-    // For other statuses, check if current date is after due date
-    const dueDateObj = new Date(dueDate);
-    const currentDateObj = new Date();
-    
-    // Set time to start of day for accurate comparison
-    dueDateObj.setHours(23, 59, 59, 999); // End of due date
-    currentDateObj.setHours(0, 0, 0, 0);   // Start of current date
-    
-    return currentDateObj > dueDateObj;
-  };
+  // Use unified time status calculation
+  const { timeStatus } = getUnifiedTimeStatus(input, duDate, DefiniSolutionDate);
 
   switch (input) {
     case "A":
     case "P":
     case "V": {
-      const isExpired = isExpiredCard(input, duDate);
       return {
         status: "success",
         text: Strings.open,
-        dateStatus: isExpired ? Strings.expired : Strings.current,
+        dateStatus: timeStatus,
       };
     }
 
-    case "R": {
-
-      if (duDate) {
-        if (DefiniSolutionDate) {
-          const isOnTime = compareDates(DefiniSolutionDate, duDate);
-          if (CreatDate) {
-            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus:
-                isOnTime || daysBetween === 0
-                  ? Strings.onTime
-                  : Strings.expired,
-            };
-          } else {
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus: Strings.onTime, // Default to onTime for resolved cards
-            };
-          }
-        } else {
-          return {
-            status: "error",
-            text: Strings.closed,
-            dateStatus: Strings.onTime, // Default to onTime for resolved cards
-          };
-        }
-      } else {
-        return {
-          status: "error",
-          text: Strings.closed,
-          dateStatus: Strings.onTime, // Default to onTime for resolved cards
-        };
-      }
+    case Constants.STATUS_RESOLVED: {
+      return {
+        status: "error",
+        text: Strings.closed,
+        dateStatus: timeStatus,
+      };
     }
 
-    case "C": {
-      // Closed cards - similar logic to resolved cards
-      if (duDate) {
-        if (DefiniSolutionDate) {
-          const isOnTime = compareDates(DefiniSolutionDate, duDate);
-          if (CreatDate) {
-            const daysBetween = getDaysBetween(CreatDate, DefiniSolutionDate);
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus:
-                isOnTime || daysBetween === 0
-                  ? Strings.onTime
-                  : Strings.expired,
-            };
-          } else {
-            return {
-              status: "error",
-              text: Strings.closed,
-              dateStatus: Strings.onTime, // Default to onTime for closed cards
-            };
-          }
-        } else {
-          return {
-            status: "error",
-            text: Strings.closed,
-            dateStatus: Strings.onTime, // Default to onTime for closed cards
-          };
-        }
-      } else {
-        return {
-          status: "error",
-          text: Strings.closed,
-          dateStatus: Strings.onTime, // Default to onTime for closed cards
-        };
-      }
+    case Constants.STATUS_CANCELED: {
+      return {
+        status: "error",
+        text: Strings.closed,
+        dateStatus: timeStatus,
+      };
     }
 
     default: {
-      // For any other status, apply the expiration logic
-      const isExpiredDefault = isExpiredCard(input, duDate);
       return {
         status: "error",
         text: Strings.tagStatusCanceled,
-        dateStatus: isExpiredDefault ? Strings.expired : Strings.current,
+        dateStatus: timeStatus,
       };
     }
   }

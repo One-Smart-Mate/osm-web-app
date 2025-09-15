@@ -6,7 +6,6 @@ import { FormInstance } from "antd/lib";
 import AnatomyNotification, {
   AnatomyNotificationType,
 } from "../../components/AnatomyNotification";
-import { useTranslation } from "react-i18next";
 import { OplTypes } from "../../../data/oplTypes/oplTypes";
 import OplTypeFormCard from "./OplTypeFormCard";
 import {
@@ -34,7 +33,6 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { notification } = AntApp.useApp();
   const [updateOplType] = useUpdateOplTypeMutation();
-  const { t } = useTranslation();
 
   const handleOnClickButton = () => {
     setModalOpen(true);
@@ -84,7 +82,6 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
       AnatomyNotification.success(
         notification,
         AnatomyNotificationType._REGISTER,
-        t
       );
     } catch (error) {
       AnatomyNotification.error(notification, error);
@@ -129,7 +126,7 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
       }).unwrap();
       setModalOpen(false);
       onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE, t);
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
     } catch (error) {
       AnatomyNotification.error(notification, error);
     } finally {

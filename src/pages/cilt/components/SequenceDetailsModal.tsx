@@ -21,20 +21,19 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
   onCancel,
 }) => {
   if (!sequence) return null;
-  
+
   // Debug to check if specialWarning exists in the sequence object
   console.log("Sequence object in details:", sequence);
 
-  
-
-  
   const [getRefOpl, { data: referenceOpl }] = useGetOplMstrByIdMutation();
   const [getRemOpl, { data: remediationOpl }] = useGetOplMstrByIdMutation();
   React.useEffect(() => {
-    if (sequence.referenceOplSopId) getRefOpl(String(sequence.referenceOplSopId));
+    if (sequence.referenceOplSopId)
+      getRefOpl(String(sequence.referenceOplSopId));
   }, [sequence.referenceOplSopId]);
   React.useEffect(() => {
-    if (sequence.remediationOplSopId) getRemOpl(String(sequence.remediationOplSopId));
+    if (sequence.remediationOplSopId)
+      getRemOpl(String(sequence.remediationOplSopId));
   }, [sequence.remediationOplSopId]);
 
   return (
@@ -103,7 +102,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
         <Row gutter={[16, 16]}>
           <Col span={24}>
             <Text type="secondary">{Strings.requiredTools}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
+            <div style={{ whiteSpace: "pre-wrap" }}>
               <Text>{sequence.toolsRequired || "N/A"}</Text>
             </div>
           </Col>
@@ -114,35 +113,41 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             </div>
           </Col>
           <Col span={6}>
-            <Text type="secondary">{Strings.editCiltSequenceModalMachineStoppedLabel}:</Text>
+            <Text type="secondary">
+              {Strings.editCiltSequenceModalMachineStoppedLabel}:
+            </Text>
             <div>
               <Text>{sequence.machineStopped ? Strings.yes : Strings.no}</Text>
             </div>
           </Col>
           <Col span={6}>
             <Text type="secondary">{Strings.referencePoint}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
+            <div style={{ whiteSpace: "pre-wrap" }}>
               <Text>{sequence.referencePoint || "N/A"}</Text>
             </div>
           </Col>
           <Col span={6}>
-            <Text type="secondary">{Strings.selectableWithoutProgramming}:</Text>
+            <Text type="secondary">
+              {Strings.selectableWithoutProgramming}:
+            </Text>
             <div>
-              <Text>{sequence.selectableWithoutProgramming ? Strings.yes : Strings.no}</Text>
+              <Text>
+                {sequence.selectableWithoutProgramming
+                  ? Strings.yes
+                  : Strings.no}
+              </Text>
             </div>
           </Col>
           <Col span={12}>
             <Text type="secondary">{Strings.standardOk}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
+            <div style={{ whiteSpace: "pre-wrap" }}>
               <Text>{sequence.standardOk || "N/A"}</Text>
             </div>
           </Col>
           <Col span={12}>
             <Text type="secondary">{Strings.quantityPicturesCreate}:</Text>
             <div>
-              <Text>
-                {sequence.quantityPicturesCreate || "0"}
-              </Text>
+              <Text>{sequence.quantityPicturesCreate || "0"}</Text>
             </div>
           </Col>
           <Col span={12}>
@@ -153,8 +158,10 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
           </Col>
           <Col span={24}>
             <Text type="secondary">{Strings.specialWarning}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
-              <Text>{sequence.specialWarning || Strings.oplFormNotAssigned}</Text>
+            <div style={{ whiteSpace: "pre-wrap" }}>
+              <Text>
+                {sequence.specialWarning || Strings.oplFormNotAssigned}
+              </Text>
             </div>
           </Col>
         </Row>
@@ -163,20 +170,11 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
 
         <Row gutter={[16, 16]}>
           <Col span={24}>
-            <Text type="secondary">{Strings.editCiltSequenceModalSequenceListLabel}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
+            <Text type="secondary">
+              {Strings.editCiltSequenceModalSequenceListLabel}:
+            </Text>
+            <div style={{ whiteSpace: "pre-wrap" }}>
               <Text>{sequence.secuenceList || "N/A"}</Text>
-            </div>
-          </Col>
-        </Row>
-
-        <Divider />
-
-        <Row gutter={[16, 16]}>
-          <Col span={24}>
-            <Text type="secondary">{Strings.createCiltSequenceModalFrequenciesTitle}:</Text>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
-              <Text>{sequence.frecuencyCode || "N/A"}</Text>
             </div>
           </Col>
         </Row>
@@ -192,7 +190,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.referenceOPL}:</Text>
             <div>
               {sequence.referenceOplSopId ? (
-                <Text>{referenceOpl?.title || 'Loading...'}</Text>
+                <Text>{referenceOpl?.title || "Loading..."}</Text>
               ) : (
                 <Text>N/A</Text>
               )}
@@ -203,7 +201,7 @@ const SequenceDetailsModal: React.FC<SequenceDetailsModalProps> = ({
             <Text type="secondary">{Strings.remediationOPL}:</Text>
             <div>
               {sequence.remediationOplSopId ? (
-                <Text>{remediationOpl?.title || 'Loading...'}</Text>
+                <Text>{remediationOpl?.title || "Loading..."}</Text>
               ) : (
                 <Text>N/A</Text>
               )}

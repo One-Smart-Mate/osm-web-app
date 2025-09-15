@@ -1765,6 +1765,26 @@ const resources = {
       locationLabel: "Location",
       selectLevel: "Select level",
       describeAnomaly: "Describe the detected anomaly...",
+      dragItemsText: "Drag the items to arrange their order",
+      loadingtagTypes: "Loading tag types...",
+      loadingpriorities: "Loading priorities...",
+
+      // Card Solution Modal strings
+      errorLoadingUsers: "Error loading users",
+      userNotIdentified: "User not identified",
+      appliedCorrectly: "applied correctly",
+      definitiveSolutionTitle: "Definitive Solution",
+      provisionalSolutionTitle: "Provisional Solution",
+      cardLabel: "Card:",
+      responsibleUser: "Responsible User",
+      selectResponsibleUser: "Select a responsible user",
+      selectResponsibleUserPlaceholder: "Select responsible user",
+      commentsLabel: "Comments",
+      enterComments: "Enter comments",
+      describeSolution: "Describe the applied solution...",
+      evidencesOptional: "Evidence (Optional)",
+      selectFiles: "Select files",
+      filesSelected: "file(s) selected"
     },
   },
   es: {
@@ -2079,11 +2099,11 @@ const resources = {
       noDueDate: "Sin fecha de vencimiento",
 
       // Tags re-design
-      tagsOf: "Etiquetas de",
+      tagsOf: "Tarjetas de",
       filters: "Filtros",
       status: "Estado ",
       dueDate: "Fecha de vencimiento ",
-      cardType: "Tipo de etiqueta ",
+      cardType: "Tipo de tarjeta ",
       problemType: "Tipo de problema ",
       location: "Ubicación ",
       createdBy: "Creado por ",
@@ -3543,6 +3563,26 @@ const resources = {
       locationLabel: "Ubicación",
       selectLevel: "Seleccionar nivel",
       describeAnomaly: "Describe la anomalía detectada...",
+      dragItemsText: "Arrastra los archivos para cambiar su orden",
+      loadingtagTypes: "Cargando tipos de tarjeta",
+      loadingpriorities: "Cargando prioridades...",
+
+      // Card Solution Modal strings
+      errorLoadingUsers: "Error cargando usuarios",
+      userNotIdentified: "Usuario no identificado",
+      appliedCorrectly: "aplicada correctamente",
+      definitiveSolutionTitle: "Solución Definitiva",
+      provisionalSolutionTitle: "Solución Provisional",
+      cardLabel: "Tarjeta:",
+      responsibleUser: "Usuario Responsable",
+      selectResponsibleUser: "Seleccione un usuario responsable",
+      selectResponsibleUserPlaceholder: "Seleccionar usuario responsable",
+      commentsLabel: "Comentarios",
+      enterComments: "Ingrese los comentarios",
+      describeSolution: "Describa la solución aplicada...",
+      evidencesOptional: "Evidencias (Opcional)",
+      selectFiles: "Seleccionar archivos",
+      filesSelected: "archivo(s) seleccionado(s)"
     },
   },
 };

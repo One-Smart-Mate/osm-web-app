@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Modal, Button, Select, Input, Space, Typography, Divider, Steps } from "antd";
-import { SaveOutlined} from "@ant-design/icons";
+import { useEffect, useState, useRef } from "react";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card } from "antd";
+import { SaveOutlined, CheckOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
@@ -48,6 +48,25 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   
   const [comments, setComments] = useState<string>("");
 
+  // Referencias para scroll automático
+  const preclassifierRef = useRef<HTMLDivElement>(null);
+  const priorityRef = useRef<HTMLDivElement>(null);
+  const levelRef = useRef<HTMLDivElement>(null);
+  const commentsRef = useRef<HTMLDivElement>(null);
+
+  // Función para scroll suave al siguiente paso
+  const scrollToNextStep = (targetRef: React.RefObject<HTMLDivElement | null>) => {
+    setTimeout(() => {
+      if (targetRef.current) {
+        targetRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+    }, 300); // Pequeño delay para que el contenido se renderice primero
+  };
+
   // Load initial data
   useEffect(() => {
     if (open && siteId) {
@@ -62,6 +81,40 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   }, [open]);
 
+  // Scroll automático cuando se completa el último nivel
+  useEffect(() => {
+    if (lastLevelCompleted) {
+      scrollToNextStep(commentsRef);
+    }
+  }, [lastLevelCompleted]);
+
+  // Track the last selected level to scroll to the next one
+  const [lastSelectedLevel, setLastSelectedLevel] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (lastSelectedLevel !== null) {
+      const nextLevelIndex = lastSelectedLevel + 1;
+
+      // Check if there's a next level to scroll to
+      if (levelHierarchy.has(nextLevelIndex)) {
+        setTimeout(() => {
+          // Create a ref for the specific next level
+          const nextLevelElement = document.querySelector(`[data-level-index="${nextLevelIndex}"]`);
+          if (nextLevelElement) {
+            nextLevelElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
+        }, 300);
+      }
+
+      // Reset the tracking
+      setLastSelectedLevel(null);
+    }
+  }, [lastSelectedLevel, levelHierarchy]);
+
   const resetForm = () => {
     setCardTypes([]);
     setSelectedCardType("");
@@ -75,6 +128,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setComments("");
+    setLastSelectedLevel(null); // Reset tracking de niveles
   };
 
   const loadCardTypes = async () => {
@@ -183,9 +237,11 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLevelHierarchy(new Map());
     setLastLevelCompleted(false);
     setFinalNodeId(null);
-    
+    setLastSelectedLevel(null); // Reset tracking
+
     if (value) {
       loadPreclassifiers(value);
+      scrollToNextStep(preclassifierRef);
     }
   };
 
@@ -196,9 +252,11 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLevelHierarchy(new Map());
     setLastLevelCompleted(false);
     setFinalNodeId(null);
-    
+    setLastSelectedLevel(null); // Reset tracking
+
     if (value) {
       loadPriorities();
+      scrollToNextStep(priorityRef);
     }
   };
 
@@ -208,9 +266,11 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLevelHierarchy(new Map());
     setLastLevelCompleted(false);
     setFinalNodeId(null);
-    
+    setLastSelectedLevel(null); // Reset tracking
+
     if (value) {
       loadLevels();
+      scrollToNextStep(levelRef);
     }
   };
 
@@ -218,12 +278,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setSelectedLevels(prev => {
       const newSelected = new Map(prev);
       newSelected.set(levelIndex, value);
-      
+
       // Clear selections beyond this level
       for (let i = levelIndex + 1; i <= 10; i++) {
         newSelected.delete(i);
       }
-      
+
       return newSelected;
     });
 
@@ -232,6 +292,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setFinalNodeId(null);
 
     if (value) {
+      // Set the selected level for scroll tracking
+      setLastSelectedLevel(levelIndex);
       // Load child levels - this will handle the hierarchy update
       loadChildLevels(value, levelIndex);
     } else {
@@ -279,23 +341,95 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   };
 
+  const SelectableCard = ({
+    item,
+    isSelected,
+    onClick,
+    showDescription = true
+  }: {
+    item: any;
+    isSelected: boolean;
+    onClick: () => void;
+    showDescription?: boolean;
+  }) => (
+    <Card
+      hoverable
+      onClick={onClick}
+      style={{
+        minWidth: '200px',
+        maxWidth: '250px',
+        marginRight: '12px',
+        marginBottom: '12px',
+        border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
+        backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease'
+      }}
+      bodyStyle={{ padding: '16px' }}
+    >
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        minHeight: showDescription ? '80px' : '40px'
+      }}>
+        {isSelected && (
+          <CheckOutlined
+            style={{
+              color: '#1890ff',
+              fontSize: '16px',
+              marginBottom: '8px',
+              alignSelf: 'flex-end'
+            }}
+          />
+        )}
+        <Typography.Text
+          strong
+          style={{
+            fontSize: '14px',
+            marginBottom: showDescription ? '4px' : '0',
+            color: isSelected ? '#1890ff' : '#333'
+          }}
+        >
+          {item.name || item.priorityCode || item.preclassifierCode}
+        </Typography.Text>
+        {showDescription && (item.description || item.priorityDescription || item.preclassifierDescription) && (
+          <Typography.Text
+            style={{
+              fontSize: '12px',
+              color: '#666',
+              lineHeight: '1.3'
+            }}
+          >
+            {item.description || item.priorityDescription || item.preclassifierDescription || item.methodology}
+          </Typography.Text>
+        )}
+      </div>
+    </Card>
+  );
+
   const renderLevelSelector = (levelIndex: number, levelOptions: any[]) => (
-    <div key={levelIndex} style={{ marginBottom: '16px' }}>
-      <Typography.Text strong>{`${Strings.level} ${levelIndex + 1}`}</Typography.Text>
-      <Select
-        style={{ width: '100%', marginTop: '8px' }}
-        placeholder={`${Strings.selectLevel} ${levelIndex + 1}`}
-        value={selectedLevels.get(levelIndex) || undefined}
-        onChange={(value) => handleLevelChange(levelIndex, value)}
-        showSearch
-        filterOption={(input, option) =>
-          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-        }
-        options={levelOptions.map(level => ({
-          label: `${level.name} - ${level.description || ''}`,
-          value: level.id.toString()
-        }))}
-      />
+    <div key={levelIndex} data-level-index={levelIndex} style={{ marginBottom: '24px' }}>
+      <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+        {`${Strings.level} ${levelIndex + 1}`}
+      </Typography.Text>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '8px',
+        overflowX: 'auto',
+        paddingBottom: '8px'
+      }}>
+        {levelOptions.map(level => (
+          <SelectableCard
+            key={level.id}
+            item={level}
+            isSelected={selectedLevels.get(levelIndex) === level.id.toString()}
+            onClick={() => handleLevelChange(levelIndex, level.id.toString())}
+          />
+        ))}
+      </div>
     </div>
   );
 
@@ -359,75 +493,97 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
         {/* Card Type Selection */}
         <div>
-          <Typography.Text strong>{Strings.cardTypeLabel} *</Typography.Text>
-          <Select
-            style={{ width: '100%', marginTop: '8px' }}
-            placeholder={Strings.selectCardType}
-            value={selectedCardType || undefined}
-            onChange={handleCardTypeChange}
-            loading={isLoadingCardTypes}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-            }
-            options={cardTypes.map(cardType => ({
-              label: `${cardType.name} - ${cardType.methodology}`,
-              value: cardType.id.toString()
-            }))}
-          />
+          <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+            {Strings.cardTypeLabel} *
+          </Typography.Text>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            overflowX: 'auto',
+            paddingBottom: '8px'
+          }}>
+            {isLoadingCardTypes ? (
+              <Typography.Text>{Strings.loadingtagTypes}</Typography.Text>
+            ) : (
+              cardTypes.map(cardType => (
+                <SelectableCard
+                  key={cardType.id}
+                  item={cardType}
+                  isSelected={selectedCardType === cardType.id.toString()}
+                  onClick={() => handleCardTypeChange(cardType.id.toString())}
+                />
+              ))
+            )}
+          </div>
         </div>
 
         {/* Preclassifier Selection */}
         {selectedCardType && (
-          <div>
-            <Typography.Text strong>{Strings.problemTypeLabel} *</Typography.Text>
-            <Select
-              style={{ width: '100%', marginTop: '8px' }}
-              placeholder={Strings.selectProblemType}
-              value={selectedPreclassifier || undefined}
-              onChange={handlePreclassifierChange}
-              loading={isLoadingPreclassifiers}
-              showSearch
-              filterOption={(input, option) =>
-                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-              }
-              options={preclassifiers.map(preclassifier => ({
-                label: `${preclassifier.preclassifierCode} - ${preclassifier.preclassifierDescription}`,
-                value: preclassifier.id.toString()
-              }))}
-            />
+          <div ref={preclassifierRef}>
+            <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+              {Strings.problemTypeLabel} *
+            </Typography.Text>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '8px'
+            }}>
+              {isLoadingPreclassifiers ? (
+                <Typography.Text>Cargando tipos de problema...</Typography.Text>
+              ) : (
+                preclassifiers.map(preclassifier => (
+                  <SelectableCard
+                    key={preclassifier.id}
+                    item={preclassifier}
+                    isSelected={selectedPreclassifier === preclassifier.id.toString()}
+                    onClick={() => handlePreclassifierChange(preclassifier.id.toString())}
+                  />
+                ))
+              )}
+            </div>
           </div>
         )}
 
         {/* Priority Selection */}
         {selectedPreclassifier && (
-          <div>
-            <Typography.Text strong>{Strings.priorityLabel}</Typography.Text>
-            <Select
-              style={{ width: '100%', marginTop: '8px' }}
-              placeholder={Strings.selectPriority}
-              value={selectedPriority || undefined}
-              onChange={handlePriorityChange}
-              loading={isLoadingPriorities}
-              allowClear
-              showSearch
-              filterOption={(input, option) =>
-                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-              }
-              options={priorities.map(priority => ({
-                label: `${priority.priorityCode} - ${priority.priorityDescription}`,
-                value: priority.id.toString()
-              }))}
-            />
+          <div ref={priorityRef}>
+            <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+              {Strings.priorityLabel}
+            </Typography.Text>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '8px'
+            }}>
+              {isLoadingPriorities ? (
+                <Typography.Text>{Strings.loadingpriorities}</Typography.Text>
+              ) : (
+                priorities.map(priority => (
+                  <SelectableCard
+                    key={priority.id}
+                    item={priority}
+                    isSelected={selectedPriority === priority.id.toString()}
+                    onClick={() => handlePriorityChange(priority.id.toString())}
+                  />
+                ))
+              )}
+            </div>
           </div>
         )}
 
         {/* Level Hierarchy */}
         {levelHierarchy.size > 0 && (
-          <div>
-            <Divider />
-            <Typography.Text strong>{Strings.locationLabel}</Typography.Text>
-            <div style={{ marginTop: '16px' }}>
+          <div ref={levelRef}>
+            <Divider style={{ margin: '24px 0' }} />
+            <Typography.Text strong style={{ fontSize: '18px', display: 'block', marginBottom: '16px' }}>
+              {Strings.locationLabel}
+            </Typography.Text>
+            <div>
               {Array.from(levelHierarchy.entries())
                 .sort(([a], [b]) => a - b) // Sort by level index to ensure correct order
                 .map(([levelIndex, levelOptions]) =>
@@ -441,7 +597,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         {lastLevelCompleted && (
           <>
             <Divider />
-            <div>
+            <div ref={commentsRef}>
               <Typography.Text strong>{Strings.anomalyDetected}</Typography.Text>
               <Input.TextArea
                 rows={4}

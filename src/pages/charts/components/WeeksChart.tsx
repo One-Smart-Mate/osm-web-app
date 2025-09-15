@@ -13,6 +13,7 @@ import { Weeks } from "../../../data/charts/charts";
 import { useGetWeeksChartDataMutation } from "../../../services/chartService";
 import { useGetCardsMutation } from "../../../services/cardService";
 import Strings from "../../../utils/localizations/Strings";
+import Constants from "../../../utils/Constants";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
 import { getWeekNumber } from "../../../utils/timeUtils";
 import dayjs from "dayjs";
@@ -114,7 +115,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
       weeklyData[key].issued++;
       
       // Check if card is closed/eradicated
-      if (card.status === 'C' || card.status === 'R' || card.status === 'C/R') {
+      if (card.status === Constants.STATUS_CANCELED || card.status === Constants.STATUS_RESOLVED || card.status === 'C/R') {
         weeklyData[key].eradicated++;
       }
     });

@@ -3,6 +3,8 @@ import {
   UpdateCardMechanic,
   UpdateCardPriority,
   CreateCardRequest,
+  UpdateDefinitiveSolutionRequest,
+  UpdateProvisionalSolutionRequest,
 } from "../data/card/card.request";
 import { Note } from "../data/note";
 import { apiSlice } from "./apiSlice";
@@ -147,6 +149,22 @@ export const cardService = apiSlice.injectEndpoints({
         body: cardData,
       }),
     }),
+    updateDefinitiveSolution: builder.mutation<CardInterface, UpdateDefinitiveSolutionRequest>({
+      query: (solutionData) => ({
+        url: "/card/update/definitive-solution",
+        method: "PUT",
+        body: solutionData,
+      }),
+      transformResponse: (response: { data: CardInterface }) => response.data,
+    }),
+    updateProvisionalSolution: builder.mutation<CardInterface, UpdateProvisionalSolutionRequest>({
+      query: (solutionData) => ({
+        url: "/card/update/provisional-solution",
+        method: "PUT",
+        body: solutionData,
+      }),
+      transformResponse: (response: { data: CardInterface }) => response.data,
+    }),
   }),
 });
 
@@ -164,4 +182,6 @@ export const {
   useDiscardCardMutation,
   useFindCardsByFastPasswordQuery,
   useCreateCardMutation,
+  useUpdateDefinitiveSolutionMutation,
+  useUpdateProvisionalSolutionMutation,
 } = cardService;
