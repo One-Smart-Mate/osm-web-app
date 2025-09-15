@@ -8,6 +8,7 @@ import {
   useUpdateProvisionalSolutionMutation
 } from '../../../services/cardService';
 import { useGetSiteResponsiblesMutation } from '../../../services/userService';
+import { EvidenceType } from '../../../data/card/card.request';
 import { handleErrorNotification, handleSucccessNotification } from '../../../utils/Notifications';
 import useCurrentUser from '../../../utils/hooks/useCurrentUser';
 import { uploadFileToFirebaseWithPath } from '../../../config/firebaseUpload';
@@ -50,12 +51,12 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
     try {
       const response = await getSiteResponsibles(card.siteId.toString()).unwrap();
       setUsers(response);
-    } catch (error) {
+    } catch (_error) {
       handleErrorNotification('Error loading users');
     }
   };
 
-  const getEvidenceType = (file: any): string => {
+  const getEvidenceType = (file: any): EvidenceType => {
     const fileName = file.name?.toLowerCase() || '';
     const fileType = file.type?.toLowerCase() || '';
 
@@ -95,7 +96,6 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
         if (file.originFileObj) {
           try {
             // Create a path for the evidence file
-            const fileExtension = file.name.split('.').pop() || 'jpg';
             const path = `cards/${card.cardUUID}/solutions/${Date.now()}_${file.name}`;
 
             // Upload to Firebase

@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import { format } from "date-fns";
 import ExecutionDetailsModal from "./components/ExecutionDetailsModal";
+import { getUnifiedTimeStatus } from "../../utils/Extensions";
 import 'react-resizable/css/styles.css';
 
 const { Text } = Typography;
@@ -186,8 +187,9 @@ export const CILTReports = () => {
     } else {
       const filtered = executions.filter(
         (execution) => {
-          const timeStatus = getTimeStatus(execution.secuenceSchedule, execution.status);
-          const timeStatusText = timeStatus === 'onTime' ? Strings.onTime : Strings.pastDue;
+          const { timeStatus } = getCiltTimeStatus(execution);
+          const timeStatusText = timeStatus === Strings.onTime ? Strings.onTime :
+                                timeStatus === Strings.expired ? Strings.pastDue : timeStatus;
           
           return (
             // Filter by any searchable field including IDs
@@ -267,18 +269,14 @@ export const CILTReports = () => {
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  // Calculate time status for CILT execution
-  const getTimeStatus = (secuenceSchedule: string | null, status: string | null): 'onTime' | 'overdue' => {
-    if (!secuenceSchedule || !status) return 'onTime';
-    
-    // If execution is completed (status "R"), it's considered on time regardless
-    if (status === "R") return 'onTime';
-    
-    // For active executions (status "A"), check if current time is past scheduled time
-    const scheduledDate = new Date(secuenceSchedule);
-    const currentDate = new Date();
-    
-    return currentDate > scheduledDate ? 'overdue' : 'onTime';
+  // Calculate time status for CILT execution using unified function
+  const getCiltTimeStatus = (execution: CiltSequenceExecution): { isOverdue: boolean; timeStatus: string } => {
+    // For CILT executions, use secuenceSchedule as due date and secuenceStop as completion date
+    return getUnifiedTimeStatus(
+      execution.status || '',
+      execution.secuenceSchedule || undefined,
+      execution.secuenceStop || undefined
+    );
   };
 
   const showDetailsModal = (execution: CiltSequenceExecution) => {
@@ -424,8 +422,8 @@ export const CILTReports = () => {
       dataIndex: "timeStatus",
       key: "timeStatus",
       render: (_, record) => {
-        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
-        return timeStatus === 'onTime' ? (
+        const { timeStatus } = getCiltTimeStatus(record);
+        return timeStatus === Strings.onTime ? (
           <Tag color="green">{Strings.onTime}</Tag>
         ) : (
           <Tag color="red">{Strings.pastDue}</Tag>
@@ -434,11 +432,11 @@ export const CILTReports = () => {
       width: columnWidths.timeStatus,
       align: "center",
       filters: [
-        { text: Strings.onTime, value: "onTime" },
-        { text: Strings.pastDue, value: "overdue" },
+        { text: Strings.onTime, value: Strings.onTime },
+        { text: Strings.pastDue, value: Strings.expired },
       ],
       onFilter: (value, record) => {
-        const timeStatus = getTimeStatus(record.secuenceSchedule, record.status);
+        const { timeStatus } = getCiltTimeStatus(record);
         return timeStatus === value;
       },
       onHeaderCell: () => ({
