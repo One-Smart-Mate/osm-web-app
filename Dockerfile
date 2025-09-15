@@ -1,17 +1,19 @@
-# Etapa 1: Build de la app
+# ==============================
+# Etapa 1: Build node app
+# ==============================
 FROM node:22 AS builder
 WORKDIR /app
 
-# Copiamos package.json
+# copy package.json y package-lock.json
 COPY package*.json ./
 
-# Instalamos dependencias
+# Install dependencies
 RUN npm ci
 
-# Copiamos el resto del proyecto
+# Copy the rest of the project
 COPY . .
 
-# Variables de entorno (se pasan como argumentos en el build)
+# Env variables
 ARG VITE_AP_VERSION
 ARG VITE_API_SERVICE
 ARG VITE_FIREBASE_API_KEY
@@ -25,7 +27,7 @@ ARG VITE_FIREBASE_VAPID_KEY
 ARG VITE_IMPORT_USERS_EXCEL
 ARG VITE_PDF_MANUAL_LINK
 
-# Creamos el .env con esas variables
+# create the .env
 RUN echo "VITE_AP_VERSION=$VITE_AP_VERSION" >> .env && \
     echo "VITE_API_SERVICE=$VITE_API_SERVICE" >> .env && \
     echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY" >> .env && \
@@ -42,9 +44,19 @@ RUN echo "VITE_AP_VERSION=$VITE_AP_VERSION" >> .env && \
 # Build de Vite
 RUN npm run build
 
-# Etapa 2: Servir con Nginx
+# ==============================
+# Etapa 2: Setup nginx
+# ==============================
 FROM nginx:1.27
-COPY --from=builder /app/dist /usr/share/nginx/html
+
+# copy the configuration file
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# copy the built app
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# expose port 80
 EXPOSE 80
+
+# start nginx
 CMD ["nginx", "-g", "daemon off;"]
