@@ -73,6 +73,9 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
   );
 
   const isCardClosed = cardStatus.text == Strings.closed;
+  const isCardUpdateDisabled = card.status === Constants.STATUS_DRAFT ||
+                               card.status === Constants.STATUS_CANCELED ||
+                               card.status === Constants.STATUS_RESOLVED;
 
   // Get discard reasons for lookup
   const {
@@ -88,8 +91,8 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
   };
 
   const handleOnOpenModal = (modalType: string) => {
-    console.log("handleOnOpenModal called with type:", modalType);
-    if (!isPublicRoute) {
+    console.log("handleOnOpenModal called with type:", modalType, "isCardUpdateDisabled:", isCardUpdateDisabled);
+    if (!isPublicRoute && !isCardUpdateDisabled) {
       if (onOpenModal) {
         // Use external modal handler if provided (e.g., from AMTagViewerModal)
         onOpenModal(modalType);
@@ -207,11 +210,13 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
               label={
                 <span
                   onClick={() => {
-                    if (!isCardClosed) {
+                    if (!isCardUpdateDisabled) {
                       handleOnOpenModal(Strings.priority);
                     }
                   }}
-                  className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                  className={`inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center ${
+                    !isCardUpdateDisabled ? 'cursor-pointer hover:opacity-90' : 'cursor-not-allowed opacity-60'
+                  }`}
                   style={{ backgroundColor: primaryColor }}
                 >
                   {card.priorityCode
@@ -281,12 +286,14 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
               label={
                 <span
                   onClick={() => {
-                    console.log("Assign responsible clicked. Card closed:", isCardClosed);
-                    if (!isCardClosed) {
+                    console.log("Assign responsible clicked. Update disabled:", isCardUpdateDisabled);
+                    if (!isCardUpdateDisabled) {
                       handleOnOpenModal(Strings.mechanic);
                     }
                   }}
-                  className="inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center cursor-pointer hover:opacity-90"
+                  className={`inline-block text-white font-medium py-1 px-2 rounded-sm min-w-[80px] text-center ${
+                    !isCardUpdateDisabled ? 'cursor-pointer hover:opacity-90' : 'cursor-not-allowed opacity-60'
+                  }`}
                   style={{ backgroundColor: primaryColor }}
                 >
                   {card.mechanicName || Strings.NA}
