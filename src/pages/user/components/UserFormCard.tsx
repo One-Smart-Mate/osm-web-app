@@ -173,9 +173,9 @@ const UserFormCard = ({
               {
                 validator: (_, value) => {
                   if (!value || value.trim() === '') {
-                    return Promise.resolve(); // Allow empty
+                    return Promise.reject(new Error(Strings.requiredPhoneNumber));
                   }
-                  if (!/^[0-9]{10,15}$/.test(value)) {
+                  if (!/^[0-9]{10,15}$/.test(value.trim())) {
                     return Promise.reject(new Error(Strings.invalidPhoneNumber));
                   }
                   return Promise.resolve();
