@@ -2,6 +2,7 @@ export class UpdateCardPriority {
   cardId: number;
   priorityId: number;
   idOfUpdatedBy: number;
+  customDueDate?: string;
 
   constructor(cardId: number, priorityId: number, idOfUpdatedBy: number) {
     this.cardId = cardId;
@@ -21,6 +22,7 @@ export class UpdateCardMechanic {
     this.idOfUpdatedBy = idOfUpdatedBy;
   }
 }
+
 
 export class DiscardCardDto {
   cardId: number;
@@ -64,6 +66,7 @@ export interface CreateCardRequest {
   evidences: any[];
   appSo?: string | null;
   appVersion?: string | null;
+  customDueDate?: string | null;
 }
 
 export interface NodeCardItem {

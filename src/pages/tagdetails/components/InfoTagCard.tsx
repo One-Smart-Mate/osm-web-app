@@ -15,6 +15,7 @@ import UpdatePriorityForm from "./UpdatePriorityForm";
 import {
   useUpdateCardMechanicMutation,
   useUpdateCardPriorityMutation,
+  useUpdateCardCustomDueDateMutation,
 } from "../../../services/cardService";
 import {
   UpdateCardMechanic,
@@ -60,6 +61,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
   const currentUser = useAppSelector(selectCurrentUser);
   const [updateCardPriority] = useUpdateCardPriorityMutation();
   const [updateCardMechanic] = useUpdateCardMechanicMutation();
+  const [updateCardCustomDueDate] = useUpdateCardCustomDueDateMutation();
   const dispatch = useAppDispatch();
   const { token } = useToken();
   const primaryColor = token.colorPrimary;
@@ -91,7 +93,6 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
   };
 
   const handleOnOpenModal = (modalType: string) => {
-    console.log("handleOnOpenModal called with type:", modalType, "isCardUpdateDisabled:", isCardUpdateDisabled);
     if (!isPublicRoute && !isCardUpdateDisabled) {
       if (onOpenModal) {
         // Use external modal handler if provided (e.g., from AMTagViewerModal)
@@ -112,7 +113,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
 
   const selectFormByModalType = (modalType: string) => {
     if (modalType === Strings.priority) {
-      return (form: FormInstance) => <UpdatePriorityForm form={form} />;
+      return (form: FormInstance) => <UpdatePriorityForm form={form} cardId={Number(data.card.id)} />;
     } else {
       return (form: FormInstance) => (
         <UpdateMechanicForm
@@ -137,6 +138,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
     try {
       setModalLoading(true);
       if (modalType === Strings.priority) {
+        // First, update the priority
         await updateCardPriority(
           new UpdateCardPriority(
             Number(card.id),
@@ -144,6 +146,15 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
             Number(currentUser.userId)
           )
         ).unwrap();
+
+        // If there's a custom due date, update it separately
+        if (values.customDueDate) {
+          await updateCardCustomDueDate({
+            cardId: Number(card.id),
+            customDueDate: values.customDueDate.format('YYYY-MM-DD'),
+            idOfUpdatedBy: Number(currentUser.userId)
+          }).unwrap();
+        }
       } else {
         const mechanichId =
           values.mechanicId ??
@@ -168,7 +179,6 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
       dispatch(setCardUpdatedIndicator());
       handleSucccessNotification(NotificationSuccess._UPDATE);
     } catch (error) {
-      console.log(error);
       handleErrorNotification(error);
     } finally {
       setModalLoading(false);
@@ -286,7 +296,6 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
               label={
                 <span
                   onClick={() => {
-                    console.log("Assign responsible clicked. Update disabled:", isCardUpdateDisabled);
                     if (!isCardUpdateDisabled) {
                       handleOnOpenModal(Strings.mechanic);
                     }

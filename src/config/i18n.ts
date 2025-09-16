@@ -329,6 +329,12 @@ const resources = {
       creationDateFilter: "Creation date",
       dueDateFilter: "Due date",
       selectDates: "Select dates",
+      selectDate: "Select date",
+      customDueDate: "Custom Due Date",
+      requiredCustomDate: "Please select a custom due date",
+      selectCustomDueDate: "Select Custom Due Date",
+      selectCustomDueDateMessage: "Please select a custom due date for this priority:",
+      customDateUpdated: "Custom due date updated successfully",
 
       // Tags details re-design
       tagStatusCanceled: "Canceled",
@@ -2120,6 +2126,12 @@ const resources = {
       creationDateFilter: "Fecha de creación",
       dueDateFilter: "Fecha de vencimiento",
       selectDates: "Seleccionar fechas",
+      selectDate: "Seleccionar fecha",
+      customDueDate: "Fecha de Vencimiento Personalizada",
+      requiredCustomDate: "Por favor seleccione una fecha personalizada",
+      selectCustomDueDate: "Seleccionar Fecha Personalizada",
+      selectCustomDueDateMessage: "Por favor seleccione una fecha de vencimiento personalizada para esta prioridad:",
+      customDateUpdated: "Fecha de vencimiento personalizada actualizada exitosamente",
 
       // Tags details re-design
       tagStatusCanceled: "Cancelado",

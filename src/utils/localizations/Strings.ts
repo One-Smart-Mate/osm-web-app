@@ -370,6 +370,12 @@ class StringsBase {
   static creationDateFilter = "creationDateFilter";
   static dueDateFilter = "dueDateFilter";
   static selectDates = "selectDates";
+  static selectDate = "selectDate";
+  static customDueDate = "customDueDate";
+  static requiredCustomDate = "requiredCustomDate";
+  static selectCustomDueDate = "selectCustomDueDate";
+  static selectCustomDueDateMessage = "selectCustomDueDateMessage";
+  static customDateUpdated = "customDateUpdated";
 
   static tagStatusCanceled = "tagStatusCanceled";
   static tagDate = "tagDate";
