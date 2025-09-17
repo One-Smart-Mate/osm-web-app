@@ -16,6 +16,7 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import MachinesChart from "./components/MachinesChart";
 import MechanicsChart from "./components/MechanicsChart";
 import DefinitiveUsersChart from "./components/DefinitiveUsersChart";
+import CalendarChart from "./components/CalendarChart";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import DownloadChartDataButton from "./components/DownloadChartDataButton";
@@ -492,6 +493,17 @@ const ChartsPage = () => {
                     />
                   </div>
                 </Card>
+              </div>
+
+              {/* Calendar Chart Section */}
+              <div className="mb-2">
+                <CalendarChart
+                  siteId={siteId}
+                  siteName={siteName}
+                  startDate={startDate}
+                  endDate={endDate}
+                  selectedStatus={selectedStatus}
+                />
               </div>
             </>
           ) : (
