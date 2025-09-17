@@ -72,7 +72,7 @@ const UserForm = ({
           enableEvidences,
           enableEvidences,
           values.roles,
-          values.phoneNumber,
+          values.phoneNumber.trim(),
           values.translation
         )
       ).unwrap();
@@ -107,7 +107,7 @@ const UserForm = ({
           values.roles,
           values.status,
           values.fastPassword,
-          values.phoneNumber,
+          values.phoneNumber.trim(),
           values.translation
         )
       ).unwrap();

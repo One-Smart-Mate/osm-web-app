@@ -50,6 +50,28 @@ export interface CiltChartFilters {
   levelId?: number;
 }
 
+// Calendar view types
+export interface CalendarCard {
+  id: number;
+  siteCardId: number;
+  cardUUID: string;
+  cardDueDate: string;
+  cardTypeName: string;
+  cardTypeColor: string;
+  priorityCode: string;
+  priorityDescription: string;
+  mechanicName: string;
+  nodeName: string;
+  preclassifierDescription: string;
+  status: string;
+  createdAt: string;
+  cardCreationDate: string;
+}
+
+export interface CalendarData {
+  [date: string]: CalendarCard[];
+}
+
 export const chartService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPreclassifiersChartData: builder.mutation<
@@ -274,10 +296,25 @@ export const chartService = apiSlice.injectEndpoints({
         if (filters.siteId) params.append('siteId', filters.siteId.toString());
         if (filters.positionId) params.append('positionId', filters.positionId.toString());
         if (filters.levelId) params.append('levelId', filters.levelId.toString());
-        
+
         return `/cilt-sequences-executions/charts/anomalies?${params.toString()}`;
       },
       transformResponse: (response: { data: CiltAnomaliesChart[] }) => response.data,
+    }),
+
+    // Calendar endpoint
+    getCardsForCalendar: builder.mutation<
+      CalendarData,
+      { siteId: string; startDate: string; endDate: string; status?: string }
+    >({
+      query: ({ siteId, startDate, endDate, status }) => {
+        let url = `/card/site/calendar/${siteId}?startDate=${startDate}&endDate=${endDate}`;
+        if (status) {
+          url += `&status=${status}`;
+        }
+        return url;
+      },
+      transformResponse: (response: { data: CalendarData }) => response.data,
     }),
   }),
 });
@@ -297,4 +334,6 @@ export const {
   useGetCiltComplianceChartDataMutation,
   useGetCiltTimeChartDataMutation,
   useGetCiltAnomaliesChartDataMutation,
+  // Calendar hook
+  useGetCardsForCalendarMutation,
 } = chartService;

@@ -117,7 +117,11 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
       <ModalForm
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
-        title={Strings.createCompany}
+        title={
+          formType == PriorityFormType._CREATE
+            ? Strings.createPriority
+            : Strings.updatePriority
+        }
         isLoading={isLoading}
         FormComponent={(form: FormInstance) => (
           <PriorityFormCard
