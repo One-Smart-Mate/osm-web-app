@@ -356,6 +356,7 @@ class StringsBase {
   static cardType = "cardType";
   static problemType = "problemType";
   static location = "location";
+  static problem = "problem";
   static createdBy = "createdBy";
   static problemDescription = "problemDescription";
   
@@ -1815,6 +1816,35 @@ class StringsBase {
   static evidencesOptional = "evidencesOptional";
   static selectFiles = "selectFiles";
   static filesSelected = "filesSelected";
+
+  // Calendar strings
+  static calendarTitle = "calendarTitle";
+  static calendarOfDueDates = "calendarOfDueDates";
+  static overdueCards = "overdueCards";
+  static todayCards = "todayCards";
+  static activeCards = "activeCards";
+  static resolvedCards = "resolvedCards";
+  static confirmDateChange = "confirmDateChange";
+  static confirmDateChangeMessage = "confirmDateChangeMessage";
+  static dueDateUpdatedSuccess = "dueDateUpdatedSuccess";
+  static errorUpdatingDueDate = "errorUpdatingDueDate";
+  static errorLoadingCalendar = "errorLoadingCalendar";
+  static cardDetails = "cardDetails";
+  static viewFullDetails = "viewFullDetails";
+  static card = "card";
+  static discarded = "discarded";
+  static unknown = "unknown";
+  static unassigned = "unassigned";
+  static noCardsInDateRange = "noCardsInDateRange";
+  static showMore = "showMore";
+  static next = "next";
+  static previous = "previous";
+  static today = "today";
+  static month = "month";
+  static day = "day";
+  static agenda = "agenda";
+  static time = "time";
+  static event = "event";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -13,11 +13,10 @@ interface FormProps {
   cardId?: number;
 }
 
-const UpdatePriorityForm = ({ form, cardId }: FormProps) => {
+const UpdatePriorityForm = ({ form }: FormProps) => {
   const [getResponsibles] = useGetActiveSitePrioritiesMutation();
   const siteId = useAppSelector(selectSiteId);
   const [data, setData] = useState<Priority[]>([]);
-  const [selectedPriorityId, setSelectedPriorityId] = useState<number | null>(null);
   const [showCustomDate, setShowCustomDate] = useState(false);
 
   const handleGetResponsibles = async () => {
@@ -29,8 +28,7 @@ const UpdatePriorityForm = ({ form, cardId }: FormProps) => {
   }, []);
 
   const handlePriorityChange = (priorityId: number) => {
-    setSelectedPriorityId(priorityId);
-    const selectedPriority = data.find(p => p.id === priorityId);
+    const selectedPriority = data.find(p => Number(p.id) === priorityId);
 
     if (selectedPriority && selectedPriority.priorityCode === Constants.PRIORITY_WILDCARD_CODE) {
       setShowCustomDate(true);

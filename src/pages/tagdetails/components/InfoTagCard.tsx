@@ -74,7 +74,6 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
     card.cardCreationDate
   );
 
-  const isCardClosed = cardStatus.text == Strings.closed;
   const isCardUpdateDisabled = card.status === Constants.STATUS_DRAFT ||
                                card.status === Constants.STATUS_CANCELED ||
                                card.status === Constants.STATUS_RESOLVED;
