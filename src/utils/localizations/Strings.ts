@@ -1453,6 +1453,14 @@ class StringsBase {
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 
+  // Fast password additional strings
+  static fastPasswordUpdatedSuccessfully = "fastPasswordUpdatedSuccessfully";
+  static fastPasswordGenerationError = "fastPasswordGenerationError";
+  static fastPasswordCopiedToClipboard = "fastPasswordCopiedToClipboard";
+  static fastPasswordCopyError = "fastPasswordCopyError";
+  static noErrorLogsFound = "noErrorLogsFound";
+  static errorLogsDownloadedSuccessfully = "errorLogsDownloadedSuccessfully";
+
   // User additional fields
   static phoneNumber = "phoneNumber";
   static phoneNumberTooltip = "phoneNumberTooltip";
