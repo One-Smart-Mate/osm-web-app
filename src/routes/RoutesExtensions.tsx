@@ -90,6 +90,14 @@ export const buildCardDetailRoute = (
   return buildRoute(path);
 };
 
+export const buildSequenceDetailRoute = (
+  siteId: string,
+  sequenceId: string
+): string => {
+  const path = `${Constants.ROUTES_PATH.ciltSequences}/${sequenceId}`;
+  return buildRoute(path);
+};
+
 export const buildRoute = (path: string): string => {
   return `/${Constants.ROUTES_PATH.dashboard}/${path}`;
 };

@@ -27,7 +27,7 @@ import Strings from '../../utils/localizations/Strings';
 import { useNavigate } from 'react-router-dom';
 import { buildCardDetailRoute } from '../../routes/RoutesExtensions';
 import Constants from '../../utils/Constants';
-import AnatomyNotification, { AnatomyNotificationType } from '../components/AnatomyNotification';
+import AnatomyNotification from '../components/AnatomyNotification';
 import i18n from '../../config/i18n';
 
 // Configure moment locale based on current language

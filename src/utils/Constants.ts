@@ -99,6 +99,7 @@ const ROUTES_PATH = {
   positions:'positions',
   technicalSupport: 'technicalSupport',
   ciltProcedures: 'cilt-procedures',
+  proceduresTree: 'procedures-tree',
   opl: 'opl',
   oplTypes: 'opl-types',
   ciltTypes: 'cilt-types',

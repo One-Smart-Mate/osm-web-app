@@ -909,6 +909,18 @@ const resources = {
       ciltProceduresSB: "Procedures",
       ciltProceduresDescription:
         "This page contains information about procedures and their implementation.",
+      proceduresTreeSB: "Procedures Tree",
+      proceduresTreeDescription:
+        "Hierarchical visualization of procedures, positions and sequences.",
+      treeSymbology: "Symbology",
+      lastLevel: "Last Level",
+      proceduresOf: "Procedures of",
+      errorLoadingLevels: "Error loading levels",
+      errorLoadingProcedures: "Error loading procedures",
+      unnamed: "Unnamed",
+      errorLoadingSomeProcedures: "Error loading some procedures",
+      noLevelsFound: "No levels found",
+      procedure: "Procedure",
       seconds: "seconds",
       oplSB: "OPL",
       oplDescription:
@@ -2736,6 +2748,18 @@ const resources = {
       ciltProceduresSB: "Procedimientos",
       ciltProceduresDescription:
         "Esta página contiene información sobre los procedimientos y su implementación.",
+      proceduresTreeSB: "Árbol de Procedimientos",
+      proceduresTreeDescription:
+        "Visualización jerárquica de procedimientos, posiciones y secuencias.",
+      treeSymbology: "Simbología",
+      lastLevel: "Último Nivel",
+      proceduresOf: "Procedimientos de",
+      errorLoadingLevels: "Error al cargar los niveles",
+      errorLoadingProcedures: "Error al cargar los procedimientos",
+      unnamed: "Sin nombre",
+      errorLoadingSomeProcedures: "Error al cargar algunos procedimientos",
+      noLevelsFound: "No se encontraron niveles",
+      procedure: "Procedimiento",
       seconds: "segundos",
       oplSB: "OPL",
       oplDescription:
