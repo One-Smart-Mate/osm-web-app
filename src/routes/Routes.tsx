@@ -7,6 +7,7 @@ import {
   BsNodePlus,
   BsPeople,
   BsPersonPlus,
+  BsCalendar3,
 } from "react-icons/bs";
 import { Route } from "./models/Route";
 import { ItemType } from "antd/es/menu/interface";
@@ -33,6 +34,7 @@ const SystemHealth = React.lazy(
 );
 const SitesPage = React.lazy(() => import("../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../pages/charts/ChartsPage"));
+const CalendarPage = React.lazy(() => import("../pages/calendar/CalendarPage"));
 const CiltChartsPage = React.lazy(() => import("../pages/ciltCharts/CiltCharts"));
 const PositionsPage = React.lazy(
   () => import("../pages/positions/PositionsPage")
@@ -130,6 +132,14 @@ const chartsRoute = new Route(
   Constants.ROUTES_PATH.charts,
   <ChartsPage />,
   <BsBarChartLine />,
+  Strings.dashboard
+);
+
+const calendarRoute = new Route(
+  Strings.calendarTitle,
+  Constants.ROUTES_PATH.calendar,
+  <CalendarPage />,
+  <BsCalendar3 />,
   Strings.dashboard
 );
 
@@ -277,6 +287,7 @@ const routes: Route[] = [
   ciltLevelAssignamentsRoute,
   ciltChartsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
+  calendarRoute,
 ];
 
 const localAdminRoutesSiderOptions = (): ItemType[] => {
@@ -286,6 +297,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: calendarRoute.label,
+      key: calendarRoute.path,
+      icon: calendarRoute.icon,
+      section: calendarRoute.section,
     }),
     getItemV2({
       label: ciltChartsRoute.label,
@@ -329,6 +346,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: calendarRoute.label,
+      key: calendarRoute.path,
+      icon: calendarRoute.icon,
+      section: calendarRoute.section,
     }),
     getItemV2({
       label: ciltChartsRoute.label,

@@ -5,20 +5,33 @@ import moment from 'moment';
 import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-import { Card, Tag, Tooltip, Modal, Spin, Badge, Typography, Space, Button, Drawer, Descriptions, notification } from 'antd';
-import { CalendarOutlined, ExclamationCircleOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
-import { CalendarCard, useGetCardsForCalendarMutation } from '../../../services/chartService';
-import { useUpdateCardCustomDueDateMutation } from '../../../services/cardService';
-import useCurrentUser from '../../../utils/hooks/useCurrentUser';
-import Strings from '../../../utils/localizations/Strings';
+
+// Custom CSS to fix drag width issue
+const customDragStyles = `
+  .rbc-addons-dnd-drag-preview {
+    width: auto !important;
+    max-width: 150px !important;
+    opacity: 0.8 !important;
+  }
+
+  .rbc-event.rbc-event-dragging {
+    opacity: 0.5 !important;
+  }
+`;
+import { Card, Tag, Tooltip, Spin, Badge, Typography, Space, Button, Drawer, Descriptions, notification } from 'antd';
+import { CalendarOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, EyeOutlined } from '@ant-design/icons';
+import { CalendarCard, useGetCardsForCalendarMutation } from '../../services/chartService';
+import { useUpdateCardCustomDueDateMutation } from '../../services/cardService';
+import useCurrentUser from '../../utils/hooks/useCurrentUser';
+import Strings from '../../utils/localizations/Strings';
 import { useNavigate } from 'react-router-dom';
-import { buildCardDetailRoute } from '../../../routes/RoutesExtensions';
-import Constants from '../../../utils/Constants';
-import AnatomyNotification, { AnatomyNotificationType } from '../../components/AnatomyNotification';
-import i18n from '../../../config/i18n';
+import { buildCardDetailRoute } from '../../routes/RoutesExtensions';
+import Constants from '../../utils/Constants';
+import AnatomyNotification, { AnatomyNotificationType } from '../components/AnatomyNotification';
+import i18n from '../../config/i18n';
 
 // Configure moment locale based on current language
-moment.locale(i18n.language);
+moment.locale(i18n.language === 'en' ? 'en' : 'es');
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -51,14 +64,16 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedCard, setSelectedCard] = useState<CalendarCard | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { user } = useCurrentUser();
   const navigate = useNavigate();
   const [notificationApi, contextHolder] = notification.useNotification();
 
   // Update moment locale when language changes
   useEffect(() => {
-    moment.locale(i18n.language);
-  }, []);
+    const locale = i18n.language === 'en' ? 'en' : 'es';
+    moment.locale(locale);
+  }, [i18n.language]);
 
   const [getCalendarData, { isLoading }] = useGetCardsForCalendarMutation();
   const [updateCardDueDate] = useUpdateCardCustomDueDateMutation();
@@ -110,9 +125,14 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
     fetchCalendarData();
   }, [fetchCalendarData]);
 
-  // Handle drag and drop
+  // Handle drag and drop - only update when user drops and reload calendar
   const moveEvent = useCallback(
     async ({ event, start }: any) => {
+      // Prevent multiple updates
+      if (isUpdating) {
+        return;
+      }
+
       const cardEvent = event as CalendarEvent;
       const newDate = moment(start).format('YYYY-MM-DD');
       const originalDate = moment(cardEvent.start).format('YYYY-MM-DD');
@@ -121,48 +141,43 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
         return; // No change in date
       }
 
-      Modal.confirm({
-        title: Strings.confirmDateChange,
-        icon: <ExclamationCircleOutlined />,
-        content: `${Strings.confirmDateChangeMessage}${cardEvent.cardData.siteCardId} del ${originalDate} al ${newDate}?`,
-        onOk: async () => {
-          try {
-            await updateCardDueDate({
-              cardId: cardEvent.id,
-              customDueDate: newDate,
-              idOfUpdatedBy: parseInt(user?.userId?.toString() || '0')
-            }).unwrap();
+      // Set updating flag immediately
+      setIsUpdating(true);
 
-            // Update local state
-            setEvents((prev) => {
-              return prev.map((ev) => {
-                if (ev.id === cardEvent.id) {
-                  // Parse the new date properly
-                  const [year, month, day] = newDate.split('-').map(Number);
-                  const newEventDate = new Date(year, month - 1, day, 12, 0, 0);
+      try {
+        await updateCardDueDate({
+          cardId: cardEvent.id,
+          customDueDate: newDate,
+          idOfUpdatedBy: parseInt(user?.userId?.toString() || '0')
+        }).unwrap();
 
-                  return {
-                    ...ev,
-                    start: newEventDate,
-                    end: newEventDate,
-                    cardData: {
-                      ...ev.cardData,
-                      cardDueDate: newDate
-                    }
-                  };
-                }
-                return ev;
-              });
-            });
+        notificationApi.success({
+          message: Strings.success,
+          description: Strings.dueDateUpdatedSuccess,
+          duration: 3,
+        });
 
-            AnatomyNotification.success(notificationApi, AnatomyNotificationType._UPDATE);
-          } catch (_error) {
-            AnatomyNotification.error(notificationApi, Strings.errorUpdatingDueDate);
-          }
-        }
-      });
+        // Reload calendar data after a short delay to ensure update is processed
+        setTimeout(async () => {
+          await fetchCalendarData();
+          setIsUpdating(false);
+        }, 500);
+
+      } catch (_error) {
+        notificationApi.error({
+          message: Strings.error,
+          description: Strings.errorUpdatingDueDate,
+          duration: 3,
+        });
+
+        // Reload calendar data even on error to ensure consistency
+        setTimeout(async () => {
+          await fetchCalendarData();
+          setIsUpdating(false);
+        }, 500);
+      }
     },
-    [updateCardDueDate, user]
+    [updateCardDueDate, user, fetchCalendarData, isUpdating]
   );
 
   // Custom event component
@@ -183,10 +198,32 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
       statusIcon = <CloseCircleOutlined />;
       statusColor = '#ff4d4f';
     } else if (isOverdue) {
-      statusIcon = <ExclamationCircleOutlined />;
+      statusIcon = <ClockCircleOutlined />;
       statusColor = '#ff4d4f';
     } else if (isDueToday) {
       statusColor = '#fa8c16';
+    }
+
+    // Calculate how many events are at the same date/time for stacking
+    const isWeekOrDayView = view === 'week' || view === 'day';
+    const eventDate = moment(calendarEvent.start).format('YYYY-MM-DD HH:mm');
+    const eventsAtSameTime = events.filter(e =>
+      moment(e.start).format('YYYY-MM-DD HH:mm') === eventDate
+    );
+    const eventIndex = eventsAtSameTime.findIndex(e => e.id === calendarEvent.id);
+
+    // Adjust positioning and size for overlapping events in day/week view
+    let cardWidth = '100%';
+    let marginLeft = '0px';
+    let zIndex = 1;
+
+    if (isWeekOrDayView && eventsAtSameTime.length > 1) {
+      const stackWidth = Math.max(85 / eventsAtSameTime.length, 30); // Minimum 30% width
+      cardWidth = `${stackWidth}%`;
+      marginLeft = `${eventIndex * (stackWidth + 2)}%`;
+      zIndex = eventIndex + 1;
+    } else if (isWeekOrDayView) {
+      cardWidth = '95%';
     }
 
     return (
@@ -204,17 +241,31 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
       >
         <div
           style={{
-            padding: '2px 4px',
+            padding: isWeekOrDayView ? '1px 3px' : '2px 4px',
             borderRadius: '4px',
             backgroundColor: statusColor + '20',
             borderLeft: `3px solid ${statusColor}`,
             cursor: 'move',
-            fontSize: '11px',
+            fontSize: isWeekOrDayView ? '10px' : '11px',
             display: 'flex',
             alignItems: 'center',
-            gap: '4px',
-            height: '100%',
-            overflow: 'hidden'
+            gap: '2px',
+            height: isWeekOrDayView ? 'auto' : '100%',
+            width: cardWidth,
+            marginLeft: marginLeft,
+            overflow: 'hidden',
+            marginBottom: isWeekOrDayView ? '1px' : '0',
+            minHeight: isWeekOrDayView ? '18px' : 'auto',
+            position: isWeekOrDayView && eventsAtSameTime.length > 1 ? 'absolute' : 'relative',
+            zIndex: zIndex,
+            top: isWeekOrDayView && eventsAtSameTime.length > 1 ? '0' : 'auto',
+            transition: 'transform 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.02)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -222,7 +273,7 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
             setDrawerVisible(true);
           }}
         >
-          {statusIcon}
+          {!isWeekOrDayView && statusIcon}
           <span style={{
             flex: 1,
             overflow: 'hidden',
@@ -231,18 +282,27 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
           }}>
             #{card.siteCardId}
           </span>
-          {card.priorityCode && (
+          {card.priorityCode && !isWeekOrDayView && (
             <Tag
               color={card.cardTypeColor ? `#${card.cardTypeColor}` : 'default'}
               style={{
-                fontSize: '10px',
+                fontSize: '9px',
                 padding: '0 2px',
                 margin: 0,
-                lineHeight: '14px'
+                lineHeight: '12px'
               }}
             >
               {card.priorityCode}
             </Tag>
+          )}
+          {card.priorityCode && isWeekOrDayView && eventsAtSameTime.length === 1 && (
+            <span style={{
+              fontSize: '8px',
+              color: statusColor,
+              fontWeight: 'bold'
+            }}>
+              {card.priorityCode}
+            </span>
           )}
         </div>
       </Tooltip>
@@ -332,6 +392,8 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
 
   return (
     <>
+      {/* Inject custom styles for drag behavior */}
+      <style>{customDragStyles}</style>
       {contextHolder}
       <Card
       title={
@@ -351,10 +413,10 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
       style={{ height: '100%' }}
       bodyStyle={{ height: 'calc(100% - 60px)', padding: '16px' }}
     >
-      <Spin spinning={isLoading}>
+      <Spin spinning={isLoading || isUpdating}>
         <DnDCalendar
           localizer={localizer}
-          culture={i18n.language}
+          culture={i18n.language === 'en' ? 'en' : 'es'}
           events={events}
           view={view}
           onView={setView}
@@ -363,8 +425,9 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
           style={{ height: '600px' }}
           onEventDrop={moveEvent}
           onEventResize={moveEvent}
-          draggableAccessor={() => true}
+          draggableAccessor={() => !isUpdating}
           resizable={false}
+          views={['month', 'week', 'agenda']}
           components={{
             event: EventComponent,
             dateCellWrapper: DateCellWrapper

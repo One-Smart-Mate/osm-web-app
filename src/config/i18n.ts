@@ -385,7 +385,7 @@ const resources = {
       cardName: "Card name",
       preclassifierChart: "Preclassifier",
       year: "Year:",
-      week: "Week:",
+      week: "Week",
       cumulativeIssued: "Cumulative issued:",
       cumulativeEradicated: "Cumulative eradicated:",
 
@@ -2218,7 +2218,7 @@ const resources = {
       cardName: "Nombre de la Tarjeta",
       preclassifierChart: "Preclasificador",
       year: "Año:",
-      week: "Semana:",
+      week: "Semana",
       cumulativeIssued: "Emitido acumulado:",
       cumulativeEradicated: "Erradicado acumulado:",
 
