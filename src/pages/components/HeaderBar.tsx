@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import NotificationDropdown from "./NotificationDropdown";
 import UserProfileDropdown from "./UserProfileDropdown";
 import User from "../../data/user/user";
@@ -9,10 +9,6 @@ import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { useAppDispatch, useAppSelector } from "../../core/store";
 import { selectIsSessionLocked, setSessionLocked } from "../../core/genericReducer";
-import { logOut } from "../../core/authReducer";
-import { useSessionStorage } from "../../core/useSessionStorage";
-// import { useNavigate } from "react-router-dom"; // Not needed, using window.location.href
-import FastLoginModal from "./FastLoginModal";
 
 interface HeaderBarProps {
   user: User;
@@ -28,8 +24,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   const { token } = theme.useToken();
   const dispatch = useAppDispatch();
   const isSessionLocked = useAppSelector(selectIsSessionLocked);
-  const [showFastLoginModal, setShowFastLoginModal] = useState(false);
-  const [, , clearSessionUser] = useSessionStorage(Constants.SESSION_KEYS.user);
   
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(() => {
     const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
@@ -52,8 +46,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
 
   const handleLockSession = () => {
     if (isSessionLocked) {
-      // If already locked, show fast login modal directly
-      setShowFastLoginModal(true);
+      // If already locked, modal is already showing in BaseLayout
+      // Do nothing
     } else {
       // Show confirmation modal
       Modal.confirm({
@@ -81,43 +75,12 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   };
 
   const handleSessionLock = () => {
-    // Clear user session
-    clearSessionUser();
-    dispatch(logOut(null));
-    
-    // Set session as locked
+    // Keep the session and token intact for fast login
+    // Only mark as locked to block navigation
     dispatch(setSessionLocked(true));
-    
-    // Show fast login modal persistently
-    setShowFastLoginModal(true);
+    // Modal will be shown automatically by BaseLayout
   };
 
-  const handleFastLoginSuccess = () => {
-    console.log("🔍 HeaderBar handleFastLoginSuccess called");
-    
-    // Close the modal first
-    setShowFastLoginModal(false);
-    
-    // Redirect to charts with full page reload to ensure fresh state
-    const chartsUrl = `${window.location.origin}/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`;
-    console.log("🔍 Redirecting to:", chartsUrl);
-    console.log("🔍 Current session locked state:", isSessionLocked);
-    
-    // Small delay to ensure modal closes and state is updated
-    setTimeout(() => {
-      console.log("🔍 Executing redirect to charts...");
-      window.location.href = chartsUrl;
-    }, 300);
-  };
-
-  const handleFastLoginCancel = () => {
-    // For locked sessions, don't allow cancel - modal stays open
-    if (isSessionLocked) {
-      return;
-    }
-    
-    setShowFastLoginModal(false);
-  };
 
   return (
     <div
@@ -193,12 +156,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         </div>
       </div>
 
-      {/* Fast Login Modal */}
-      <FastLoginModal
-        isVisible={showFastLoginModal}
-        onSuccess={handleFastLoginSuccess}
-        onCancel={handleFastLoginCancel}
-      />
     </div>
   );
 };

@@ -21,6 +21,7 @@ const ProtectedRoutes: React.FC = () => {
     }
   }, []);
 
+
   console.warn(`[ACCESS] ${canAccess} [ROUTE] -> ${location.pathname}`);
   return canAccess ? (
     <Outlet />
