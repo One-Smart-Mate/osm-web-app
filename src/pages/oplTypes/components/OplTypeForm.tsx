@@ -12,9 +12,9 @@ import {
   useCreateOplTypeMutation,
   useUpdateOplTypeMutation,
 } from "../../../services/oplTypesService";
-import {
-  CreateOplType,
-} from "../../../data/oplTypes/oplTypes.request";
+import { useAppSelector } from "../../../core/store";
+import { selectSiteId } from "../../../core/genericReducer";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 
 interface OplTypeFormProps {
   formType: OplTypeFormType;
@@ -33,6 +33,11 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { notification } = AntApp.useApp();
   const [updateOplType] = useUpdateOplTypeMutation();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const { user } = useCurrentUser();
+
+  // Get siteId from selector or from user's first site as fallback
+  const siteId = siteIdFromSelector || (user?.sites?.[0]?.id);
 
   const handleOnClickButton = () => {
     setModalOpen(true);
@@ -58,25 +63,42 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
   const handleOnCreate = async (values: any) => {
     try {
       setIsLoading(true);
+
+
+      // Validate siteId
+      if (!siteId || siteId === '' || Number(siteId) === 0) {
+        AnatomyNotification.error(notification, 'Error: No site selected. Please select a site before creating an OPL type.');
+        setIsLoading(false);
+        return;
+      }
+
       // Clean the document type - remove all non-printable characters and normalize
       const rawDocumentType = values.documentType || "";
-      const documentType = rawDocumentType
+      let documentType = rawDocumentType
         .replace(/[^\x20-\x7E\u00A0-\u024F\u1E00-\u1EFF]/g, '') // Remove non-printable and unusual Unicode
         .trim()
         .replace(/\s+/g, ' '); // Normalize whitespace
-      
+
+      // Ensure it doesn't exceed 50 characters after cleaning
+      if (documentType.length > 50) {
+        documentType = documentType.substring(0, 50).trim();
+        AnatomyNotification.error(notification, `Document type was truncated to 50 characters: "${documentType}"`);
+      }
+
       if (documentType.length === 0) {
         AnatomyNotification.error(notification, Strings.requiredDocumentType);
         setIsLoading(false);
         return;
       }
-      
-      if (documentType.length > 50) {
-        AnatomyNotification.error(notification, Strings.documentTypeTooLong);
-        setIsLoading(false);
-        return;
-      }
-      await createOplType(new CreateOplType(documentType)).unwrap();
+
+      const createOplData = {
+        siteId: Number(siteId!),
+        documentType: documentType,
+        status: 'A',
+        createdAt: new Date().toISOString()
+      };
+
+      await createOplType(createOplData).unwrap();
       setModalOpen(false);
       onComplete?.();
       AnatomyNotification.success(
@@ -95,19 +117,19 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
       setIsLoading(true);
       // Clean the document type - remove all non-printable characters and normalize
       const rawDocumentType = values.documentType || "";
-      const documentType = rawDocumentType
+      let documentType = rawDocumentType
         .replace(/[^\x20-\x7E\u00A0-\u024F\u1E00-\u1EFF]/g, '') // Remove non-printable and unusual Unicode
         .trim()
         .replace(/\s+/g, ' '); // Normalize whitespace
-      
+
+      // Ensure it doesn't exceed 50 characters after cleaning
+      if (documentType.length > 50) {
+        documentType = documentType.substring(0, 50).trim();
+        AnatomyNotification.error(notification, `Document type was truncated to 50 characters: "${documentType}"`);
+      }
+
       if (documentType.length === 0) {
         AnatomyNotification.error(notification, Strings.requiredDocumentType);
-        setIsLoading(false);
-        return;
-      }
-      
-      if (documentType.length > 50) {
-        AnatomyNotification.error(notification, Strings.documentTypeTooLong);
         setIsLoading(false);
         return;
       }
@@ -118,12 +140,15 @@ const OplTypeForm = ({ data, onComplete, formType }: OplTypeFormProps) => {
         setIsLoading(false);
         return;
       }
-      await updateOplType({
+      const updateOplData = {
         id: parsedId,
+        siteId: Number(siteId!),
         documentType: documentType,
         status: values.status,
         updatedAt: new Date().toISOString()
-      }).unwrap();
+      };
+
+      await updateOplType(updateOplData).unwrap();
       setModalOpen(false);
       onComplete?.();
       AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
