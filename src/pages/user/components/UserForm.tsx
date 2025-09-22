@@ -13,7 +13,6 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
 } from "../../../services/userService";
-import { CreateUser, UpdateUser } from "../../../data/user/user.request";
 
 interface UserFormProps {
   formType: UserFormType;
@@ -60,67 +59,85 @@ const UserForm = ({
   };
 
   const handleOnCreate = async (values: any) => {
-    try {
-      setIsLoading(true);
-      const enableEvidences = values.enableEvidences ? 1 : 0;
-      await registerUser(
-        new CreateUser(
-          values.name.trim(),
-          values.email.trim(),
-          Number(location.state.siteId),
-          values.password,
-          enableEvidences,
-          enableEvidences,
-          values.roles,
-          values.phoneNumber.trim(),
-          values.translation
-        )
-      ).unwrap();
+    setIsLoading(true);
+    const enableEvidences = values.enableEvidences ? 1 : 0;
 
-      setModalOpen(false);
-      onComplete?.();
-      AnatomyNotification.success(
-        notification,
-        AnatomyNotificationType._REGISTER
-      );
-    } catch (error) {
-      console.error("Error creating priority:", error);
-      AnatomyNotification.error(notification, error);
-    } finally {
-      setIsLoading(false);
-    }
+    const userData = {
+      name: values.name.trim(),
+      email: values.email.trim(),
+      siteId: Number(location.state.siteId),
+      password: values.password,
+      uploadCardDataWithDataNet: enableEvidences,
+      uploadCardEvidenceWithDataNet: enableEvidences,
+      roles: values.roles,
+      phoneNumber: values.phoneNumber?.trim() || '',
+      translation: values.translation || 'ES'
+    };
+
+    registerUser(userData)
+      .unwrap()
+      .then(() => {
+        // Success - just close modal
+        setIsLoading(false);
+        setModalOpen(false);
+
+        AnatomyNotification.success(
+          notification,
+          AnatomyNotificationType._REGISTER
+        );
+
+        // Call onComplete after a small delay to allow modal to close
+        if (onComplete) {
+          setTimeout(() => onComplete(), 100);
+        }
+      })
+      .catch((error) => {
+        // Error
+        console.error("Error creating user:", error);
+        setIsLoading(false);
+        AnatomyNotification.error(notification, error);
+      });
   };
 
   const handleOnUpdate = async (values: any) => {
-    try {
-      setIsLoading(true);
-      const enableEvidences = values.enableEvidences ? 1 : 0;
-      await updateUser(
-        new UpdateUser(
-          Number(values.id),
-          values.name.trim(),
-          values.email.trim(),
-          Number(location.state.siteId),
-          values.password,
-          enableEvidences,
-          enableEvidences,
-          values.roles,
-          values.status,
-          values.fastPassword,
-          values.phoneNumber.trim(),
-          values.translation
-        )
-      ).unwrap();
-      
-      setModalOpen(false);
-      onComplete?.();
-      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
-    } catch (error) {
-      console.error("Error updating user:", error);
-      AnatomyNotification.error(notification, error);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    const enableEvidences = values.enableEvidences ? 1 : 0;
+
+    const userData = {
+      id: Number(values.id),
+      name: values.name.trim(),
+      email: values.email.trim(),
+      siteId: Number(location.state.siteId),
+      password: values.password,
+      uploadCardDataWithDataNet: enableEvidences,
+      uploadCardEvidenceWithDataNet: enableEvidences,
+      roles: values.roles,
+      status: values.status,
+      fastPassword: values.fastPassword,
+      phoneNumber: values.phoneNumber?.trim() || '',
+      translation: values.translation || 'ES'
+    };
+
+    updateUser(userData)
+      .unwrap()
+      .then(() => {
+        // Success - just close modal
+        setIsLoading(false);
+        setModalOpen(false);
+
+        AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
+
+        // Call onComplete after a small delay to allow modal to close
+        if (onComplete) {
+          setTimeout(() => onComplete(), 100);
+        }
+      })
+      .catch((error) => {
+        // Error
+        console.error("Error updating user:", error);
+        setIsLoading(false);
+        AnatomyNotification.error(notification, error);
+      });
   };
 
   return (
