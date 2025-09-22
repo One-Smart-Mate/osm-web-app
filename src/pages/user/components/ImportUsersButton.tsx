@@ -1,6 +1,6 @@
 import { Button, Form, App as AntApp } from "antd";
 import ModalForm from "../../components/ModalForm";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Strings from "../../../utils/localizations/Strings";
 import { UploadOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
@@ -22,30 +22,51 @@ const ImportUsersButton = ({
   const [importUsers] = useImportUsersMutation();
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const formRef = useRef<FormInstance | null>(null);
   const location = useLocation();
   const { notification } = AntApp.useApp();
   const siteName = location?.state?.siteName || Strings.empty;
   const siteId = location.state.siteId || Strings.empty;
 
   const handleOnFormFinish = async (values: any) => {
+    if (!values?.fileObj) {
+      AnatomyNotification.error(notification, 'Please select a file');
+      return;
+    }
+
+    const file = values.fileObj.file || values.fileObj.fileList?.[0]?.originFileObj || values.fileObj;
+
+    if (!file) {
+      AnatomyNotification.error(notification, 'Could not get file');
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const { fileObj } = values;
-      const file = fileObj.fileList[0].originFileObj;
-      const response = await importUsers({ file, siteId }).unwrap();
+      await importUsers({ file, siteId }).unwrap();
+
+      // Success
+      setModalOpen(false);
+      setLoading(false);
+
+      if (formRef.current) {
+        formRef.current.resetFields();
+      }
+
       AnatomyNotification.success(
         notification,
         AnatomyNotificationType._REGISTER
       );
+
+      // Refresh after modal closes
       if (onComplete) {
-        onComplete(response.data.data);
+        onComplete(null as any);
       }
-      setModalOpen(false);
-    } catch (error) {
-      AnatomyNotification.error(notification, error);
-    } finally {
+    } catch (error: any) {
       setLoading(false);
-      setModalOpen(false);
+      const errorMessage = error?.data?.message || error?.message || 'Error importing users';
+      AnatomyNotification.error(notification, errorMessage);
     }
   };
 
@@ -58,7 +79,10 @@ const ImportUsersButton = ({
   return (
     <>
       <Button
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          setLoading(false); // Ensure loading is false when opening
+          setModalOpen(true);
+        }}
         type="default"
         className="w-full md:w-auto"
       >
@@ -67,16 +91,17 @@ const ImportUsersButton = ({
       </Button>
 
       <Form.Provider
-        onFormFinish={async (_, { values }) => {
-          await handleOnFormFinish(values);
+        onFormFinish={(_, { values }) => {
+          handleOnFormFinish(values);
         }}
       >
         <ModalForm
           open={modalIsOpen}
           onCancel={handleOnCancelButton}
-          FormComponent={(form: FormInstance) => (
-            <ImportUsersFormCard form={form} />
-          )}
+          FormComponent={(form: FormInstance) => {
+            formRef.current = form;
+            return <ImportUsersFormCard form={form} />;
+          }}
           title={`${Strings.importUsersFor} ${siteName}`}
           isLoading={isLoading}
         />

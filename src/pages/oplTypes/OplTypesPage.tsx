@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetOplTypesMutation } from "../../services/oplTypesService";
+import { useGetOplTypesBySiteMutation } from "../../services/oplTypesService";
 import { OplTypes } from "../../data/oplTypes/oplTypes";
 import { List } from "antd";
 import Strings from "../../utils/localizations/Strings";
@@ -8,17 +8,23 @@ import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import OplTypeForm, { OplTypeFormType } from "./components/OplTypeForm";
 import OplTypeCard from "./components/OplTypeCard";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 
 const OplTypesPage = () => {
-  const [getOplTypes] = useGetOplTypesMutation();
+  const [getOplTypesBySite] = useGetOplTypesBySiteMutation();
   const [isLoading, setLoading] = useState(false);
   const [data, setData] = useState<OplTypes[]>([]);
   const [dataBackup, setDataBackup] = useState<OplTypes[]>([]);
-  const { isIhAdmin } = useCurrentUser();
+  const { isIhAdmin, user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+
+  // Get siteId from selector or from user's first site as fallback
+  const siteId = siteIdFromSelector || (user?.sites?.[0]?.id);
 
   useEffect(() => {
     handleGetOplTypes();
-  }, []);
+  }, [siteId]); // Re-run when siteId changes
 
   const handleOnSearch = (query: string) => {
     const getSearch = query;
@@ -40,9 +46,13 @@ const OplTypesPage = () => {
   };
 
   const handleGetOplTypes = async () => {
+    if (!siteId) {
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await getOplTypes().unwrap();
+      const response = await getOplTypesBySite(Number(siteId)).unwrap();
       // Ensure response is always an array
       const safeData = Array.isArray(response) ? response : [];
       setData(safeData);

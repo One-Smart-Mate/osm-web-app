@@ -68,6 +68,7 @@ const OplTypeFormCard = ({
           >
             <Input
               maxLength={50}
+              showCount
               addonBefore={<BsFileText />}
               placeholder={Strings.documentType}
             />

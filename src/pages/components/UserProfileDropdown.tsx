@@ -35,22 +35,22 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
   const [generatedPassword, setGeneratedPassword] = useState("");
   const location = useLocation();
   
-  // Get session lock state
+  
   const isSessionLocked = useAppSelector(selectIsSessionLocked);
   
-  // Get siteId from multiple sources with fallback priority
+  
   const reduxSiteId = useAppSelector(selectSiteId);
   const locationSiteId = location.state?.siteId;
   const userFirstSiteId = user?.sites?.[0]?.id;
   
-  // Use siteId with priority: location.state > redux > user's first site
+  
   const currentSiteId = locationSiteId || reduxSiteId || userFirstSiteId;
 
   const [updateUser] = useUpdateUserMutation();
   const [getUser] = useGetUserMutation();
 
   /**
-   * Generate fast password function (same logic as UserFormCard)
+   * Generate fast password function using alphabetic characters
    */
   const generateFastPassword = (): string => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -68,13 +68,13 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
     navigator.clipboard.writeText(generatedPassword).then(() => {
       notification.success({
         message: Strings.success,
-        description: `Fast password "${generatedPassword}" copiado al portapapeles`,
+        description: Strings.fastPasswordCopiedToClipboard.replace("{password}", generatedPassword),
         duration: 3,
       });
     }).catch(() => {
       notification.error({
         message: Strings.error,
-        description: "Error al copiar fast password al portapapeles",
+        description: Strings.fastPasswordCopyError,
         duration: 3,
       });
     });
@@ -95,7 +95,7 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
    * Generate a random 4-letter fast password and update it in the backend
    */
   const handleGenerateFastPassword = async () => {
-    if (isSessionLocked) return; // Prevent action when locked
+    if (isSessionLocked) return; 
     
     if (!currentSiteId) {
       notification.warning({
@@ -108,48 +108,44 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
     try {
       setGeneratingPassword(true);
       
-      // Generate the fast password
+      
       const newFastPassword = generateFastPassword();
       
-      // Get current user details from backend
+      
       const userDetails = await getUser(user.userId).unwrap();
       
-      // Prepare update object using the UpdateUser constructor
+      
       const updateData = new UpdateUser(
         parseInt(userDetails.id),
         userDetails.name,
         userDetails.email,
         parseInt(currentSiteId),
-        "", // Empty password means don't change it
+        "", 
         userDetails.uploadCardDataWithDataNet,
         userDetails.uploadCardEvidenceWithDataNet,
         userDetails.roles.map((role: any) => parseInt(role)),
         userDetails.status,
-        newFastPassword // Include the new fast password
+        newFastPassword, 
+        "", 
+        "ES" 
       );
-
-      // Update user with new fast password
-      console.log("🔍 Updating user with fast password:", newFastPassword);
-      console.log("🔍 Update data being sent:", updateData);
       
-      const updateResult = await updateUser(updateData).unwrap();
-      console.log("✅ User update successful:", updateResult);
+      await updateUser(updateData).unwrap();
       
-      // Set the generated password and show modal
+      
       setGeneratedPassword(newFastPassword);
       setFastPasswordModalVisible(true);
       
       notification.success({
         message: Strings.success,
-        description: `Fast password actualizado: ${newFastPassword}`,
+        description: Strings.fastPasswordUpdatedSuccessfully.replace("{password}", newFastPassword),
         duration: 4,
       });
       
     } catch (error: any) {
-      console.error("Error generating fast password:", error);
       notification.error({
         message: Strings.error,
-        description: error?.data?.message || "Failed to generate fast password",
+        description: error?.data?.message || Strings.fastPasswordGenerationError,
         duration: 4,
       });
     } finally {
@@ -170,7 +166,7 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
    * Uses environment variable for ZIP password
    */
   const handleDownloadLogs = async () => {
-    if (isSessionLocked) return; // Prevent action when locked
+    if (isSessionLocked) return; 
     
     try {
       const logs = JSON.parse(localStorage.getItem("errorLogs") || "[]");
@@ -178,7 +174,7 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       if (logs.length === 0) {
         notification.info({
           message: Strings.information,
-          description: "No error logs found",
+          description: Strings.noErrorLogsFound,
         });
         return;
       }
@@ -210,10 +206,9 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       
       notification.success({
         message: Strings.success,
-        description: "Error logs downloaded successfully",
+        description: Strings.errorLogsDownloadedSuccessfully,
       });
     } catch (error) {
-      console.error("Error downloading logs:", error);
       AnatomyNotification.error(notification, error);
     }
   };
@@ -312,13 +307,13 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       <Dropdown
         menu={{ items: menuItems }}
         placement="bottomRight"
-        trigger={isSessionLocked ? [] : ["click"]} // Disable trigger when locked
+        trigger={isSessionLocked ? [] : ["click"]} 
         overlayStyle={{
           backgroundColor: token.colorBgElevated,
           borderRadius: token.borderRadius,
           boxShadow: token.boxShadowSecondary,
         }}
-        disabled={isSessionLocked} // Disable dropdown when locked
+        disabled={isSessionLocked} 
       >
         <div 
           className={`flex items-center gap-2 px-2 py-1 rounded ${
@@ -357,7 +352,7 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
       {/* Fast Password Modal */}
       <Modal
         title={Strings.fastPasswordModalTitle}
-        open={fastPasswordModalVisible && !isSessionLocked} // Prevent modal when locked
+        open={fastPasswordModalVisible && !isSessionLocked} 
         onCancel={handleCloseFastPasswordModal}
         footer={[
           <Button key="close" onClick={handleCloseFastPasswordModal}>

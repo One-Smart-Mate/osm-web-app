@@ -7,6 +7,7 @@ import {
   BsNodePlus,
   BsPeople,
   BsPersonPlus,
+  BsCalendar3,
 } from "react-icons/bs";
 import { Route } from "./models/Route";
 import { ItemType } from "antd/es/menu/interface";
@@ -33,6 +34,7 @@ const SystemHealth = React.lazy(
 );
 const SitesPage = React.lazy(() => import("../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../pages/charts/ChartsPage"));
+const CalendarPage = React.lazy(() => import("../pages/calendar/CalendarPage"));
 const CiltChartsPage = React.lazy(() => import("../pages/ciltCharts/CiltCharts"));
 const PositionsPage = React.lazy(
   () => import("../pages/positions/PositionsPage")
@@ -43,6 +45,9 @@ const PrioritiesPage = React.lazy(
 
 const CiltProceduresPage = React.lazy(
   () => import("../pages/cilt/CiltProceduresPage")
+);
+const ProceduresTreePage = React.lazy(
+  () => import("../pages/cilt/ProceduresTreePage")
 );
 const CiltSequencesPage = React.lazy(
   () => import("../pages/cilt/CiltSequencesPage")
@@ -133,6 +138,14 @@ const chartsRoute = new Route(
   Strings.dashboard
 );
 
+const calendarRoute = new Route(
+  Strings.calendarTitle,
+  Constants.ROUTES_PATH.calendar,
+  <CalendarPage />,
+  <BsCalendar3 />,
+  Strings.dashboard
+);
+
 const ciltChartsRoute = new Route(
   Strings.proceduresChartsSB,
   Constants.ROUTES_PATH.ciltCharts,
@@ -177,6 +190,14 @@ const ciltProceduresRoute = new Route(
   Strings.ciltProceduresSB,
   Constants.ROUTES_PATH.ciltProcedures,
   <CiltProceduresPage />,
+  <BsNodePlus />,
+  Strings.cilt
+);
+
+const proceduresTreeRoute = new Route(
+  Strings.proceduresTreeSB,
+  Constants.ROUTES_PATH.proceduresTree,
+  <ProceduresTreePage />,
   <BsNodePlus />,
   Strings.cilt
 );
@@ -270,6 +291,7 @@ const routes: Route[] = [
   companiesRoute,
   systemHealthRoute,
   ciltProceduresRoute,
+  proceduresTreeRoute,
   oplRoute,
   oplTypesRoute,
   ciltTypesRoute,
@@ -277,6 +299,7 @@ const routes: Route[] = [
   ciltLevelAssignamentsRoute,
   ciltChartsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
+  calendarRoute,
 ];
 
 const localAdminRoutesSiderOptions = (): ItemType[] => {
@@ -286,6 +309,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: calendarRoute.label,
+      key: calendarRoute.path,
+      icon: calendarRoute.icon,
+      section: calendarRoute.section,
     }),
     getItemV2({
       label: ciltChartsRoute.label,
@@ -329,6 +358,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: calendarRoute.label,
+      key: calendarRoute.path,
+      icon: calendarRoute.icon,
+      section: calendarRoute.section,
     }),
     getItemV2({
       label: ciltChartsRoute.label,
@@ -398,6 +433,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: ciltProceduresRoute.path,
       icon: ciltProceduresRoute.icon,
       section: ciltProceduresRoute.section,
+    }),
+    getItemV2({
+      label: proceduresTreeRoute.label,
+      key: proceduresTreeRoute.path,
+      icon: proceduresTreeRoute.icon,
+      section: proceduresTreeRoute.section,
     }),
     getItemV2({
       label: oplRoute.label,

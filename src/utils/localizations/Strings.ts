@@ -209,6 +209,7 @@ class StringsBase {
   static companyAddress = "companyAddress";
   static contact = "contact";
   static position = "position";
+  static positions = "positions";
   static phone = "phone";
   static extension = "extension";
   static cellular = "cellular";
@@ -551,6 +552,7 @@ class StringsBase {
   static levelsOf = "levelsOf";
   static newLevel = "newLevel";
   static level = "level";
+  static levels = "levels";
   static errorFetchingLevels = "errorFetchingLevels";
   static errorSavingLevel = "errorSavingLevel";
   static defaultSiteName = "defaultSiteName";
@@ -795,7 +797,6 @@ class StringsBase {
   static requiredAreaName = "requiredAreaName";
 
   // Positions Page
-  static positions = "positions";
   static createPosition = "createPosition";
   static searchPositions = "searchPositions";
   static noAssignedUsers = "noAssignedUsers";
@@ -937,6 +938,17 @@ class StringsBase {
 
   static ciltProceduresSB = "ciltProceduresSB";
   static ciltProceduresDescription = "ciltProceduresDescription";
+  static proceduresTreeSB = "proceduresTreeSB";
+  static proceduresTreeDescription = "proceduresTreeDescription";
+  static treeSymbology = "treeSymbology";
+  static lastLevel = "lastLevel";
+  static proceduresOf = "proceduresOf";
+  static errorLoadingLevels = "errorLoadingLevels";
+  static errorLoadingProcedures = "errorLoadingProcedures";
+  static unnamed = "unnamed";
+  static errorLoadingSomeProcedures = "errorLoadingSomeProcedures";
+  static noLevelsFound = "noLevelsFound";
+  static procedure = "procedure";
   static seconds = "seconds";
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
@@ -1452,6 +1464,14 @@ class StringsBase {
   static fastPasswordTooltip = "fastPasswordTooltip";
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
+
+  // Fast password additional strings
+  static fastPasswordUpdatedSuccessfully = "fastPasswordUpdatedSuccessfully";
+  static fastPasswordGenerationError = "fastPasswordGenerationError";
+  static fastPasswordCopiedToClipboard = "fastPasswordCopiedToClipboard";
+  static fastPasswordCopyError = "fastPasswordCopyError";
+  static noErrorLogsFound = "noErrorLogsFound";
+  static errorLogsDownloadedSuccessfully = "errorLogsDownloadedSuccessfully";
 
   // User additional fields
   static phoneNumber = "phoneNumber";

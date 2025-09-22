@@ -107,6 +107,8 @@ const SideBar: React.FC<SideBarProps> = ({
           boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
           transition: "width 0.2s ease",
           overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
 
@@ -128,7 +130,7 @@ const SideBar: React.FC<SideBarProps> = ({
           )}
         </div>
 
-        <div style={{ marginTop: 20, paddingBottom: 40 }}>
+        <div style={{ marginTop: 20, paddingBottom: 40, flex: 1 }}>
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {!collapsed && (
@@ -219,8 +221,9 @@ const SideBar: React.FC<SideBarProps> = ({
               padding: "10px 20px",
               fontSize: 12,
               color: "#8C8C8C",
-              position: "absolute",
-              bottom: 10,
+              textAlign: "center",
+              marginTop: "auto",
+              borderTop: `1px solid ${token.colorBorderSecondary}`,
             }}
           >
            {Strings.tagVersion}
