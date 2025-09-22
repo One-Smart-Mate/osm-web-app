@@ -91,7 +91,6 @@ export const buildCardDetailRoute = (
 };
 
 export const buildSequenceDetailRoute = (
-  siteId: string,
   sequenceId: string
 ): string => {
   const path = `${Constants.ROUTES_PATH.ciltSequences}/${sequenceId}`;
