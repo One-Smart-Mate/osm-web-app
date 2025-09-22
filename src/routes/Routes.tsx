@@ -303,7 +303,7 @@ const routes: Route[] = [
 ];
 
 const localAdminRoutesSiderOptions = (): ItemType[] => {
-  // local_admin: NO debe ver: graficas_procedimientos, sitios, niveles, tipos_tarjeta, razones_descarte, prioridades, posiciones, procedimientos, tipos_opl, tipos_procedimientos, frecuencias_procedimientos, reportes_ejecuciones
+  // local_admin: CANNOT see: procedures_charts, sites, levels, card_types, discard_reasons, priorities, positions, procedures, opl_types, procedure_types, procedure_frequencies, execution_reports
   const items: MenuProps["items"] = [
     // Panel section
     getItemV2({
@@ -318,24 +318,24 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       icon: calendarRoute.icon,
       section: calendarRoute.section,
     }),
-    // NO ciltChartsRoute (graficas_procedimientos)
+    // NO ciltChartsRoute (procedures_charts)
     getItemV2({
       label: tagsRoute.label,
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
     }),
-    // NO tagsFastPasswordRoute - nunca mostrar
+    // NO tagsFastPasswordRoute - never show
     getItemV2({
       label: levelsReadOnlyRoute.label,
       key: levelsReadOnlyRoute.path,
       icon: levelsReadOnlyRoute.icon,
       section: levelsReadOnlyRoute.section,
     }),
-    // NO positionsRoute (posiciones)
-    // NO sitios, niveles, tipos_tarjeta, razones_descarte, prioridades
+    // NO positionsRoute (positions)
+    // NO sites, levels, card_types, discard_reasons, priorities
 
-    // Cuentas section
+    // Accounts section
     getItemV2({
       label: siteUsersRoute.label,
       key: siteUsersRoute.path,
@@ -343,28 +343,28 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       section: siteUsersRoute.section,
     }),
 
-    // CILT section - Solo OPL y asignaciones
+    // CILT section - Only OPL and assignments
     getItemV2({
       label: oplRoute.label,
       key: oplRoute.path,
       icon: oplRoute.icon,
       section: oplRoute.section,
     }),
-    // NO oplTypesRoute (tipos_opl)
-    // NO procedimientos, tipos_procedimientos, frecuencias_procedimientos
+    // NO oplTypesRoute (opl_types)
+    // NO procedures, procedure_types, procedure_frequencies
     getItemV2({
       label: ciltLevelAssignamentsRoute.label,
       key: ciltLevelAssignamentsRoute.path,
       icon: ciltLevelAssignamentsRoute.icon,
       section: ciltLevelAssignamentsRoute.section,
     }),
-    // NO ciltReportsRoute (reportes_ejecuciones)
+    // NO ciltReportsRoute (execution_reports)
   ];
   return items;
 };
 
 const operatorRoutesSiderOptions = (): ItemType[] => {
-  // operador: SOLO tarjetas y consulta_niveles
+  // operator: ONLY cards and levels_readonly
   const items: MenuProps["items"] = [
     getItemV2({
       label: tagsRoute.label,
@@ -413,14 +413,14 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
         icon: tagsRoute.icon,
         section: tagsRoute.section,
       }),
-      // NO tagsFastPasswordRoute - nunca mostrar
+      // NO tagsFastPasswordRoute - never show
       getItemV2({
         label: levelsReadOnlyRoute.label,
         key: levelsReadOnlyRoute.path,
         icon: levelsReadOnlyRoute.icon,
         section: levelsReadOnlyRoute.section,
       }),
-      // Catálogos section
+      // Catalogs section
       getItemV2({
         label: sitesRoute.label,
         key: sitesRoute.path,
@@ -457,7 +457,7 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
         icon: positionsRoute.icon,
         section: positionsRoute.section,
       }),
-      // Cuentas section
+      // Accounts section
       getItemV2({
         label: siteUsersRoute.label,
         key: siteUsersRoute.path,
@@ -532,22 +532,22 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: calendarRoute.icon,
       section: calendarRoute.section,
     }),
-    // NO ciltChartsRoute (graficas_procedimientos)
+    // NO ciltChartsRoute (procedures_charts)
     getItemV2({
       label: tagsRoute.label,
       key: tagsRoute.path,
       icon: tagsRoute.icon,
       section: tagsRoute.section,
     }),
-    // NO tagsFastPasswordRoute - nunca mostrar
+    // NO tagsFastPasswordRoute - never show
     getItemV2({
       label: levelsReadOnlyRoute.label,
       key: levelsReadOnlyRoute.path,
       icon: levelsReadOnlyRoute.icon,
       section: levelsReadOnlyRoute.section,
     }),
-    // Catálogos section
-    // NO sitesRoute (sitios)
+    // Catalogs section
+    // NO sitesRoute (sites)
     getItemV2({
       label: levelsRoute.label,
       key: levelsRoute.path,
@@ -572,17 +572,17 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: prioritiesRoute.icon,
       section: prioritiesRoute.section,
     }),
-    // NO positionsRoute (posiciones)
+    // NO positionsRoute (positions)
 
-    // Cuentas section
+    // Accounts section
     getItemV2({
       label: siteUsersRoute.label,
       key: siteUsersRoute.path,
       icon: siteUsersRoute.icon,
       section: siteUsersRoute.section,
     }),
-    // CILT section - Solo OPL y tipos OPL, asignaciones
-    // NO ciltProceduresRoute (procedimientos)
+    // CILT section - Only OPL and OPL types, assignments
+    // NO ciltProceduresRoute (procedures)
     // NO proceduresTreeRoute
     getItemV2({
       label: oplRoute.label,
@@ -596,15 +596,15 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       icon: oplTypesRoute.icon,
       section: oplTypesRoute.section,
     }),
-    // NO ciltTypesRoute (tipos_procedimientos)
-    // NO ciltFrecuenciesRoute (frecuencias_procedimientos)
+    // NO ciltTypesRoute (procedure_types)
+    // NO ciltFrecuenciesRoute (procedure_frequencies)
     getItemV2({
       label: ciltLevelAssignamentsRoute.label,
       key: ciltLevelAssignamentsRoute.path,
       icon: ciltLevelAssignamentsRoute.icon,
       section: ciltLevelAssignamentsRoute.section,
     }),
-    // NO ciltReportsRoute (reportes_ejecuciones)
+    // NO ciltReportsRoute (execution_reports)
   ];
   return items;
 };

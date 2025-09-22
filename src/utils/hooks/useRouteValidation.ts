@@ -18,7 +18,7 @@ const useRouteValidation = (): boolean => {
   const accessibleRoutes: Record<UserRoles, (string | RegExp)[]> = {
     [UserRoles._IHSISADMIN]: ["*"],
 
-    // local_admin: Ocultar graficas_procedimientos, sitios, niveles, tipos_tarjeta, razones_descarte, prioridades, posiciones, procedimientos, tipos_opl, tipos_procedimientos, frecuencias_procedimientos, reportes_ejecuciones
+    // local_admin: Hide procedures_charts, sites, levels, card_types, discard_reasons, priorities, positions, procedures, opl_types, procedure_types, procedure_frequencies, execution_reports
     [UserRoles._LOCALADMIN]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       // NO tagsFastPassword
@@ -53,7 +53,7 @@ const useRouteValidation = (): boolean => {
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/[^/]+$`)
     ],
 
-    // operador: Solo mostrar tarjetas y consulta_niveles
+    // operator: Only show cards and levels_readonly
     [UserRoles._OPERATOR]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
