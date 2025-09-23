@@ -59,6 +59,7 @@ const UserForm = ({
   };
 
   const handleOnCreate = async (values: any) => {
+
     setIsLoading(true);
     const enableEvidences = values.enableEvidences ? 1 : 0;
 
