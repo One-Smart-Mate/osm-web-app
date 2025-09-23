@@ -16,7 +16,6 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import MachinesChart from "./components/MachinesChart";
 import MechanicsChart from "./components/MechanicsChart";
 import DefinitiveUsersChart from "./components/DefinitiveUsersChart";
-import CalendarChart from "./components/CalendarChart";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
 import DownloadChartDataButton from "./components/DownloadChartDataButton";
