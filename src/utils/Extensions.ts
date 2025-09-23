@@ -97,11 +97,16 @@ export const getUserRol = (user: User): UserRoles | null => {
   const isLocalAdmin = user.roles?.some(
     (role) => role === Constants.localAdmin
   );
+  const isOperator = user.roles?.some(
+    (role) => role === Constants.operator
+  );
 
   return isLocalSisAdmin
     ? UserRoles._LOCALSYSADMIN
     : isLocalAdmin
     ? UserRoles._LOCALADMIN
+    : isOperator
+    ? UserRoles._OPERATOR
     : UserRoles._UNDEFINED;
 };
 
@@ -113,6 +118,7 @@ export const enum UserRoles {
   _IHSISADMIN,
   _LOCALSYSADMIN,
   _LOCALADMIN,
+  _OPERATOR,
   _UNDEFINED,
 }
 

@@ -6,7 +6,7 @@ import { useSessionStorage } from "../core/useSessionStorage";
 import User from "../data/user/user";
 import Constants from "../utils/Constants";
 import { getUserRol, UserRoles } from "../utils/Extensions";
-import { localAdminRoutesSiderOptions, localIHSisAdminRoutesSiderOptions, localSisAdminRoutesSiderOptions, tagDetailsRoute } from "./Routes";
+import { localAdminRoutesSiderOptions, localIHSisAdminRoutesSiderOptions, localSisAdminRoutesSiderOptions, operatorRoutesSiderOptions, tagDetailsRoute } from "./Routes";
 
 
 export function navigateWithState() {
@@ -67,11 +67,14 @@ export const getUserSiderOptions = (user: User): ItemType[] => {
     case UserRoles._LOCALADMIN:
       routes = localAdminRoutesSiderOptions();
       break;
-      case UserRoles._LOCALSYSADMIN:
-        routes = localSisAdminRoutesSiderOptions();
+    case UserRoles._LOCALSYSADMIN:
+      routes = localSisAdminRoutesSiderOptions();
       break;
-      case UserRoles._IHSISADMIN:
-        routes = localIHSisAdminRoutesSiderOptions();
+    case UserRoles._IHSISADMIN:
+      routes = localIHSisAdminRoutesSiderOptions();
+      break;
+    case UserRoles._OPERATOR:
+      routes = operatorRoutesSiderOptions();
       break;
     default:
       break;
@@ -103,10 +106,16 @@ export const buildRoute = (path: string): string => {
 
 export const buildInitRoute = (user: User): string => {
   const rol = getUserRol(user);
-  if(rol === UserRoles._IHSISADMIN) {
-    return buildRoute(Constants.ROUTES_PATH.companies);
-  } else {
-    return buildRoute(Constants.ROUTES_PATH.charts);
+
+  switch(rol) {
+    case UserRoles._IHSISADMIN:
+      return buildRoute(Constants.ROUTES_PATH.companies);
+    case UserRoles._OPERATOR:
+      // Operators should start at cards page
+      return buildRoute(Constants.ROUTES_PATH.cards);
+    default:
+      // Other roles start at charts
+      return buildRoute(Constants.ROUTES_PATH.charts);
   }
 };
 
