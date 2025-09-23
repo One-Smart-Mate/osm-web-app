@@ -14,6 +14,7 @@ import { Button, Select, Input, Card, DatePicker, Space, Typography, TimeRangePi
 import { BsSortDown, BsCalendarRange } from "react-icons/bs";
 import dayjs, { Dayjs } from "dayjs";
 import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
+import { getUserRol, UserRoles } from "../../utils/Extensions";
 
 type SortOption = 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
 type DateFilterType = 'creation' | 'due' | '';
@@ -34,7 +35,8 @@ const TagsPage = () => {
   const [data, setData] = useState<CardInterface[]>([]);
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
-  const { isIhAdmin } = useCurrentUser();
+  const { isIhAdmin, user } = useCurrentUser();
+  const userRole = user ? getUserRol(user) : UserRoles._UNDEFINED;
 
   // Filter states
   const [showFilters, setShowFilters] = useState(false);
@@ -147,7 +149,18 @@ const TagsPage = () => {
     setLoading(true);
     try {
       const response = await getCards(location.state.siteId).unwrap();
-      setData(response);
+
+      // If user is operator, filter to show only their cards
+      if (userRole === UserRoles._OPERATOR && user) {
+        const filteredCards = response.filter(card =>
+          card.creatorName.toLowerCase() === user.name.toLowerCase() ||
+          card.responsableName?.toLowerCase() === user.name.toLowerCase() ||
+          card.mechanicName?.toLowerCase() === user.name.toLowerCase()
+        );
+        setData(filteredCards);
+      } else {
+        setData(response);
+      }
     } catch (error) {
       handleErrorNotification(error);
     } finally {
@@ -238,19 +251,22 @@ const TagsPage = () => {
           {/* Action buttons and Filter section */}
           <Card className="mb-4">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={handleOpenCreateModal}
-                style={{ borderRadius: '6px' }}
-              >
-                {Strings.createCard || "Create Card"}
-              </Button>
+              {/* Hide create button for operators */}
+              {userRole !== UserRoles._OPERATOR && (
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleOpenCreateModal}
+                  style={{ borderRadius: '6px' }}
+                >
+                  {Strings.createCard || "Create Card"}
+                </Button>
+              )}
               <Button
                 type="default"
                 icon={<FilterOutlined />}
                 onClick={() => setShowFilters(!showFilters)}
-                style={{ borderRadius: '6px' }}
+                style={{ borderRadius: '6px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}
               >
                 {showFilters ? Strings.close : Strings.filters}
               </Button>

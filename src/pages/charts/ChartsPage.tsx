@@ -494,17 +494,6 @@ const ChartsPage = () => {
                   </div>
                 </Card>
               </div>
-
-              {/* Calendar Chart Section */}
-              <div className="mb-2">
-                <CalendarChart
-                  siteId={siteId}
-                  siteName={siteName}
-                  startDate={startDate}
-                  endDate={endDate}
-                  selectedStatus={selectedStatus}
-                />
-              </div>
             </>
           ) : (
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

@@ -10,32 +10,26 @@ interface FormProps {
 
 const ImportUsersFormCard = ({ form }: FormProps) => {
   return (
-    <>
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="fileObj"
-          valuePropName="file"
-          rules={[{ required: true, message: Strings.uploadFileRequired }]}
+    <Form form={form} name="importUsersForm" layout="vertical">
+      <Form.Item
+        name="fileObj"
+        valuePropName="file"
+        rules={[{ required: true, message: Strings.uploadFileRequired }]}
+      >
+        <Dragger
+          maxCount={1}
+          beforeUpload={() => false}
+          name="file"
+          accept=".xlsx"
         >
-          <Dragger
-            maxCount={1}
-            beforeUpload={() => false}
-            name="file"
-            accept=".xlsx"
-          >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">{Strings.dragFile}</p>
-            <p className="ant-upload-hint">{Strings.singleUpload}</p>
-            <p className="ant-upload-hint" style={{ fontSize: '12px', color: '#666' }}>
-              Required columns: Name, Email, Role<br/>
-              Optional columns: PhoneNumber, Translation (ES/EN)
-            </p>
-          </Dragger>
-        </Form.Item>
-      </Form>
-    </>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">{Strings.dragFile}</p>
+          <p className="ant-upload-hint">{Strings.singleUpload}</p>
+        </Dragger>
+      </Form.Item>
+    </Form>
   );
 };
 
