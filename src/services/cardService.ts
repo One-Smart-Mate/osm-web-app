@@ -173,22 +173,6 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CardInterface }) => response.data,
     }),
-    updateDefinitiveSolution: builder.mutation<CardInterface, UpdateDefinitiveSolutionRequest>({
-      query: (solutionData) => ({
-        url: "/card/update/definitive-solution",
-        method: "PUT",
-        body: solutionData,
-      }),
-      transformResponse: (response: { data: CardInterface }) => response.data,
-    }),
-    updateProvisionalSolution: builder.mutation<CardInterface, UpdateProvisionalSolutionRequest>({
-      query: (solutionData) => ({
-        url: "/card/update/provisional-solution",
-        method: "PUT",
-        body: solutionData,
-      }),
-      transformResponse: (response: { data: CardInterface }) => response.data,
-    }),
   }),
 });
 
