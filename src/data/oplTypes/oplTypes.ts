@@ -1,5 +1,6 @@
 export interface OplTypes {
   id: number;
+  siteId: number;
   documentType: string | null;
   status: string | null;
   createdAt: Date | null;

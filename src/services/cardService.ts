@@ -69,6 +69,13 @@ export const cardService = apiSlice.injectEndpoints({
         body: { ...responsible },
       }),
     }),
+    updateCardCustomDueDate: builder.mutation<void, { cardId: number; customDueDate: string; idOfUpdatedBy: number }>({
+      query: (body) => ({
+        url: "/card/update/custom-due-date",
+        method: "POST",
+        body,
+      }),
+    }),
     searchCards: builder.query<
       CardInterface[],
       {
@@ -142,12 +149,29 @@ export const cardService = apiSlice.injectEndpoints({
         `/card/fast-password/${siteId}/${fastPassword}`,
       transformResponse: (response: { data: FastPasswordResponse }) => response.data,
     }),
-    createCard: builder.mutation<void, CreateCardRequest>({
+    createCard: builder.mutation<CardInterface, CreateCardRequest>({
       query: (cardData) => ({
         url: "/card/create",
         method: "POST",
         body: cardData,
       }),
+      transformResponse: (response: { data: CardInterface }) => response.data,
+    }),
+    updateDefinitiveSolution: builder.mutation<CardInterface, UpdateDefinitiveSolutionRequest>({
+      query: (solutionData) => ({
+        url: "/card/update/definitive-solution",
+        method: "PUT",
+        body: solutionData,
+      }),
+      transformResponse: (response: { data: CardInterface }) => response.data,
+    }),
+    updateProvisionalSolution: builder.mutation<CardInterface, UpdateProvisionalSolutionRequest>({
+      query: (solutionData) => ({
+        url: "/card/update/provisional-solution",
+        method: "PUT",
+        body: solutionData,
+      }),
+      transformResponse: (response: { data: CardInterface }) => response.data,
     }),
     updateDefinitiveSolution: builder.mutation<CardInterface, UpdateDefinitiveSolutionRequest>({
       query: (solutionData) => ({
@@ -175,6 +199,7 @@ export const {
   useGetCardNotesMutation,
   useUpdateCardPriorityMutation,
   useUpdateCardMechanicMutation,
+  useUpdateCardCustomDueDateMutation,
   useSearchCardsQuery,
   useGetCardDetailByUUIDMutation,
   useGetCardNotesByUUIDMutation,

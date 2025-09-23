@@ -42,6 +42,9 @@ const STATUS_DRAFT = "D";
 const STATUS_DISCARDED = "DISCARDED";
 const STATUS_CANCELLED_CARD = "CANCELLED";
 
+// Priority constants
+const PRIORITY_WILDCARD_CODE = "XX";
+
 // Position table constants
 const DEFAULT_PAGE_SIZE = 6;
 const POSITION_PAGE_OPTIONS = ['6', '10', '20', '50'];
@@ -85,6 +88,7 @@ const ROUTES_PATH = {
   cards: 'cards',
   tagsFastPassword: 'tags-fast-password',
   charts: 'charts',
+  calendar: 'calendar',
   users: 'users',
   priorities: 'priorities',
   cardTypes: 'cardtypes',
@@ -95,6 +99,7 @@ const ROUTES_PATH = {
   positions:'positions',
   technicalSupport: 'technicalSupport',
   ciltProcedures: 'cilt-procedures',
+  proceduresTree: 'procedures-tree',
   opl: 'opl',
   oplTypes: 'opl-types',
   ciltTypes: 'cilt-types',
@@ -169,5 +174,6 @@ export default {
   STATUS_INACTIVE,
   STATUS_DRAFT,
   STATUS_DISCARDED,
-  STATUS_CANCELLED_CARD
+  STATUS_CANCELLED_CARD,
+  PRIORITY_WILDCARD_CODE
 };

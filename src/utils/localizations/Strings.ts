@@ -209,6 +209,7 @@ class StringsBase {
   static companyAddress = "companyAddress";
   static contact = "contact";
   static position = "position";
+  static positions = "positions";
   static phone = "phone";
   static extension = "extension";
   static cellular = "cellular";
@@ -356,6 +357,7 @@ class StringsBase {
   static cardType = "cardType";
   static problemType = "problemType";
   static location = "location";
+  static problem = "problem";
   static createdBy = "createdBy";
   static problemDescription = "problemDescription";
   
@@ -370,6 +372,12 @@ class StringsBase {
   static creationDateFilter = "creationDateFilter";
   static dueDateFilter = "dueDateFilter";
   static selectDates = "selectDates";
+  static selectDate = "selectDate";
+  static customDueDate = "customDueDate";
+  static requiredCustomDate = "requiredCustomDate";
+  static selectCustomDueDate = "selectCustomDueDate";
+  static selectCustomDueDateMessage = "selectCustomDueDateMessage";
+  static customDateUpdated = "customDateUpdated";
 
   static tagStatusCanceled = "tagStatusCanceled";
   static tagDate = "tagDate";
@@ -544,6 +552,7 @@ class StringsBase {
   static levelsOf = "levelsOf";
   static newLevel = "newLevel";
   static level = "level";
+  static levels = "levels";
   static errorFetchingLevels = "errorFetchingLevels";
   static errorSavingLevel = "errorSavingLevel";
   static defaultSiteName = "defaultSiteName";
@@ -788,7 +797,6 @@ class StringsBase {
   static requiredAreaName = "requiredAreaName";
 
   // Positions Page
-  static positions = "positions";
   static createPosition = "createPosition";
   static searchPositions = "searchPositions";
   static noAssignedUsers = "noAssignedUsers";
@@ -930,6 +938,17 @@ class StringsBase {
 
   static ciltProceduresSB = "ciltProceduresSB";
   static ciltProceduresDescription = "ciltProceduresDescription";
+  static proceduresTreeSB = "proceduresTreeSB";
+  static proceduresTreeDescription = "proceduresTreeDescription";
+  static treeSymbology = "treeSymbology";
+  static lastLevel = "lastLevel";
+  static proceduresOf = "proceduresOf";
+  static errorLoadingLevels = "errorLoadingLevels";
+  static errorLoadingProcedures = "errorLoadingProcedures";
+  static unnamed = "unnamed";
+  static errorLoadingSomeProcedures = "errorLoadingSomeProcedures";
+  static noLevelsFound = "noLevelsFound";
+  static procedure = "procedure";
   static seconds = "seconds";
   static oplSB = "oplSB";
   static oplDescription = "oplDescription";
@@ -1446,6 +1465,14 @@ class StringsBase {
   static manual = "manual";
   static downloadUsersTemplate = "downloadUsersTemplate";
 
+  // Fast password additional strings
+  static fastPasswordUpdatedSuccessfully = "fastPasswordUpdatedSuccessfully";
+  static fastPasswordGenerationError = "fastPasswordGenerationError";
+  static fastPasswordCopiedToClipboard = "fastPasswordCopiedToClipboard";
+  static fastPasswordCopyError = "fastPasswordCopyError";
+  static noErrorLogsFound = "noErrorLogsFound";
+  static errorLogsDownloadedSuccessfully = "errorLogsDownloadedSuccessfully";
+
   // User additional fields
   static phoneNumber = "phoneNumber";
   static phoneNumberTooltip = "phoneNumberTooltip";
@@ -1809,6 +1836,35 @@ class StringsBase {
   static evidencesOptional = "evidencesOptional";
   static selectFiles = "selectFiles";
   static filesSelected = "filesSelected";
+
+  // Calendar strings
+  static calendarTitle = "calendarTitle";
+  static calendarOfDueDates = "calendarOfDueDates";
+  static overdueCards = "overdueCards";
+  static todayCards = "todayCards";
+  static activeCards = "activeCards";
+  static resolvedCards = "resolvedCards";
+  static confirmDateChange = "confirmDateChange";
+  static confirmDateChangeMessage = "confirmDateChangeMessage";
+  static dueDateUpdatedSuccess = "dueDateUpdatedSuccess";
+  static errorUpdatingDueDate = "errorUpdatingDueDate";
+  static errorLoadingCalendar = "errorLoadingCalendar";
+  static cardDetails = "cardDetails";
+  static viewFullDetails = "viewFullDetails";
+  static card = "card";
+  static discarded = "discarded";
+  static unknown = "unknown";
+  static unassigned = "unassigned";
+  static noCardsInDateRange = "noCardsInDateRange";
+  static showMore = "showMore";
+  static next = "next";
+  static previous = "previous";
+  static today = "today";
+  static month = "month";
+  static day = "day";
+  static agenda = "agenda";
+  static time = "time";
+  static event = "event";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

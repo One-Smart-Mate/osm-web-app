@@ -83,7 +83,7 @@ const UserFormCard = ({
     setIsGeneratingFastPassword(true);
     try {
       // Generate a random 4-letter password
-      const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
       let result = '';
       for (let i = 0; i < 4; i++) {
         result += letters.charAt(Math.floor(Math.random() * letters.length));
@@ -173,9 +173,9 @@ const UserFormCard = ({
               {
                 validator: (_, value) => {
                   if (!value || value.trim() === '') {
-                    return Promise.resolve(); // Allow empty
+                    return Promise.reject(new Error(Strings.requiredPhoneNumber));
                   }
-                  if (!/^[0-9]{10,15}$/.test(value)) {
+                  if (!/^[0-9]{10,15}$/.test(value.trim())) {
                     return Promise.reject(new Error(Strings.invalidPhoneNumber));
                   }
                   return Promise.resolve();
@@ -267,18 +267,22 @@ const UserFormCard = ({
               className="flex-1"
                               rules={[
                   {
-                    pattern: /^[a-zA-Z]{4}$/,
+                    pattern: /^[A-Za-z]{4}$/,
                     message: Strings.fastPasswordValidation,
                   },
                 ]}
             >
               <Input
                 value={fastPassword}
-                onChange={(e) => setFastPassword(e.target.value)}
+                onChange={(e) => {
+                  // Only allow alphabetic characters (A-Z, a-z)
+                  const filteredValue = e.target.value.replace(/[^A-Za-z]/g, '');
+                  setFastPassword(filteredValue);
+                  form.setFieldsValue({ fastPassword: filteredValue });
+                }}
                 addonBefore={<BsKey />}
                 placeholder={Strings.fastPassword}
                 maxLength={4}
-                readOnly
                 addonAfter={
                   <div className="flex gap-1">
                     <Button

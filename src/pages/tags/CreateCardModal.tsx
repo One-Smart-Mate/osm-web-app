@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card } from "antd";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker } from "antd";
 import { SaveOutlined, CheckOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
@@ -11,6 +11,8 @@ import { useGetCardTypesMutation } from "../../services/CardTypesService";
 import { useGetPreclassifiersMutation } from "../../services/preclassifierService";
 import { useGetActiveSitePrioritiesMutation } from "../../services/priorityService";
 import { useGetlevelsMutation } from "../../services/levelService";
+import Constants from "../../utils/Constants";
+import dayjs from "dayjs";
 
 interface CreateCardModalProps {
   open: boolean;
@@ -48,9 +50,14 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   
   const [comments, setComments] = useState<string>("");
 
+  // Custom due date state for wildcard priority
+  const [showCustomDate, setShowCustomDate] = useState(false);
+  const [customDueDate, setCustomDueDate] = useState<dayjs.Dayjs | null>(null);
+
   // Referencias para scroll automático
   const preclassifierRef = useRef<HTMLDivElement>(null);
   const priorityRef = useRef<HTMLDivElement>(null);
+  const customDateRef = useRef<HTMLDivElement>(null);
   const levelRef = useRef<HTMLDivElement>(null);
   const commentsRef = useRef<HTMLDivElement>(null);
 
@@ -129,6 +136,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setFinalNodeId(null);
     setComments("");
     setLastSelectedLevel(null); // Reset tracking de niveles
+    setShowCustomDate(false);
+    setCustomDueDate(null);
   };
 
   const loadCardTypes = async () => {
@@ -268,9 +277,20 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setFinalNodeId(null);
     setLastSelectedLevel(null); // Reset tracking
 
-    if (value) {
-      loadLevels();
-      scrollToNextStep(levelRef);
+    // Check if this is the wildcard priority
+    const selectedPriorityData = priorities.find(p => p.id.toString() === value);
+    if (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE) {
+      setShowCustomDate(true);
+      // Scroll to custom date field instead of levels
+      scrollToNextStep(customDateRef);
+    } else {
+      setShowCustomDate(false);
+      setCustomDueDate(null);
+      // Load levels and scroll to them for regular priorities
+      if (value) {
+        loadLevels();
+        scrollToNextStep(levelRef);
+      }
     }
   };
 
@@ -310,7 +330,14 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
   const handleSave = async () => {
     if (!selectedCardType || !selectedPreclassifier || !user || !user.userId) {
-      handleErrorNotification("Please fill in all required fields and ensure you are logged in");
+      handleErrorNotification(Strings.requiredInfo);
+      return;
+    }
+
+    // Validate custom due date if wildcard priority is selected
+    const selectedPriorityData = priorities.find(p => p.id.toString() === selectedPriority);
+    if (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && !customDueDate) {
+      handleErrorNotification(Strings.requiredCustomDate);
       return;
     }
 
@@ -328,11 +355,14 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       evidences: [], // No evidences for web version as specified
       appSo: 'web',
       appVersion: '1.0.0',
+      customDueDate: (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && customDueDate)
+        ? customDueDate.format('YYYY-MM-DD')
+        : null
     };
 
     try {
       await createCard(cardData).unwrap();
-      handleSucccessNotification("Card created successfully!");
+      handleSucccessNotification(Strings.successfullyRegistered);
       onSuccess?.();
       onClose();
       resetForm();
@@ -467,7 +497,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       }}
       footer={[
         <Button key="cancel" onClick={onClose}>
-          {Strings.cancel || "Cancel"}
+          {Strings.cancel}
         </Button>,
         <Button
           key="save"
@@ -475,9 +505,13 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           icon={<SaveOutlined />}
           onClick={handleSave}
           loading={isCreating}
-          disabled={!selectedCardType || !selectedPreclassifier}
+          disabled={
+            !selectedCardType ||
+            !selectedPreclassifier ||
+            (showCustomDate && !customDueDate)
+          }
         >
-          {Strings.save || "Save"}
+          {Strings.save}
         </Button>,
       ]}
       destroyOnClose
@@ -532,7 +566,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               paddingBottom: '8px'
             }}>
               {isLoadingPreclassifiers ? (
-                <Typography.Text>Cargando tipos de problema...</Typography.Text>
+                <Typography.Text>{Strings.loading}</Typography.Text>
               ) : (
                 preclassifiers.map(preclassifier => (
                   <SelectableCard
@@ -573,6 +607,33 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                 ))
               )}
             </div>
+
+            {/* Custom Due Date for Wildcard Priority */}
+            {showCustomDate && (
+              <div ref={customDateRef} style={{ marginTop: '16px' }}>
+                <Typography.Text strong style={{ fontSize: '14px', display: 'block', marginBottom: '8px' }}>
+                  {Strings.customDueDate} *
+                </Typography.Text>
+                <DatePicker
+                  placeholder={Strings.selectDate}
+                  style={{ width: '100%' }}
+                  size="large"
+                  value={customDueDate}
+                  onChange={(date) => {
+                    setCustomDueDate(date);
+                    // If date is selected and levels aren't loaded yet, load them and scroll
+                    if (date && levelHierarchy.size === 0) {
+                      loadLevels();
+                      scrollToNextStep(levelRef);
+                    }
+                  }}
+                  disabledDate={(current) => current && current.isBefore(dayjs(), 'day')}
+                />
+                <Typography.Text type="secondary" style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                  {Strings.selectCustomDueDateMessage}
+                </Typography.Text>
+              </div>
+            )}
           </div>
         )}
 

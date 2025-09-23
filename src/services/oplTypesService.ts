@@ -11,6 +11,13 @@ const oplTypesService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: OplTypes[] }) => response.data,
     }),
+    getOplTypesBySite: builder.mutation<OplTypes[], number>({
+      query: (siteId) => ({
+        url: `opl-types/site/${siteId}`,
+        method: "GET",
+      }),
+      transformResponse: (response: { data: OplTypes[] }) => response.data,
+    }),
     getOplTypeById: builder.mutation<OplTypes, number>({
       query: (id) => ({
         url: `opl-types/${id}`,
@@ -46,6 +53,7 @@ const oplTypesService = apiSlice.injectEndpoints({
 
 export const {
   useGetOplTypesMutation,
+  useGetOplTypesBySiteMutation,
   useGetOplTypeByIdMutation,
   useCreateOplTypeMutation,
   useUpdateOplTypeMutation,

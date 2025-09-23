@@ -32,11 +32,11 @@ const FastLoginModal = ({
 
   const handleSubmit = async () => {
     if (!fastPassword.trim() || fastPassword.length !== 4) {
-      AnatomyNotification.error(notification, "El fast password debe tener exactamente 4 caracteres");
+      AnatomyNotification.error(notification, Strings.fastPasswordValidation);
       return;
     }
 
-    // Validate alphabetic format (A-Z, a-z) as per the working example
+    // Validate alphabetic format (A-Z, a-z) as per backend requirement
     const alphaRegex = /^[A-Za-z]{4}$/;
     if (!alphaRegex.test(fastPassword)) {
       AnatomyNotification.error(notification, Strings.fastPasswordAlphabeticValidation);
@@ -49,21 +49,12 @@ const FastLoginModal = ({
       const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       
       const fastLoginData = {
-        fastPassword: fastPassword, // Keep original case (don't convert to uppercase)
+        fastPassword: fastPassword,
         platform: Constants.PLATFORM.WEB,
         timezone: detectedTimezone,
       };
 
-      console.log("🔍 Fast Login attempt - Full payload:", fastLoginData);
-      console.log("🔍 Fast Password being sent:", fastPassword);
-      console.log("🔍 Platform being sent:", Constants.PLATFORM.WEB);
-      console.log("🔍 Timezone detected:", detectedTimezone);
-      console.log("🔍 Timezone length:", detectedTimezone.length);
-      console.log("🔍 FastPassword length:", fastPassword.length);
-
       const result = await fastLogin(fastLoginData).unwrap();
-
-      console.log("✅ Fast Login successful:", result);
 
       // Store user data in session storage
       setSessionUser(result);
@@ -71,7 +62,7 @@ const FastLoginModal = ({
       // Update Redux auth state
       dispatch(setCredentials(result));
 
-      // Unlock session
+      // Unlock the session
       dispatch(setSessionLocked(false));
 
       notification.success({
@@ -81,14 +72,9 @@ const FastLoginModal = ({
 
       // Reset form
       setFastPassword("");
-      
-      // Force a small delay to ensure all state updates are processed
-      // This is crucial for the charts page to load correctly
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
+
       onSuccess();
     } catch (error: any) {
-      console.error("❌ Fast Login error:", error);
       
       // Handle different error types
       let errorMessage = Strings.fastLoginError;
@@ -162,7 +148,7 @@ const FastLoginModal = ({
           value={fastPassword}
           onChange={(e) => {
             const value = e.target.value;
-            // Only allow alphabetic characters and maintain case
+            // Only allow alphabetic characters (A-Z, a-z)
             const filteredValue = value.replace(/[^A-Za-z]/g, '');
             setFastPassword(filteredValue);
           }}
@@ -178,7 +164,7 @@ const FastLoginModal = ({
           autoFocus
         />
         <Typography.Text type="secondary" style={{ fontSize: '12px', marginTop: '8px', display: 'block' }}>
-          El fast password debe tener exactamente 4 caracteres alfabéticos (A-Z, a-z).
+          {Strings.fastPasswordAlphabeticValidation}
         </Typography.Text>
         <Typography.Text type="warning" style={{ fontSize: '11px', marginTop: '4px', display: 'block' }}>
           ⚠️ {isSessionLocked ? Strings.sessionLockedWarning : Strings.fastPasswordLoginComplete}

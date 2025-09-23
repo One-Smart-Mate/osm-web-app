@@ -103,15 +103,12 @@ const TagDetailsPage = () => {
         return Promise.reject(false);
       }
       const response = await getCardDetails(cardUUID).unwrap();
-      console.log(`[CARD] ${Object.values(response)}`);
 
       const cardDetail: CardDetailsInterface = {
         card: response,
         evidences: response.evidences,
         cardDefinitiveSolutionDate: response.cardDefinitiveSolutionDate
       };
-
-      console.log("AAAAAAAAAA", cardDetail.evidences);
 
       setData(cardDetail);
       if (cardDetail.card && cardDetail.card.siteId && cardDetail.card.siteId !== "") {
@@ -203,27 +200,15 @@ const TagDetailsPage = () => {
           </div>
 
           {/* Discard Card Modal */}
-          {data && siteId && (() => {
-            // Debug log outside JSX
-            console.log("🔍 Modal Debug:", {
-              cardId: data.card.id,
-              cardIdType: typeof data.card.id,
-              cardIdParsed: parseInt(String(data.card.id), 10),
-              siteId: siteId,
-              siteIdType: typeof siteId,
-              siteIdParsed: parseInt(siteId, 10)
-            });
-            
-            return (
-              <DiscardCardModal
-                isVisible={isDiscardModalVisible}
-                onCancel={() => setIsDiscardModalVisible(false)}
-                onSuccess={handleDiscardSuccess}
-                cardId={parseInt(String(data.card.id), 10)}
-                siteId={parseInt(siteId, 10)}
-              />
-            );
-          })()}
+          {data && siteId && (
+            <DiscardCardModal
+              isVisible={isDiscardModalVisible}
+              onCancel={() => setIsDiscardModalVisible(false)}
+              onSuccess={handleDiscardSuccess}
+              cardId={parseInt(String(data.card.id), 10)}
+              siteId={parseInt(siteId, 10)}
+            />
+          )}
         </div>
       }
     />

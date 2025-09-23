@@ -10,6 +10,7 @@ import CreateCiltModal from "./components/CreateCiltModal";
 const CiltProceduresPage = (): React.ReactElement => {
   const location = useLocation();
   const siteId = location.state?.siteId || "";
+  const siteName = location.state?.siteName || "";
 
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
   const [ciltForm] = Form.useForm();
@@ -56,7 +57,7 @@ const CiltProceduresPage = (): React.ReactElement => {
     <>
       <MainContainer
         title={Strings.ciltProceduresSB}
-        description={Strings.empty}
+        description={siteName || Strings.empty}
         content={<CiltCardList searchTerm={searchTerm} />}
         enableSearch={true}
         enableCreateButton={true}

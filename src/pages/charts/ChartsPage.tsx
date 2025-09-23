@@ -493,6 +493,7 @@ const ChartsPage = () => {
                   </div>
                 </Card>
               </div>
+
             </>
           ) : (
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
