@@ -150,8 +150,8 @@ const TagsPage = () => {
     try {
       const response = await getCards(location.state.siteId).unwrap();
 
-      // If user is operator, filter to show only their cards
-      if (userRole === UserRoles._OPERATOR && user) {
+      // If user is operator or mechanic, filter to show only their cards
+      if ((userRole === UserRoles._OPERATOR || userRole === UserRoles._MECHANIC) && user) {
         const filteredCards = response.filter(card =>
           card.creatorName.toLowerCase() === user.name.toLowerCase() ||
           card.responsableName?.toLowerCase() === user.name.toLowerCase() ||
@@ -251,8 +251,8 @@ const TagsPage = () => {
           {/* Action buttons and Filter section */}
           <Card className="mb-4">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              {/* Hide create button for operators */}
-              {userRole !== UserRoles._OPERATOR && (
+              {/* Create button available for all roles except undefined */}
+              {userRole !== UserRoles._UNDEFINED && (
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}

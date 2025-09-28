@@ -1801,6 +1801,10 @@ class StringsBase {
   static fastLoginButtonText = "fastLoginButtonText";
   static fastPasswordAlphabeticValidation = "fastPasswordAlphabeticValidation";
   static fastPasswordLoginComplete = "fastPasswordLoginComplete";
+  static returnToLogin = "returnToLogin";
+  static returnToLoginConfirmTitle = "returnToLoginConfirmTitle";
+  static returnToLoginConfirmContent = "returnToLoginConfirmContent";
+  static yesReturn = "yesReturn";
   static noCiltstOShow = "noCiltstOShow";
   static order = "order";
   static lastUsed = "lastUsed";
