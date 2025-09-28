@@ -10,7 +10,7 @@ import { useCreateCardMutation } from "../../services/cardService";
 import { useGetCardTypesMutation } from "../../services/CardTypesService";
 import { useGetPreclassifiersMutation } from "../../services/preclassifierService";
 import { useGetActiveSitePrioritiesMutation } from "../../services/priorityService";
-import { useGetlevelsMutation } from "../../services/levelService";
+import { useGetlevelsMutation, useFindLevelByMachineIdMutation } from "../../services/levelService";
 import Constants from "../../utils/Constants";
 import dayjs from "dayjs";
 
@@ -31,6 +31,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [getPreclassifiers, { isLoading: isLoadingPreclassifiers }] = useGetPreclassifiersMutation();
   const [getPriorities, { isLoading: isLoadingPriorities }] = useGetActiveSitePrioritiesMutation();
   const [getLevels, ] = useGetlevelsMutation();
+  const [findLevelByMachineId, { isLoading: isSearchingMachine }] = useFindLevelByMachineIdMutation();
 
   // Form state
   const [cardTypes, setCardTypes] = useState<any[]>([]);
@@ -47,7 +48,13 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [selectedLevels, setSelectedLevels] = useState<Map<number, string>>(new Map());
   const [lastLevelCompleted, setLastLevelCompleted] = useState(false);
   const [finalNodeId, setFinalNodeId] = useState<number | null>(null);
-  
+
+  // Machine ID search state
+  const [showMachineSearch, setShowMachineSearch] = useState(false);
+  const [machineIdSearch, setMachineIdSearch] = useState<string>("");
+  const [machineSearchError, setMachineSearchError] = useState<string>("");
+  const [machineSearchSuccess, setMachineSearchSuccess] = useState<boolean>(false);
+
   const [comments, setComments] = useState<string>("");
 
   // Custom due date state for wildcard priority
@@ -138,6 +145,10 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastSelectedLevel(null); // Reset tracking de niveles
     setShowCustomDate(false);
     setCustomDueDate(null);
+    setShowMachineSearch(false);
+    setMachineIdSearch("");
+    setMachineSearchError("");
+    setMachineSearchSuccess(false);
   };
 
   const loadCardTypes = async () => {
@@ -276,6 +287,10 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setLastSelectedLevel(null); // Reset tracking
+    setShowMachineSearch(false);
+    setMachineIdSearch("");
+    setMachineSearchError("");
+    setMachineSearchSuccess(false);
 
     // Check if this is the wildcard priority
     const selectedPriorityData = priorities.find(p => p.id.toString() === value);
@@ -286,11 +301,99 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     } else {
       setShowCustomDate(false);
       setCustomDueDate(null);
-      // Load levels and scroll to them for regular priorities
+      // Show machine search option and load levels for regular priorities
       if (value) {
+        setShowMachineSearch(true);
         loadLevels();
         scrollToNextStep(levelRef);
       }
+    }
+  };
+
+  const handleMachineIdSearch = async () => {
+    if (!machineIdSearch.trim()) {
+      setMachineSearchError(Strings.requiredMachineId || "Machine ID is required");
+      return;
+    }
+
+    setMachineSearchError("");
+    try {
+      const result = await findLevelByMachineId({
+        siteId: siteId.toString(),
+        machineId: machineIdSearch.trim()
+      }).unwrap();
+
+      if (result && result.hierarchy) {
+        // First, we need to get all possible options for each level
+        // We'll build the hierarchy showing the found path but also loading siblings
+        const newHierarchy = new Map<number, any[]>();
+        const newSelectedLevels = new Map<number, string>();
+
+        // For each level in the hierarchy, we need to load its siblings
+        for (let i = 0; i < result.hierarchy.length; i++) {
+          const currentLevel = result.hierarchy[i];
+
+          if (i === 0) {
+            // For root level, get all root levels
+            const rootLevels = levels.filter(level => {
+              const superiorId = level.superiorId?.toString();
+              return !superiorId ||
+                     superiorId === "" ||
+                     superiorId === "0" ||
+                     superiorId === null ||
+                     superiorId === "null";
+            });
+            newHierarchy.set(0, rootLevels);
+          } else {
+            // For other levels, get all siblings (same parent)
+            const parentId = result.hierarchy[i - 1].id.toString();
+            const siblings = levels.filter(level => {
+              const superiorIdStr = level.superiorId?.toString();
+              return superiorIdStr === parentId;
+            });
+            newHierarchy.set(i, siblings);
+          }
+
+          // Pre-select the level from the found path
+          newSelectedLevels.set(i, currentLevel.id.toString());
+        }
+
+        // Set the final node
+        const lastLevel = result.hierarchy[result.hierarchy.length - 1];
+        setFinalNodeId(parseInt(lastLevel.id));
+        setLastLevelCompleted(true);
+
+        // Update state
+        setLevelHierarchy(newHierarchy);
+        setSelectedLevels(newSelectedLevels);
+        setMachineIdSearch("");
+        setMachineSearchSuccess(true);
+        setMachineSearchError("");
+
+        // Don't hide the search field, keep it visible
+        // Scroll to the levels section
+        setTimeout(() => {
+          const levelsSection = document.querySelector('[data-level-index="0"]');
+          if (levelsSection) {
+            levelsSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
+        }, 300);
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setMachineSearchSuccess(false);
+        }, 5000);
+      }
+    } catch (error: any) {
+      setMachineSearchError(
+        error?.data?.message ||
+        Strings.machineIdNotFound ||
+        "Machine ID not found"
+      );
     }
   };
 
@@ -621,8 +724,9 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                   value={customDueDate}
                   onChange={(date) => {
                     setCustomDueDate(date);
-                    // If date is selected and levels aren't loaded yet, load them and scroll
+                    // If date is selected and levels aren't loaded yet, load them and show search
                     if (date && levelHierarchy.size === 0) {
+                      setShowMachineSearch(true);
                       loadLevels();
                       scrollToNextStep(levelRef);
                     }
@@ -637,20 +741,100 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           </div>
         )}
 
-        {/* Level Hierarchy */}
-        {levelHierarchy.size > 0 && (
-          <div ref={levelRef}>
+        {/* Machine ID Search (when priority is selected and not custom date) */}
+        {selectedPriority && !showCustomDate && showMachineSearch && (
+          <div ref={levelRef} style={{ marginTop: '16px' }}>
             <Divider style={{ margin: '24px 0' }} />
             <Typography.Text strong style={{ fontSize: '18px', display: 'block', marginBottom: '16px' }}>
               {Strings.locationLabel}
             </Typography.Text>
-            <div>
-              {Array.from(levelHierarchy.entries())
-                .sort(([a], [b]) => a - b) // Sort by level index to ensure correct order
-                .map(([levelIndex, levelOptions]) =>
-                  renderLevelSelector(levelIndex, levelOptions)
-                )}
+
+            {/* Machine ID Search Input */}
+            <div style={{ marginBottom: '24px' }}>
+              <Typography.Text strong style={{ fontSize: '14px', display: 'block', marginBottom: '8px' }}>
+                {Strings.searchByMachineId || "Search by Machine ID (Optional)"}
+              </Typography.Text>
+              <Space.Compact style={{ width: '100%' }}>
+                <Input
+                  placeholder={Strings.enterMachineId || "Enter machine ID to auto-fill location"}
+                  value={machineIdSearch}
+                  onChange={(e) => {
+                    setMachineIdSearch(e.target.value);
+                    setMachineSearchError("");
+                  }}
+                  onPressEnter={handleMachineIdSearch}
+                  status={machineSearchError ? 'error' : undefined}
+                />
+                <Button
+                  type="primary"
+                  onClick={handleMachineIdSearch}
+                  loading={isSearchingMachine}
+                >
+                  {Strings.search || "Search"}
+                </Button>
+              </Space.Compact>
+              {machineSearchError && (
+                <Typography.Text type="danger" style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                  {machineSearchError}
+                </Typography.Text>
+              )}
+              {machineSearchSuccess && (
+                <Typography.Text type="success" style={{ fontSize: '12px', display: 'block', marginTop: '4px', color: '#52c41a' }}>
+                  {Strings.machineIdFound || "✓ Machine found! Location path has been filled. You can modify the selection below if needed."}
+                </Typography.Text>
+              )}
+              {!machineSearchSuccess && !machineSearchError && (
+                <Typography.Text type="secondary" style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                  {Strings.machineIdHelpText || "Enter a machine ID to automatically fill the location path, or select manually below"}
+                </Typography.Text>
+              )}
             </div>
+
+            {/* Show selected path after search */}
+            {lastLevelCompleted && selectedLevels.size > 0 && (
+              <div style={{
+                marginBottom: '24px',
+                padding: '12px',
+                background: '#f0f8ff',
+                borderRadius: '6px',
+                border: '1px solid #1890ff'
+              }}>
+                <Typography.Text strong style={{ color: '#1890ff', display: 'block', marginBottom: '8px' }}>
+                  {Strings.selectedPath || "Selected Path:"}
+                </Typography.Text>
+                <Typography.Text style={{ fontSize: '14px' }}>
+                  {Array.from(levelHierarchy.entries())
+                    .sort(([a], [b]) => a - b)
+                    .map(([levelIndex, levelOptions]) => {
+                      const selectedId = selectedLevels.get(levelIndex);
+                      const selectedLevel = levelOptions.find(l => l.id.toString() === selectedId);
+                      return selectedLevel?.name;
+                    })
+                    .filter(Boolean)
+                    .join(' / ')
+                  }
+                </Typography.Text>
+              </div>
+            )}
+
+            {/* Manual Level Selection */}
+            {levelHierarchy.size > 0 && (
+              <>
+                <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+                  {selectedLevels.size > 0
+                    ? (Strings.modifySelection || "Modify selection if needed:")
+                    : (Strings.orSelectManually || "Or select location manually:")
+                  }
+                </Typography.Text>
+                <div>
+                  {Array.from(levelHierarchy.entries())
+                    .sort(([a], [b]) => a - b) // Sort by level index to ensure correct order
+                    .map(([levelIndex, levelOptions]) =>
+                      renderLevelSelector(levelIndex, levelOptions)
+                    )}
+                </div>
+              </>
+            )}
           </div>
         )}
 

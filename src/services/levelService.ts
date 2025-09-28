@@ -35,6 +35,14 @@ export const levelService = apiSlice.injectEndpoints({
         body: { ...dto },
       }),
     }),
+    findLevelByMachineId: builder.mutation<{
+      level: Level;
+      path: string;
+      hierarchy: Level[];
+    }, { siteId: string; machineId: string }>({
+      query: ({ siteId, machineId }) => `/level/machine/${siteId}/${machineId}`,
+      transformResponse: (response: { data: any }) => response.data,
+    }),
   }),
 });
 
@@ -44,4 +52,5 @@ export const {
   useGetlevelMutation,
   useUdpateLevelMutation,
   useMoveLevelMutation,
+  useFindLevelByMachineIdMutation,
 } = levelService;

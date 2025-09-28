@@ -1796,6 +1796,15 @@ const resources = {
       dragItemsText: "Drag the items to arrange their order",
       loadingtagTypes: "Loading tag types...",
       loadingpriorities: "Loading priorities...",
+      searchByMachineId: "Search by Machine ID (Optional)",
+      enterMachineId: "Enter machine ID to auto-fill location",
+      requiredMachineId: "Machine ID is required",
+      machineIdNotFound: "Machine ID not found",
+      machineIdFound: "✓ Machine found! Location path has been filled. You can modify the selection below if needed.",
+      machineIdHelpText: "Enter a machine ID to automatically fill the location path, or select manually below",
+      orSelectManually: "Or select location manually:",
+      modifySelection: "Modify selection if needed:",
+      selectedPath: "Selected Path:",
 
       // Card Solution Modal strings
       errorLoadingUsers: "Error loading users",
@@ -3652,6 +3661,15 @@ const resources = {
       dragItemsText: "Arrastra los archivos para cambiar su orden",
       loadingtagTypes: "Cargando tipos de tarjeta",
       loadingpriorities: "Cargando prioridades...",
+      searchByMachineId: "Buscar por ID de Máquina (Opcional)",
+      enterMachineId: "Ingrese ID de máquina para llenar ubicación automáticamente",
+      requiredMachineId: "El ID de máquina es requerido",
+      machineIdNotFound: "ID de máquina no encontrado",
+      machineIdFound: "✓ ¡Máquina encontrada! La ruta de ubicación se ha llenado. Puede modificar la selección abajo si es necesario.",
+      machineIdHelpText: "Ingrese un ID de máquina para llenar automáticamente la ruta de ubicación, o seleccione manualmente abajo",
+      orSelectManually: "O seleccione la ubicación manualmente:",
+      modifySelection: "Modifique la selección si es necesario:",
+      selectedPath: "Ruta Seleccionada:",
 
       // Card Solution Modal strings
       errorLoadingUsers: "Error cargando usuarios",

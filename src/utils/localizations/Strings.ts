@@ -825,6 +825,15 @@ class StringsBase {
   static accept = "accept";
   static reset = "reset";
   static search = "search";
+  static searchByMachineId = "searchByMachineId";
+  static enterMachineId = "enterMachineId";
+  static requiredMachineId = "requiredMachineId";
+  static machineIdNotFound = "machineIdNotFound";
+  static machineIdFound = "machineIdFound";
+  static machineIdHelpText = "machineIdHelpText";
+  static orSelectManually = "orSelectManually";
+  static modifySelection = "modifySelection";
+  static selectedPath = "selectedPath";
   static filter = "filter";
   static selectCurrentPage = "selectCurrentPage";
   static invertSelection = "invertSelection";
