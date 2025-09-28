@@ -3,7 +3,7 @@ import { Form, Input, Select, Spin, Typography, Button } from "antd";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
-import { useGetOplTypesMutation } from "../../../services/oplTypesService";
+import { useGetOplTypesMutation, useGetOplTypesBySiteMutation } from "../../../services/oplTypesService";
 import { OplTypes } from "../../../data/oplTypes/oplTypes";
 
 const { TextArea } = Input;
@@ -29,6 +29,7 @@ const OplForm: React.FC<OplFormProps> = ({
   const location = useLocation();
   const siteId = location.state?.siteId || null;
   const [getOplTypes] = useGetOplTypesMutation();
+  const [getOplTypesBySite] = useGetOplTypesBySiteMutation();
   const [oplTypes, setOplTypes] = useState<OplTypes[]>([]);
   const [loadingOplTypes, setLoadingOplTypes] = useState(false);
 
@@ -40,13 +41,18 @@ const OplForm: React.FC<OplFormProps> = ({
 
   useEffect(() => {
     handleGetOplTypes();
-  }, []);
+  }, [siteId]);
 
   const handleGetOplTypes = async () => {
     try {
       setLoadingOplTypes(true);
-      const response = await getOplTypes().unwrap();
-      const activeOplTypes = Array.isArray(response) 
+
+      // Use site-specific endpoint if siteId is available, otherwise get all types
+      const response = siteId
+        ? await getOplTypesBySite(Number(siteId)).unwrap()
+        : await getOplTypes().unwrap();
+
+      const activeOplTypes = Array.isArray(response)
         ? response.filter(type => type.status === 'A')
         : [];
       setOplTypes(activeOplTypes);
