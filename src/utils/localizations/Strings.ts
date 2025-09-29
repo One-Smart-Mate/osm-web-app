@@ -825,6 +825,15 @@ class StringsBase {
   static accept = "accept";
   static reset = "reset";
   static search = "search";
+  static searchByMachineId = "searchByMachineId";
+  static enterMachineId = "enterMachineId";
+  static requiredMachineId = "requiredMachineId";
+  static machineIdNotFound = "machineIdNotFound";
+  static machineIdFound = "machineIdFound";
+  static machineIdHelpText = "machineIdHelpText";
+  static orSelectManually = "orSelectManually";
+  static modifySelection = "modifySelection";
+  static selectedPath = "selectedPath";
   static filter = "filter";
   static selectCurrentPage = "selectCurrentPage";
   static invertSelection = "invertSelection";
@@ -1801,6 +1810,10 @@ class StringsBase {
   static fastLoginButtonText = "fastLoginButtonText";
   static fastPasswordAlphabeticValidation = "fastPasswordAlphabeticValidation";
   static fastPasswordLoginComplete = "fastPasswordLoginComplete";
+  static returnToLogin = "returnToLogin";
+  static returnToLoginConfirmTitle = "returnToLoginConfirmTitle";
+  static returnToLoginConfirmContent = "returnToLoginConfirmContent";
+  static yesReturn = "yesReturn";
   static noCiltstOShow = "noCiltstOShow";
   static order = "order";
   static lastUsed = "lastUsed";

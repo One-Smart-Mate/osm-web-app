@@ -60,6 +60,12 @@ const useRouteValidation = (): boolean => {
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
 
+    [UserRoles._MECHANIC]: [
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
+      new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
+    ],
+
     [UserRoles._UNDEFINED]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,

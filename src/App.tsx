@@ -2,6 +2,7 @@ import { ConfigProvider, App as AntdApp, theme } from "antd";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import ResetPassword from "./pages/auth/ResetPassword";
+import LockedSession from "./pages/auth/LockedSession";
 import { ResetPasswordRoute, UnauthorizedRoute } from "./utils/Routes";
 import Unauthorized from "./pages/errors/Unauthorized";
 import NotFound from "./pages/errors/NotFound";
@@ -57,6 +58,7 @@ function App() {
           />
           <Route index path="/" element={<LoginPage />} />
           <Route path={ResetPasswordRoute} element={<ResetPassword />} />
+          <Route path="/locked-session" element={<LockedSession />} />
           <Route element={<ProtectedRoutes />}>
             <Route
               path={Constants.ROUTES_PATH.dashboard}

@@ -24,7 +24,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   const { token } = theme.useToken();
   const dispatch = useAppDispatch();
   const isSessionLocked = useAppSelector(selectIsSessionLocked);
-  
+
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(() => {
     const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
     return storedMode ? JSON.parse(storedMode) : false;
@@ -44,7 +44,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
     }, 500);
   };
 
-  const handleLockSession = () => {
+  const handleLockSessionConfirm = () => {
     if (isSessionLocked) {
       // If already locked, modal is already showing in BaseLayout
       // Do nothing
@@ -75,10 +75,21 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   };
 
   const handleSessionLock = () => {
-    // Keep the session and token intact for fast login
-    // Only mark as locked to block navigation
+    // Store last user info for display purposes
+    localStorage.setItem('last_user_info', JSON.stringify({
+      name: user.name,
+      email: user.email,
+      logo: user.logo
+    }));
+
+    // Mark session as locked persistently
+    localStorage.setItem('session_locked', 'true');
+
+    // Mark session as locked in Redux
     dispatch(setSessionLocked(true));
-    // Modal will be shown automatically by BaseLayout
+
+    // Force navigation to locked session page
+    window.location.href = '/locked-session';
   };
 
 
@@ -102,20 +113,20 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div 
-          style={{ 
-            width: 140, 
-            marginRight: "10px", 
+        <div
+          style={{
+            width: 140,
+            marginRight: "10px",
             marginLeft: "20px"
           }}
         >
           <LanguageDropdown />
         </div>
-        <Button 
+        <Button
           type={isSessionLocked ? "primary" : "text"}
           icon={isSessionLocked ? <UnlockOutlined /> : <LockOutlined />}
-          onClick={handleLockSession}
-          style={{ 
+          onClick={handleLockSessionConfirm}
+          style={{
             color: isSessionLocked ? token.colorWhite : token.colorText,
             background: isSessionLocked ? token.colorPrimary : 'transparent',
             border: isSessionLocked ? `1px solid ${token.colorPrimary}` : 'none',
@@ -130,9 +141,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         </Button>
       </div>
 
-      <div 
-        style={{ 
-          display: "flex", 
+      <div
+        style={{
+          display: "flex",
           alignItems: "center"
         }}
       >
@@ -147,8 +158,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
         <div>
           <NotificationDropdown />
         </div>
-        <div 
-          style={{ 
+        <div
+          style={{
             marginLeft: "20px"
           }}
         >
