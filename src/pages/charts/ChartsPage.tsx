@@ -288,6 +288,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             areaId={selectedAreaId}
+                            areaName={selectedAreaName}
                             cardTypeName={selectedCardType}
                             status={selectedStatus}
                           />
@@ -304,6 +305,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       areaId={selectedAreaId}
+                      areaName={selectedAreaName}
                       cardTypeName={selectedCardType}
                       status={selectedStatus}
                     />
