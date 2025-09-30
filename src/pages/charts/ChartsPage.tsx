@@ -262,6 +262,7 @@ const ChartsPage = () => {
                             siteId={siteId}
                             methodologies={methodologies}
                             areaId={selectedAreaId}
+                            areaName={selectedAreaName}
                             cardTypeName={selectedCardType}
                           />
                         </ChartExpander>
@@ -277,6 +278,7 @@ const ChartsPage = () => {
                       siteId={siteId}
                       methodologies={methodologies}
                       areaId={selectedAreaId}
+                      areaName={selectedAreaName}
                       cardTypeName={selectedCardType}
                     />
                   </div>

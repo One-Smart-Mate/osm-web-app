@@ -27,6 +27,7 @@ export interface MachinesChartProps {
   endDate: string;
   methodologies: Methodology[];
   areaId?: number;
+  areaName?: string;
   cardTypeName?: string | null;
 }
 
@@ -36,6 +37,7 @@ const MachinesChart = ({
   endDate,
   methodologies,
   areaId,
+  areaName,
   cardTypeName,
 }: MachinesChartProps) => {
   const [getMachines] = useGetMachinesByAreaIdChartDataMutation();
@@ -47,6 +49,7 @@ const MachinesChart = ({
   const [selectedTotalCards, setSelectedTotalCards] = useState(Strings.empty);
   const [searchParams, setSearchParams] = useState<{
     siteId: string;
+    area?: string;
     nodeName?: string;
     cardTypeName: string;
   } | null>(null);
@@ -82,17 +85,19 @@ const MachinesChart = ({
     
       const nodeMap: { [key: string]: any } = {};
       filteredResponse.forEach((item: any) => {
-      if (!nodeMap[item.nodeName]) {
-        nodeMap[item.nodeName] = {
-          nodeName: item.nodeName,
+      // Backend returns 'machine' field which contains the nodeName
+      const machineName = item.machine;
+      if (!nodeMap[machineName]) {
+        nodeMap[machineName] = {
+          nodeName: machineName,
           location: item.location,
           totalCards: 0,
         };
       }
       const cardTypeKey = item.cardTypeName.toLowerCase();
       const totalCards = parseInt(item.totalCards, 10);
-      nodeMap[item.nodeName][cardTypeKey] = totalCards;
-        nodeMap[item.nodeName].totalCards += totalCards;
+      nodeMap[machineName][cardTypeKey] = totalCards;
+        nodeMap[machineName].totalCards += totalCards;
     });
   
     const transformedData = Object.values(nodeMap).sort(
@@ -177,6 +182,7 @@ const MachinesChart = ({
   const handleOnClick = (data: any, cardTypeName: string) => {
     setSearchParams({
       siteId,
+      area: areaName,
       nodeName: data.nodeName,
       cardTypeName: cardTypeName,
     });
