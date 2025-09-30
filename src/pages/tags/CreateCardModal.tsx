@@ -358,10 +358,26 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           newSelectedLevels.set(i, currentLevel.id.toString());
         }
 
-        // Set the final node
+        // Get the last level found
         const lastLevel = result.hierarchy[result.hierarchy.length - 1];
-        setFinalNodeId(parseInt(lastLevel.id));
-        setLastLevelCompleted(true);
+        const lastLevelId = lastLevel.id.toString();
+
+        // Check if the last level has children and load them
+        const childrenOfLastLevel = levels.filter(level => {
+          const superiorIdStr = level.superiorId?.toString();
+          return superiorIdStr === lastLevelId;
+        });
+
+        if (childrenOfLastLevel.length > 0) {
+          // If there are children, add them to the hierarchy but don't mark as completed
+          newHierarchy.set(result.hierarchy.length, childrenOfLastLevel);
+          setLastLevelCompleted(false);
+          setFinalNodeId(null);
+        } else {
+          // No children, this is the final level
+          setFinalNodeId(parseInt(lastLevelId));
+          setLastLevelCompleted(true);
+        }
 
         // Update state
         setLevelHierarchy(newHierarchy);
@@ -371,17 +387,50 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         setMachineSearchError("");
 
         // Don't hide the search field, keep it visible
-        // Scroll to the levels section
+        // Determine which level to scroll to
         setTimeout(() => {
-          const levelsSection = document.querySelector('[data-level-index="0"]');
-          if (levelsSection) {
-            levelsSection.scrollIntoView({
+          let targetLevelIndex;
+
+          if (childrenOfLastLevel.length > 0) {
+            // If there are children, scroll to the children level
+            targetLevelIndex = result.hierarchy.length;
+          } else {
+            // If no children, scroll to the last level in hierarchy
+            targetLevelIndex = result.hierarchy.length - 1;
+          }
+
+          const targetLevelElement = document.querySelector(`[data-level-index="${targetLevelIndex}"]`);
+          if (targetLevelElement) {
+            targetLevelElement.scrollIntoView({
               behavior: 'smooth',
-              block: 'start',
+              block: 'center',
               inline: 'nearest'
             });
+
+            // Add a temporary highlight effect
+            const element = targetLevelElement as HTMLElement;
+            const originalBackground = element.style.backgroundColor;
+            element.style.backgroundColor = '#e6f7ff';
+            element.style.transition = 'background-color 0.3s ease';
+
+            setTimeout(() => {
+              element.style.backgroundColor = originalBackground || '';
+              setTimeout(() => {
+                element.style.transition = '';
+              }, 300);
+            }, 1500);
+          } else {
+            // Fallback to scrolling to the first level if target not found
+            const levelsSection = document.querySelector('[data-level-index="0"]');
+            if (levelsSection) {
+              levelsSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+              });
+            }
           }
-        }, 300);
+        }, 500);
 
         // Clear success message after 5 seconds
         setTimeout(() => {
