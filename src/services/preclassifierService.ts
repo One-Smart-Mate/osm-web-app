@@ -8,7 +8,7 @@ import { apiSlice } from "./apiSlice";
 export const preclassifierService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPreclassifiers: builder.mutation<Preclassifier[], string>({
-      query: (cardTypeId) => `/preclassifier/card-type/${cardTypeId}`,
+      query: (cardTypeId) => `/preclassifier/all/${cardTypeId}`,
       transformResponse: (response: { data: Preclassifier[] }) => response.data,
     }),
     createPreclassifier: builder.mutation<void, CreatePreclassifier>({

@@ -12,7 +12,7 @@ import { apiSlice } from "./apiSlice";
 export const cardTypesService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCardTypes: builder.mutation<CardTypes[], string>({
-      query: (siteId) => `/card-types/site/${siteId}`,
+      query: (siteId) => `/card-types/all/${siteId}`,
       transformResponse: (response: { data: CardTypes[] }) => response.data,
     }),
     createCardType: builder.mutation<void, CreateCardType>({
