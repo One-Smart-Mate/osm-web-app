@@ -54,6 +54,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [machineIdSearch, setMachineIdSearch] = useState<string>("");
   const [machineSearchError, setMachineSearchError] = useState<string>("");
   const [machineSearchSuccess, setMachineSearchSuccess] = useState<boolean>(false);
+  const [isProcessingLevels, setIsProcessingLevels] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
 
@@ -149,6 +150,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setMachineIdSearch("");
     setMachineSearchError("");
     setMachineSearchSuccess(false);
+    setIsProcessingLevels(false);
   };
 
   const loadCardTypes = async () => {
@@ -190,47 +192,49 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
   const buildLevelHierarchy = (allLevels: any[]) => {
     const hierarchy = new Map<number, any[]>();
-    
-    // Find root levels (those without superiorId or with empty superiorId)
-    const rootLevels = allLevels.filter(level => {
+
+    // Filter out suspended levels (status 'S') and find root levels
+    const activeLevels = allLevels.filter(level => level.status !== 'S');
+
+    const rootLevels = activeLevels.filter(level => {
       const superiorId = level.superiorId?.toString();
-      return !superiorId || 
-             superiorId === "" || 
+      return !superiorId ||
+             superiorId === "" ||
              superiorId === "0" ||
              superiorId === null ||
              superiorId === "null";
     });
-    
-    
+
+
     if (rootLevels.length > 0) {
       hierarchy.set(0, rootLevels);
     }
-    
+
     setLevelHierarchy(hierarchy);
   };
 
   const loadChildLevels = (parentId: string, levelIndex: number) => {
     // Convert parentId to string for comparison since superiorId is a string
     const parentIdStr = parentId.toString();
-    
-    // Find child levels where superiorId matches parentId
+
+    // Find child levels where superiorId matches parentId and exclude suspended levels
     const childLevels = levels.filter(level => {
       const superiorIdStr = level.superiorId?.toString();
-      return superiorIdStr === parentIdStr;
+      return superiorIdStr === parentIdStr && level.status !== 'S';
     });
-    
+
     setLevelHierarchy(prev => {
       const newHierarchy = new Map(prev);
-      
+
       if (childLevels.length > 0) {
         // Add the next level
         newHierarchy.set(levelIndex + 1, childLevels);
-        
+
         // Clear levels beyond the next one
         for (let i = levelIndex + 2; i <= 10; i++) {
           newHierarchy.delete(i);
         }
-        
+
         setLastLevelCompleted(false);
         setFinalNodeId(null);
       } else {
@@ -239,11 +243,11 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         for (let i = levelIndex + 1; i <= 10; i++) {
           newHierarchy.delete(i);
         }
-        
+
         setLastLevelCompleted(true);
         setFinalNodeId(parseInt(parentId));
       }
-      
+
       return newHierarchy;
     });
   };
@@ -291,6 +295,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setMachineIdSearch("");
     setMachineSearchError("");
     setMachineSearchSuccess(false);
+    setIsProcessingLevels(false);
 
     // Check if this is the wildcard priority
     const selectedPriorityData = priorities.find(p => p.id.toString() === value);
@@ -317,13 +322,20 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
 
     setMachineSearchError("");
+    setMachineSearchSuccess(false);
+
     try {
+      // Show loading state but don't scroll or animate yet
       const result = await findLevelByMachineId({
         siteId: siteId.toString(),
         machineId: machineIdSearch.trim()
       }).unwrap();
 
       if (result && result.hierarchy) {
+        // Start processing levels
+        setIsProcessingLevels(true);
+
+        // Process the hierarchy in a more controlled way
         // First, we need to get all possible options for each level
         // We'll build the hierarchy showing the found path but also loading siblings
         const newHierarchy = new Map<number, any[]>();
@@ -334,22 +346,25 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           const currentLevel = result.hierarchy[i];
 
           if (i === 0) {
-            // For root level, get all root levels
+            // For root level, get all root levels (excluding suspended)
             const rootLevels = levels.filter(level => {
               const superiorId = level.superiorId?.toString();
-              return !superiorId ||
-                     superiorId === "" ||
-                     superiorId === "0" ||
-                     superiorId === null ||
-                     superiorId === "null";
+              return (
+                level.status !== 'S' &&
+                (!superiorId ||
+                 superiorId === "" ||
+                 superiorId === "0" ||
+                 superiorId === null ||
+                 superiorId === "null")
+              );
             });
             newHierarchy.set(0, rootLevels);
           } else {
-            // For other levels, get all siblings (same parent)
+            // For other levels, get all siblings (same parent) excluding suspended
             const parentId = result.hierarchy[i - 1].id.toString();
             const siblings = levels.filter(level => {
               const superiorIdStr = level.superiorId?.toString();
-              return superiorIdStr === parentId;
+              return superiorIdStr === parentId && level.status !== 'S';
             });
             newHierarchy.set(i, siblings);
           }
@@ -362,10 +377,10 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         const lastLevel = result.hierarchy[result.hierarchy.length - 1];
         const lastLevelId = lastLevel.id.toString();
 
-        // Check if the last level has children and load them
+        // Check if the last level has children and load them (excluding suspended)
         const childrenOfLastLevel = levels.filter(level => {
           const superiorIdStr = level.superiorId?.toString();
-          return superiorIdStr === lastLevelId;
+          return superiorIdStr === lastLevelId && level.status !== 'S';
         });
 
         if (childrenOfLastLevel.length > 0) {
@@ -379,58 +394,63 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           setLastLevelCompleted(true);
         }
 
-        // Update state
+        // Update state without animations first
         setLevelHierarchy(newHierarchy);
         setSelectedLevels(newSelectedLevels);
         setMachineIdSearch("");
-        setMachineSearchSuccess(true);
         setMachineSearchError("");
 
-        // Don't hide the search field, keep it visible
-        // Determine which level to scroll to
-        setTimeout(() => {
-          let targetLevelIndex;
+        // Wait for the DOM to update before showing success and scrolling
+        requestAnimationFrame(() => {
+          setIsProcessingLevels(false);
+          setMachineSearchSuccess(true);
 
-          if (childrenOfLastLevel.length > 0) {
-            // If there are children, scroll to the children level
-            targetLevelIndex = result.hierarchy.length;
-          } else {
-            // If no children, scroll to the last level in hierarchy
-            targetLevelIndex = result.hierarchy.length - 1;
-          }
+          // Use requestAnimationFrame to ensure DOM is ready before scrolling
+          requestAnimationFrame(() => {
+            let targetLevelIndex;
 
-          const targetLevelElement = document.querySelector(`[data-level-index="${targetLevelIndex}"]`);
-          if (targetLevelElement) {
-            targetLevelElement.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'nearest'
-            });
+            if (childrenOfLastLevel.length > 0) {
+              // If there are children, scroll to the children level
+              targetLevelIndex = result.hierarchy.length;
+            } else {
+              // If no children, scroll to the last level in hierarchy
+              targetLevelIndex = result.hierarchy.length - 1;
+            }
 
-            // Add a temporary highlight effect
-            const element = targetLevelElement as HTMLElement;
-            const originalBackground = element.style.backgroundColor;
-            element.style.backgroundColor = '#e6f7ff';
-            element.style.transition = 'background-color 0.3s ease';
-
-            setTimeout(() => {
-              element.style.backgroundColor = originalBackground || '';
-              setTimeout(() => {
-                element.style.transition = '';
-              }, 300);
-            }, 1500);
-          } else {
-            // Fallback to scrolling to the first level if target not found
-            const levelsSection = document.querySelector('[data-level-index="0"]');
-            if (levelsSection) {
-              levelsSection.scrollIntoView({
+            const targetLevelElement = document.querySelector(`[data-level-index="${targetLevelIndex}"]`);
+            if (targetLevelElement) {
+              // Smooth scroll with less aggressive timing
+              targetLevelElement.scrollIntoView({
                 behavior: 'smooth',
-                block: 'start',
+                block: 'center',
                 inline: 'nearest'
               });
+
+              // Add a subtle highlight effect
+              const element = targetLevelElement as HTMLElement;
+              const originalBackground = element.style.backgroundColor;
+              element.style.backgroundColor = '#e6f7ff';
+              element.style.transition = 'background-color 0.5s ease';
+
+              setTimeout(() => {
+                element.style.backgroundColor = originalBackground || '';
+                setTimeout(() => {
+                  element.style.transition = '';
+                }, 500);
+              }, 2000);
+            } else if (result.hierarchy.length > 0) {
+              // Fallback to scrolling to the first level if target not found
+              const levelsSection = document.querySelector('[data-level-index="0"]');
+              if (levelsSection) {
+                levelsSection.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                  inline: 'nearest'
+                });
+              }
             }
-          }
-        }, 500);
+          });
+        });
 
         // Clear success message after 5 seconds
         setTimeout(() => {
@@ -438,6 +458,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         }, 5000);
       }
     } catch (error: any) {
+      setIsProcessingLevels(false);
       setMachineSearchError(
         error?.data?.message ||
         Strings.machineIdNotFound ||
@@ -490,6 +511,13 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     const selectedPriorityData = priorities.find(p => p.id.toString() === selectedPriority);
     if (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && !customDueDate) {
       handleErrorNotification(Strings.requiredCustomDate);
+      return;
+    }
+
+    // Double-check the selected preclassifier ID is correct
+    const selectedPreclassifierData = preclassifiers.find(p => p.id.toString() === selectedPreclassifier);
+    if (!selectedPreclassifierData) {
+      handleErrorNotification("Error: Preclassifier not found");
       return;
     }
 
@@ -813,11 +841,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                   }}
                   onPressEnter={handleMachineIdSearch}
                   status={machineSearchError ? 'error' : undefined}
+                  disabled={isSearchingMachine || isProcessingLevels}
                 />
                 <Button
                   type="primary"
                   onClick={handleMachineIdSearch}
-                  loading={isSearchingMachine}
+                  loading={isSearchingMachine || isProcessingLevels}
                 >
                   {Strings.search || "Search"}
                 </Button>
@@ -827,14 +856,19 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                   {machineSearchError}
                 </Typography.Text>
               )}
-              {machineSearchSuccess && (
-                <Typography.Text type="success" style={{ fontSize: '12px', display: 'block', marginTop: '4px', color: '#52c41a' }}>
-                  {Strings.machineIdFound || "✓ Machine found! Location path has been filled. You can modify the selection below if needed."}
+              {isProcessingLevels && (
+                <Typography.Text style={{ fontSize: '12px', display: 'block', marginTop: '4px', color: '#1890ff' }}>
+                  {Strings.processingLevels || "Processing location hierarchy, please wait..."}
                 </Typography.Text>
               )}
-              {!machineSearchSuccess && !machineSearchError && (
+              {machineSearchSuccess && !isProcessingLevels && (
+                <Typography.Text type="success" style={{ fontSize: '12px', display: 'block', marginTop: '4px', color: '#52c41a' }}>
+                  {Strings.machineIdFound}
+                </Typography.Text>
+              )}
+              {!machineSearchSuccess && !machineSearchError && !isProcessingLevels && (
                 <Typography.Text type="secondary" style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
-                  {Strings.machineIdHelpText || "Enter a machine ID to automatically fill the location path, or select manually below"}
+                  {Strings.machineIdHelpText}
                 </Typography.Text>
               )}
             </div>
