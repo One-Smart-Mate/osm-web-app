@@ -48,7 +48,7 @@ const useLazyNode = () => {
       }
 
       const response = await getChildrenLevels({
-        siteId: siteId,
+        siteId: siteId.toString(),
         parentId: numericNodeId
       }).unwrap();
 
@@ -956,9 +956,9 @@ const CiltLevelAssignmentsLazy: React.FC = () => {
                     onNodeClick={handleNodeClick}
                     assignmentCounts={assignmentCounts}
                     isLoading={
-                      loadingNodes.has(rd3tProps.nodeDatum.id) ||
+                      !!(loadingNodes.has((rd3tProps.nodeDatum as any).id) ||
                       (rd3tProps.nodeDatum.attributes?.isPlaceholder &&
-                       loadingNodes.has(rd3tProps.nodeDatum.id.replace('_placeholder', '')))
+                       loadingNodes.has((rd3tProps.nodeDatum as any).id.replace('_placeholder', ''))))
                     }
                   />
                 )}

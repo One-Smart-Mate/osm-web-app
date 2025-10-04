@@ -47,7 +47,7 @@ const useLazyNode = () => {
       }
 
       const response = await getChildrenLevels({
-        siteId: siteId,
+        siteId: siteId.toString(),
         parentId: numericNodeId
       }).unwrap();
 
@@ -419,8 +419,8 @@ const LevelsReadOnlyLazy = () => {
           }).unwrap();
 
           cardCountsObj[level.id] = cards.length;
-        } catch (error) {
-          console.error(`Error fetching cards for level ${level.id}:`, error);
+        } catch (_error) {
+          console.error(`Error fetching cards for level ${level.id}:`, _error);
           cardCountsObj[level.id] = 0;
         }
       });
@@ -469,8 +469,8 @@ const LevelsReadOnlyLazy = () => {
 
           // Total assignments for this level
           assignmentCountsObj[level.id] = ciltCount + oplCount;
-        } catch (error) {
-          console.error(`Error fetching assignments for level ${level.id}:`, error);
+        } catch (_error) {
+          console.error(`Error fetching assignments for level ${level.id}:`, _error);
           assignmentCountsObj[level.id] = 0;
         }
       });
@@ -545,7 +545,7 @@ const LevelsReadOnlyLazy = () => {
                 siteId: siteId
               }).unwrap();
               newCardCounts[child.id] = cards.length;
-            } catch (error) {
+            } catch (_error) {
               newCardCounts[child.id] = 0;
             }
 
@@ -589,7 +589,7 @@ const LevelsReadOnlyLazy = () => {
               }
 
               newAssignmentCounts[child.id] = ciltCount + oplCount;
-            } catch (error) {
+            } catch (_error) {
               newAssignmentCounts[child.id] = 0;
             }
           }
@@ -597,8 +597,8 @@ const LevelsReadOnlyLazy = () => {
           setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
           setAssignmentCounts(prev => ({ ...prev, ...newAssignmentCounts }));
         }
-      } catch (error) {
-        console.error("Error loading children:", error);
+      } catch (_error) {
+        console.error("Error loading children:", _error);
         notificationApi.error({
           message: "Error Loading Children",
           description: `Failed to load children for node ${parentId}`,
@@ -635,7 +635,7 @@ const LevelsReadOnlyLazy = () => {
                 siteId: siteId
               }).unwrap();
               newCardCounts[child.id] = cards.length;
-            } catch (error) {
+            } catch (_error) {
               newCardCounts[child.id] = 0;
             }
 
@@ -679,7 +679,7 @@ const LevelsReadOnlyLazy = () => {
               }
 
               newAssignmentCounts[child.id] = ciltCount + oplCount;
-            } catch (error) {
+            } catch (_error) {
               newAssignmentCounts[child.id] = 0;
             }
           }
@@ -687,8 +687,8 @@ const LevelsReadOnlyLazy = () => {
           setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
           setAssignmentCounts(prev => ({ ...prev, ...newAssignmentCounts }));
         }
-      } catch (error) {
-        console.error("Error loading node children:", error);
+      } catch (_error) {
+        console.error("Error loading node children:", _error);
       }
     }
   }, [loadChildren, loadingNodes, siteId, getCardsByLevel, notificationApi]);
@@ -834,9 +834,9 @@ const LevelsReadOnlyLazy = () => {
                         cardCounts={levelCardCounts}
                         assignmentCounts={assignmentCounts}
                         isLoading={
-                          loadingNodes.has(rd3tProps.nodeDatum.id) ||
+                          !!(loadingNodes.has((rd3tProps.nodeDatum as any).id) ||
                           (rd3tProps.nodeDatum.attributes?.isPlaceholder &&
-                           loadingNodes.has(rd3tProps.nodeDatum.id.replace('_placeholder', '')))
+                           loadingNodes.has((rd3tProps.nodeDatum as any).id.replace('_placeholder', ''))))
                         }
                       />
                     )}

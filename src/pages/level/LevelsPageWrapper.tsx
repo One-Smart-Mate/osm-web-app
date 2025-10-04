@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import { Spin, Result, Button, Modal, Select } from "antd";
+import { Spin, Result, Button } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetLevelStatsMutation } from "../../services/levelService";
-import LevelsPage from "./LevelsPage";
-import LevelsPageOptimized from "./LevelsPageOptimized";
 import LevelsPageLazyTree from "./LevelsPageLazyTree";
 import { LevelCache } from "../../utils/levelCache";
-import Strings from "../../utils/localizations/Strings";
 import { UnauthorizedRoute } from "../../utils/Routes";
-
-// Threshold for switching to optimized version
-const PERFORMANCE_THRESHOLD = 5000; // Switch to optimized version above 5000 levels
-const FORCE_OPTIMIZED_THRESHOLD = 10000; // Force optimized version above 10000 levels
 
 const LevelsPageWrapper = () => {
   const location = useLocation();
@@ -20,11 +13,9 @@ const LevelsPageWrapper = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'standard' | 'optimized' | 'lazy-tree' | null>(null);
-  const [stats, setStats] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   const siteId = location.state?.siteId;
-  const siteName = location.state?.siteName;
 
   useEffect(() => {
     if (!location.state || !siteId) {
@@ -52,8 +43,6 @@ const LevelsPageWrapper = () => {
         // Cache the stats
         await LevelCache.cacheStats(siteId, statsData);
       }
-
-      setStats(statsData);
 
       // Always use lazy-tree mode by default
       setViewMode('lazy-tree');

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Spin,
@@ -9,15 +9,13 @@ import {
   Typography,
   Drawer,
   Form,
-  Modal,
   App as AntdApp
 } from "antd";
 import {
   ExpandOutlined,
   CompressOutlined,
   ReloadOutlined,
-  WarningOutlined,
-  SearchOutlined
+  WarningOutlined
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../core/store";
@@ -37,7 +35,6 @@ import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import LevelDetailsCard from "./components/LevelDetailsCard";
 import LevelFormDrawer from "./components/LevelFormDrawer";
-import AnatomyNotification from "../components/AnatomyNotification";
 import { CreateNode, MoveLevelDto } from "../../data/level/level.request";
 
 const { Title, Text, Paragraph } = Typography;
@@ -58,7 +55,7 @@ const LevelsPageOptimized = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { notification } = AntdApp.useApp();
-  const { isIhAdmin, rol } = useCurrentUser();
+  const { isIhAdmin } = useCurrentUser();
 
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
@@ -78,7 +75,6 @@ const LevelsPageOptimized = () => {
   const [stats, setStats] = useState<any>(null);
   const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-  const [searchTerm, setSearchTerm] = useState("");
   const [detailsVisible, setDetailsVisible] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerType, setDrawerType] = useState<"create" | "update" | null>(null);
@@ -206,7 +202,7 @@ const LevelsPageOptimized = () => {
         }
       }
 
-      const formattedChildren = formatTreeData(children);
+      const formattedChildren = children ? formatTreeData(children) : [];
       updateNodeInTree(node.id, {
         children: formattedChildren,
         isLoading: false,

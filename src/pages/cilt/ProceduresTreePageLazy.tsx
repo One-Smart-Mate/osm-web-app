@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Tree from "react-d3-tree";
-import { Spin, Button, Empty, theme, notification } from "antd";
+import { Spin, Empty, theme, notification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useGetChildrenLevelsMutation } from "../../services/levelService";
 import { useGetProceduresByLevelMutation } from "../../services/procedureService";

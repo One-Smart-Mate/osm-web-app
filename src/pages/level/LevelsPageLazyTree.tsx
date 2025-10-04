@@ -13,7 +13,7 @@ import {
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin, Modal, Button, App as AntApp, Progress, Card, Alert, notification } from "antd";
+import { Form, Drawer, Spin, Modal, Button, App as AntApp, Progress, Alert, notification } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -233,15 +233,15 @@ const LevelsPageLazyTree = () => {
                 siteId: siteId
               }).unwrap();
               newCardCounts[child.id] = cards.length;
-            } catch (error) {
+            } catch (_error) {
               newCardCounts[child.id] = 0;
             }
           }
 
           setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
         }
-      } catch (error) {
-        console.error("Error loading children:", error);
+      } catch (_error) {
+        console.error("Error loading children:", _error);
         notificationApi.error({
           message: "Error Loading Children",
           description: `Failed to load children for node ${parentId}`,
@@ -283,7 +283,7 @@ const LevelsPageLazyTree = () => {
                 siteId: siteId
               }).unwrap();
               newCardCounts[child.id] = cards.length;
-            } catch (error) {
+            } catch (_error) {
               newCardCounts[child.id] = 0;
             }
           }
@@ -408,7 +408,7 @@ const LevelsPageLazyTree = () => {
             siteId: siteId
           }).unwrap();
           cardCountsObj[level.id] = cards.length;
-        } catch (error) {
+        } catch (_error) {
           cardCountsObj[level.id] = 0;
         }
       }
@@ -937,9 +937,9 @@ const LevelsPageLazyTree = () => {
                         movingNodeId={movingNodeId}
                         onMoveNode={handleMoveNode}
                         isLoading={
-                          loadingNodes.has(rd3tProps.nodeDatum.id) ||
+                          !!(loadingNodes.has((rd3tProps.nodeDatum as any).id) ||
                           (rd3tProps.nodeDatum.attributes?.isPlaceholder &&
-                           loadingNodes.has(rd3tProps.nodeDatum.id.replace('_placeholder', '')))
+                           loadingNodes.has((rd3tProps.nodeDatum as any).id.replace('_placeholder', ''))))
                         }
                       />
                     )}
