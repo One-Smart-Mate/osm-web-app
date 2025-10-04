@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Constants from "../../../utils/Constants";
 import Strings from "../../../utils/localizations/Strings";
 import { theme } from 'antd';
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface NodeElementProps {
   nodeDatum: any;
@@ -14,6 +15,7 @@ interface NodeElementProps {
   cardCounts?: { [key: string]: number };
   movingNodeId?: string | null;
   onMoveNode?: (_newParentId: string) => void;
+  isLoading?: boolean;
 }
 
 const isLeafNode = (node: any) => !node.children || node.children.length === 0;
@@ -61,6 +63,7 @@ const NodeElement: React.FC<NodeElementProps> = ({
   cardCounts = {},
   movingNodeId,
   onMoveNode,
+  isLoading = false,
 }) => {
   const longPressTimeoutRef = useRef<number | null>(null);
   const touchStartPositionRef = useRef<{ x: number; y: number } | null>(null);
@@ -80,10 +83,18 @@ const NodeElement: React.FC<NodeElementProps> = ({
     );
   };
 
-  const isCollapsed = getCollapsedState(nodeDatum.id);
-  nodeDatum.__rd3t.collapsed = isCollapsed;
+  // Don't manage collapsed state for placeholders
+  const isCollapsed = nodeDatum.attributes?.isPlaceholder ? false : getCollapsedState(nodeDatum.id);
+  if (!nodeDatum.attributes?.isPlaceholder && nodeDatum.__rd3t) {
+    nodeDatum.__rd3t.collapsed = isCollapsed;
+  }
 
   const getFillColor = (status: string | undefined) => {
+    // Placeholders should have a distinct color
+    if (nodeDatum.attributes?.isPlaceholder) {
+      return "#e8e8e8"; // Light gray for placeholders
+    }
+
     switch (status) {
       case Strings.detailsOptionC:
         return "#383838";
@@ -112,12 +123,18 @@ const NodeElement: React.FC<NodeElementProps> = ({
   const showSplitColors =
     nodeDatum.id !== "0" && (nodeHasOwnCards || nodeChildrenHaveCards);
 
-  const displayText =
-    nodeDatum.name +
-    (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
+  const displayText = nodeDatum.attributes?.isPlaceholder
+    ? nodeDatum.name
+    : nodeDatum.name + (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
 
   const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
     e.preventDefault();
+
+    // Don't show context menu for placeholders
+    if (nodeDatum.attributes?.isPlaceholder) {
+      return;
+    }
+
     if (containerRef.current) {
       const offsetX = e.currentTarget.getBoundingClientRect().right;
       const offsetY = e.currentTarget.getBoundingClientRect().top;
@@ -130,10 +147,14 @@ const NodeElement: React.FC<NodeElementProps> = ({
   const handleLeftClick = (e: React.MouseEvent<SVGGElement>) => {
     e.stopPropagation();
     setContextMenuVisible(false);
-    const newCollapsedState = !nodeDatum.__rd3t.collapsed;
-    setCollapsedState(nodeDatum.id, newCollapsedState);
 
-    handleShowDetails(nodeDatum.id);
+    // Don't handle collapsed state for placeholders
+    if (!nodeDatum.attributes?.isPlaceholder) {
+      const newCollapsedState = !nodeDatum.__rd3t.collapsed;
+      setCollapsedState(nodeDatum.id, newCollapsedState);
+      handleShowDetails(nodeDatum.id);
+    }
+
     toggleNode();
   };
 
@@ -178,12 +199,18 @@ const NodeElement: React.FC<NodeElementProps> = ({
   const isPossibleTarget = movingNodeId && !isMoving && nodeDatum.id !== "0";
 
   const handleNodeClick = (e: React.MouseEvent<SVGGElement>) => {
+    // Don't handle clicks for loading placeholders
+    if (isLoading) {
+      e.stopPropagation();
+      return;
+    }
+
     if (movingNodeId) {
       e.stopPropagation();
       if (isPossibleTarget && onMoveNode) {
         onMoveNode(nodeDatum.id);
       }
-      return; 
+      return;
     }
     handleLeftClick(e);
   };
@@ -205,7 +232,7 @@ const NodeElement: React.FC<NodeElementProps> = ({
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
       style={{
-        cursor: isPossibleTarget ? 'copy' : 'pointer',
+        cursor: isLoading ? 'progress' : nodeDatum.attributes?.isPlaceholder ? 'pointer' : isPossibleTarget ? 'copy' : 'pointer',
         opacity: isMoving ? 0.5 : 1,
         transition: 'opacity 0.3s ease',
       }}
@@ -213,7 +240,27 @@ const NodeElement: React.FC<NodeElementProps> = ({
       {isPossibleTarget && (
         <circle r="20" fill="none" stroke="#1890ff" strokeWidth="2" strokeDasharray="4 4" />
       )}
-      {showSplitColors ? (
+      {/* Node visual */}
+      {nodeDatum.attributes?.isPlaceholder ? (
+        // Placeholder node
+        <circle r={8} fill="#f0f0f0" stroke="#d9d9d9" strokeWidth={0.5} />
+      ) : isLoading ? (
+        // Loading node
+        <>
+          <circle r={15} fill="#f0f0f0" stroke="#d9d9d9" strokeWidth={1} />
+          <foreignObject x={-10} y={-10} width={20} height={20}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100%'
+            }}>
+              <LoadingOutlined style={{ fontSize: '12px', color: '#1890ff' }} spin />
+            </div>
+          </foreignObject>
+        </>
+      ) : showSplitColors ? (
         <>
           <circle r={15} fill="#FFFF00" stroke="none" />
           <path
@@ -226,11 +273,11 @@ const NodeElement: React.FC<NodeElementProps> = ({
         <circle r={15} fill={fillColor} stroke="none" strokeWidth={0} />
       )}
       <text
-        fill={token.colorText}
+        fill={nodeDatum.attributes?.isPlaceholder ? "#aaaaaa" : isLoading ? "#999999" : token.colorText}
         strokeWidth={nodeDatum.id === "0" ? "0.8" : "0"}
-        x={nodeDatum.id === "0" ? -200 : 20}
-        y={nodeDatum.id === "0" ? 0 : 20}
-        style={{ fontSize: "14px" }}
+        x={nodeDatum.id === "0" ? -200 : nodeDatum.attributes?.isPlaceholder ? 12 : 20}
+        y={nodeDatum.id === "0" ? 0 : nodeDatum.attributes?.isPlaceholder ? 5 : 20}
+        style={{ fontSize: nodeDatum.attributes?.isPlaceholder ? "10px" : "14px", fontStyle: nodeDatum.attributes?.isPlaceholder ? "italic" : "normal" }}
       >
         {displayText}
       </text>

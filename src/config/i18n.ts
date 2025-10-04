@@ -1851,7 +1851,8 @@ const resources = {
       day: "Day",
       agenda: "Agenda",
       time: "Time",
-      event: "Event"
+      event: "Event",
+      processingLevels: "Processing levels"
     },
   },
   es: {
@@ -3716,7 +3717,8 @@ const resources = {
       day: "Día",
       agenda: "Agenda",
       time: "Hora",
-      event: "Evento"
+      event: "Evento",
+      processingLevels: "Procesando niveles"
     },
   },
 };

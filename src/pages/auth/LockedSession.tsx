@@ -11,6 +11,7 @@ import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { buildInitRoute } from "../../routes/RoutesExtensions";
+import { detectUserTimezone } from "../../utils/timezoneDetector";
 
 const { Title, Text } = Typography;
 
@@ -52,12 +53,13 @@ const LockedSession: React.FC = () => {
     try {
       setIsLoading(true);
 
-      const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // Detect user's timezone with robust fallback
+      const userTimezone = detectUserTimezone();
 
       const fastLoginData = {
         fastPassword: fastPassword,
         platform: Constants.PLATFORM.WEB,
-        timezone: detectedTimezone,
+        timezone: userTimezone,
       };
 
       const result = await fastLogin(fastLoginData).unwrap();

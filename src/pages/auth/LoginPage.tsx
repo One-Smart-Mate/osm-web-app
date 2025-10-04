@@ -18,6 +18,7 @@ import Constants from "../../utils/Constants";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { buildInitRoute, navigateWithState } from "../../routes/RoutesExtensions";
 import useDarkMode from "../../utils/hooks/useDarkMode";
+import { detectUserTimezone } from "../../utils/timezoneDetector";
 
 const LoginPage = () => {
   const [login, { isLoading }] = useLoginMutation();
@@ -53,14 +54,14 @@ const LoginPage = () => {
 
   const onFinish = async (values: any) => {
     try {
-      // Detect user's timezone
-      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      
+      // Detect user's timezone with robust fallback
+      const userTimezone = detectUserTimezone();
+
       const data = await login(
         new LoginRequest(
-          values.email, 
-          values.password, 
-          userTimezone, 
+          values.email,
+          values.password,
+          userTimezone,
           Constants.OS_WEB
         )
       ).unwrap();
