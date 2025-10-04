@@ -9,6 +9,7 @@ import { useSessionStorage } from "../../core/useSessionStorage";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import AnatomyNotification from "./AnatomyNotification";
+import { detectUserTimezone } from "../../utils/timezoneDetector";
 
 interface FastLoginModalProps {
   isVisible: boolean;
@@ -46,12 +47,13 @@ const FastLoginModal = ({
     try {
       setIsLoading(true);
 
-      const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      
+      // Detect user's timezone with robust fallback
+      const userTimezone = detectUserTimezone();
+
       const fastLoginData = {
         fastPassword: fastPassword,
         platform: Constants.PLATFORM.WEB,
-        timezone: detectedTimezone,
+        timezone: userTimezone,
       };
 
       const result = await fastLogin(fastLoginData).unwrap();

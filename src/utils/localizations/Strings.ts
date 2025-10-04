@@ -1878,6 +1878,7 @@ class StringsBase {
   static agenda = "agenda";
   static time = "time";
   static event = "event";
+  static processingLevels = "processingLevels";
 }
 
 // Create a Proxy object for StringsBase to intercept property access
