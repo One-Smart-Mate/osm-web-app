@@ -156,7 +156,25 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const loadCardTypes = async () => {
     try {
       const response = await getCardTypes(siteId.toString()).unwrap();
-      setCardTypes(response);
+
+      // Filter card types that have at least one preclassifier
+      const cardTypesWithPreclassifiers = await Promise.all(
+        response.map(async (cardType: any) => {
+          try {
+            const preclassifiersResponse = await getPreclassifiers(cardType.id.toString()).unwrap();
+            // Only include card types that have preclassifiers
+            return preclassifiersResponse && preclassifiersResponse.length > 0 ? cardType : null;
+          } catch (_error) {
+            // If there's an error fetching preclassifiers, exclude this card type
+            return null;
+          }
+        })
+      );
+
+      // Filter out null values (card types without preclassifiers)
+      const filteredCardTypes = cardTypesWithPreclassifiers.filter(cardType => cardType !== null);
+
+      setCardTypes(filteredCardTypes);
     } catch (error) {
       handleErrorNotification(error);
     }
@@ -688,6 +706,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           disabled={
             !selectedCardType ||
             !selectedPreclassifier ||
+            !lastLevelCompleted ||
             (showCustomDate && !customDueDate)
           }
         >
@@ -818,8 +837,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           </div>
         )}
 
-        {/* Machine ID Search (when priority is selected and not custom date) */}
-        {selectedPriority && !showCustomDate && showMachineSearch && (
+        {/* Machine ID Search and Levels (when priority is selected) */}
+        {selectedPriority && showMachineSearch && (!showCustomDate || customDueDate) && (
           <div ref={levelRef} style={{ marginTop: '16px' }}>
             <Divider style={{ margin: '24px 0' }} />
             <Typography.Text strong style={{ fontSize: '18px', display: 'block', marginBottom: '16px' }}>
