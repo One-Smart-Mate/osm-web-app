@@ -27,8 +27,8 @@ const TagDetailsPage = React.lazy(
   () => import("../pages/tagdetails/TagDetailsPage")
 );
 const UsersPage = React.lazy(() => import("../pages/user/UsersPage"));
-const LevelsPage = React.lazy(() => import("../pages/level/LevelsPage"));
-const LevelsReadOnly = React.lazy(() => import("../pages/levelReadOnly/LevelReadOnly"));
+const LevelsPage = React.lazy(() => import("../pages/level/LevelsPageWrapper"));
+const LevelsReadOnly = React.lazy(() => import("../pages/levelReadOnly/LevelReadOnlyLazy"));
 const SystemHealth = React.lazy(
   () => import("../pages/systemhealth/SystemHealth")
 );
@@ -47,7 +47,7 @@ const CiltProceduresPage = React.lazy(
   () => import("../pages/cilt/CiltProceduresPage")
 );
 const ProceduresTreePage = React.lazy(
-  () => import("../pages/cilt/ProceduresTreePage")
+  () => import("../pages/cilt/ProceduresTreePageLazy")
 );
 const CiltSequencesPage = React.lazy(
   () => import("../pages/cilt/CiltSequencesPage")
@@ -64,7 +64,7 @@ const TagsPage = React.lazy(() => import("../pages/tags/TagsPage"));
 const TagsFastPassword = React.lazy(() => import("../pages/tagsFastPassword/TagsFastPassword"));
 
 const CiltLevelAssignamentsPage = React.lazy(
-  () => import("../pages/ciltLevelAssignments/CiltLevelAssignaments")
+  () => import("../pages/ciltLevelAssignments/CiltLevelAssignmentsLazy")
 );
 
 const AmDiscardReasonsPage = React.lazy(
