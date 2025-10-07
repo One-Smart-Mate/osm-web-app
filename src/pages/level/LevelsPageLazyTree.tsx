@@ -13,7 +13,7 @@ import {
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 import { Level } from "../../data/level/level";
-import { Form, Drawer, Spin, Modal, Button, App as AntApp } from "antd";
+import { Form, Drawer, Spin, Modal, Button, App as AntApp, Progress } from "antd";
 import { useAppDispatch } from "../../core/store";
 import { setSiteId } from "../../core/genericReducer";
 import { UnauthorizedRoute } from "../../utils/Routes";
@@ -163,6 +163,7 @@ const LevelsPageLazyTree = () => {
 
   // State
   const [isLoading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [treeData, setTreeData] = useState<any[]>([]);
   const [loadedChildren, setLoadedChildren] = useState<Map<string, any[]>>(new Map());
   const [levelCardCounts, setLevelCardCounts] = useState<{[key: string]: number}>({});
@@ -314,6 +315,7 @@ const LevelsPageLazyTree = () => {
     }
 
     setLoading(true);
+    setLoadingProgress(10);
 
     try {
       // Get stats first to understand data size
@@ -325,6 +327,7 @@ const LevelsPageLazyTree = () => {
         statsData = statsResponse;
         await LevelCache.cacheStats(siteId, statsData);
       }
+      setLoadingProgress(30);
 
       // Check cache for initial tree
       const cachedTree = await LevelCache.getTreeNode(siteId, null, 2);
@@ -348,6 +351,7 @@ const LevelsPageLazyTree = () => {
 
         await LevelCache.cacheTreeNode(siteId, null, 2, initialData);
       }
+      setLoadingProgress(50);
 
       // Ensure initialData is an array
       if (!Array.isArray(initialData)) {
@@ -392,8 +396,10 @@ const LevelsPageLazyTree = () => {
           cardCountsObj[level.id] = 0;
         }
       }
+      setLoadingProgress(90);
 
       setLevelCardCounts(cardCountsObj);
+      setLoadingProgress(100);
 
       setTreeData([
         {
@@ -421,6 +427,7 @@ const LevelsPageLazyTree = () => {
       });
     } finally {
       setLoading(false);
+      setTimeout(() => setLoadingProgress(0), 500);
     }
   };
 
@@ -831,7 +838,28 @@ const LevelsPageLazyTree = () => {
               }
             }}
           >
-            {isLoading ? (
+            {/* Loading Progress */}
+            {loadingProgress > 0 && loadingProgress < 100 && (
+              <div style={{
+                position: 'absolute',
+                top: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1000,
+                backgroundColor: 'white',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <Progress
+                  percent={loadingProgress}
+                  status="active"
+                  style={{ minWidth: 200 }}
+                />
+              </div>
+            )}
+
+            {isLoading && loadingProgress === 0 ? (
               <div className="flex justify-center items-center h-full">
                 <Spin size="large" />
               </div>
