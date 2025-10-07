@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker } from "antd";
-import { SaveOutlined, CheckOutlined } from "@ant-design/icons";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Checkbox, Tooltip } from "antd";
+import { SaveOutlined, CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
@@ -57,6 +57,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [isProcessingLevels, setIsProcessingLevels] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
+  const [assignWhenCreating, setAssignWhenCreating] = useState<boolean>(false);
 
   // Custom due date state for wildcard priority
   const [showCustomDate, setShowCustomDate] = useState(false);
@@ -143,6 +144,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setComments("");
+    setAssignWhenCreating(false);
     setLastSelectedLevel(null); // Reset tracking de niveles
     setShowCustomDate(false);
     setCustomDueDate(null);
@@ -555,7 +557,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       appVersion: '1.0.0',
       customDueDate: (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && customDueDate)
         ? customDueDate.format('YYYY-MM-DD')
-        : null
+        : null,
+      assignWhenCreating: assignWhenCreating ? 1 : 0
     };
 
     try {
@@ -938,6 +941,24 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               </>
             )}
           </div>
+        )}
+
+        {/* Assign Card When Creating Checkbox */}
+        {lastLevelCompleted && (
+          <>
+            <Divider />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Checkbox
+                checked={assignWhenCreating}
+                onChange={(e) => setAssignWhenCreating(e.target.checked)}
+              >
+                {Strings.assignCardOnCreate}
+              </Checkbox>
+              <Tooltip title={Strings.assignCardOnCreateTooltip}>
+                <QuestionCircleOutlined style={{ color: '#1890ff', cursor: 'pointer' }} />
+              </Tooltip>
+            </div>
+          </>
         )}
 
         {/* Comments */}
