@@ -1944,7 +1944,7 @@ const resources = {
       videos: "Videos",
       audios: "Audios",
       evidences: "Evidencias",
-      none: "None",
+      none: "Ninguno",
       expand: "Ampliar",
 
       email: "Correo electrónico",
