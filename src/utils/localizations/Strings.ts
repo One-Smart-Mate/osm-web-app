@@ -1829,6 +1829,8 @@ class StringsBase {
   static locationLabel = "locationLabel";
   static selectLevel = "selectLevel";
   static describeAnomaly = "describeAnomaly";
+  static assignCardOnCreate = "assignCardOnCreate";
+  static assignCardOnCreateTooltip = "assignCardOnCreateTooltip";
   static dragItemsText = "dragItemsText"
   static loadingtagTypes = "loadingtagTypes"
   static loadingpriorities= "loadingpriorities"

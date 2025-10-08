@@ -113,7 +113,7 @@ const LevelsPageWrapper = () => {
         alignItems: 'center',
         height: '100vh'
       }}>
-        <Spin size="large" tip="Checking performance requirements..." />
+        <Spin size="large" tip="Loading..." />
       </div>
     );
   }

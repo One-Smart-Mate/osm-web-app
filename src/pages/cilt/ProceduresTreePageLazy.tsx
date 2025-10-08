@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Tree from "react-d3-tree";
-import { Spin, Empty, theme, notification } from "antd";
+import { Spin, Empty, theme, notification, Progress } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useGetChildrenLevelsMutation } from "../../services/levelService";
 import { useGetProceduresByLevelMutation } from "../../services/procedureService";
@@ -32,6 +32,7 @@ const ProceduresTreePageLazy = (): React.ReactElement => {
   const [notificationApi, contextHolder] = notification.useNotification();
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingNodeId, setLoadingNodeId] = useState<string | null>(null);
   const [selectedLevelProcedures, setSelectedLevelProcedures] = useState<Map<string, any>>(new Map());
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,12 +53,14 @@ const ProceduresTreePageLazy = (): React.ReactElement => {
     if (!siteId) return;
 
     setIsLoading(true);
+    setLoadingProgress(10);
     try {
       // Load only first level children (parentId = 0)
       const response = await getChildrenLevels({
         siteId: siteId.toString(),
         parentId: 0
       }).unwrap();
+      setLoadingProgress(50);
 
       const activeNodes = response.filter((node: any) => !node.deletedAt);
 
@@ -86,17 +89,20 @@ const ProceduresTreePageLazy = (): React.ReactElement => {
       };
 
       setTreeData([rootNode]);
+      setLoadingProgress(90);
 
       // Center the tree
       if (containerRef.current) {
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
+      setLoadingProgress(100);
     } catch (error) {
       console.error("Error loading levels:", error);
       AnatomyNotification.error(notificationApi, Strings.errorLoadingLevels);
     } finally {
       setIsLoading(false);
+      setTimeout(() => setLoadingProgress(0), 500);
     }
   }, [siteId, siteName, getChildrenLevels]);
 
@@ -431,7 +437,28 @@ const ProceduresTreePageLazy = (): React.ReactElement => {
             className="flex-grow border border-gray-300 shadow-md rounded-md m-4 p-4 relative overflow-hidden"
             style={{ height: "calc(100vh - 250px)" }}
           >
-            {isLoading ? (
+            {/* Loading Progress */}
+            {loadingProgress > 0 && loadingProgress < 100 && (
+              <div style={{
+                position: 'absolute',
+                top: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1000,
+                backgroundColor: 'white',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <Progress
+                  percent={loadingProgress}
+                  status="active"
+                  style={{ minWidth: 200 }}
+                />
+              </div>
+            )}
+
+            {isLoading && loadingProgress === 0 ? (
               <div className="flex justify-center items-center h-full">
                 <Spin size="large" tip="Loading tree structure..." />
               </div>

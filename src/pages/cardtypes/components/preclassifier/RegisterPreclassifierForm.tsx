@@ -38,7 +38,7 @@ const RegisterPreclassifierForm2 = ({ form, initialValues }: FormProps) => {
             >
               <Input
                 size="large"
-                maxLength={3}
+                maxLength={6}
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
