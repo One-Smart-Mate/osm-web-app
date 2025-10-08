@@ -77,18 +77,17 @@ const DrawerTagListOptimized: React.FC<DrawerTagListOptimizedProps> = ({
       loading={isLoading}
       width={600}
     >
-      <List
-        loading={isLoading}
-        dataSource={dataSource}
-        renderItem={(item: CardInterface) => (
-          <List.Item key={item.id}>
-            <TagCard data={item} />
-          </List.Item>
-        )}
-        // Enable virtual scrolling for better performance with large lists
-        virtual
-        style={{ height: 'calc(100vh - 250px)' }}
-      />
+      <div style={{ height: 'calc(100vh - 250px)', overflowY: 'auto' }}>
+        <List
+          loading={isLoading}
+          dataSource={dataSource}
+          renderItem={(item: CardInterface) => (
+            <List.Item key={item.id}>
+              <TagCard data={item} />
+            </List.Item>
+          )}
+        />
+      </div>
     </Drawer>
   );
 };

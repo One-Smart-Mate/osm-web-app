@@ -5,14 +5,20 @@ interface CardCacheDB extends DBSchema {
   cards: {
     key: string; // Format: "siteId-cardId"
     value: {
+      key: string;
       card: CardInterface;
       timestamp: number;
       siteId: number;
+    };
+    indexes: {
+      'bySite': number;
+      'byTimestamp': number;
     };
   };
   cardPages: {
     key: string; // Format: "siteId-page-limit-filters"
     value: {
+      key: string;
       cards: CardInterface[];
       total: number;
       page: number;
@@ -21,6 +27,10 @@ interface CardCacheDB extends DBSchema {
       hasMore: boolean;
       timestamp: number;
       siteId: number;
+    };
+    indexes: {
+      'bySite': number;
+      'byTimestamp': number;
     };
   };
   cardStats: {
