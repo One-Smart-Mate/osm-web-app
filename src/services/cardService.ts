@@ -20,6 +20,29 @@ interface FastPasswordResponse {
   cards: CardInterface[];
 }
 
+// Paginated cards response interface
+interface PaginatedCardsResponse {
+  data: CardInterface[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+// Filters for paginated query
+interface CardFilters {
+  searchText?: string;
+  cardNumber?: string;
+  location?: string;
+  creator?: string;
+  resolver?: string;
+  dateFilterType?: 'creation' | 'due' | '';
+  startDate?: string;
+  endDate?: string;
+  sortOption?: 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
+}
+
 export const cardService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCardsByLevel: builder.mutation<
@@ -37,6 +60,29 @@ export const cardService = apiSlice.injectEndpoints({
     getCards: builder.mutation<CardInterface[], string>({
       query: (siteId) => `/card/all/${siteId}`,
       transformResponse: (response: { data: CardInterface[] }) => response.data,
+    }),
+    getCardsPaginated: builder.mutation<
+      PaginatedCardsResponse,
+      { siteId: string; page: number; limit: number; filters?: CardFilters }
+    >({
+      query: ({ siteId, page, limit, filters = {} }) => {
+        const queryParams = new URLSearchParams({
+          page: page.toString(),
+          limit: limit.toString(),
+          ...(filters.searchText ? { searchText: filters.searchText } : {}),
+          ...(filters.cardNumber ? { cardNumber: filters.cardNumber } : {}),
+          ...(filters.location ? { location: filters.location } : {}),
+          ...(filters.creator ? { creator: filters.creator } : {}),
+          ...(filters.resolver ? { resolver: filters.resolver } : {}),
+          ...(filters.dateFilterType ? { dateFilterType: filters.dateFilterType } : {}),
+          ...(filters.startDate ? { startDate: filters.startDate } : {}),
+          ...(filters.endDate ? { endDate: filters.endDate } : {}),
+          ...(filters.sortOption ? { sortOption: filters.sortOption } : {}),
+        }).toString();
+
+        return `/card/all/${siteId}/paginated?${queryParams}`;
+      },
+      transformResponse: (response: { data: PaginatedCardsResponse }) => response.data,
     }),
     getCardDetails: builder.mutation<CardDetailsInterface, string>({
       query: (id) => `/card/${id}`,
@@ -179,6 +225,7 @@ export const cardService = apiSlice.injectEndpoints({
 export const {
   useGetCardsByLevelMutation,
   useGetCardsMutation,
+  useGetCardsPaginatedMutation,
   useGetCardDetailsMutation,
   useGetCardNotesMutation,
   useUpdateCardPriorityMutation,
