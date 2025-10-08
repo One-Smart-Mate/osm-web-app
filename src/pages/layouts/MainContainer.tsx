@@ -17,14 +17,15 @@ interface MainContainerProps {
   createButtonComponent?: React.ReactElement,
   onCreateButtonClick?: () => void;
   onSearchChange?: (_value: string) => void;
+  disableContentScroll?: boolean;
 }
 
-const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading, createButtonComponent }) => {
+const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading, createButtonComponent, disableContentScroll }) => {
     return (
     <div>
         {enableBackButton && <BackButton />}
         <div className="h-full flex flex-col">
-        
+
         {/* Header Section */}
         <div className="flex flex-col gap-2 items-center m-3">
         <PageTitle mainText={title} subText={description} />
@@ -54,10 +55,10 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
             </div>}
           </div>
         </div>
-  
+
         {/* Content Section */}
         <Loading isLoading={isLoading ?? false} />
-        {!isLoading && <div className="flex-1 overflow-auto">{content}</div>}
+        {!isLoading && <div className={disableContentScroll ? "flex-1" : "flex-1 overflow-auto"}>{content}</div>}
       </div>
     </div>
   );

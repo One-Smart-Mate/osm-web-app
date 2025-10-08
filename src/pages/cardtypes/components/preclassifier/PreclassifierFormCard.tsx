@@ -67,7 +67,7 @@ const PreclassifierFormCard = ({
               rules={[{ required: true, message: Strings.requiredCode }]}
             >
               <Input
-                maxLength={3}
+                maxLength={6}
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />

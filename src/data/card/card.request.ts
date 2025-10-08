@@ -67,6 +67,7 @@ export interface CreateCardRequest {
   appSo?: string | null;
   appVersion?: string | null;
   customDueDate?: string | null;
+  assignWhenCreating?: number;
 }
 
 export interface NodeCardItem {

@@ -74,6 +74,9 @@ const LevelDetailsCard = ({
               <Descriptions.Item label={Strings.description}>
                 {data.description}
               </Descriptions.Item>
+              <Descriptions.Item label={Strings.level}>
+                {data.level || Strings.none}
+              </Descriptions.Item>
               <Descriptions.Item label={Strings.responsible}>
                 {data.responsibleName || Strings.none}
               </Descriptions.Item>

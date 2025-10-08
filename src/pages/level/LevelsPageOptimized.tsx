@@ -4,8 +4,6 @@ import {
   Spin,
   Button,
   Space,
-  Alert,
-  Progress,
   Typography,
   Drawer,
   Form,
@@ -14,8 +12,7 @@ import {
 import {
   ExpandOutlined,
   CompressOutlined,
-  ReloadOutlined,
-  WarningOutlined
+  ReloadOutlined
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../core/store";
@@ -71,7 +68,6 @@ const LevelsPageOptimized = () => {
   // State
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [stats, setStats] = useState<any>(null);
   const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
@@ -97,11 +93,9 @@ const LevelsPageOptimized = () => {
   // Load initial data with stats
   const loadInitialData = async () => {
     setIsLoading(true);
-    setLoadingProgress(0);
 
     try {
       // First, get statistics to understand the data size
-      setLoadingProgress(10);
       const cachedStats = await LevelCache.getStats(siteId);
 
       let statsData = cachedStats;
@@ -112,28 +106,15 @@ const LevelsPageOptimized = () => {
       }
 
       setStats(statsData);
-      setLoadingProgress(30);
-
-      // Show warning for large datasets
-      if (statsData.performanceWarning) {
-        notification.warning({
-          message: "Large Dataset Detected",
-          description: `This site has ${statsData.totalLevels.toLocaleString()} levels. The tree will load on-demand for better performance.`,
-          duration: 5,
-        });
-      }
 
       // Check cache first
-      setLoadingProgress(50);
       const cachedTree = await LevelCache.getTreeNode(siteId, null, 2);
 
       if (cachedTree) {
         const formattedTree = formatTreeData(cachedTree);
         setTreeData(formattedTree);
-        setLoadingProgress(100);
       } else {
         // Load only the first 2 levels initially
-        setLoadingProgress(70);
         const response = await getLevelTreeLazy({
           siteId: siteId.toString(),
           depth: 2
@@ -143,7 +124,6 @@ const LevelsPageOptimized = () => {
 
         const formattedTree = formatTreeData(response.data);
         setTreeData(formattedTree);
-        setLoadingProgress(100);
       }
     } catch (error) {
       console.error("Error loading initial data:", error);
@@ -153,7 +133,6 @@ const LevelsPageOptimized = () => {
       });
     } finally {
       setIsLoading(false);
-      setTimeout(() => setLoadingProgress(0), 500);
     }
   };
 
@@ -462,15 +441,6 @@ const LevelsPageOptimized = () => {
                     {stats.maxDepth}
                   </Title>
                 </div>
-                {stats.performanceWarning && (
-                  <Alert
-                    message="Performance Mode"
-                    description="Lazy loading enabled for optimal performance"
-                    type="warning"
-                    icon={<WarningOutlined />}
-                    showIcon
-                  />
-                )}
               </Space>
             </Card>
           )}
@@ -519,14 +489,6 @@ const LevelsPageOptimized = () => {
               </Button>
             </Space>
           </Card>
-
-          {/* Loading Progress */}
-          {isLoading && loadingProgress > 0 && (
-            <Card style={{ marginBottom: '16px' }}>
-              <Progress percent={loadingProgress} status="active" />
-              <Text>Loading level data...</Text>
-            </Card>
-          )}
 
           {/* Tree View */}
           <Card

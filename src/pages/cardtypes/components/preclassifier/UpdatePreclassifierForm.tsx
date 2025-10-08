@@ -79,7 +79,7 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
             >
               <Input
                 size="large"
-                maxLength={3}
+                maxLength={6}
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
