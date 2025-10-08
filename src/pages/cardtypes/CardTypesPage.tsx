@@ -519,9 +519,22 @@ const CardTypesPage = () => {
               }}
             />
           </Dropdown>
-          <text x={25} y={5} style={textStyles}>
+          <text x={25} y={0} style={textStyles}>
             {nodeDatum.name}
           </text>
+          {nodeDatum.preclassifierCode && (
+            <text
+              x={25}
+              y={18}
+              style={{
+                ...textStyles,
+                fontSize: "14px",
+                fill: "#666666"
+              }}
+            >
+              {nodeDatum.preclassifierCode}
+            </text>
+          )}
         </g>
       );
     }

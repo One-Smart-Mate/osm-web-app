@@ -5,6 +5,7 @@ export interface Level {
   superiorId: string;
   name: string;
   description: string;
+  level: number;
   levelMachineId: string;
   notify: string
   status: string;
