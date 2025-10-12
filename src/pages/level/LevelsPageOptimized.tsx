@@ -372,7 +372,8 @@ const LevelsPageOptimized = () => {
           Number(siteId),
           Number(values.superiorId) || 0,
           values.levelMachineId?.trim() || "",
-          values.notify ? 1 : 0
+          values.notify ? 1 : 0,
+          values.assignWhileCreate ? 1 : 0
         );
         await createLevel(newNode).unwrap();
         notification.success({ message: "Level created successfully" });
@@ -381,6 +382,8 @@ const LevelsPageOptimized = () => {
           ...values,
           id: Number(values.id),
           responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
+          notify: values.notify ? 1 : 0,
+          assignWhileCreate: values.assignWhileCreate ? 1 : 0,
         }).unwrap();
         notification.success({ message: "Level updated successfully" });
       }

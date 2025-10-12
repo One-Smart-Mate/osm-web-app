@@ -9,4 +9,5 @@ export interface Level {
   levelMachineId: string;
   notify: string
   status: string;
+  assignWhileCreate?: boolean;
 }

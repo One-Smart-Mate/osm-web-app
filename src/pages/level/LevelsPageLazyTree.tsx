@@ -604,6 +604,7 @@ const LevelsPageLazyTree = () => {
       Constants.name,
       Constants.description,
       Constants.notify,
+      'assignWhileCreate',
     ];
     const payload = allowedProperties.reduce((acc: any, key: string) => {
       if (node[key] !== undefined) {
@@ -613,6 +614,7 @@ const LevelsPageLazyTree = () => {
             Constants.siteId,
             Constants.superiorId,
             Constants.notify,
+            'assignWhileCreate',
           ].includes(key)
         ) {
           acc[key] = node[key] !== null ? Number(node[key]) : node[key];
@@ -709,7 +711,8 @@ const LevelsPageLazyTree = () => {
           Number(location.state.siteId),
           supIdNum,
           values.levelMachineId?.trim() || Strings.empty,
-          values.notify ? 1 : 0
+          values.notify ? 1 : 0,
+          values.assignWhileCreate ? 1 : 0
         );
         await createLevel(newNode).unwrap();
         AnatomyNotification.success(notificationApi, AnatomyNotificationType._REGISTER);
@@ -731,6 +734,8 @@ const LevelsPageLazyTree = () => {
           ...updateValues,
           id: Number(values.id),
           responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
+          notify: values.notify ? 1 : 0,
+          assignWhileCreate: values.assignWhileCreate ? 1 : 0,
         };
         await updateLevel(updatePayload).unwrap();
         AnatomyNotification.success(notificationApi, AnatomyNotificationType._UPDATE);

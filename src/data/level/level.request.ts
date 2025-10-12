@@ -5,13 +5,15 @@ export class CreateLevel {
   levelMachineId: string;
   notify: number;
   siteId: number;
+  assignWhileCreate?: number;
   constructor(
     name: string,
     description: string,
     responsibleId: number,
     siteId: number,
     levelMachineId: string,
-    notify: number
+    notify: number,
+    assignWhileCreate?: number
   ) {
     this.name = name;
     this.description = description;
@@ -19,6 +21,7 @@ export class CreateLevel {
     this.siteId = siteId;
     this.levelMachineId = levelMachineId;
     this.notify = notify;
+    this.assignWhileCreate = assignWhileCreate;
   }
 }
 
@@ -30,6 +33,7 @@ export class CreateNode {
   superiorId: number;
   levelMachineId: string;
   notify: number;
+  assignWhileCreate?: number;
   constructor(
     name: string,
     description: string,
@@ -37,7 +41,8 @@ export class CreateNode {
     siteId: number,
     superiorId: number,
     levelMachineId: string,
-    notify: number
+    notify: number,
+    assignWhileCreate?: number
   ) {
     this.name = name;
     this.description = description;
@@ -46,6 +51,7 @@ export class CreateNode {
     this.superiorId = superiorId;
     this.levelMachineId = levelMachineId;
     this.notify = notify;
+    this.assignWhileCreate = assignWhileCreate;
   }
 }
 
@@ -57,6 +63,7 @@ export class UpdateLevel {
   status: string;
   levelMachineId: string;
   notify: number;
+  assignWhileCreate?: number;
   constructor(
     id: number,
     name: string,
@@ -64,7 +71,8 @@ export class UpdateLevel {
     responsibleId: number,
     status: string,
     levelMachineId: string,
-    notify: number
+    notify: number,
+    assignWhileCreate?: number
   ) {
     this.name = name;
     this.description = description;
@@ -73,6 +81,7 @@ export class UpdateLevel {
     this.status = status;
     this.levelMachineId = levelMachineId;
     this.notify = notify;
+    this.assignWhileCreate = assignWhileCreate;
   }
 }
 

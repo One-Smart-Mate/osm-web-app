@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Checkbox, Tooltip, Pagination, Spin } from "antd";
-import { SaveOutlined, CheckOutlined, QuestionCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Pagination, Spin } from "antd";
+import { SaveOutlined, CheckOutlined, LoadingOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
@@ -13,7 +13,7 @@ import { useGetActiveSitePrioritiesMutation } from "../../services/priorityServi
 import { useGetlevelsMutation, useFindLevelByMachineIdMutation, useGetChildrenLevelsMutation } from "../../services/levelService";
 import Constants from "../../utils/Constants";
 import dayjs from "dayjs";
-import { LevelCache } from "../../utils/levelCache";
+import { LevelCache } from "../../utils/levelCache";  
 
 interface CreateCardModalProps {
   open: boolean;
@@ -372,6 +372,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
           setLastLevelCompleted(false);
           setFinalNodeId(null);
+          setAssignWhenCreating(false);
         } else {
           // No more children, this is the final level
           // Clear any levels beyond current level
@@ -381,6 +382,16 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
           setLastLevelCompleted(true);
           setFinalNodeId(parentIdNum);
+
+          // Check if this level has assignWhileCreate enabled
+          // Find the parent level data from the levels state
+          const parentLevel = levels.find(l => l.id.toString() === parentId.toString());
+
+          if (parentLevel && parentLevel.assignWhileCreate) {
+            setAssignWhenCreating(true);
+          } else {
+            setAssignWhenCreating(false);
+          }
         }
 
         return newHierarchy;
@@ -633,6 +644,13 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           // No children, this is the final level
           setFinalNodeId(lastLevelId);
           setLastLevelCompleted(true);
+
+          // Check if the last level has assignWhileCreate enabled
+          if (lastLevel && lastLevel.assignWhileCreate) {
+            setAssignWhenCreating(true);
+          } else {
+            setAssignWhenCreating(false);
+          }
         }
 
         // Update all state at once
@@ -831,8 +849,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       appVersion: '1.0.0',
       customDueDate: (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && customDueDate)
         ? customDueDate.format('YYYY-MM-DD')
-        : null,
-      assignWhenCreating: assignWhenCreating ? 1 : 0
+        : null
     };
 
     try {
@@ -856,63 +873,82 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     isSelected: boolean;
     onClick: () => void;
     showDescription?: boolean;
-  }) => (
-    <Card
-      hoverable
-      onClick={onClick}
-      style={{
-        minWidth: '200px',
-        maxWidth: '250px',
-        marginRight: '12px',
-        marginBottom: '12px',
-        border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
-        backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease'
-      }}
-      bodyStyle={{ padding: '16px' }}
-    >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        minHeight: showDescription ? '80px' : '40px'
-      }}>
-        {isSelected && (
-          <CheckOutlined
-            style={{
-              color: '#1890ff',
-              fontSize: '16px',
-              marginBottom: '8px',
-              alignSelf: 'flex-end'
-            }}
-          />
-        )}
-        <Typography.Text
-          strong
-          style={{
-            fontSize: '14px',
-            marginBottom: showDescription ? '4px' : '0',
-            color: isSelected ? '#1890ff' : '#333'
-          }}
-        >
-          {item.name || item.priorityCode || item.preclassifierCode}
-        </Typography.Text>
-        {showDescription && (item.description || item.priorityDescription || item.preclassifierDescription) && (
+  }) => {
+    const isLevel = item.responsibleName !== undefined;
+
+    return (
+      <Card
+        hoverable
+        onClick={onClick}
+        style={{
+          minWidth: '200px',
+          maxWidth: '250px',
+          marginRight: '12px',
+          marginBottom: '12px',
+          border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
+          backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          position: 'relative'
+        }}
+        bodyStyle={{ padding: '16px' }}
+      >
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          minHeight: showDescription ? '80px' : '40px'
+        }}>
+          {isSelected && (
+            <CheckOutlined
+              style={{
+                color: '#1890ff',
+                fontSize: '16px',
+                marginBottom: '8px',
+                alignSelf: 'flex-end'
+              }}
+            />
+          )}
           <Typography.Text
+            strong
             style={{
-              fontSize: '12px',
-              color: '#666',
-              lineHeight: '1.3'
+              fontSize: '14px',
+              marginBottom: showDescription ? '4px' : '0',
+              color: isSelected ? '#1890ff' : '#333'
             }}
           >
-            {item.description || item.priorityDescription || item.preclassifierDescription || item.methodology}
+            {item.name || item.priorityCode || item.preclassifierCode}
           </Typography.Text>
-        )}
-      </div>
-    </Card>
-  );
+          {showDescription && (item.description || item.priorityDescription || item.preclassifierDescription) && (
+            <Typography.Text
+              style={{
+                fontSize: '12px',
+                color: '#666',
+                lineHeight: '1.3'
+              }}
+            >
+              {item.description || item.priorityDescription || item.preclassifierDescription || item.methodology}
+            </Typography.Text>
+          )}
+
+          {/* Show responsible name for levels */}
+          {isLevel && item.responsibleName && (
+            <Typography.Text
+              type="secondary"
+              style={{
+                fontSize: '11px',
+                marginTop: '4px',
+                fontStyle: 'italic'
+              }}
+            >
+              {Strings.responsible}: {item.responsibleName}
+            </Typography.Text>
+          )}
+        </div>
+      </Card>
+    );
+  };
 
   const renderLevelSelector = (levelIndex: number, levelOptions: any[]) => {
     const pagination = levelPagination.get(levelIndex);
@@ -1278,24 +1314,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               </>
             )}
           </div>
-        )}
-
-        {/* Assign Card When Creating Checkbox */}
-        {lastLevelCompleted && (
-          <>
-            <Divider />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Checkbox
-                checked={assignWhenCreating}
-                onChange={(e) => setAssignWhenCreating(e.target.checked)}
-              >
-                {Strings.assignCardOnCreate}
-              </Checkbox>
-              <Tooltip title={Strings.assignCardOnCreateTooltip}>
-                <QuestionCircleOutlined style={{ color: '#1890ff', cursor: 'pointer' }} />
-              </Tooltip>
-            </div>
-          </>
         )}
 
         {/* Comments */}
