@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/ERICK/OSM/HistorialCC/**)",
+      "Bash(npm run lint)",
+      "Bash(npm run build:*)",
+      "Read(//c/ERICK/OSM/.CopiaProyectoBackend/service-m2/src/modules/level/**)",
+      "Read(//c/ERICK/OSM/.CopiaProyectoBackend/service-m2/**)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 60 npm run build)",
+      "Read(//c/ERICK/OSM/**)",
+      "Bash(timeout 120 npm run build)",
+      "Bash(git stash:*)",
+      "Bash(git restore:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
