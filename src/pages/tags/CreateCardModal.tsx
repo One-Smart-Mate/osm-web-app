@@ -65,7 +65,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [isLoadingInitialLevels, setIsLoadingInitialLevels] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
-  const [assignWhenCreating, setAssignWhenCreating] = useState<boolean>(false);
 
   // Custom due date state for wildcard priority
   const [showCustomDate, setShowCustomDate] = useState(false);
@@ -166,7 +165,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setComments("");
-    setAssignWhenCreating(false);
     setLastSelectedLevel(null); // Reset tracking de niveles
     setShowCustomDate(false);
     setCustomDueDate(null);
@@ -372,7 +370,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
           setLastLevelCompleted(false);
           setFinalNodeId(null);
-          setAssignWhenCreating(false);
         } else {
           // No more children, this is the final level
           // Clear any levels beyond current level
@@ -382,16 +379,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
           setLastLevelCompleted(true);
           setFinalNodeId(parentIdNum);
-
-          // Check if this level has assignWhileCreate enabled
-          // Find the parent level data from the levels state
-          const parentLevel = levels.find(l => l.id.toString() === parentId.toString());
-
-          if (parentLevel && parentLevel.assignWhileCreate) {
-            setAssignWhenCreating(true);
-          } else {
-            setAssignWhenCreating(false);
-          }
         }
 
         return newHierarchy;
@@ -644,13 +631,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           // No children, this is the final level
           setFinalNodeId(lastLevelId);
           setLastLevelCompleted(true);
-
-          // Check if the last level has assignWhileCreate enabled
-          if (lastLevel && lastLevel.assignWhileCreate) {
-            setAssignWhenCreating(true);
-          } else {
-            setAssignWhenCreating(false);
-          }
         }
 
         // Update all state at once

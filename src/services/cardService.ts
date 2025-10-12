@@ -219,6 +219,85 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CardInterface }) => response.data,
     }),
+    // Card Reports - Advanced Analytics
+    getCardReportGrouped: builder.mutation<
+      Array<{
+        grouping_id: number;
+        level_name: string;
+        total_cards: number;
+      }>,
+      {
+        siteId: number;
+        rootNode: number;
+        targetLevel: number;
+        groupingLevel: number;
+        dateStart: string;
+        dateEnd: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/grouped",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
+    getCardReportDetails: builder.mutation<
+      Array<{
+        machine_id: number;
+        maquina: string;
+        comp_id: number;
+        comp_name: string;
+        n_cards: number;
+      }>,
+      {
+        siteId: number;
+        rootId: number;
+        targetLevel: number;
+        dateStart: string;
+        dateEnd: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/details",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
+    getCardsByMachine: builder.mutation<
+      CardInterface[],
+      {
+        siteId: number;
+        machineId: number;
+        targetLevel: number;
+        dateStart: string;
+        dateEnd: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/by-machine",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: CardInterface[] }) => response.data,
+    }),
+    getCardsByComponents: builder.mutation<
+      CardInterface[],
+      {
+        siteId: number;
+        componentIds: number[];
+        dateStart: string;
+        dateEnd: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/by-components",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: CardInterface[] }) => response.data,
+    }),
   }),
 });
 
@@ -240,4 +319,8 @@ export const {
   useCreateCardMutation,
   useUpdateDefinitiveSolutionMutation,
   useUpdateProvisionalSolutionMutation,
+  useGetCardReportGroupedMutation,
+  useGetCardReportDetailsMutation,
+  useGetCardsByMachineMutation,
+  useGetCardsByComponentsMutation,
 } = cardService;
