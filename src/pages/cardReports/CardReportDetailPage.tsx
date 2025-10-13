@@ -271,12 +271,6 @@ const CardReportDetailPage: React.FC = () => {
                   size="middle"
                   scroll={{ x: true }}
                 />
-                <div style={{ marginTop: 16, fontSize: 12, color: "#6c757d" }}>
-                  <p>{Strings.orderedBySubtotal}</p>
-                  <p>
-                    {i18n.t("activeFiltersText", { siteId, dateStart, dateEnd, targetLevel })}
-                  </p>
-                </div>
               </>
             )}
           </Card>
