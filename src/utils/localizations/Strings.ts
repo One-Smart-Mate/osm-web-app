@@ -22,6 +22,7 @@ class StringsBase {
   static tagsFastPasswordSB = "tagsFastPasswordSB";
   static cardDetailsSB = "cardDetailsSB";
   static chartsSB = "chartsSB";
+  static cardReportsSB = "cardReportsSB";
   static positionsSB = "positionsSB";
   static assignPositions = "assignPositions";
   static systemHealthSB = "systemHealthSB";
@@ -417,6 +418,8 @@ class StringsBase {
   static tagMonitoring = "tagMonitoring";
   static totalCards = "totalCards";
   static total = "total";
+  static subtotal = "subtotal";
+  static charts = "charts";
   static areaChart = "areaChart";
   static machine = "machine";
   static machineLocation = "machineLocation";
@@ -427,6 +430,43 @@ class StringsBase {
   static week = "week";
   static cumulativeIssued = "cumulativeIssued";
   static cumulativeEradicated = "cumulativeEradicated";
+
+  // Card Reports
+  static cardReportsTitle = "cardReportsTitle";
+  static cardReportDetailTitle = "cardReportDetailTitle";
+  static selectRootNode = "selectRootNode";
+  static selectRootNodePlaceholder = "selectRootNodePlaceholder";
+  static targetLevel = "targetLevel";
+  static groupingLevel = "groupingLevel";
+  static generateReport = "generateReport";
+  static pieChart = "pieChart";
+  static verticalBars = "verticalBars";
+  static horizontalBars = "horizontalBars";
+  static viewReport = "viewReport";
+  static backToReport = "backToReport";
+  static machinesAndComponents = "machinesAndComponents";
+  static cardList = "cardList";
+  static clickMachineOrComponent = "clickMachineOrComponent";
+  static components = "components";
+  static noCardsFound = "noCardsFound";
+  static errorLoadingReport = "errorLoadingReport";
+  static selectRootFirst = "selectRootFirst";
+  static root = "root";
+  static dataLevel = "dataLevel";
+  static range = "range";
+  static summary = "summary";
+  static orderedBy = "orderedBy";
+  static activeFilters = "activeFilters";
+  static orderedBySubtotal = "orderedBySubtotal";
+  static activeFiltersText = "activeFiltersText";
+  static statusOpen = "statusOpen";
+  static statusResolved = "statusResolved";
+  static statusCancelled = "statusCancelled";
+  static statusProvisional = "statusProvisional";
+  static statusDiscarded = "statusDiscarded";
+  static statusExpired = "statusExpired";
+  static statusClosedByManager = "statusClosedByManager";
+  static noCards = "noCards";
 
   static edit = "edit";
   static create = "create";

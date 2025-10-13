@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Checkbox, Tooltip } from "antd";
-import { SaveOutlined, CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Pagination, Spin } from "antd";
+import { SaveOutlined, CheckOutlined, LoadingOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
@@ -10,9 +10,10 @@ import { useCreateCardMutation } from "../../services/cardService";
 import { useGetCardTypesMutation } from "../../services/CardTypesService";
 import { useGetPreclassifiersMutation } from "../../services/preclassifierService";
 import { useGetActiveSitePrioritiesMutation } from "../../services/priorityService";
-import { useGetlevelsMutation, useFindLevelByMachineIdMutation } from "../../services/levelService";
+import { useGetlevelsMutation, useFindLevelByMachineIdMutation, useGetChildrenLevelsMutation } from "../../services/levelService";
 import Constants from "../../utils/Constants";
 import dayjs from "dayjs";
+import { LevelCache } from "../../utils/levelCache";  
 
 interface CreateCardModalProps {
   open: boolean;
@@ -32,6 +33,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [getPriorities, { isLoading: isLoadingPriorities }] = useGetActiveSitePrioritiesMutation();
   const [getLevels, ] = useGetlevelsMutation();
   const [findLevelByMachineId, { isLoading: isSearchingMachine }] = useFindLevelByMachineIdMutation();
+  const [getChildrenLevels] = useGetChildrenLevelsMutation();
 
   // Form state
   const [cardTypes, setCardTypes] = useState<any[]>([]);
@@ -49,15 +51,20 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [lastLevelCompleted, setLastLevelCompleted] = useState(false);
   const [finalNodeId, setFinalNodeId] = useState<number | null>(null);
 
+  // Pagination state for each level
+  const [levelPagination, setLevelPagination] = useState<Map<number, { current: number; pageSize: number; total: number }>>(new Map());
+  const [loadingLevels, setLoadingLevels] = useState<Set<number>>(new Set());
+  const [loadedLevelData, setLoadedLevelData] = useState<Map<number, any[]>>(new Map());
+
   // Machine ID search state
   const [showMachineSearch, setShowMachineSearch] = useState(false);
   const [machineIdSearch, setMachineIdSearch] = useState<string>("");
   const [machineSearchError, setMachineSearchError] = useState<string>("");
   const [machineSearchSuccess, setMachineSearchSuccess] = useState<boolean>(false);
   const [isProcessingLevels, setIsProcessingLevels] = useState<boolean>(false);
+  const [isLoadingInitialLevels, setIsLoadingInitialLevels] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
-  const [assignWhenCreating, setAssignWhenCreating] = useState<boolean>(false);
 
   // Custom due date state for wildcard priority
   const [showCustomDate, setShowCustomDate] = useState(false);
@@ -113,8 +120,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
       // Check if there's a next level to scroll to
       if (levelHierarchy.has(nextLevelIndex)) {
+        // Wait longer for the DOM to fully update with the new level
         setTimeout(() => {
-          // Create a ref for the specific next level
           const nextLevelElement = document.querySelector(`[data-level-index="${nextLevelIndex}"]`);
           if (nextLevelElement) {
             nextLevelElement.scrollIntoView({
@@ -122,12 +129,26 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               block: 'start',
               inline: 'nearest'
             });
+          } else {
+            // If element not found, try again after a bit more time
+            setTimeout(() => {
+              const retryElement = document.querySelector(`[data-level-index="${nextLevelIndex}"]`);
+              if (retryElement) {
+                retryElement.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                  inline: 'nearest'
+                });
+              }
+            }, 200);
           }
-        }, 300);
+        }, 500); // Increased timeout to ensure DOM is ready
       }
 
-      // Reset the tracking
-      setLastSelectedLevel(null);
+      // Reset the tracking after scroll attempt
+      setTimeout(() => {
+        setLastSelectedLevel(null);
+      }, 800);
     }
   }, [lastSelectedLevel, levelHierarchy]);
 
@@ -144,7 +165,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setComments("");
-    setAssignWhenCreating(false);
     setLastSelectedLevel(null); // Reset tracking de niveles
     setShowCustomDate(false);
     setCustomDueDate(null);
@@ -153,6 +173,10 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setMachineSearchError("");
     setMachineSearchSuccess(false);
     setIsProcessingLevels(false);
+    setLevelPagination(new Map());
+    setLoadingLevels(new Set());
+    setLoadedLevelData(new Map());
+    setIsLoadingInitialLevels(false);
   };
 
   const loadCardTypes = async () => {
@@ -200,76 +224,190 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   };
 
-  const loadLevels = async () => {
+  // Load levels with lazy loading - only load root levels initially
+  const loadLevels = async (page: number = 1, pageSize: number = 10) => {
     try {
-      const response = await getLevels(siteId.toString()).unwrap();
-      setLevels(response);
-      buildLevelHierarchy(response);
-    } catch (error) {
-      handleErrorNotification(error);
-    }
-  };
+      setIsLoadingInitialLevels(true);
+      setLoadingLevels(prev => new Set(prev).add(0));
 
-  const buildLevelHierarchy = (allLevels: any[]) => {
-    const hierarchy = new Map<number, any[]>();
+      // Check cache first
+      const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), 0);
+      let allRootLevels: any[] = [];
 
-    // Filter out suspended levels (status 'S') and find root levels
-    const activeLevels = allLevels.filter(level => level.status !== 'S');
-
-    const rootLevels = activeLevels.filter(level => {
-      const superiorId = level.superiorId?.toString();
-      return !superiorId ||
-             superiorId === "" ||
-             superiorId === "0" ||
-             superiorId === null ||
-             superiorId === "null";
-    });
-
-
-    if (rootLevels.length > 0) {
-      hierarchy.set(0, rootLevels);
-    }
-
-    setLevelHierarchy(hierarchy);
-  };
-
-  const loadChildLevels = (parentId: string, levelIndex: number) => {
-    // Convert parentId to string for comparison since superiorId is a string
-    const parentIdStr = parentId.toString();
-
-    // Find child levels where superiorId matches parentId and exclude suspended levels
-    const childLevels = levels.filter(level => {
-      const superiorIdStr = level.superiorId?.toString();
-      return superiorIdStr === parentIdStr && level.status !== 'S';
-    });
-
-    setLevelHierarchy(prev => {
-      const newHierarchy = new Map(prev);
-
-      if (childLevels.length > 0) {
-        // Add the next level
-        newHierarchy.set(levelIndex + 1, childLevels);
-
-        // Clear levels beyond the next one
-        for (let i = levelIndex + 2; i <= 10; i++) {
-          newHierarchy.delete(i);
-        }
-
-        setLastLevelCompleted(false);
-        setFinalNodeId(null);
+      if (cachedChildren && cachedChildren.length > 0) {
+        allRootLevels = cachedChildren.filter(level => level.status !== 'S');
       } else {
-        // No more children, this is the final level
-        // Clear any levels beyond current level
-        for (let i = levelIndex + 1; i <= 10; i++) {
-          newHierarchy.delete(i);
-        }
+        // Load from server
+        const response = await getLevels(siteId.toString()).unwrap();
+        setLevels(response);
 
-        setLastLevelCompleted(true);
-        setFinalNodeId(parseInt(parentId));
+        // Filter out suspended levels and find root levels
+        const activeLevels = response.filter(level => level.status !== 'S');
+        allRootLevels = activeLevels.filter(level => {
+          const superiorId = level.superiorId?.toString();
+          return !superiorId ||
+                 superiorId === "" ||
+                 superiorId === "0" ||
+                 superiorId === null ||
+                 superiorId === "null";
+        });
+
+        // Cache root levels
+        for (const level of allRootLevels) {
+          await LevelCache.cacheLevel(parseInt(siteId), level);
+        }
       }
 
-      return newHierarchy;
-    });
+      // Store all loaded data for this level
+      setLoadedLevelData(prev => {
+        const newMap = new Map(prev);
+        newMap.set(0, allRootLevels);
+        return newMap;
+      });
+
+      // Calculate pagination
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedLevels = allRootLevels.slice(startIndex, endIndex);
+
+      // Update hierarchy with paginated data
+      const hierarchy = new Map<number, any[]>();
+      if (paginatedLevels.length > 0) {
+        hierarchy.set(0, paginatedLevels);
+      }
+      setLevelHierarchy(hierarchy);
+
+      // Update pagination state
+      setLevelPagination(prev => {
+        const newMap = new Map(prev);
+        newMap.set(0, {
+          current: page,
+          pageSize: pageSize,
+          total: allRootLevels.length
+        });
+        return newMap;
+      });
+
+      setLoadingLevels(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(0);
+        return newSet;
+      });
+    } catch (error) {
+      handleErrorNotification(error);
+      setLoadingLevels(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(0);
+        return newSet;
+      });
+    } finally {
+      setIsLoadingInitialLevels(false);
+    }
+  };
+
+  // Load child levels with lazy loading and pagination
+  const loadChildLevels = async (parentId: string, levelIndex: number, page: number = 1, pageSize: number = 10) => {
+    const parentIdNum = parseInt(parentId);
+    const nextLevelIndex = levelIndex + 1;
+
+    try {
+      setLoadingLevels(prev => new Set(prev).add(nextLevelIndex));
+
+      let allChildLevels: any[] = [];
+
+      // Check cache first
+      const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), parentIdNum);
+
+      if (cachedChildren && cachedChildren.length > 0) {
+        allChildLevels = cachedChildren.filter(level => level.status !== 'S');
+      } else {
+        // Load from API using getChildrenLevels mutation
+        try {
+          const response = await getChildrenLevels({
+            siteId: siteId.toString(),
+            parentId: parentIdNum
+          }).unwrap();
+
+          allChildLevels = response.filter((level: any) => level.status !== 'S');
+
+          // Cache the children
+          for (const level of allChildLevels) {
+            await LevelCache.cacheLevel(parseInt(siteId), level);
+          }
+        } catch (_error) {
+          // If API fails, fallback to filtering from all levels
+          const childLevels = levels.filter(level => {
+            const superiorIdStr = level.superiorId?.toString();
+            return superiorIdStr === parentId.toString() && level.status !== 'S';
+          });
+          allChildLevels = childLevels;
+        }
+      }
+
+      // Store all loaded data for this level
+      setLoadedLevelData(prev => {
+        const newMap = new Map(prev);
+        newMap.set(nextLevelIndex, allChildLevels);
+        return newMap;
+      });
+
+      // Calculate pagination
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedChildren = allChildLevels.slice(startIndex, endIndex);
+
+      setLevelHierarchy(prev => {
+        const newHierarchy = new Map(prev);
+
+        if (allChildLevels.length > 0) {
+          // Add the next level with paginated data
+          newHierarchy.set(nextLevelIndex, paginatedChildren);
+
+          // Clear levels beyond the next one
+          for (let i = nextLevelIndex + 1; i <= 10; i++) {
+            newHierarchy.delete(i);
+          }
+
+          setLastLevelCompleted(false);
+          setFinalNodeId(null);
+        } else {
+          // No more children, this is the final level
+          // Clear any levels beyond current level
+          for (let i = nextLevelIndex; i <= 10; i++) {
+            newHierarchy.delete(i);
+          }
+
+          setLastLevelCompleted(true);
+          setFinalNodeId(parentIdNum);
+        }
+
+        return newHierarchy;
+      });
+
+      // Update pagination state
+      setLevelPagination(prev => {
+        const newMap = new Map(prev);
+        newMap.set(nextLevelIndex, {
+          current: page,
+          pageSize: pageSize,
+          total: allChildLevels.length
+        });
+        return newMap;
+      });
+
+      setLoadingLevels(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(nextLevelIndex);
+        return newSet;
+      });
+    } catch (error) {
+      console.error("Error loading child levels:", error);
+      setLoadingLevels(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(nextLevelIndex);
+        return newSet;
+      });
+    }
   };
 
   // Event handlers
@@ -304,7 +442,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   };
 
-  const handlePriorityChange = (value: string) => {
+  const handlePriorityChange = async (value: string) => {
     setSelectedPriority(value);
     setSelectedLevels(new Map());
     setLevelHierarchy(new Map());
@@ -329,8 +467,11 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       // Show machine search option and load levels for regular priorities
       if (value) {
         setShowMachineSearch(true);
-        loadLevels();
-        scrollToNextStep(levelRef);
+        await loadLevels();
+        // Wait for DOM to update before scrolling
+        setTimeout(() => {
+          scrollToNextStep(levelRef);
+        }, 400);
       }
     }
   };
@@ -355,39 +496,82 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         // Start processing levels
         setIsProcessingLevels(true);
 
-        // Process the hierarchy in a more controlled way
-        // First, we need to get all possible options for each level
-        // We'll build the hierarchy showing the found path but also loading siblings
+        // Process the hierarchy with pagination
         const newHierarchy = new Map<number, any[]>();
         const newSelectedLevels = new Map<number, string>();
+        const newPagination = new Map<number, { current: number; pageSize: number; total: number }>();
+        const newLoadedData = new Map<number, any[]>();
+        const PAGE_SIZE = 10;
 
-        // For each level in the hierarchy, we need to load its siblings
+        // For each level in the hierarchy, we need to load its siblings using lazy loading
         for (let i = 0; i < result.hierarchy.length; i++) {
           const currentLevel = result.hierarchy[i];
+          let allLevelsForIndex: any[] = [];
 
           if (i === 0) {
-            // For root level, get all root levels (excluding suspended)
-            const rootLevels = levels.filter(level => {
-              const superiorId = level.superiorId?.toString();
-              return (
-                level.status !== 'S' &&
-                (!superiorId ||
-                 superiorId === "" ||
-                 superiorId === "0" ||
-                 superiorId === null ||
-                 superiorId === "null")
-              );
-            });
-            newHierarchy.set(0, rootLevels);
+            // For root level, load from cache or server
+            const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), 0);
+            if (cachedChildren && cachedChildren.length > 0) {
+              allLevelsForIndex = cachedChildren.filter(level => level.status !== 'S');
+            } else if (levels.length > 0) {
+              // Fallback to filtering from already loaded levels
+              allLevelsForIndex = levels.filter(level => {
+                const superiorId = level.superiorId?.toString();
+                return (
+                  level.status !== 'S' &&
+                  (!superiorId ||
+                   superiorId === "" ||
+                   superiorId === "0" ||
+                   superiorId === null ||
+                   superiorId === "null")
+                );
+              });
+            }
           } else {
-            // For other levels, get all siblings (same parent) excluding suspended
-            const parentId = result.hierarchy[i - 1].id.toString();
-            const siblings = levels.filter(level => {
-              const superiorIdStr = level.superiorId?.toString();
-              return superiorIdStr === parentId && level.status !== 'S';
-            });
-            newHierarchy.set(i, siblings);
+            // For other levels, load children from cache or API
+            const parentId = parseInt(result.hierarchy[i - 1].id.toString());
+            const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), parentId);
+
+            if (cachedChildren && cachedChildren.length > 0) {
+              allLevelsForIndex = cachedChildren.filter(level => level.status !== 'S');
+            } else {
+              // Load from API
+              try {
+                const response = await getChildrenLevels({
+                  siteId: siteId.toString(),
+                  parentId: parentId
+                }).unwrap();
+
+                allLevelsForIndex = response.filter((level: any) => level.status !== 'S');
+
+                // Cache the results
+                for (const level of allLevelsForIndex) {
+                  await LevelCache.cacheLevel(parseInt(siteId), level);
+                }
+              } catch (_error) {
+                // Fallback to filtering from all levels
+                const parentIdStr = parentId.toString();
+                allLevelsForIndex = levels.filter(level => {
+                  const superiorIdStr = level.superiorId?.toString();
+                  return superiorIdStr === parentIdStr && level.status !== 'S';
+                });
+              }
+            }
           }
+
+          // Store all loaded data
+          newLoadedData.set(i, allLevelsForIndex);
+
+          // Calculate paginated data
+          const paginatedData = allLevelsForIndex.slice(0, PAGE_SIZE);
+          newHierarchy.set(i, paginatedData);
+
+          // Store pagination info
+          newPagination.set(i, {
+            current: 1,
+            pageSize: PAGE_SIZE,
+            total: allLevelsForIndex.length
+          });
 
           // Pre-select the level from the found path
           newSelectedLevels.set(i, currentLevel.id.toString());
@@ -395,26 +579,63 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
         // Get the last level found
         const lastLevel = result.hierarchy[result.hierarchy.length - 1];
-        const lastLevelId = lastLevel.id.toString();
+        const lastLevelId = parseInt(lastLevel.id.toString());
+        const lastLevelIndex = result.hierarchy.length;
 
-        // Check if the last level has children and load them (excluding suspended)
-        const childrenOfLastLevel = levels.filter(level => {
-          const superiorIdStr = level.superiorId?.toString();
-          return superiorIdStr === lastLevelId && level.status !== 'S';
-        });
+        // Load children of the last level found
+        let childrenOfLastLevel: any[] = [];
+        const cachedChildrenOfLast = await LevelCache.getCachedChildren(parseInt(siteId), lastLevelId);
+
+        if (cachedChildrenOfLast && cachedChildrenOfLast.length > 0) {
+          childrenOfLastLevel = cachedChildrenOfLast.filter(level => level.status !== 'S');
+        } else {
+          try {
+            const response = await getChildrenLevels({
+              siteId: siteId.toString(),
+              parentId: lastLevelId
+            }).unwrap();
+
+            childrenOfLastLevel = response.filter((level: any) => level.status !== 'S');
+
+            // Cache the results
+            for (const level of childrenOfLastLevel) {
+              await LevelCache.cacheLevel(parseInt(siteId), level);
+            }
+          } catch (_error) {
+            // Fallback to filtering from all levels
+            childrenOfLastLevel = levels.filter(level => {
+              const superiorIdStr = level.superiorId?.toString();
+              return superiorIdStr === lastLevelId.toString() && level.status !== 'S';
+            });
+          }
+        }
 
         if (childrenOfLastLevel.length > 0) {
-          // If there are children, add them to the hierarchy but don't mark as completed
-          newHierarchy.set(result.hierarchy.length, childrenOfLastLevel);
+          // Store all loaded data for children
+          newLoadedData.set(lastLevelIndex, childrenOfLastLevel);
+
+          // Add paginated children to hierarchy
+          const paginatedChildren = childrenOfLastLevel.slice(0, PAGE_SIZE);
+          newHierarchy.set(lastLevelIndex, paginatedChildren);
+
+          // Store pagination info
+          newPagination.set(lastLevelIndex, {
+            current: 1,
+            pageSize: PAGE_SIZE,
+            total: childrenOfLastLevel.length
+          });
+
           setLastLevelCompleted(false);
           setFinalNodeId(null);
         } else {
           // No children, this is the final level
-          setFinalNodeId(parseInt(lastLevelId));
+          setFinalNodeId(lastLevelId);
           setLastLevelCompleted(true);
         }
 
-        // Update state without animations first
+        // Update all state at once
+        setLoadedLevelData(newLoadedData);
+        setLevelPagination(newPagination);
         setLevelHierarchy(newHierarchy);
         setSelectedLevels(newSelectedLevels);
         setMachineIdSearch("");
@@ -487,7 +708,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   };
 
-  const handleLevelChange = (levelIndex: number, value: string) => {
+  const handleLevelChange = async (levelIndex: number, value: string) => {
     setSelectedLevels(prev => {
       const newSelected = new Map(prev);
       newSelected.set(levelIndex, value);
@@ -500,15 +721,37 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       return newSelected;
     });
 
+    // Clear pagination for levels beyond current
+    setLevelPagination(prev => {
+      const newMap = new Map(prev);
+      for (let i = levelIndex + 1; i <= 10; i++) {
+        newMap.delete(i);
+      }
+      return newMap;
+    });
+
+    // Clear loaded data for levels beyond current
+    setLoadedLevelData(prev => {
+      const newMap = new Map(prev);
+      for (let i = levelIndex + 1; i <= 10; i++) {
+        newMap.delete(i);
+      }
+      return newMap;
+    });
+
     // Reset completion state
     setLastLevelCompleted(false);
     setFinalNodeId(null);
 
     if (value) {
-      // Set the selected level for scroll tracking
-      setLastSelectedLevel(levelIndex);
       // Load child levels - this will handle the hierarchy update
-      loadChildLevels(value, levelIndex);
+      await loadChildLevels(value, levelIndex);
+
+      // Set the selected level for scroll tracking AFTER loading is complete
+      // Use a small delay to ensure state updates have propagated
+      setTimeout(() => {
+        setLastSelectedLevel(levelIndex);
+      }, 100);
     } else {
       // Clear level hierarchy beyond current level if no value selected
       setLevelHierarchy(prev => {
@@ -519,6 +762,35 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         return newHierarchy;
       });
     }
+  };
+
+  // Handle pagination change for a specific level
+  const handleLevelPaginationChange = async (levelIndex: number, page: number, pageSize: number) => {
+    const allData = loadedLevelData.get(levelIndex);
+    if (!allData) return;
+
+    // Calculate new pagination
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedData = allData.slice(startIndex, endIndex);
+
+    // Update hierarchy with new page data
+    setLevelHierarchy(prev => {
+      const newHierarchy = new Map(prev);
+      newHierarchy.set(levelIndex, paginatedData);
+      return newHierarchy;
+    });
+
+    // Update pagination state
+    setLevelPagination(prev => {
+      const newMap = new Map(prev);
+      newMap.set(levelIndex, {
+        current: page,
+        pageSize: pageSize,
+        total: allData.length
+      });
+      return newMap;
+    });
   };
 
   const handleSave = async () => {
@@ -557,8 +829,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       appVersion: '1.0.0',
       customDueDate: (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && customDueDate)
         ? customDueDate.format('YYYY-MM-DD')
-        : null,
-      assignWhenCreating: assignWhenCreating ? 1 : 0
+        : null
     };
 
     try {
@@ -582,87 +853,147 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     isSelected: boolean;
     onClick: () => void;
     showDescription?: boolean;
-  }) => (
-    <Card
-      hoverable
-      onClick={onClick}
-      style={{
-        minWidth: '200px',
-        maxWidth: '250px',
-        marginRight: '12px',
-        marginBottom: '12px',
-        border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
-        backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease'
-      }}
-      bodyStyle={{ padding: '16px' }}
-    >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        minHeight: showDescription ? '80px' : '40px'
-      }}>
-        {isSelected && (
-          <CheckOutlined
-            style={{
-              color: '#1890ff',
-              fontSize: '16px',
-              marginBottom: '8px',
-              alignSelf: 'flex-end'
-            }}
-          />
-        )}
-        <Typography.Text
-          strong
-          style={{
-            fontSize: '14px',
-            marginBottom: showDescription ? '4px' : '0',
-            color: isSelected ? '#1890ff' : '#333'
-          }}
-        >
-          {item.name || item.priorityCode || item.preclassifierCode}
-        </Typography.Text>
-        {showDescription && (item.description || item.priorityDescription || item.preclassifierDescription) && (
+  }) => {
+    const isLevel = item.responsibleName !== undefined;
+
+    return (
+      <Card
+        hoverable
+        onClick={onClick}
+        style={{
+          minWidth: '200px',
+          maxWidth: '250px',
+          marginRight: '12px',
+          marginBottom: '12px',
+          border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
+          backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          position: 'relative'
+        }}
+        bodyStyle={{ padding: '16px' }}
+      >
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          minHeight: showDescription ? '80px' : '40px'
+        }}>
+          {isSelected && (
+            <CheckOutlined
+              style={{
+                color: '#1890ff',
+                fontSize: '16px',
+                marginBottom: '8px',
+                alignSelf: 'flex-end'
+              }}
+            />
+          )}
           <Typography.Text
+            strong
             style={{
-              fontSize: '12px',
-              color: '#666',
-              lineHeight: '1.3'
+              fontSize: '14px',
+              marginBottom: showDescription ? '4px' : '0',
+              color: isSelected ? '#1890ff' : '#333'
             }}
           >
-            {item.description || item.priorityDescription || item.preclassifierDescription || item.methodology}
+            {item.name || item.priorityCode || item.preclassifierCode}
           </Typography.Text>
+          {showDescription && (item.description || item.priorityDescription || item.preclassifierDescription) && (
+            <Typography.Text
+              style={{
+                fontSize: '12px',
+                color: '#666',
+                lineHeight: '1.3'
+              }}
+            >
+              {item.description || item.priorityDescription || item.preclassifierDescription || item.methodology}
+            </Typography.Text>
+          )}
+
+          {/* Show responsible name for levels */}
+          {isLevel && item.responsibleName && (
+            <Typography.Text
+              type="secondary"
+              style={{
+                fontSize: '11px',
+                marginTop: '4px',
+                fontStyle: 'italic'
+              }}
+            >
+              {Strings.responsible}: {item.responsibleName}
+            </Typography.Text>
+          )}
+        </div>
+      </Card>
+    );
+  };
+
+  const renderLevelSelector = (levelIndex: number, levelOptions: any[]) => {
+    const pagination = levelPagination.get(levelIndex);
+    const isLoading = loadingLevels.has(levelIndex);
+
+    return (
+      <div key={levelIndex} data-level-index={levelIndex} style={{ marginBottom: '24px' }}>
+        <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
+          {`${Strings.level} ${levelIndex + 1}`}
+          {pagination && pagination.total > 0 && (
+            <Typography.Text type="secondary" style={{ fontSize: '14px', marginLeft: '8px' }}>
+              ({pagination.total} {pagination.total === 1 ? 'item' : 'items'})
+            </Typography.Text>
+          )}
+        </Typography.Text>
+
+        {isLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+          </div>
+        ) : (
+          <>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              overflowX: 'auto',
+              paddingBottom: '8px'
+            }}>
+              {levelOptions.map(level => (
+                <SelectableCard
+                  key={level.id}
+                  item={level}
+                  isSelected={selectedLevels.get(levelIndex) === level.id.toString()}
+                  onClick={() => handleLevelChange(levelIndex, level.id.toString())}
+                />
+              ))}
+            </div>
+
+            {/* Pagination for this level */}
+            {pagination && pagination.total > pagination.pageSize && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '16px',
+                paddingTop: '16px',
+                borderTop: '1px solid #f0f0f0'
+              }}>
+                <Pagination
+                  current={pagination.current}
+                  pageSize={pagination.pageSize}
+                  total={pagination.total}
+                  onChange={(page, pageSize) => handleLevelPaginationChange(levelIndex, page, pageSize)}
+                  showSizeChanger
+                  pageSizeOptions={['10', '20', '50', '100']}
+                  showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                  size="small"
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
-    </Card>
-  );
-
-  const renderLevelSelector = (levelIndex: number, levelOptions: any[]) => (
-    <div key={levelIndex} data-level-index={levelIndex} style={{ marginBottom: '24px' }}>
-      <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
-        {`${Strings.level} ${levelIndex + 1}`}
-      </Typography.Text>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        overflowX: 'auto',
-        paddingBottom: '8px'
-      }}>
-        {levelOptions.map(level => (
-          <SelectableCard
-            key={level.id}
-            item={level}
-            isSelected={selectedLevels.get(levelIndex) === level.id.toString()}
-            onClick={() => handleLevelChange(levelIndex, level.id.toString())}
-          />
-        ))}
-      </div>
-    </div>
-  );
+    );
+  };
 
   // Calculate current step for progress indicator
   const getCurrentStep = () => {
@@ -922,8 +1253,30 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               </div>
             )}
 
+            {/* Loading state for initial levels */}
+            {isLoadingInitialLevels && levelHierarchy.size === 0 && (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '60px 20px',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                marginTop: '16px'
+              }}>
+                <Spin size="large" indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                <Typography.Text style={{ marginTop: '16px', fontSize: '16px', color: '#666' }}>
+                  {Strings.loading}
+                </Typography.Text>
+                <Typography.Text type="secondary" style={{ marginTop: '8px', fontSize: '14px' }}>
+                  {Strings.cloningLevelsMessage}
+                </Typography.Text>
+              </div>
+            )}
+
             {/* Manual Level Selection */}
-            {levelHierarchy.size > 0 && (
+            {!isLoadingInitialLevels && levelHierarchy.size > 0 && (
               <>
                 <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
                   {selectedLevels.size > 0
@@ -941,24 +1294,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               </>
             )}
           </div>
-        )}
-
-        {/* Assign Card When Creating Checkbox */}
-        {lastLevelCompleted && (
-          <>
-            <Divider />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Checkbox
-                checked={assignWhenCreating}
-                onChange={(e) => setAssignWhenCreating(e.target.checked)}
-              >
-                {Strings.assignCardOnCreate}
-              </Checkbox>
-              <Tooltip title={Strings.assignCardOnCreateTooltip}>
-                <QuestionCircleOutlined style={{ color: '#1890ff', cursor: 'pointer' }} />
-              </Tooltip>
-            </div>
-          </>
         )}
 
         {/* Comments */}
