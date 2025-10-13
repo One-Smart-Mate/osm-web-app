@@ -334,7 +334,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           for (const level of allChildLevels) {
             await LevelCache.cacheLevel(parseInt(siteId), level);
           }
-        } catch (error) {
+        } catch (_error) {
           // If API fails, fallback to filtering from all levels
           const childLevels = levels.filter(level => {
             const superiorIdStr = level.superiorId?.toString();
@@ -548,7 +548,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                 for (const level of allLevelsForIndex) {
                   await LevelCache.cacheLevel(parseInt(siteId), level);
                 }
-              } catch (error) {
+              } catch (_error) {
                 // Fallback to filtering from all levels
                 const parentIdStr = parentId.toString();
                 allLevelsForIndex = levels.filter(level => {
@@ -601,7 +601,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             for (const level of childrenOfLastLevel) {
               await LevelCache.cacheLevel(parseInt(siteId), level);
             }
-          } catch (error) {
+          } catch (_error) {
             // Fallback to filtering from all levels
             childrenOfLastLevel = levels.filter(level => {
               const superiorIdStr = level.superiorId?.toString();
