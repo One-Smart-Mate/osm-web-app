@@ -5,7 +5,6 @@ import { useGetCardReportDetailsMutation, useGetCardsByMachineMutation, useGetCa
 import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
-import i18n from "../../config/i18n";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title: AntTitle, Text } = Typography;
