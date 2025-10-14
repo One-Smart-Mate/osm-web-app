@@ -20,38 +20,6 @@ interface NodeElementProps {
 
 const isLeafNode = (node: any) => !node.children || node.children.length === 0;
 
-const hasCards = (node: any, cardCounts: { [key: string]: number }) => {
-  if (node.id !== "0" && cardCounts[node.id] && cardCounts[node.id] > 0) {
-    return true;
-  }
-
-  if (node.children && node.children.length > 0) {
-    return node.children.some((child: any) => hasCards(child, cardCounts));
-  }
-
-  return false;
-};
-
-const calculateTotalCards = (
-  node: any,
-  cardCounts: { [key: string]: number }
-): number => {
-  const ownCards =
-    node.id !== "0" && cardCounts[node.id] ? cardCounts[node.id] : 0;
-
-  if (!node.children || node.children.length === 0) {
-    return ownCards;
-  }
-
-  const childrenCards = node.children.reduce(
-    (total: number, child: any) =>
-      total + calculateTotalCards(child, cardCounts),
-    0
-  );
-
-  return ownCards + childrenCards;
-};
-
 const NodeElement: React.FC<NodeElementProps> = ({
   nodeDatum,
   toggleNode,
@@ -108,24 +76,17 @@ const NodeElement: React.FC<NodeElementProps> = ({
 
   const fillColor = getFillColor(nodeDatum.status);
 
-  const cardCount = nodeDatum.id !== "0" ? cardCounts[nodeDatum.id] : null;
+  // Only show card count for the current node (not including children)
+  const cardCount = nodeDatum.id !== "0" ? (cardCounts[nodeDatum.id] || 0) : 0;
 
-  const totalCardCount =
-    nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
+  const nodeHasOwnCards = cardCount > 0;
 
-  const nodeHasOwnCards = cardCount && cardCount > 0;
-
-  const nodeChildrenHaveCards =
-    nodeDatum.children &&
-    nodeDatum.children.length > 0 &&
-    nodeDatum.children.some((child: any) => hasCards(child, cardCounts));
-
-  const showSplitColors =
-    nodeDatum.id !== "0" && (nodeHasOwnCards || nodeChildrenHaveCards);
+  // Show split colors only if the node itself has cards
+  const showSplitColors = nodeDatum.id !== "0" && nodeHasOwnCards;
 
   const displayText = nodeDatum.attributes?.isPlaceholder
     ? nodeDatum.name
-    : nodeDatum.name + (totalCardCount && totalCardCount > 0 ? ` (${totalCardCount})` : "");
+    : nodeDatum.name + (cardCount > 0 ? ` (${cardCount})` : "");
 
   const handleContextMenu = (e: React.MouseEvent<SVGGElement>) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker } from "antd";
-import { SaveOutlined, CheckOutlined } from "@ant-design/icons";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Checkbox, Tooltip } from "antd";
+import { SaveOutlined, CheckOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
@@ -57,6 +57,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [isProcessingLevels, setIsProcessingLevels] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
+  const [assignWhenCreating, setAssignWhenCreating] = useState<boolean>(false);
 
   // Custom due date state for wildcard priority
   const [showCustomDate, setShowCustomDate] = useState(false);
@@ -143,6 +144,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLastLevelCompleted(false);
     setFinalNodeId(null);
     setComments("");
+    setAssignWhenCreating(false);
     setLastSelectedLevel(null); // Reset tracking de niveles
     setShowCustomDate(false);
     setCustomDueDate(null);
@@ -156,7 +158,25 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const loadCardTypes = async () => {
     try {
       const response = await getCardTypes(siteId.toString()).unwrap();
-      setCardTypes(response);
+
+      // Filter card types that have at least one preclassifier
+      const cardTypesWithPreclassifiers = await Promise.all(
+        response.map(async (cardType: any) => {
+          try {
+            const preclassifiersResponse = await getPreclassifiers(cardType.id.toString()).unwrap();
+            // Only include card types that have preclassifiers
+            return preclassifiersResponse && preclassifiersResponse.length > 0 ? cardType : null;
+          } catch (_error) {
+            // If there's an error fetching preclassifiers, exclude this card type
+            return null;
+          }
+        })
+      );
+
+      // Filter out null values (card types without preclassifiers)
+      const filteredCardTypes = cardTypesWithPreclassifiers.filter(cardType => cardType !== null);
+
+      setCardTypes(filteredCardTypes);
     } catch (error) {
       handleErrorNotification(error);
     }
@@ -537,7 +557,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       appVersion: '1.0.0',
       customDueDate: (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && customDueDate)
         ? customDueDate.format('YYYY-MM-DD')
-        : null
+        : null,
+      assignWhenCreating: assignWhenCreating ? 1 : 0
     };
 
     try {
@@ -688,6 +709,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           disabled={
             !selectedCardType ||
             !selectedPreclassifier ||
+            !lastLevelCompleted ||
             (showCustomDate && !customDueDate)
           }
         >
@@ -818,8 +840,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           </div>
         )}
 
-        {/* Machine ID Search (when priority is selected and not custom date) */}
-        {selectedPriority && !showCustomDate && showMachineSearch && (
+        {/* Machine ID Search and Levels (when priority is selected) */}
+        {selectedPriority && showMachineSearch && (!showCustomDate || customDueDate) && (
           <div ref={levelRef} style={{ marginTop: '16px' }}>
             <Divider style={{ margin: '24px 0' }} />
             <Typography.Text strong style={{ fontSize: '18px', display: 'block', marginBottom: '16px' }}>
@@ -919,6 +941,24 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               </>
             )}
           </div>
+        )}
+
+        {/* Assign Card When Creating Checkbox */}
+        {lastLevelCompleted && (
+          <>
+            <Divider />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Checkbox
+                checked={assignWhenCreating}
+                onChange={(e) => setAssignWhenCreating(e.target.checked)}
+              >
+                {Strings.assignCardOnCreate}
+              </Checkbox>
+              <Tooltip title={Strings.assignCardOnCreateTooltip}>
+                <QuestionCircleOutlined style={{ color: '#1890ff', cursor: 'pointer' }} />
+              </Tooltip>
+            </div>
+          </>
         )}
 
         {/* Comments */}

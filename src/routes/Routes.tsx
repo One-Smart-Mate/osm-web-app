@@ -60,7 +60,7 @@ const CiltTypesPage = React.lazy(
 const CiltFrecuenciesPage = React.lazy(
   () => import("../pages/ciltFrecuencies/CiltFrecuenciesPage")
 );
-const TagsPage = React.lazy(() => import("../pages/tags/TagsPage"));
+const TagsPage = React.lazy(() => import("../pages/tags/TagsPageOptimized"));
 const TagsFastPassword = React.lazy(() => import("../pages/tagsFastPassword/TagsFastPassword"));
 
 const CiltLevelAssignamentsPage = React.lazy(
