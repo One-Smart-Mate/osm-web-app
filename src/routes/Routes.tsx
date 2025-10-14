@@ -36,6 +36,8 @@ const SitesPage = React.lazy(() => import("../pages/site/SitesPage"));
 const ChartsPage = React.lazy(() => import("../pages/charts/ChartsPage"));
 const CalendarPage = React.lazy(() => import("../pages/calendar/CalendarPage"));
 const CiltChartsPage = React.lazy(() => import("../pages/ciltCharts/CiltCharts"));
+const CardReportsPage = React.lazy(() => import("../pages/cardReports/CardReportsPage"));
+const CardReportDetailPage = React.lazy(() => import("../pages/cardReports/CardReportDetailPage"));
 const PositionsPage = React.lazy(
   () => import("../pages/positions/PositionsPage")
 );
@@ -136,6 +138,22 @@ const chartsRoute = new Route(
   <ChartsPage />,
   <BsBarChartLine />,
   Strings.dashboard
+);
+
+const cardReportsRoute = new Route(
+  "Reporte de tarjetas",
+  Constants.ROUTES_PATH.cardReports,
+  <CardReportsPage />,
+  <BsBarChartLine />,
+  Strings.dashboard
+);
+
+const cardReportDetailRoute = new Route(
+  "Detalle del reporte",
+  Constants.ROUTES_PATH.cardReportDetail,
+  <CardReportDetailPage />,
+  <></>,
+  ""
 );
 
 const calendarRoute = new Route(
@@ -277,6 +295,7 @@ export const ciltSequencesRoute = new Route(
 const routes: Route[] = [
   tagDetailsRoute,
   ciltSequencesRoute,
+  cardReportDetailRoute,
   siteUsersRoute,
   sitesRoute,
   ciltReportsRoute,
@@ -298,6 +317,7 @@ const routes: Route[] = [
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
   ciltChartsRoute,
+  cardReportsRoute,
   chartsRoute, // Moved charts route to the end to prevent it from matching first
   calendarRoute,
 ];
@@ -394,6 +414,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
         key: chartsRoute.path,
         icon: chartsRoute.icon,
         section: chartsRoute.section,
+      }),
+      getItemV2({
+        label: cardReportsRoute.label,
+        key: cardReportsRoute.path,
+        icon: cardReportsRoute.icon,
+        section: cardReportsRoute.section,
       }),
       getItemV2({
         label: calendarRoute.label,

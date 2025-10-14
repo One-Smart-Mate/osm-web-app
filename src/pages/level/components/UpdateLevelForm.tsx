@@ -116,6 +116,12 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
             <p className="text-base">{Strings.notify}</p>
           </Checkbox>
         </Form.Item>
+
+        <Form.Item name="assignWhileCreate" valuePropName="checked" label={Strings.assignCardOnCreate}>
+          <Checkbox>
+            <p className="text-base">{Strings.assignCardOnCreate}</p>
+          </Checkbox>
+        </Form.Item>
       </div>
     </Form>
   );

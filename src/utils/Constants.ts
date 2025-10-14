@@ -89,6 +89,8 @@ const ROUTES_PATH = {
   tagsFastPassword: 'tags-fast-password',
   charts: 'charts',
   calendar: 'calendar',
+  cardReports: 'card-reports',
+  cardReportDetail: 'card-report-detail',
   users: 'users',
   priorities: 'priorities',
   cardTypes: 'cardtypes',
