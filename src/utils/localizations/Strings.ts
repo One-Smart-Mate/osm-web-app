@@ -874,6 +874,8 @@ class StringsBase {
   static orSelectManually = "orSelectManually";
   static modifySelection = "modifySelection";
   static selectedPath = "selectedPath";
+  static showStructure = "showStructure";
+  static hideStructure = "hideStructure";
   static filter = "filter";
   static selectCurrentPage = "selectCurrentPage";
   static invertSelection = "invertSelection";

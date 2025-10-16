@@ -115,25 +115,28 @@ const TagsPageOptimized = () => {
 
       // Filter by user role if needed
       let filteredCards = response.data;
+      let filteredTotal = response.total;
       if ((userRole === UserRoles._OPERATOR || userRole === UserRoles._MECHANIC) && user) {
         filteredCards = response.data.filter(card =>
           card.creatorName.toLowerCase() === user.name.toLowerCase() ||
           card.responsableName?.toLowerCase() === user.name.toLowerCase() ||
           card.mechanicName?.toLowerCase() === user.name.toLowerCase()
         );
+        // Update total to match filtered cards count
+        filteredTotal = filteredCards.length;
       }
 
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {
         cards: filteredCards,
-        total: response.total,
+        total: filteredTotal,
         totalPages: response.totalPages,
         hasMore: response.hasMore,
       });
 
       setLoadingProgress(100);
       setData(filteredCards);
-      setTotal(response.total);
+      setTotal(filteredTotal);
       setCurrentPage(page);
     } catch (error) {
       handleErrorNotification(error);
@@ -391,7 +394,7 @@ const TagsPageOptimized = () => {
             grid={RESPONSIVE_LIST}
             dataSource={data}
             loading={isLoading}
-            pagination={{
+            pagination={total > 0 ? {
               current: currentPage,
               pageSize: pageSize,
               total: total,
@@ -400,7 +403,7 @@ const TagsPageOptimized = () => {
               onChange: handlePageChange,
               onShowSizeChange: (size) => handlePageChange(1, size),
               showTotal: (total) => `${Strings.total || "Total"} ${total} ${Strings.cards || "cards"}`,
-            }}
+            } : false}
             className="mt-10"
             renderItem={(item: CardInterface) => (
               <List.Item>

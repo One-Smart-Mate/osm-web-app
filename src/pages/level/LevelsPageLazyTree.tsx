@@ -167,10 +167,7 @@ const LevelsPageLazyTree = () => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [loadedChildren, setLoadedChildren] = useState<Map<string, any[]>>(new Map());
   const [levelCardCounts, setLevelCardCounts] = useState<{[key: string]: number}>({});
-  const [isTreeExpanded, setIsTreeExpanded] = useState(() => {
-    const storedState = localStorage.getItem('treeExpandedState');
-    return storedState === 'true';
-  });
+  const [isTreeExpanded, setIsTreeExpanded] = useState(false);
 
   const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
@@ -437,11 +434,43 @@ const LevelsPageLazyTree = () => {
       // Get the original tree data (from initial load)
       const originalData = treeData[0].attributes?.originalData || [];
 
-      // Rebuild hierarchy with loaded children
-      const newHierarchy = buildLazyHierarchy(originalData, loadedChildren);
+      // Merge original data with loaded children to build complete hierarchy
+      const mergeLoadedData = (nodes: any[]): any[] => {
+        return nodes.map(node => {
+          const nodeId = node.id?.toString();
+          const loadedChildrenForNode = loadedChildren.get(nodeId);
+
+          if (loadedChildrenForNode && loadedChildrenForNode.length > 0) {
+            // Recursively merge children
+            return {
+              ...node,
+              children: mergeLoadedData(loadedChildrenForNode)
+            };
+          }
+
+          // Keep original children if no loaded children
+          if (node.children && node.children.length > 0) {
+            return {
+              ...node,
+              children: mergeLoadedData(node.children)
+            };
+          }
+
+          return node;
+        });
+      };
+
+      const mergedData = mergeLoadedData(originalData);
+
+      // Rebuild hierarchy with all loaded children
+      const newHierarchy = buildLazyHierarchy(mergedData, loadedChildren);
 
       setTreeData([{
         ...treeData[0],
+        attributes: {
+          ...treeData[0].attributes,
+          originalData: mergedData  // Update original data with merged data
+        },
         children: newHierarchy
       }]);
     }
@@ -764,26 +793,96 @@ const LevelsPageLazyTree = () => {
     }
   };
 
-  const expandAllNodes = () => {
-    const expandNodes = (nodes: any[]) => {
-      nodes.forEach(node => {
-        localStorage.setItem(
-          `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
-          "false"
-        );
+  const expandAllNodes = async () => {
+    setLoading(true);
 
-        if (node.children && node.children.length > 0) {
-          expandNodes(node.children);
+    const expandNodesRecursively = async (nodes: any[]): Promise<void> => {
+      for (const node of nodes) {
+        if (!node || node.id === "0") {
+          // Always expand root
+          localStorage.setItem(
+            `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+            "false"
+          );
+
+          // Process root's children
+          if (node.children && node.children.length > 0) {
+            await expandNodesRecursively(node.children);
+          }
+          continue;
         }
-      });
+
+        // Check if this is a placeholder
+        if (node.attributes?.isPlaceholder) {
+          continue;
+        }
+
+        const childrenCount = node.attributes?.childrenCount || 0;
+        const hasChildren = node.attributes?.hasChildren || false;
+
+        // Only expand and load if node has DIRECT children < 20
+        if (hasChildren && childrenCount > 0 && childrenCount < 20) {
+          // Mark as expanded
+          localStorage.setItem(
+            `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+            "false"
+          );
+
+          // Load children if not already loaded
+          if (node.children && node.children.length > 0 && node.children[0]?.attributes?.isPlaceholder) {
+            try {
+              const children = await loadChildren(siteId, node.id);
+
+              if (children && children.length > 0) {
+                // Update loaded children map
+                setLoadedChildren(prev => {
+                  const newMap = new Map(prev);
+                  newMap.set(node.id, children);
+                  return newMap;
+                });
+
+                // Load card counts for new children
+                const newCardCounts: {[key: string]: number} = {};
+                for (const child of children) {
+                  try {
+                    const cards = await getCardsByLevel({
+                      levelId: child.id,
+                      siteId: siteId
+                    }).unwrap();
+                    newCardCounts[child.id] = cards.length;
+                  } catch (_error) {
+                    newCardCounts[child.id] = 0;
+                  }
+                }
+                setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
+
+                // Recursively expand the newly loaded children
+                await expandNodesRecursively(children);
+              }
+            } catch (error) {
+              console.error(`Error loading children for node ${node.id}:`, error);
+            }
+          } else if (node.children && node.children.length > 0 && !node.children[0]?.attributes?.isPlaceholder) {
+            // Children already loaded, just expand them recursively
+            await expandNodesRecursively(node.children);
+          }
+        } else if (hasChildren && childrenCount >= 20) {
+          // Keep collapsed if it has 20 or more children
+          localStorage.setItem(
+            `${Constants.nodeStartBridgeCollapsed}${node.id}${Constants.nodeEndBridgeCollapserd}`,
+            "true"
+          );
+        }
+      }
     };
 
     if (treeData.length > 0) {
-      expandNodes(treeData);
+      await expandNodesRecursively(treeData);
       localStorage.setItem('treeExpandedState', 'true');
-      handleGetLevels();
       setIsTreeExpanded(true);
     }
+
+    setLoading(false);
   };
 
   const collapseAllNodes = () => {

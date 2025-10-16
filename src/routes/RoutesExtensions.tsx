@@ -74,6 +74,7 @@ export const getUserSiderOptions = (user: User): ItemType[] => {
       routes = localIHSisAdminRoutesSiderOptions();
       break;
     case UserRoles._OPERATOR:
+    case UserRoles._MECHANIC:
       routes = operatorRoutesSiderOptions();
       break;
     default:
@@ -111,7 +112,8 @@ export const buildInitRoute = (user: User): string => {
     case UserRoles._IHSISADMIN:
       return buildRoute(Constants.ROUTES_PATH.companies);
     case UserRoles._OPERATOR:
-      // Operators should start at cards page
+    case UserRoles._MECHANIC:
+      // Operators and mechanics should start at cards page
       return buildRoute(Constants.ROUTES_PATH.cards);
     default:
       // Other roles start at charts

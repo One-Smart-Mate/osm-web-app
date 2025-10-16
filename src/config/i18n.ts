@@ -1809,6 +1809,8 @@ const resources = {
       orSelectManually: "Or select location manually:",
       modifySelection: "Modify selection if needed:",
       selectedPath: "Selected Path:",
+      showStructure: "Show structure",
+      hideStructure: "Hide structure",
 
       // Card Solution Modal strings
       errorLoadingUsers: "Error loading users",
@@ -3717,6 +3719,8 @@ const resources = {
       orSelectManually: "O seleccione la ubicación manualmente:",
       modifySelection: "Modifique la selección si es necesario:",
       selectedPath: "Ruta Seleccionada:",
+      showStructure: "Ver estructura",
+      hideStructure: "Ocultar estructura",
 
       // Card Solution Modal strings
       errorLoadingUsers: "Error cargando usuarios",
