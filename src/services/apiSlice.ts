@@ -3,8 +3,8 @@ import Constants from "../utils/Constants";
 import User from "../data/user/user";
 
 export const apiSlice = createApi({
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: import.meta.env.VITE_API_SERVICE, 
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_SERVICE,
     credentials: 'same-origin',
     prepareHeaders: (headers) => {
       let token="";
@@ -19,5 +19,5 @@ export const apiSlice = createApi({
   tagTypes: ["User", "OplLevel"],
   endpoints: (_) => ({}),
   refetchOnFocus: true, // Refetch data when the app regains focus
-  refetchOnReconnect: true, 
+  refetchOnReconnect: true,
 });

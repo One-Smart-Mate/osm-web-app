@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Pagination, Spin } from "antd";
+import { Modal, Button, Input, Space, Typography, Divider, Steps, Card, DatePicker, Pagination, Spin, App as AntApp } from "antd";
 import { SaveOutlined, CheckOutlined, LoadingOutlined } from "@ant-design/icons";
-import { v4 as uuidv4 } from 'uuid';
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
 import Strings from "../../utils/localizations/Strings";
@@ -13,7 +12,8 @@ import { useGetActiveSitePrioritiesMutation } from "../../services/priorityServi
 import { useGetlevelsMutation, useFindLevelByMachineIdMutation, useGetChildrenLevelsMutation } from "../../services/levelService";
 import Constants from "../../utils/Constants";
 import dayjs from "dayjs";
-import { LevelCache } from "../../utils/levelCache";  
+import { LevelCache } from "../../utils/levelCache";
+import AnatomyNotification from "../components/AnatomyNotification";  
 
 interface CreateCardModalProps {
   open: boolean;
@@ -25,7 +25,8 @@ interface CreateCardModalProps {
 
 const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateCardModalProps) => {
   const { user } = useCurrentUser();
-  
+  const { notification } = AntApp.useApp();
+
   // API mutations
   const [createCard, { isLoading: isCreating }] = useCreateCardMutation();
   const [getCardTypes, { isLoading: isLoadingCardTypes }] = useGetCardTypesMutation();
@@ -794,14 +795,28 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   };
 
   const handleSave = async () => {
+    // Validate required fields
     if (!selectedCardType || !selectedPreclassifier || !user || !user.userId) {
+      console.error("[CreateCardModal] Missing required fields:", {
+        selectedCardType,
+        selectedPreclassifier,
+        userId: user?.userId
+      });
       handleErrorNotification(Strings.requiredInfo);
+      return;
+    }
+
+    // Validate siteId
+    if (!siteId || siteId === "0" || siteId === "") {
+      console.error("[CreateCardModal] Invalid siteId:", siteId);
+      AnatomyNotification.error(notification, "Invalid site");
       return;
     }
 
     // Validate custom due date if wildcard priority is selected
     const selectedPriorityData = priorities.find(p => p.id.toString() === selectedPriority);
     if (selectedPriorityData && selectedPriorityData.priorityCode === Constants.PRIORITY_WILDCARD_CODE && !customDueDate) {
+      console.error("[CreateCardModal] Custom due date required for wildcard priority");
       handleErrorNotification(Strings.requiredCustomDate);
       return;
     }
@@ -809,13 +824,32 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     // Double-check the selected preclassifier ID is correct
     const selectedPreclassifierData = preclassifiers.find(p => p.id.toString() === selectedPreclassifier);
     if (!selectedPreclassifierData) {
-      handleErrorNotification("Error: Preclassifier not found");
+      console.error("[CreateCardModal] Preclassifier not found:", selectedPreclassifier);
+      AnatomyNotification.error(notification, "Error: Preclassifier not found");
       return;
     }
 
+    // Validate finalNodeId
+    if (!finalNodeId || finalNodeId === 0) {
+      console.error("[CreateCardModal] Invalid or missing finalNodeId:", finalNodeId);
+      AnatomyNotification.error(notification, "Please select a complete location path");
+      return;
+    }
+
+    // Generate a simple temporary UUID
+    // Backend will validate and regenerate if needed using crypto.randomUUID()
+    const generateTempUUID = () => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    };
+
+    // Build card data with validated fields
     const cardData: CreateCardRequest = {
       siteId: parseInt(siteId),
-      cardUUID: uuidv4(),
+      cardUUID: generateTempUUID(), // Temporary UUID - backend will regenerate if duplicate
       cardCreationDate: new Date().toISOString(),
       cardTypeId: parseInt(selectedCardType),
       preclassifierId: parseInt(selectedPreclassifier),
@@ -832,13 +866,27 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         : null
     };
 
+    // Validate parsed IDs
+    if (isNaN(cardData.siteId) || isNaN(cardData.cardTypeId) || isNaN(cardData.preclassifierId) || isNaN(cardData.creatorId)) {
+      console.error("[CreateCardModal] Invalid parsed IDs:", {
+        siteId: cardData.siteId,
+        cardTypeId: cardData.cardTypeId,
+        preclassifierId: cardData.preclassifierId,
+        creatorId: cardData.creatorId
+      });
+      AnatomyNotification.error(notification, "Invalid data format. Please try again.");
+      return;
+    }
+
     try {
       await createCard(cardData).unwrap();
+      console.log("[CreateCardModal] Card created successfully");
       handleSucccessNotification(Strings.successfullyRegistered);
       onSuccess?.();
       onClose();
       resetForm();
     } catch (error) {
+      console.error("[CreateCardModal] Error creating card:", error);
       handleErrorNotification(error);
     }
   };
