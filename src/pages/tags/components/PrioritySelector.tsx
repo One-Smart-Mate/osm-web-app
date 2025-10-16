@@ -84,8 +84,8 @@ const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
 
         // Sort alphabetically/alphanumerically by priorityCode
         const sortedPriorities = validPriorities.sort((a, b) => {
-          const codeA = (a.priorityCode || a.name || '').toLowerCase();
-          const codeB = (b.priorityCode || b.name || '').toLowerCase();
+          const codeA = (a.priorityCode || '').toLowerCase();
+          const codeB = (b.priorityCode || '').toLowerCase();
           return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
         });
 

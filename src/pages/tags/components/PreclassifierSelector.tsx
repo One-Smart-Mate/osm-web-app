@@ -58,8 +58,8 @@ const PreclassifierSelector = forwardRef<HTMLDivElement, PreclassifierSelectorPr
 
         // Sort alphabetically/alphanumerically by preclassifierCode
         const sortedPreclassifiers = validPreclassifiers.sort((a, b) => {
-          const codeA = (a.preclassifierCode || a.name || '').toLowerCase();
-          const codeB = (b.preclassifierCode || b.name || '').toLowerCase();
+          const codeA = (a.preclassifierCode || '').toLowerCase();
+          const codeB = (b.preclassifierCode || '').toLowerCase();
           return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
         });
 
