@@ -64,6 +64,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [machineSearchSuccess, setMachineSearchSuccess] = useState<boolean>(false);
   const [isProcessingLevels, setIsProcessingLevels] = useState<boolean>(false);
   const [isLoadingInitialLevels, setIsLoadingInitialLevels] = useState<boolean>(false);
+  const [showManualStructure, setShowManualStructure] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
 
@@ -178,6 +179,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setLoadingLevels(new Set());
     setLoadedLevelData(new Map());
     setIsLoadingInitialLevels(false);
+    setShowManualStructure(false);
   };
 
   const loadCardTypes = async () => {
@@ -259,17 +261,24 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         }
       }
 
-      // Store all loaded data for this level
+      // Sort levels alphabetically/alphanumerically by name
+      const sortedRootLevels = allRootLevels.sort((a, b) => {
+        const nameA = (a.name || a.levelName || '').toLowerCase();
+        const nameB = (b.name || b.levelName || '').toLowerCase();
+        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      // Store all loaded data for this level (sorted)
       setLoadedLevelData(prev => {
         const newMap = new Map(prev);
-        newMap.set(0, allRootLevels);
+        newMap.set(0, sortedRootLevels);
         return newMap;
       });
 
       // Calculate pagination
       const startIndex = (page - 1) * pageSize;
       const endIndex = startIndex + pageSize;
-      const paginatedLevels = allRootLevels.slice(startIndex, endIndex);
+      const paginatedLevels = sortedRootLevels.slice(startIndex, endIndex);
 
       // Update hierarchy with paginated data
       const hierarchy = new Map<number, any[]>();
@@ -284,7 +293,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         newMap.set(0, {
           current: page,
           pageSize: pageSize,
-          total: allRootLevels.length
+          total: sortedRootLevels.length
         });
         return newMap;
       });
@@ -345,22 +354,29 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         }
       }
 
-      // Store all loaded data for this level
+      // Sort levels alphabetically/alphanumerically by name
+      const sortedChildLevels = allChildLevels.sort((a, b) => {
+        const nameA = (a.name || a.levelName || '').toLowerCase();
+        const nameB = (b.name || b.levelName || '').toLowerCase();
+        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      // Store all loaded data for this level (sorted)
       setLoadedLevelData(prev => {
         const newMap = new Map(prev);
-        newMap.set(nextLevelIndex, allChildLevels);
+        newMap.set(nextLevelIndex, sortedChildLevels);
         return newMap;
       });
 
       // Calculate pagination
       const startIndex = (page - 1) * pageSize;
       const endIndex = startIndex + pageSize;
-      const paginatedChildren = allChildLevels.slice(startIndex, endIndex);
+      const paginatedChildren = sortedChildLevels.slice(startIndex, endIndex);
 
       setLevelHierarchy(prev => {
         const newHierarchy = new Map(prev);
 
-        if (allChildLevels.length > 0) {
+        if (sortedChildLevels.length > 0) {
           // Add the next level with paginated data
           newHierarchy.set(nextLevelIndex, paginatedChildren);
 
@@ -391,7 +407,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         newMap.set(nextLevelIndex, {
           current: page,
           pageSize: pageSize,
-          total: allChildLevels.length
+          total: sortedChildLevels.length
         });
         return newMap;
       });
@@ -641,6 +657,9 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         setSelectedLevels(newSelectedLevels);
         setMachineIdSearch("");
         setMachineSearchError("");
+
+        // Show manual structure when search is successful
+        setShowManualStructure(true);
 
         // Wait for the DOM to update before showing success and scrolling
         requestAnimationFrame(() => {
@@ -999,6 +1018,28 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           </div>
         ) : (
           <>
+            {/* Pagination for this level - Now positioned ABOVE the records */}
+            {pagination && pagination.total > pagination.pageSize && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                paddingBottom: '16px',
+                borderBottom: '1px solid #f0f0f0'
+              }}>
+                <Pagination
+                  current={pagination.current}
+                  pageSize={pagination.pageSize}
+                  total={pagination.total}
+                  onChange={(page, pageSize) => handleLevelPaginationChange(levelIndex, page, pageSize)}
+                  showSizeChanger
+                  pageSizeOptions={['10', '20', '50', '100']}
+                  showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+                  size="small"
+                />
+              </div>
+            )}
+
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -1015,28 +1056,6 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                 />
               ))}
             </div>
-
-            {/* Pagination for this level */}
-            {pagination && pagination.total > pagination.pageSize && (
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '16px',
-                paddingTop: '16px',
-                borderTop: '1px solid #f0f0f0'
-              }}>
-                <Pagination
-                  current={pagination.current}
-                  pageSize={pagination.pageSize}
-                  total={pagination.total}
-                  onChange={(page, pageSize) => handleLevelPaginationChange(levelIndex, page, pageSize)}
-                  showSizeChanger
-                  pageSizeOptions={['10', '20', '50', '100']}
-                  showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-                  size="small"
-                />
-              </div>
-            )}
           </>
         )}
       </div>
@@ -1272,6 +1291,34 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                   {Strings.machineIdHelpText}
                 </Typography.Text>
               )}
+
+              {/* Button to show/hide manual structure */}
+              <Button
+                type="primary"
+                onClick={() => {
+                  setShowManualStructure(!showManualStructure);
+                  // Scroll to first level when showing structure
+                  if (!showManualStructure) {
+                    setTimeout(() => {
+                      const firstLevelElement = document.querySelector('[data-level-index="0"]');
+                      if (firstLevelElement) {
+                        firstLevelElement.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start',
+                          inline: 'nearest'
+                        });
+                      }
+                    }, 300);
+                  }
+                }}
+                style={{
+                  marginTop: '12px',
+                  backgroundColor: '#1890ff',
+                  borderColor: '#1890ff'
+                }}
+              >
+                {showManualStructure ? Strings.hideStructure || "Ocultar estructura" : Strings.showStructure || "Ver estructura"}
+              </Button>
             </div>
 
             {/* Show selected path after search */}
@@ -1324,7 +1371,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             )}
 
             {/* Manual Level Selection */}
-            {!isLoadingInitialLevels && levelHierarchy.size > 0 && (
+            {!isLoadingInitialLevels && levelHierarchy.size > 0 && showManualStructure && (
               <>
                 <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
                   {selectedLevels.size > 0

@@ -56,7 +56,14 @@ const PreclassifierSelector = forwardRef<HTMLDivElement, PreclassifierSelectorPr
           AnatomyNotification.error(notification, "No preclassifiers available");
         }
 
-        setPreclassifiers(validPreclassifiers);
+        // Sort alphabetically/alphanumerically by preclassifierCode
+        const sortedPreclassifiers = validPreclassifiers.sort((a, b) => {
+          const codeA = (a.preclassifierCode || a.name || '').toLowerCase();
+          const codeB = (b.preclassifierCode || b.name || '').toLowerCase();
+          return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        setPreclassifiers(sortedPreclassifiers);
       } catch (error) {
         console.error("[PreclassifierSelector] Error loading preclassifiers for cardTypeId:", cardTypeId, error);
         AnatomyNotification.error(notification, error);

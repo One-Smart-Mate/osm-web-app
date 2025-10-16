@@ -37,6 +37,13 @@ const LevelSelector = ({
     onLevelChange(levelIndex, levelId);
   };
 
+  // Sort level options alphabetically/alphanumerically by name
+  const sortedLevelOptions = [...levelOptions].sort((a, b) => {
+    const nameA = (a.name || a.levelName || '').toLowerCase();
+    const nameB = (b.name || b.levelName || '').toLowerCase();
+    return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+  });
+
   return (
     <div data-level-index={levelIndex} style={{ marginBottom: '24px' }}>
       <Typography.Text strong style={{ fontSize: '16px', display: 'block', marginBottom: '12px' }}>
@@ -66,7 +73,7 @@ const LevelSelector = ({
                 No levels available
               </Typography.Text>
             ) : (
-              levelOptions.map(level => {
+              sortedLevelOptions.map(level => {
                 // Validate level object before rendering
                 if (!level || !level.id) {
                   console.error("[LevelSelector] Invalid level object at index:", levelIndex, "level:", level);

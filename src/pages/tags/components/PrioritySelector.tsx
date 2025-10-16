@@ -82,7 +82,14 @@ const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
           AnatomyNotification.error(notification, "No priorities available");
         }
 
-        setPriorities(validPriorities);
+        // Sort alphabetically/alphanumerically by priorityCode
+        const sortedPriorities = validPriorities.sort((a, b) => {
+          const codeA = (a.priorityCode || a.name || '').toLowerCase();
+          const codeB = (b.priorityCode || b.name || '').toLowerCase();
+          return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        setPriorities(sortedPriorities);
       } catch (error) {
         console.error("[PrioritySelector] Error loading priorities for siteId:", siteId, error);
         AnatomyNotification.error(notification, error);

@@ -84,7 +84,14 @@ const CardTypeSelector = ({
         AnatomyNotification.error(notification, "No card types available");
       }
 
-      setCardTypes(filteredCardTypes);
+      // Sort alphabetically/alphanumerically by name
+      const sortedCardTypes = filteredCardTypes.sort((a, b) => {
+        const nameA = (a.name || '').toLowerCase();
+        const nameB = (b.name || '').toLowerCase();
+        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      setCardTypes(sortedCardTypes);
     } catch (error) {
       console.error("[CardTypeSelector] Error loading card types:", error);
       AnatomyNotification.error(notification, error);

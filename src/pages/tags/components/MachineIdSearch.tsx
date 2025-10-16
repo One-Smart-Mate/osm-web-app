@@ -163,11 +163,18 @@ const MachineIdSearch = ({
           }
         }
 
-        // Store all loaded data
-        newLoadedData.set(i, allLevelsForIndex);
+        // Sort levels alphabetically/alphanumerically by name
+        const sortedLevels = allLevelsForIndex.sort((a, b) => {
+          const nameA = (a.name || a.levelName || '').toLowerCase();
+          const nameB = (b.name || b.levelName || '').toLowerCase();
+          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        // Store all loaded data (sorted)
+        newLoadedData.set(i, sortedLevels);
 
         // Calculate paginated data
-        const paginatedData = allLevelsForIndex.slice(0, PAGE_SIZE);
+        const paginatedData = sortedLevels.slice(0, PAGE_SIZE);
         newHierarchy.set(i, paginatedData);
 
         // Store pagination info
@@ -230,11 +237,18 @@ const MachineIdSearch = ({
       let isComplete = false;
 
       if (childrenOfLastLevel.length > 0) {
-        // Store all loaded data for children
-        newLoadedData.set(lastLevelIndex, childrenOfLastLevel);
+        // Sort children alphabetically/alphanumerically
+        const sortedChildren = childrenOfLastLevel.sort((a, b) => {
+          const nameA = (a.name || a.levelName || '').toLowerCase();
+          const nameB = (b.name || b.levelName || '').toLowerCase();
+          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        // Store all loaded data for children (sorted)
+        newLoadedData.set(lastLevelIndex, sortedChildren);
 
         // Add paginated children to hierarchy
-        const paginatedChildren = childrenOfLastLevel.slice(0, PAGE_SIZE);
+        const paginatedChildren = sortedChildren.slice(0, PAGE_SIZE);
         newHierarchy.set(lastLevelIndex, paginatedChildren);
 
         // Store pagination info
@@ -261,12 +275,32 @@ const MachineIdSearch = ({
       // Call success callback
       onSearchSuccess(newHierarchy, newSelectedLevels, newPagination, newLoadedData, finalNodeId, isComplete);
 
-      // Scroll to appropriate level
+      // Scroll to appropriate level with highlight
       if (onScrollToLevel) {
         const targetIndex = childrenOfLastLevel.length > 0 ? lastLevelIndex : lastLevelIndex - 1;
+
+        // Wait for DOM to update
         setTimeout(() => {
           onScrollToLevel(targetIndex);
-        }, 300);
+
+          // Add highlight effect to the target level
+          setTimeout(() => {
+            const targetLevelElement = document.querySelector(`[data-level-index="${targetIndex}"]`);
+            if (targetLevelElement) {
+              const element = targetLevelElement as HTMLElement;
+              const originalBackground = element.style.backgroundColor;
+              element.style.backgroundColor = '#e6f7ff';
+              element.style.transition = 'background-color 0.5s ease';
+
+              setTimeout(() => {
+                element.style.backgroundColor = originalBackground || '';
+                setTimeout(() => {
+                  element.style.transition = '';
+                }, 500);
+              }, 2000);
+            }
+          }, 300);
+        }, 400);
       }
 
       // Clear success message after 5 seconds
