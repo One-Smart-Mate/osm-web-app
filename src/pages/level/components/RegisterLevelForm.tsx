@@ -26,10 +26,12 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
   }, []);
 
   const selectOptions = () => {
-    return data.map((responsible) => ({
-      value: responsible.id,
-      label: responsible.name,
-    }));
+    return data
+      .map((responsible) => ({
+        value: responsible.id,
+        label: responsible.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   };
 
   return (

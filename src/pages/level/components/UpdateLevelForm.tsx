@@ -43,10 +43,12 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
   }, [initialValues, form]);
 
   const responsibleOptions = () => {
-    const options = responsibles.map((responsible) => ({
-      value: responsible.id,
-      label: responsible.name,
-    }));
+    const options = responsibles
+      .map((responsible) => ({
+        value: responsible.id,
+        label: responsible.name,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
     options.push({ value: "0", label: Strings.none });
     return options;
   };
