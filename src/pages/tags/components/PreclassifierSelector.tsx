@@ -9,10 +9,11 @@ interface PreclassifierSelectorProps {
   cardTypeId: string;
   selectedPreclassifier: string;
   onPreclassifierChange: (_value: string) => void;
+  onLoadingChange?: (_isLoading: boolean) => void;
 }
 
 const PreclassifierSelector = forwardRef<HTMLDivElement, PreclassifierSelectorProps>(
-  ({ cardTypeId, selectedPreclassifier, onPreclassifierChange }, ref) => {
+  ({ cardTypeId, selectedPreclassifier, onPreclassifierChange, onLoadingChange }, ref) => {
     const { notification } = AntApp.useApp();
     const [getPreclassifiers, { isLoading: isLoadingPreclassifiers }] = useGetPreclassifiersMutation();
     const [preclassifiers, setPreclassifiers] = useState<any[]>([]);
@@ -25,6 +26,8 @@ const PreclassifierSelector = forwardRef<HTMLDivElement, PreclassifierSelectorPr
 
     const loadPreclassifiers = async () => {
       try {
+        onLoadingChange?.(true);
+
         // Validate cardTypeId
         if (!cardTypeId || cardTypeId === "0" || cardTypeId === "") {
           console.error("[PreclassifierSelector] Invalid cardTypeId:", cardTypeId);
@@ -68,6 +71,8 @@ const PreclassifierSelector = forwardRef<HTMLDivElement, PreclassifierSelectorPr
         console.error("[PreclassifierSelector] Error loading preclassifiers for cardTypeId:", cardTypeId, error);
         AnatomyNotification.error(notification, error);
         setPreclassifiers([]);
+      } finally {
+        onLoadingChange?.(false);
       }
     };
 

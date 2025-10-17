@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Modal, Button, Space, Typography, Divider, Steps, App as AntApp } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
+import { Modal, Button, Space, Typography, Divider, Steps, App as AntApp, Spin } from "antd";
+import { SaveOutlined, LoadingOutlined } from "@ant-design/icons";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { handleErrorNotification, handleSucccessNotification } from "../../utils/Notifications";
 import Strings from "../../utils/localizations/Strings";
@@ -59,6 +59,10 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const [showManualStructure, setShowManualStructure] = useState<boolean>(false);
 
   const [comments, setComments] = useState<string>("");
+
+  // Global loading state
+  const [isGlobalLoading, setIsGlobalLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   // Custom due date state for wildcard priority
   const [customDueDate, setCustomDueDate] = useState<dayjs.Dayjs | null>(null);
@@ -160,6 +164,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     try {
       setIsLoadingInitialLevels(true);
       setLoadingLevels(prev => new Set(prev).add(0));
+      handleLoadingChange(true, Strings.loading);
 
       const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), 0);
       let allRootLevels: any[] = [];
@@ -231,6 +236,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       });
     } finally {
       setIsLoadingInitialLevels(false);
+      handleLoadingChange(false);
     }
   };
 
@@ -241,6 +247,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
     try {
       setLoadingLevels(prev => new Set(prev).add(nextLevelIndex));
+      handleLoadingChange(true, Strings.loading);
 
       let allChildLevels: any[] = [];
       const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), parentIdNum);
@@ -330,6 +337,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         newSet.delete(nextLevelIndex);
         return newSet;
       });
+    } finally {
+      handleLoadingChange(false);
     }
   };
 
@@ -389,6 +398,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       loadLevels();
       scrollToNextStep(levelRef);
     }
+  };
+
+  // Global loading handler
+  const handleLoadingChange = (isLoading: boolean, message?: string) => {
+    setIsGlobalLoading(isLoading);
+    setLoadingMessage(message || (isLoading ? Strings.loading : ""));
   };
 
   const handleMachineIdSearchSuccess = (
@@ -649,6 +664,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           selectedCardType={selectedCardType}
           onCardTypeChange={handleCardTypeChange}
           open={open}
+          onLoadingChange={(loading) => handleLoadingChange(loading, loading ? Strings.loadingtagTypes : "")}
         />
 
         {/* Preclassifier Selection */}
@@ -658,6 +674,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             cardTypeId={selectedCardType}
             selectedPreclassifier={selectedPreclassifier}
             onPreclassifierChange={handlePreclassifierChange}
+            onLoadingChange={(loading) => handleLoadingChange(loading, loading ? Strings.loading : "")}
           />
         )}
 
@@ -671,6 +688,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             customDueDate={customDueDate}
             onCustomDueDateChange={handleCustomDueDateChange}
             customDateRef={customDateRef}
+            onLoadingChange={(loading) => handleLoadingChange(loading, loading ? Strings.loadingpriorities : "")}
           />
         )}
 
@@ -688,6 +706,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               levels={levels}
               onSearchSuccess={handleMachineIdSearchSuccess}
               onScrollToLevel={handleScrollToLevel}
+              onLoadingChange={(loading) => handleLoadingChange(loading, loading ? Strings.loading : "")}
             />
 
             {/* Button to show/hide manual structure */}
@@ -786,6 +805,44 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           </>
         )}
       </Space>
+
+      {/* Global Loading Overlay */}
+      {isGlobalLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            gap: '16px'
+          }}
+        >
+          <Spin
+            indicator={<LoadingOutlined style={{ fontSize: 48, color: '#1890ff' }} spin />}
+            size="large"
+          />
+          {loadingMessage && (
+            <Typography.Text
+              style={{
+                color: '#ffffff',
+                fontSize: '16px',
+                fontWeight: 500,
+                textAlign: 'center',
+                maxWidth: '300px'
+              }}
+            >
+              {loadingMessage}
+            </Typography.Text>
+          )}
+        </div>
+      )}
     </Modal>
   );
 };

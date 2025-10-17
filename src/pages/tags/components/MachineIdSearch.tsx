@@ -17,13 +17,15 @@ interface MachineIdSearchProps {
     _isComplete: boolean
   ) => void;
   onScrollToLevel?: (_levelIndex: number) => void;
+  onLoadingChange?: (_isLoading: boolean) => void;
 }
 
 const MachineIdSearch = ({
   siteId,
   levels,
   onSearchSuccess,
-  onScrollToLevel
+  onScrollToLevel,
+  onLoadingChange
 }: MachineIdSearchProps) => {
   const { notification } = AntApp.useApp();
   const [findLevelByMachineId, { isLoading: isSearchingMachine }] = useFindLevelByMachineIdMutation();
@@ -51,6 +53,7 @@ const MachineIdSearch = ({
 
     setMachineSearchError("");
     setMachineSearchSuccess(false);
+    onLoadingChange?.(true);
 
     try {
       const result = await findLevelByMachineId({
@@ -62,18 +65,21 @@ const MachineIdSearch = ({
       if (!result) {
         console.error("[MachineIdSearch] Empty response from findLevelByMachineId");
         setMachineSearchError(Strings.machineIdNotFound || "Machine ID not found");
+        onLoadingChange?.(false);
         return;
       }
 
       if (!result.hierarchy || !Array.isArray(result.hierarchy)) {
         console.error("[MachineIdSearch] Invalid hierarchy format in response:", result);
         setMachineSearchError("Invalid response format");
+        onLoadingChange?.(false);
         return;
       }
 
       if (result.hierarchy.length === 0) {
         console.error("[MachineIdSearch] Empty hierarchy returned for machineId:", machineIdSearch);
         setMachineSearchError(Strings.machineIdNotFound || "Machine ID not found");
+        onLoadingChange?.(false);
         return;
       }
 
@@ -206,6 +212,7 @@ const MachineIdSearch = ({
         console.error("[MachineIdSearch] Invalid lastLevelId:", lastLevel);
         setIsProcessingLevels(false);
         setMachineSearchError("Invalid level data");
+        onLoadingChange?.(false);
         return;
       }
 
@@ -218,6 +225,7 @@ const MachineIdSearch = ({
       setMachineSearchError("");
       setIsProcessingLevels(false);
       setMachineSearchSuccess(true);
+      onLoadingChange?.(false);
 
       // Call success callback
       onSearchSuccess(newHierarchy, newSelectedLevels, newPagination, newLoadedData, finalNodeId, isComplete);
@@ -257,6 +265,7 @@ const MachineIdSearch = ({
     } catch (error: any) {
       console.error("[MachineIdSearch] Error searching for machineId:", machineIdSearch, error);
       setIsProcessingLevels(false);
+      onLoadingChange?.(false);
       setMachineSearchError(
         error?.data?.message ||
         Strings.machineIdNotFound ||
