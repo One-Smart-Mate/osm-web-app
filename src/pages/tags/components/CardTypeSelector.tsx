@@ -25,7 +25,6 @@ const CardTypeSelector = ({
   const [getCardTypes, { isLoading: isLoadingCardTypes }] = useGetCardTypesMutation();
   const [getPreclassifiers] = useGetPreclassifiersMutation();
   const [cardTypes, setCardTypes] = useState<any[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (open && siteId) {
@@ -35,7 +34,6 @@ const CardTypeSelector = ({
 
   const loadCardTypes = async () => {
     try {
-      setIsProcessing(true);
       onLoadingChange?.(true);
 
       // Validate siteId
@@ -102,7 +100,6 @@ const CardTypeSelector = ({
       console.error("[CardTypeSelector] Error loading card types:", error);
       AnatomyNotification.error(notification, error);
     } finally {
-      setIsProcessing(false);
       onLoadingChange?.(false);
     }
   };
