@@ -13,7 +13,7 @@ interface PrioritySelectorProps {
   onPriorityChange: (_value: string) => void;
   customDueDate: dayjs.Dayjs | null;
   onCustomDueDateChange: (_date: dayjs.Dayjs | null) => void;
-  customDateRef: React.RefObject<HTMLDivElement>;
+  customDateRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(

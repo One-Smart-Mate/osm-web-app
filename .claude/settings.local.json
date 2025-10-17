@@ -13,7 +13,10 @@
       "Read(//c/ERICK/OSM/**)",
       "Bash(timeout 120 npm run build)",
       "Bash(git stash:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
