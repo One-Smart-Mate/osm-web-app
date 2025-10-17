@@ -103,7 +103,7 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
         title={Strings.roles}
         label={
           <Space wrap>
-            {user.roles.map((role: Role) => (
+            {Array.from(new Map(user.roles.map(role => [role.id, role])).values()).map((role: Role) => (
               <Tooltip key={role.id} title={role.name}>
                 <Tag color="blue" style={{ fontSize: 10 }}>
                   {role.name}
