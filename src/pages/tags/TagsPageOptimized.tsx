@@ -116,15 +116,16 @@ const TagsPageOptimized = () => {
       // Filter by user role if needed
       let filteredCards = response.data;
       let filteredTotal = response.total;
-      if ((userRole === UserRoles._OPERATOR || userRole === UserRoles._MECHANIC) && user) {
+
+      // Operators: Only see cards they created
+      if (userRole === UserRoles._OPERATOR && user) {
         filteredCards = response.data.filter(card =>
-          card.creatorName.toLowerCase() === user.name.toLowerCase() ||
-          card.responsableName?.toLowerCase() === user.name.toLowerCase() ||
-          card.mechanicName?.toLowerCase() === user.name.toLowerCase()
+          card.creatorName.toLowerCase() === user.name.toLowerCase()
         );
         // Update total to match filtered cards count
         filteredTotal = filteredCards.length;
       }
+      // Mechanics: See all cards (no filtering needed here, they can filter manually)
 
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {

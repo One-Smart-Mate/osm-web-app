@@ -150,15 +150,14 @@ const TagsPage = () => {
     try {
       const response = await getCards(location.state.siteId).unwrap();
 
-      // If user is operator or mechanic, filter to show only their cards
-      if ((userRole === UserRoles._OPERATOR || userRole === UserRoles._MECHANIC) && user) {
+      // Operators: Only see cards they created
+      if (userRole === UserRoles._OPERATOR && user) {
         const filteredCards = response.filter(card =>
-          card.creatorName.toLowerCase() === user.name.toLowerCase() ||
-          card.responsableName?.toLowerCase() === user.name.toLowerCase() ||
-          card.mechanicName?.toLowerCase() === user.name.toLowerCase()
+          card.creatorName.toLowerCase() === user.name.toLowerCase()
         );
         setData(filteredCards);
       } else {
+        // Mechanics and other roles: See all cards
         setData(response);
       }
     } catch (error) {
