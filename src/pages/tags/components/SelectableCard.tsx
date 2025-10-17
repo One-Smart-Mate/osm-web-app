@@ -17,23 +17,39 @@ const SelectableCard = ({
 }: SelectableCardProps) => {
   const isLevel = item.responsibleName !== undefined;
 
+  // Debug log for selected cards
+  if (isSelected && item.id === 751) {
+    console.log("[SelectableCard] Rendering card 751 with isSelected=", isSelected);
+  }
+
+  const wrapperStyle: React.CSSProperties = {
+    marginRight: '12px',
+    marginBottom: '12px',
+    border: isSelected ? '4px solid #1890ff' : 'none',
+    borderRadius: '8px',
+    backgroundColor: isSelected ? '#e6f7ff' : 'transparent',
+    padding: isSelected ? '4px' : '0',
+    boxShadow: isSelected ? '0 0 20px rgba(24, 144, 255, 0.5)' : 'none',
+    transition: 'all 0.3s ease'
+  };
+
+  const cardStyle: React.CSSProperties = {
+    minWidth: '200px',
+    maxWidth: '250px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    margin: 0
+  };
+
   return (
-    <Card
-      hoverable
-      onClick={onClick}
-      style={{
-        minWidth: '200px',
-        maxWidth: '250px',
-        marginRight: '12px',
-        marginBottom: '12px',
-        border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
-        backgroundColor: isSelected ? '#f0f8ff' : '#ffffff',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        position: 'relative'
-      }}
-      bodyStyle={{ padding: '16px' }}
-    >
+    <div style={wrapperStyle}>
+      <Card
+        hoverable
+        onClick={onClick}
+        style={cardStyle}
+        bodyStyle={{ padding: '16px' }}
+      >
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -88,6 +104,7 @@ const SelectableCard = ({
         )}
       </div>
     </Card>
+    </div>
   );
 };
 

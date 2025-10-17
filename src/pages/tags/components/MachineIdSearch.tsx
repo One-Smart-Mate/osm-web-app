@@ -173,13 +173,23 @@ const MachineIdSearch = ({
         // Store all loaded data (sorted)
         newLoadedData.set(i, sortedLevels);
 
-        // Calculate paginated data
-        const paginatedData = sortedLevels.slice(0, PAGE_SIZE);
+        // Find the index of the current level in the sorted array
+        const foundLevelIndex = sortedLevels.findIndex(level => level.id.toString() === currentLevel.id.toString());
+
+        // Calculate which page the found level is on
+        let currentPage = 1;
+        if (foundLevelIndex !== -1) {
+          currentPage = Math.floor(foundLevelIndex / PAGE_SIZE) + 1;
+        }
+
+        // Calculate paginated data for the page where the level is
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const paginatedData = sortedLevels.slice(startIndex, startIndex + PAGE_SIZE);
         newHierarchy.set(i, paginatedData);
 
-        // Store pagination info
+        // Store pagination info with the correct current page
         newPagination.set(i, {
-          current: 1,
+          current: currentPage,
           pageSize: PAGE_SIZE,
           total: allLevelsForIndex.length
         });
@@ -188,7 +198,7 @@ const MachineIdSearch = ({
         newSelectedLevels.set(i, currentLevel.id.toString());
       }
 
-      // Get the last level found
+      // Get the last level found - this is the node the user searched for
       const lastLevel = result.hierarchy[result.hierarchy.length - 1];
       const lastLevelId = parseInt(lastLevel.id.toString());
 
@@ -199,72 +209,9 @@ const MachineIdSearch = ({
         return;
       }
 
-      const lastLevelIndex = result.hierarchy.length;
-
-      // Load children of the last level found
-      let childrenOfLastLevel: any[] = [];
-      const cachedChildrenOfLast = await LevelCache.getCachedChildren(parseInt(siteId), lastLevelId);
-
-      if (cachedChildrenOfLast && cachedChildrenOfLast.length > 0) {
-        childrenOfLastLevel = cachedChildrenOfLast.filter(level => level && level.status !== 'S');
-      } else {
-        try {
-          const response = await getChildrenLevels({
-            siteId: siteId.toString(),
-            parentId: lastLevelId
-          }).unwrap();
-
-          if (response && Array.isArray(response)) {
-            childrenOfLastLevel = response.filter((level: any) => level && level.status !== 'S');
-
-            // Cache the results
-            for (const level of childrenOfLastLevel) {
-              await LevelCache.cacheLevel(parseInt(siteId), level);
-            }
-          }
-        } catch (error) {
-          console.error("[MachineIdSearch] Error loading children of last level:", lastLevelId, error);
-          // Fallback
-          childrenOfLastLevel = levels.filter(level => {
-            if (!level) return false;
-            const superiorIdStr = level.superiorId?.toString();
-            return superiorIdStr === lastLevelId.toString() && level.status !== 'S';
-          });
-        }
-      }
-
-      let finalNodeId: number | null = null;
-      let isComplete = false;
-
-      if (childrenOfLastLevel.length > 0) {
-        // Sort children alphabetically/alphanumerically
-        const sortedChildren = childrenOfLastLevel.sort((a, b) => {
-          const nameA = (a.name || a.levelName || '').toLowerCase();
-          const nameB = (b.name || b.levelName || '').toLowerCase();
-          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-        });
-
-        // Store all loaded data for children (sorted)
-        newLoadedData.set(lastLevelIndex, sortedChildren);
-
-        // Add paginated children to hierarchy
-        const paginatedChildren = sortedChildren.slice(0, PAGE_SIZE);
-        newHierarchy.set(lastLevelIndex, paginatedChildren);
-
-        // Store pagination info
-        newPagination.set(lastLevelIndex, {
-          current: 1,
-          pageSize: PAGE_SIZE,
-          total: childrenOfLastLevel.length
-        });
-
-        isComplete = false;
-        finalNodeId = null;
-      } else {
-        // No children, this is the final level
-        finalNodeId = lastLevelId;
-        isComplete = true;
-      }
+      // The found node is the final node - don't load children automatically
+      const finalNodeId = lastLevelId;
+      const isComplete = true;
 
       // Success! Clear inputs and notify
       setMachineIdSearch("");
@@ -275,9 +222,9 @@ const MachineIdSearch = ({
       // Call success callback
       onSearchSuccess(newHierarchy, newSelectedLevels, newPagination, newLoadedData, finalNodeId, isComplete);
 
-      // Scroll to appropriate level with highlight
+      // Scroll to the level where the found node is (last level in hierarchy)
       if (onScrollToLevel) {
-        const targetIndex = childrenOfLastLevel.length > 0 ? lastLevelIndex : lastLevelIndex - 1;
+        const targetIndex = result.hierarchy.length - 1;
 
         // Wait for DOM to update
         setTimeout(() => {
