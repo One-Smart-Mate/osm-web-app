@@ -20,6 +20,7 @@ import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import DrawerTagList from "../../components/DrawerTagList";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import { Spin } from "antd";
 
 export interface MachinesChartProps {
   siteId: string;
@@ -56,6 +57,7 @@ const MachinesChart = ({
     cardTypeName: string;
     status?: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
@@ -63,11 +65,13 @@ const MachinesChart = ({
 
   const handleGetData = async () => {
     try {
+      setIsLoading(true);
       if (areaId === undefined || areaId === null) {
         setTransformedData([]);
+        setIsLoading(false);
         return;
       }
-    
+
       const response = await getMachines({
         siteId,
         startDate,
@@ -112,6 +116,8 @@ const MachinesChart = ({
     setTransformedData(transformedData);
     } catch (error) {
       console.error('Error fetching machines data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -202,6 +208,11 @@ const MachinesChart = ({
 
   return (
     <>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Spin size="large" />
+        </div>
+      ) : (
       <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<CustomLegend />} verticalAlign="top" />
@@ -252,6 +263,7 @@ const MachinesChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
+      )}
       <DrawerTagList
         open={open}
         dataSource={searchData}

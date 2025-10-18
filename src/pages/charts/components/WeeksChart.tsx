@@ -17,6 +17,7 @@ import Constants from "../../../utils/Constants";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
 import { getWeekNumber } from "../../../utils/timeUtils";
 import dayjs from "dayjs";
+import { Spin } from "antd";
 
 export interface WeeksChartProps {
   siteId: string;
@@ -32,12 +33,14 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
   const [getCards] = useGetCardsMutation();
   const [weeks, setWeeks] = useState<Weeks[]>([]);
   const [allCards, setAllCards] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Show filter indicator when card type filter is applied
   const hasCardTypeFilter = cardTypeName && cardTypeName !== 'all';
 
   const handleGetData = async () => {
     try {
+      setIsLoading(true);
       // If no filters are applied, use the backend weeks data directly
       if (!hasCardTypeFilter && !startDate && !endDate) {
         console.log('WeeksChart - Using backend weeks data (no filters)');
@@ -65,6 +68,8 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
     } catch (error) {
       console.error('Error fetching weeks chart data:', error);
       setWeeks([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -203,8 +208,14 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
   };
 
   return (
-    <ResponsiveContainer width={"100%"} height={"100%"}>
-      <LineChart
+    <>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Spin size="large" />
+        </div>
+      ) : (
+      <ResponsiveContainer width={"100%"} height={"100%"}>
+        <LineChart
         width={730}
         height={250}
         data={filteredWeeksData}
@@ -262,6 +273,8 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
         <Line type="monotone" dataKey="cumulativeEradicated" stroke="#4f6b54" strokeWidth={2} />
       </LineChart>
     </ResponsiveContainer>
+      )}
+    </>
   );
 };
 export default WeeksChart;

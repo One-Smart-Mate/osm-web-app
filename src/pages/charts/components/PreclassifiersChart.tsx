@@ -17,6 +17,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import DrawerTagList from "../../components/DrawerTagList";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import { Spin } from "antd";
 
 export interface PreclassifiersChartProps {
   siteId: string;
@@ -48,6 +49,7 @@ const PreclassifiersChart = ({
     cardTypeName: string;
     status?: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
@@ -68,6 +70,7 @@ const PreclassifiersChart = ({
 
   const handleGetData = async () => {
     try {
+      setIsLoading(true);
       // Solo enviamos los parámetros básicos a la API
       const response = await getAnomalies({
         siteId,
@@ -98,6 +101,8 @@ const PreclassifiersChart = ({
       });
     } catch (error) {
       console.error('Error fetching preclassifiers data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,6 +138,11 @@ const PreclassifiersChart = ({
 
   return (
     <>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Spin size="large" />
+        </div>
+      ) : (
       <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={preclassifiers} margin={{ bottom: 80 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -182,6 +192,7 @@ const PreclassifiersChart = ({
           </Bar>
         </BarChart>
       </ResponsiveContainer>
+      )}
       <DrawerTagList
         open={open}
         dataSource={searchData}
