@@ -218,6 +218,11 @@ const TagCard = ({ data }: TagCardProps) => {
         icon={<BsPinMap />}
       />
       <AnatomySection
+        title={Strings.responsible}
+        label={data.mechanicName || Strings.NA}
+        icon={<BsPersonGear />}
+      />
+      <AnatomySection
         title={Strings.createdBy}
         label={data.creatorName}
         icon={<BsPersonGear />}

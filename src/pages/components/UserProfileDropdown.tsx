@@ -225,8 +225,8 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
             <Typography.Text>{user?.name}</Typography.Text>
             <div>
               <div className="flex flex-wrap flex-row max-w-[200px] gap-2">
-                {user?.roles.map((role: string) => (
-                  <Tag color="blue" style={{ fontSize: 10 }}>
+                {Array.from(new Set(user?.roles)).map((role: string, index: number) => (
+                  <Tag key={`${role}-${index}`} color="blue" style={{ fontSize: 10 }}>
                     {role}
                   </Tag>
                 ))}

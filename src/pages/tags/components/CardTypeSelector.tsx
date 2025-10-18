@@ -11,13 +11,15 @@ interface CardTypeSelectorProps {
   selectedCardType: string;
   onCardTypeChange: (_value: string) => void;
   open: boolean;
+  onLoadingChange?: (_isLoading: boolean) => void;
 }
 
 const CardTypeSelector = ({
   siteId,
   selectedCardType,
   onCardTypeChange,
-  open
+  open,
+  onLoadingChange
 }: CardTypeSelectorProps) => {
   const { notification } = AntApp.useApp();
   const [getCardTypes, { isLoading: isLoadingCardTypes }] = useGetCardTypesMutation();
@@ -32,6 +34,8 @@ const CardTypeSelector = ({
 
   const loadCardTypes = async () => {
     try {
+      onLoadingChange?.(true);
+
       // Validate siteId
       if (!siteId || siteId === "0" || siteId === "") {
         console.error("[CardTypeSelector] Invalid siteId:", siteId);
@@ -95,6 +99,8 @@ const CardTypeSelector = ({
     } catch (error) {
       console.error("[CardTypeSelector] Error loading card types:", error);
       AnatomyNotification.error(notification, error);
+    } finally {
+      onLoadingChange?.(false);
     }
   };
 

@@ -13,16 +13,12 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
 } from "../../../services/userService";
+import { UserFormType } from "./UserFormTypes";
 
 interface UserFormProps {
   formType: UserFormType;
   data?: UserCardInfo;
   onComplete?: () => void;
-}
-
-export enum UserFormType {
-  _CREATE = "CREATE",
-  _UPDATE = "UPDATE",
 }
 
 const UserForm = ({

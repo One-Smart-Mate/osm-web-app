@@ -45,8 +45,8 @@ const ChartsPage = () => {
   const [selectedCardType, setSelectedCardType] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>("A");
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(Strings.empty);
-  const [endDate, setEndDate] = useState(Strings.empty);
+  const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(
     undefined
@@ -128,7 +128,11 @@ const ChartsPage = () => {
             />
           </div>
           <Space className="w-full flex flex-wrap gap-2 mb-1 md:mb-0 pb-2">
-            <RangePicker presets={rangePresets} onChange={onRangeChange} />
+            <RangePicker
+              presets={rangePresets}
+              onChange={onRangeChange}
+              defaultValue={[dayjs(), dayjs()]}
+            />
             <Select
               placeholder={Strings.filterByCardType}
               style={{ minWidth: 200 }}

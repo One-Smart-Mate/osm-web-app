@@ -47,6 +47,22 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
     }
   }, [visible, form]);
 
+  // Set default responsible user when users are loaded
+  useEffect(() => {
+    if (users.length > 0 && card.mechanicName) {
+      // Find the user that matches the card's mechanic name
+      const defaultUser = users.find(
+        (user) => user.name.toLowerCase() === card.mechanicName.toLowerCase()
+      );
+
+      if (defaultUser) {
+        form.setFieldsValue({
+          responsibleUser: defaultUser.id.toString(),
+        });
+      }
+    }
+  }, [users, card.mechanicName, form]);
+
   const loadUsers = async () => {
     try {
       const response = await getSiteResponsibles(card.siteId.toString()).unwrap();
@@ -189,6 +205,7 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
             name="responsibleUser"
             label={Strings.responsibleUser}
             rules={[{ required: true, message: Strings.selectResponsibleUser }]}
+            tooltip={card.mechanicName ? `Responsable actual: ${card.mechanicName}` : undefined}
           >
             <Select
               placeholder={Strings.selectResponsibleUserPlaceholder}

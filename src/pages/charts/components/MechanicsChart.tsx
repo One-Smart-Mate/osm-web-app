@@ -11,7 +11,7 @@ import {
   Tooltip,
   TooltipProps,
 } from "recharts";
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 import { SwapOutlined } from "@ant-design/icons";
 import { Methodology } from "../../../data/charts/charts";
 import { useGetMechanicsChartDataMutation } from "../../../services/chartService";
@@ -50,6 +50,7 @@ const MechanicsChart = ({
     mechanicName?: string;
     cardTypeName: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
@@ -57,6 +58,7 @@ const MechanicsChart = ({
 
   const handleGetData = async () => {
     try {
+      setIsLoading(true);
       const response = await getMechanics({
         siteId,
         startDate,
@@ -168,6 +170,8 @@ const MechanicsChart = ({
       setTransformedData(sortedData);
     } catch (error) {
       console.error('Error fetching mechanics chart data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -504,20 +508,26 @@ const MechanicsChart = ({
 
   return (
     <>
-      {/* Toggle Button */}
-      <div className="flex justify-end mb-2">
-        <Button
-          type={isGroupedView ? "default" : "primary"}
-          icon={<SwapOutlined />}
-          onClick={() => setIsGroupedView(!isGroupedView)}
-          size="small"
-        >
-          {isGroupedView ? "Vista Separada" : "Vista Agrupada"}
-        </Button>
-      </div>
-      
-      {/* Grouped Chart */}
-      <div style={{ display: isGroupedView ? 'block' : 'none', width: '100%', height: '100%' }}>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Spin size="large" />
+        </div>
+      ) : (
+        <>
+          {/* Toggle Button */}
+          <div className="flex justify-end mb-2">
+            <Button
+              type={isGroupedView ? "default" : "primary"}
+              icon={<SwapOutlined />}
+              onClick={() => setIsGroupedView(!isGroupedView)}
+              size="small"
+            >
+              {isGroupedView ? "Vista Separada" : "Vista Agrupada"}
+            </Button>
+          </div>
+
+          {/* Grouped Chart */}
+          <div style={{ display: isGroupedView ? 'block' : 'none', width: '100%', height: '100%' }}>
         <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<MethodologiesLegend />} verticalAlign="top" />
@@ -555,11 +565,13 @@ const MechanicsChart = ({
       </ResponsiveContainer>
       </div>
       
-      {/* Separated Chart */}
-      <div style={{ display: isGroupedView ? 'none' : 'block', width: '100%', height: '100%' }}>
-        <SeparatedChart />
-      </div>
-      
+          {/* Separated Chart */}
+          <div style={{ display: isGroupedView ? 'none' : 'block', width: '100%', height: '100%' }}>
+            <SeparatedChart />
+          </div>
+        </>
+      )}
+
       <DrawerTagList
         open={open}
         dataSource={selectedCardsData.length > 0 ? selectedCardsData : searchData}

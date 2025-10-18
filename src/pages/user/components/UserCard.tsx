@@ -1,7 +1,8 @@
 import React from "react";
 import { Role, UserCardInfo } from "../../../data/user/user";
 import { Card, Space, Tag, Tooltip, Typography } from "antd";
-import UserForm, { UserFormType } from "./UserForm";
+import UserForm from "./UserForm";
+import { UserFormType } from "./UserFormTypes";
 import AssignPositionsButton from "./AssignPositionsButton";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import Strings from "../../../utils/localizations/Strings";
@@ -103,7 +104,7 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
         title={Strings.roles}
         label={
           <Space wrap>
-            {user.roles.map((role: Role) => (
+            {Array.from(new Map(user.roles.map(role => [role.id, role])).values()).map((role: Role) => (
               <Tooltip key={role.id} title={role.name}>
                 <Tag color="blue" style={{ fontSize: 10 }}>
                   {role.name}

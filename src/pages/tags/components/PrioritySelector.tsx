@@ -13,7 +13,8 @@ interface PrioritySelectorProps {
   onPriorityChange: (_value: string) => void;
   customDueDate: dayjs.Dayjs | null;
   onCustomDueDateChange: (_date: dayjs.Dayjs | null) => void;
-  customDateRef: React.RefObject<HTMLDivElement>;
+  customDateRef: React.RefObject<HTMLDivElement | null>;
+  onLoadingChange?: (_isLoading: boolean) => void;
 }
 
 const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
@@ -23,7 +24,8 @@ const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
     onPriorityChange,
     customDueDate,
     onCustomDueDateChange,
-    customDateRef
+    customDateRef,
+    onLoadingChange
   }, ref) => {
     const { notification } = AntApp.useApp();
     const [getPriorities, { isLoading: isLoadingPriorities }] = useGetActiveSitePrioritiesMutation();
@@ -51,6 +53,8 @@ const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
 
     const loadPriorities = async () => {
       try {
+        onLoadingChange?.(true);
+
         // Validate siteId
         if (!siteId || siteId === "0" || siteId === "") {
           console.error("[PrioritySelector] Invalid siteId:", siteId);
@@ -94,6 +98,8 @@ const PrioritySelector = forwardRef<HTMLDivElement, PrioritySelectorProps>(
         console.error("[PrioritySelector] Error loading priorities for siteId:", siteId, error);
         AnatomyNotification.error(notification, error);
         setPriorities([]);
+      } finally {
+        onLoadingChange?.(false);
       }
     };
 

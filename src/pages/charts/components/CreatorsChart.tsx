@@ -18,6 +18,7 @@ import CustomLegend from "../../../components/CustomLegend";
 import { useSearchCardsQuery } from "../../../services/cardService";
 import DrawerTagList from "../../components/DrawerTagList";
 import useDarkMode from "../../../utils/hooks/useDarkMode";
+import { Spin } from "antd";
 
 export interface CreatorsChartProps {
   siteId: string;
@@ -48,6 +49,7 @@ const CreatorsChart = ({
     cardTypeName: string;
     status?: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { data: searchData, isFetching } = useSearchCardsQuery(searchParams, {
     skip: !searchParams,
@@ -55,6 +57,7 @@ const CreatorsChart = ({
 
   const handleGetData = async () => {
     try {
+      setIsLoading(true);
       const response = await getCreators({
         siteId,
         startDate,
@@ -90,6 +93,8 @@ const CreatorsChart = ({
       setTransformedData(transformedData);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -181,6 +186,11 @@ const CreatorsChart = ({
 
   return (
     <>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-full">
+          <Spin size="large" />
+        </div>
+      ) : (
       <ResponsiveContainer width={"100%"} height={"100%"}>
         <BarChart data={transformedData} margin={{ bottom: 50 }}>
           <Legend content={<CustomLegend />} verticalAlign="top" />
@@ -231,6 +241,7 @@ const CreatorsChart = ({
           ))}
         </BarChart>
       </ResponsiveContainer>
+      )}
       <DrawerTagList
         open={open}
         dataSource={searchData}

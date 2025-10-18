@@ -37,12 +37,8 @@ const LevelSelector = ({
     onLevelChange(levelIndex, levelId);
   };
 
-  // Sort level options alphabetically/alphanumerically by name
-  const sortedLevelOptions = [...levelOptions].sort((a, b) => {
-    const nameA = (a.name || a.levelName || '').toLowerCase();
-    const nameB = (b.name || b.levelName || '').toLowerCase();
-    return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-  });
+  // levelOptions already come sorted and paginated from parent
+  // No need to sort again here as it would break pagination
 
   return (
     <div data-level-index={levelIndex} style={{ marginBottom: '24px' }}>
@@ -54,6 +50,28 @@ const LevelSelector = ({
           </Typography.Text>
         )}
       </Typography.Text>
+
+      {/* Pagination at the top */}
+      {!isLoading && pagination && pagination.total > pagination.pageSize && onPaginationChange && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '16px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid #f0f0f0'
+        }}>
+          <Pagination
+            current={pagination.current}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onChange={onPaginationChange}
+            showSizeChanger
+            pageSizeOptions={['10', '20', '50', '100']}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+            size="small"
+          />
+        </div>
+      )}
 
       {isLoading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
@@ -73,19 +91,37 @@ const LevelSelector = ({
                 No levels available
               </Typography.Text>
             ) : (
-              sortedLevelOptions.map(level => {
+              levelOptions.map(level => {
                 // Validate level object before rendering
                 if (!level || !level.id) {
                   console.error("[LevelSelector] Invalid level object at index:", levelIndex, "level:", level);
                   return null;
                 }
 
+                const levelIdStr = level.id.toString();
+                const isSelected = selectedLevelId === levelIdStr;
+
+                // Debug log for first level
+                if (levelIndex === 0 && level === levelOptions[0]) {
+                  console.log(`[LevelSelector] Level ${levelIndex} - selectedLevelId:`, selectedLevelId, "selectedLevelId type:", typeof selectedLevelId, "first level.id:", levelIdStr, "isSelected:", isSelected);
+                }
+
+                // Debug log when level matches selectedLevelId
+                if (isSelected) {
+                  console.log(`[LevelSelector] MATCH FOUND at level ${levelIndex} - levelId:`, levelIdStr, "Passing isSelected=true to SelectableCard");
+                }
+
+                // Debug for level 751 specifically
+                if (levelIdStr === "751") {
+                  console.log(`[LevelSelector] Level 751 - selectedLevelId:`, selectedLevelId, "isSelected:", isSelected, "Will render with isSelected:", isSelected);
+                }
+
                 return (
                   <SelectableCard
                     key={level.id}
                     item={level}
-                    isSelected={selectedLevelId === level.id.toString()}
-                    onClick={() => handleLevelClick(level.id.toString())}
+                    isSelected={isSelected}
+                    onClick={() => handleLevelClick(levelIdStr)}
                   />
                 );
               })
