@@ -44,9 +44,10 @@ const LockedSession: React.FC = () => {
       return;
     }
 
-    const alphaRegex = /^[A-Za-z]{4}$/;
-    if (!alphaRegex.test(fastPassword)) {
-      AnatomyNotification.error(notification, Strings.fastPasswordAlphabeticValidation);
+    // Validate hexadecimal format (0-9, A-F) as per database constraint
+    const hexRegex = /^[0-9A-Fa-f]{4}$/;
+    if (!hexRegex.test(fastPassword)) {
+      AnatomyNotification.error(notification, "El Fast Password debe contener exactamente 4 caracteres hexadecimales (0-9, A-F)");
       return;
     }
 
@@ -185,7 +186,8 @@ const LockedSession: React.FC = () => {
             value={fastPassword}
             onChange={(e) => {
               const value = e.target.value;
-              const filteredValue = value.replace(/[^A-Za-z]/g, '');
+              // Only allow hexadecimal characters (0-9, A-F, a-f) and limit to 4 chars
+              const filteredValue = value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase().substring(0, 4);
               setFastPassword(filteredValue);
             }}
             maxLength={4}

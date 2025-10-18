@@ -82,18 +82,19 @@ const UserFormCard = ({
   const handleGenerateFastPassword = () => {
     setIsGeneratingFastPassword(true);
     try {
-      // Generate a random 4-letter password
-      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      // Generate a random 4-character hexadecimal password (0-9, A-F)
+      const hexChars = '0123456789ABCDEF';
       let result = '';
       for (let i = 0; i < 4; i++) {
-        result += letters.charAt(Math.floor(Math.random() * letters.length));
+        result += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
       }
+
       setFastPassword(result);
       form.setFieldsValue({ fastPassword: result });
-      
+
       notification.success({
         message: Strings.success,
-        description: Strings.fastPasswordGenerated,
+        description: `Fast Password: ${result} (Hexadecimal: 0-9, A-F)`,
       });
     } catch (error) {
       AnatomyNotification.error(notification, error);
@@ -275,8 +276,8 @@ const UserFormCard = ({
               <Input
                 value={fastPassword}
                 onChange={(e) => {
-                  // Only allow alphabetic characters (A-Z, a-z)
-                  const filteredValue = e.target.value.replace(/[^A-Za-z]/g, '');
+                  // Only allow hexadecimal characters (0-9, A-F, a-f) and limit to 4 chars
+                  const filteredValue = e.target.value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase().substring(0, 4);
                   setFastPassword(filteredValue);
                   form.setFieldsValue({ fastPassword: filteredValue });
                 }}
