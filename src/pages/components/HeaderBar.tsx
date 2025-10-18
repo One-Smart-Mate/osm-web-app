@@ -4,11 +4,9 @@ import UserProfileDropdown from "./UserProfileDropdown";
 import User from "../../data/user/user";
 import LanguageDropdown from "./LanguageDropdown";
 import { Switch, theme, Button, Modal } from "antd";
-import { LockOutlined, UnlockOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { LockOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
-import { useAppDispatch, useAppSelector } from "../../core/store";
-import { selectIsSessionLocked, setSessionLocked } from "../../core/genericReducer";
 
 interface HeaderBarProps {
   user: User;
@@ -22,8 +20,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   user,
 }) => {
   const { token } = theme.useToken();
-  const dispatch = useAppDispatch();
-  const isSessionLocked = useAppSelector(selectIsSessionLocked);
 
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(() => {
     const storedMode = localStorage.getItem(Constants.SESSION_KEYS.darkMode);
@@ -45,33 +41,28 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
   };
 
   const handleLockSessionConfirm = () => {
-    if (isSessionLocked) {
-      // If already locked, modal is already showing in BaseLayout
-      // Do nothing
-    } else {
-      // Show confirmation modal
-      Modal.confirm({
-        title: Strings.sessionLockConfirmTitle,
-        icon: <ExclamationCircleOutlined />,
-        content: (
-          <div>
-            <p>{Strings.sessionLockConfirmContent}</p>
-            <p style={{ fontSize: '12px', color: '#666' }}>
-              {Strings.sessionLockConfirmDescription}
-            </p>
-          </div>
-        ),
-        okText: Strings.blockButton,
-        cancelText: Strings.cancel,
-        okType: 'danger',
-        onOk: () => {
-          handleSessionLock();
-        },
-        onCancel: () => {
-          // Do nothing, just close the modal
-        },
-      });
-    }
+    // Show confirmation modal
+    Modal.confirm({
+      title: Strings.sessionLockConfirmTitle || "¿Bloquear sesión?",
+      icon: <ExclamationCircleOutlined />,
+      content: (
+        <div>
+          <p>{Strings.sessionLockConfirmContent || "Se cerrará tu sesión actual y necesitarás un fast password para volver a entrar."}</p>
+          <p style={{ fontSize: '12px', color: '#666' }}>
+            {Strings.sessionLockConfirmDescription || "Esta acción requiere autenticación para continuar."}
+          </p>
+        </div>
+      ),
+      okText: Strings.blockButton || "Bloquear",
+      cancelText: Strings.cancel || "Cancelar",
+      okType: 'danger',
+      onOk: () => {
+        handleSessionLock();
+      },
+      onCancel: () => {
+        // Do nothing, just close the modal
+      },
+    });
   };
 
   const handleSessionLock = () => {
@@ -84,9 +75,6 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
 
     // Mark session as locked persistently
     localStorage.setItem('session_locked', 'true');
-
-    // Mark session as locked in Redux
-    dispatch(setSessionLocked(true));
 
     // Force navigation to locked session page
     window.location.href = '/locked-session';
@@ -123,20 +111,17 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           <LanguageDropdown />
         </div>
         <Button
-          type={isSessionLocked ? "primary" : "text"}
-          icon={isSessionLocked ? <UnlockOutlined /> : <LockOutlined />}
+          type="text"
+          icon={<LockOutlined />}
           onClick={handleLockSessionConfirm}
           style={{
-            color: isSessionLocked ? token.colorWhite : token.colorText,
-            background: isSessionLocked ? token.colorPrimary : 'transparent',
-            border: isSessionLocked ? `1px solid ${token.colorPrimary}` : 'none',
-            boxShadow: isSessionLocked ? token.boxShadow : 'none',
-            padding: '0 12px'
+            marginLeft: '8px',
+            color: token.colorText
           }}
-          className="lock-session-button"
+          title={Strings.lockSession || "Bloquear sesión"}
         >
-          <span style={{ textDecoration: 'none' }}>
-            {isSessionLocked ? Strings.unlockSession : Strings.lockSession}
+          <span style={{ marginLeft: '4px' }}>
+            {Strings.lockSession || "Bloquear"}
           </span>
         </Button>
       </div>

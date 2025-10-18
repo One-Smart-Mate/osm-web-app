@@ -5,7 +5,6 @@ import { useAppDispatch } from "../core/store";
 import { useSessionStorage } from "../core/useSessionStorage";
 import User from "../data/user/user";
 import { setCredentials } from "../core/authReducer";
-import { setSessionLocked } from "../core/genericReducer";
 import Constants from "../utils/Constants";
 
 const ProtectedRoutes: React.FC = () => {
@@ -20,9 +19,7 @@ const ProtectedRoutes: React.FC = () => {
     const isLocked = localStorage.getItem('session_locked');
 
     if (isLocked === 'true') {
-      // Update Redux state
-      dispatch(setSessionLocked(true));
-      // Don't load user data if locked
+      // Don't load user data if locked, let the redirect happen
       return;
     }
 
@@ -35,8 +32,11 @@ const ProtectedRoutes: React.FC = () => {
   // Check if session is locked on every render
   const isSessionLocked = localStorage.getItem('session_locked') === 'true';
 
-  if (isSessionLocked) {
-    // Redirect to locked session page if session is locked
+  // Special case: don't redirect if we're on the tags-fast-password route
+  const isTagsFastPassword = location.pathname.includes('tags-fast-password');
+
+  if (isSessionLocked && !isTagsFastPassword) {
+    // Redirect to locked session page if session is locked (except for tags-fast-password)
     return <Navigate to="/locked-session" replace state={{ from: location }} />;
   }
 

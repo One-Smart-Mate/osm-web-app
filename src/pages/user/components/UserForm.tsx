@@ -12,8 +12,10 @@ import { UserCardInfo } from "../../../data/user/user";
 import {
   useCreateUserMutation,
   useUpdateUserMutation,
+  useGetUserMutation,
 } from "../../../services/userService";
 import { UserFormType } from "./UserFormTypes";
+import { UpdateUser } from "../../../data/user/user.request";
 
 interface UserFormProps {
   formType: UserFormType;
@@ -32,6 +34,7 @@ const UserForm = ({
   const { notification } = AntApp.useApp();
   const [registerUser] = useCreateUserMutation();
   const [updateUser] = useUpdateUserMutation();
+  const [getUser] = useGetUserMutation();
 
   const handleOnClickButton = () => {
     setModalOpen(true);
@@ -97,43 +100,61 @@ const UserForm = ({
 
   const handleOnUpdate = async (values: any) => {
     setIsLoading(true);
-    const enableEvidences = values.enableEvidences ? 1 : 0;
 
-    const userData = {
-      id: Number(values.id),
-      name: values.name.trim(),
-      email: values.email.trim(),
-      siteId: Number(location.state.siteId),
-      password: values.password,
-      uploadCardDataWithDataNet: enableEvidences,
-      uploadCardEvidenceWithDataNet: enableEvidences,
-      roles: values.roles,
-      status: values.status,
-      fastPassword: values.fastPassword,
-      phoneNumber: values.phoneNumber?.trim() || '',
-      translation: values.translation || 'ES'
-    };
+    try {
+      const enableEvidences = values.enableEvidences ? 1 : 0;
 
-    updateUser(userData)
-      .unwrap()
-      .then(() => {
-        // Success - just close modal
-        setIsLoading(false);
-        setModalOpen(false);
+      // Get full user details first (like UserProfileDropdown does)
+      const userDetails = await getUser(Number(values.id)).unwrap();
 
-        AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
-
-        // Call onComplete after a small delay to allow modal to close
-        if (onComplete) {
-          setTimeout(() => onComplete(), 100);
-        }
-      })
-      .catch((error) => {
-        // Error
-        console.error("Error updating user:", error);
-        setIsLoading(false);
-        AnatomyNotification.error(notification, error);
+      console.log("[UserForm] Form values before UpdateUser:", {
+        id: values.id,
+        fastPassword: values.fastPassword,
+        fastPasswordLength: values.fastPassword?.length,
+        fastPasswordType: typeof values.fastPassword
       });
+
+      // Use UpdateUser class to structure the data properly
+      const userData = new UpdateUser(
+        Number(values.id),
+        values.name.trim(),
+        values.email.trim(),
+        Number(location.state.siteId),
+        values.password && values.password.trim() ? values.password : "", // Send empty string if no password change
+        enableEvidences,
+        enableEvidences,
+        values.roles.map((role: any) => Number(role)), // Ensure roles are numbers
+        values.status,
+        values.fastPassword && values.fastPassword.trim() ? values.fastPassword.trim() : undefined, // Only send if present
+        values.phoneNumber?.trim() || "",
+        values.translation || 'ES'
+      );
+
+      console.log("[UserForm] Sending userData:", {
+        id: userData.id,
+        fastPassword: userData.fastPassword,
+        fastPasswordLength: userData.fastPassword?.length,
+        status: userData.status
+      });
+
+      await updateUser(userData).unwrap();
+
+      // Success - close modal
+      setIsLoading(false);
+      setModalOpen(false);
+
+      AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
+
+      // Call onComplete after a small delay to allow modal to close
+      if (onComplete) {
+        setTimeout(() => onComplete(), 100);
+      }
+    } catch (error) {
+      // Error
+      console.error("Error updating user:", error);
+      setIsLoading(false);
+      AnatomyNotification.error(notification, error);
+    }
   };
 
   return (

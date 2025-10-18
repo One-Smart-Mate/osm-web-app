@@ -3,8 +3,7 @@ import { Modal, Input, Button, Typography, Space, Card, Empty, Select, DatePicke
 import { KeyOutlined, FilterOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { BsSortDown, BsCalendarRange } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../core/store";
-import { selectIsSessionLocked, setSessionLocked } from "../../core/genericReducer";
+// Removed unused imports for session lock
 import { useFindCardsByFastPasswordQuery } from "../../services/cardService";
 import { CardInterface } from "../../data/card/card";
 import { useDebounce } from "use-debounce";
@@ -30,8 +29,6 @@ const rangePresets: TimeRangePickerProps["presets"] = [
 const TagsFastPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const isSessionLocked = useAppSelector(selectIsSessionLocked);
   
   // Fast password modal state
   const [modalVisible, setModalVisible] = useState(true);
@@ -59,7 +56,7 @@ const TagsFastPassword = () => {
   const [dateRange, setDateRange] = useState<[any, any] | null>(null);
   
   const siteName = location?.state?.siteName || "Fast Password Search";
-  const siteId = location?.state?.siteId;
+  const siteId = location?.state?.siteId || null;
 
   // RTK Query hook for fetching cards by fast password
   const {
@@ -68,8 +65,8 @@ const TagsFastPassword = () => {
     isFetching: isFetchingCards
   } = useFindCardsByFastPasswordQuery(
     { siteId: siteId!, fastPassword },
-    { 
-      skip: !siteId || !fastPassword || !hasSearched,
+    {
+      skip: !siteId || !fastPassword || !hasSearched || modalVisible,
       refetchOnMountOrArgChange: true
     }
   );
@@ -90,25 +87,24 @@ const TagsFastPassword = () => {
     }
   }, [fastPasswordError, hasSearched]);
 
-  // Redirect if not in locked session
-  useEffect(() => {
-    if (!isSessionLocked) {
-      // If session is not locked, redirect back to regular cards page
-      navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`, {
-        state: location.state
-      });
-    }
-  }, [isSessionLocked, navigate, location.state]);
+  // No redirect needed - this is a standalone page for fast password search
 
   const handleFastPasswordSubmit = async () => {
     if (!fastPassword.trim()) {
+      handleErrorNotification({
+        data: { message: "Por favor ingrese un Fast Password válido." }
+      });
       return;
     }
 
     if (!siteId) {
       handleErrorNotification({
-        data: { message: "No site ID available. Please try again." }
+        data: { message: "No se encontró información del sitio. Por favor, acceda desde la página de sitios." }
       });
+      // Redirect to sites page after 2 seconds
+      setTimeout(() => {
+        navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`);
+      }, 2000);
       return;
     }
 
@@ -118,8 +114,7 @@ const TagsFastPassword = () => {
   };
 
   const handleModalCancel = () => {
-    // Unlock session and redirect back
-    dispatch(setSessionLocked(false));
+    // Simply redirect back to cards page
     navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`, {
       state: location.state
     });

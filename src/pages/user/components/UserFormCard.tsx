@@ -59,8 +59,11 @@ const UserFormCard = ({
         translation: initialValues.translation || Constants.es,
         roles: initialValues.roles.filter((rol,_) => rol.name != Constants.ihSisAdmin).map((rol, _) => rol.id),
         status: initialValues.status,
-        enableEvidences: initialValues.uploadCardDataWithDataNet && initialValues.uploadCardEvidenceWithDataNet
+        enableEvidences: initialValues.uploadCardDataWithDataNet && initialValues.uploadCardEvidenceWithDataNet,
+        fastPassword: "" // Initialize as empty - user can generate a new one if needed
       });
+      // Initialize the local state as well
+      setFastPassword("");
     } else {
       // Set default values for new user creation
       form.setFieldsValue({
@@ -88,12 +91,19 @@ const UserFormCard = ({
       for (let i = 0; i < 4; i++) {
         result += letters.charAt(Math.floor(Math.random() * letters.length));
       }
+
+      console.log('[UserFormCard] Generated fast password:', {
+        value: result,
+        length: result.length,
+        chars: result.split('')
+      });
+
       setFastPassword(result);
       form.setFieldsValue({ fastPassword: result });
-      
+
       notification.success({
         message: Strings.success,
-        description: Strings.fastPasswordGenerated,
+        description: `Fast Password: ${result} (${result.length} chars)`,
       });
     } catch (error) {
       AnatomyNotification.error(notification, error);
@@ -276,7 +286,16 @@ const UserFormCard = ({
                 value={fastPassword}
                 onChange={(e) => {
                   // Only allow alphabetic characters (A-Z, a-z)
-                  const filteredValue = e.target.value.replace(/[^A-Za-z]/g, '');
+                  const rawValue = e.target.value;
+                  const filteredValue = rawValue.replace(/[^A-Za-z]/g, '').slice(0, 4); // Ensure max 4 chars
+
+                  console.log('[UserFormCard] Input onChange:', {
+                    raw: rawValue,
+                    rawLength: rawValue.length,
+                    filtered: filteredValue,
+                    filteredLength: filteredValue.length
+                  });
+
                   setFastPassword(filteredValue);
                   form.setFieldsValue({ fastPassword: filteredValue });
                 }}

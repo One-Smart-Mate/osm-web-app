@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useFastLoginMutation } from "../../services/authService";
 import { useAppDispatch } from "../../core/store";
 import { setCredentials } from "../../core/authReducer";
-import { setSessionLocked } from "../../core/genericReducer";
 import { useSessionStorage } from "../../core/useSessionStorage";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
@@ -75,9 +74,6 @@ const LockedSession: React.FC = () => {
 
       // Clear session lock from localStorage
       localStorage.removeItem('session_locked');
-
-      // Ensure session is unlocked in Redux
-      dispatch(setSessionLocked(false));
 
       // Update last user info with new user data
       localStorage.setItem('last_user_info', JSON.stringify({

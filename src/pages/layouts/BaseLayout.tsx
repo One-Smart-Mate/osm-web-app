@@ -16,9 +16,6 @@ import Constants from "../../utils/Constants";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import useUserActivity from "../../utils/hooks/useUserActivity";
 import NotificationHandler from "../components/NotificationHandler";
-import { useAppSelector } from "../../core/store";
-import { selectIsSessionLocked } from "../../core/genericReducer";
-import FastLoginModal from "../components/FastLoginModal";
 
 const { Header, Content } = Layout;
 
@@ -27,7 +24,6 @@ const BaseLayout: React.FC = () => {
   const [isCollapsed, setCollapsed] = useState(false);
   const { token: { colorBgContainer, colorBgBase }} = theme.useToken();
   const [setAppToken] = useSetAppTokenMutation();
-  const isSessionLocked = useAppSelector(selectIsSessionLocked);
 
   // Track user activity automatically
   useUserActivity();
@@ -102,7 +98,7 @@ const BaseLayout: React.FC = () => {
             {Strings.tagVersion}
           </span>
           <div className="layout-content h-full w-full">
-            <Card style={{backgroundColor: colorBgContainer, opacity: isSessionLocked ? 0.5 : 1, pointerEvents: isSessionLocked ? 'none' : 'auto'}}>
+            <Card style={{backgroundColor: colorBgContainer}}>
               <Outlet />
             </Card>
           </div>
@@ -112,20 +108,6 @@ const BaseLayout: React.FC = () => {
         </div>
       </Layout>
 
-      {/* Fast Login Modal for session unlock */}
-      {isSessionLocked && (
-        <FastLoginModal
-          isVisible={isSessionLocked}
-          onSuccess={() => {
-            // Force a complete page reload
-            // The new user data is already saved in sessionStorage
-            window.location.reload();
-          }}
-          onCancel={() => {
-            // Cannot cancel when session is locked
-          }}
-        />
-      )}
     </Layout>
   );
 };
