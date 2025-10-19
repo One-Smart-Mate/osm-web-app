@@ -31,6 +31,7 @@ export interface CardInterface {
   userAppDefinitiveSolutionName: string;
   cardLocation: string;
   cardUUID: string;
+  levelMachineId: string;
 }
 
 export interface Evidences {

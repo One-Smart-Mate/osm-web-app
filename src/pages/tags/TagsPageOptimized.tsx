@@ -52,6 +52,8 @@ const TagsPageOptimized = () => {
   const [debouncedCardNumber] = useDebounce(cardNumber, 300);
   const [location_, setLocation] = useState("");
   const [debouncedLocation] = useDebounce(location_, 300);
+  const [levelMachineId, setLevelMachineId] = useState("");
+  const [debouncedLevelMachineId] = useDebounce(levelMachineId, 300);
   const [creator, setCreator] = useState("");
   const [debouncedCreator] = useDebounce(creator, 300);
   const [resolver, setResolver] = useState("");
@@ -60,6 +62,14 @@ const TagsPageOptimized = () => {
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const [dateFilterType, setDateFilterType] = useState<DateFilterType>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>("A");
+
+  // Role-based "My Cards" filter
+  // Operators and Mechanics: default to showing only their cards
+  // Other roles: default to showing all cards
+  const [showMyCardsOnly, setShowMyCardsOnly] = useState<boolean>(
+    userRole === UserRoles._OPERATOR || userRole === UserRoles._MECHANIC
+  );
 
   // Modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -68,17 +78,31 @@ const TagsPageOptimized = () => {
   const initialLoadRef = useRef(false);
 
   // Build filters object
-  const filters = useMemo(() => ({
-    searchText: debouncedSearchText,
-    cardNumber: debouncedCardNumber,
-    location: debouncedLocation,
-    creator: debouncedCreator,
-    resolver: debouncedResolver,
-    dateFilterType,
-    startDate: dateRange ? dateRange[0].format('YYYY-MM-DD') : undefined,
-    endDate: dateRange ? dateRange[1].format('YYYY-MM-DD') : undefined,
-    sortOption,
-  }), [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption]);
+  const filters = useMemo(() => {
+    // Determine if we should filter by "my cards"
+    // Operators: ALWAYS filter to their cards only (no option to see all)
+    // Mechanics: Controlled by showMyCardsOnly toggle
+    // Other roles: Controlled by showMyCardsOnly toggle (default false)
+    const shouldFilterMyCards = userRole === UserRoles._OPERATOR
+      ? true
+      : showMyCardsOnly;
+
+    return {
+      searchText: debouncedSearchText,
+      cardNumber: debouncedCardNumber,
+      location: debouncedLocation,
+      levelMachineId: debouncedLevelMachineId,
+      creator: debouncedCreator,
+      resolver: debouncedResolver,
+      dateFilterType,
+      startDate: dateRange ? dateRange[0].format('YYYY-MM-DD') : undefined,
+      endDate: dateRange ? dateRange[1].format('YYYY-MM-DD') : undefined,
+      sortOption,
+      status: selectedStatus,
+      userId: user?.userId ? parseInt(user.userId) : undefined,
+      myCards: shouldFilterMyCards,
+    };
+  }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly, user?.userId]);
 
   const handleGetCards = async (page: number = 1) => {
     if (!location.state) {
@@ -113,31 +137,18 @@ const TagsPageOptimized = () => {
 
       setLoadingProgress(70);
 
-      // Filter by user role if needed
-      let filteredCards = response.data;
-      let filteredTotal = response.total;
-
-      // Operators: Only see cards they created
-      if (userRole === UserRoles._OPERATOR && user) {
-        filteredCards = response.data.filter(card =>
-          card.creatorName.toLowerCase() === user.name.toLowerCase()
-        );
-        // Update total to match filtered cards count
-        filteredTotal = filteredCards.length;
-      }
-      // Mechanics: See all cards (no filtering needed here, they can filter manually)
-
+      // Backend now handles all role-based filtering via myCards and userId filters
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {
-        cards: filteredCards,
-        total: filteredTotal,
+        cards: response.data,
+        total: response.total,
         totalPages: response.totalPages,
         hasMore: response.hasMore,
       });
 
       setLoadingProgress(100);
-      setData(filteredCards);
-      setTotal(filteredTotal);
+      setData(response.data);
+      setTotal(response.total);
       setCurrentPage(page);
     } catch (error) {
       handleErrorNotification(error);
@@ -243,14 +254,28 @@ const TagsPageOptimized = () => {
                   {Strings.createCard || "Create Card"}
                 </Button>
               )}
-              <Button
-                type="default"
-                icon={<FilterOutlined />}
-                onClick={() => setShowFilters(!showFilters)}
-                style={{ borderRadius: '6px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}
-              >
-                {showFilters ? Strings.close : Strings.filters}
-              </Button>
+
+              <div style={{ display: 'flex', gap: '8px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}>
+                {/* Toggle button for Mechanics and other roles (NOT for Operators) */}
+                {userRole !== UserRoles._UNDEFINED && userRole !== UserRoles._OPERATOR && (
+                  <Button
+                    type={showMyCardsOnly ? "default" : "primary"}
+                    onClick={() => setShowMyCardsOnly(!showMyCardsOnly)}
+                    style={{ borderRadius: '6px' }}
+                  >
+                    {showMyCardsOnly ? Strings.allCards : Strings.myCards}
+                  </Button>
+                )}
+
+                <Button
+                  type="default"
+                  icon={<FilterOutlined />}
+                  onClick={() => setShowFilters(!showFilters)}
+                  style={{ borderRadius: '6px' }}
+                >
+                  {showFilters ? Strings.close : Strings.filters}
+                </Button>
+              </div>
             </div>
 
             <Card
@@ -293,6 +318,24 @@ const TagsPageOptimized = () => {
                   />
                 </div>
 
+                {/* Status Filter */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                    <Typography.Text strong>{Strings.status}</Typography.Text>
+                  </div>
+                  <Select
+                    value={selectedStatus}
+                    style={{ width: '100%' }}
+                    onChange={(value) => setSelectedStatus(value)}
+                    options={[
+                      { value: "A", label: Strings.openTags },
+                      { value: "C,R", label: Strings.closedTags },
+                      { value: "D", label: Strings.canceledTags },
+                      { value: "A,C,R,D", label: Strings.allTags },
+                    ]}
+                  />
+                </div>
+
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                   {/* Card Number Filter */}
                   <div style={{ flex: 1, minWidth: '200px' }}>
@@ -317,6 +360,20 @@ const TagsPageOptimized = () => {
                       placeholder={Strings.enterLocation}
                       value={location_}
                       onChange={(e) => setLocation(e.target.value)}
+                      style={{ borderRadius: '6px' }}
+                      allowClear
+                    />
+                  </div>
+
+                  {/* Level Machine ID Filter */}
+                  <div style={{ flex: 1, minWidth: '200px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                      <Typography.Text strong>{Strings.levelMachineId}</Typography.Text>
+                    </div>
+                    <Input
+                      placeholder={Strings.enterMachineId}
+                      value={levelMachineId}
+                      onChange={(e) => setLevelMachineId(e.target.value)}
                       style={{ borderRadius: '6px' }}
                       allowClear
                     />

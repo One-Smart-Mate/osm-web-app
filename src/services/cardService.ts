@@ -41,6 +41,10 @@ interface CardFilters {
   startDate?: string;
   endDate?: string;
   sortOption?: 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
+  status?: string;
+  levelMachineId?: string;
+  userId?: number;
+  myCards?: boolean;
 }
 
 export const cardService = apiSlice.injectEndpoints({
@@ -78,6 +82,10 @@ export const cardService = apiSlice.injectEndpoints({
           ...(filters.startDate ? { startDate: filters.startDate } : {}),
           ...(filters.endDate ? { endDate: filters.endDate } : {}),
           ...(filters.sortOption ? { sortOption: filters.sortOption } : {}),
+          ...(filters.status ? { status: filters.status } : {}),
+          ...(filters.levelMachineId ? { levelMachineId: filters.levelMachineId } : {}),
+          ...(filters.userId ? { userId: filters.userId.toString() } : {}),
+          ...(filters.myCards !== undefined ? { myCards: filters.myCards.toString() } : {}),
         }).toString();
 
         return `/card/all/${siteId}/paginated?${queryParams}`;
