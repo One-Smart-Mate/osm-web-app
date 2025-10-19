@@ -22,7 +22,7 @@ interface MachineIdSearchProps {
 
 const MachineIdSearch = ({
   siteId,
-  levels,
+  levels: _levels,
   onSearchSuccess,
   onScrollToLevel,
   onLoadingChange
@@ -168,7 +168,7 @@ const MachineIdSearch = ({
       }
 
       // If children exist, add them to the hierarchy
-      let finalNodeId = lastLevelId;
+      let finalNodeId: number | null = lastLevelId;
       let isComplete = false;
 
       if (childrenLevels.length > 0) {
