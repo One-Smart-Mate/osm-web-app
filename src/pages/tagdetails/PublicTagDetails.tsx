@@ -50,7 +50,8 @@ const defaultCard: CardInterface = {
   userAppProvisionalSolutionName: "",
   userAppDefinitiveSolutionName: "",
   cardLocation: "",
-  cardUUID: ""
+  cardUUID: "",
+  levelMachineId: ""
 };
 
 const PublicTagDetails = () => {

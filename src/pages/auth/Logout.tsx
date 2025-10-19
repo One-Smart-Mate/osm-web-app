@@ -36,6 +36,10 @@ const Logout = ({ enableText }: LogoutProps) => {
         // Then remove the user from session storage
         removeSessionUser();
 
+        // Clear session lock flags
+        localStorage.removeItem('session_locked');
+        localStorage.removeItem('last_user_info');
+
         if (user && user.userId) {
           // Call the logout endpoint with userId and osName
           logout({

@@ -22,7 +22,7 @@ interface MachineIdSearchProps {
 
 const MachineIdSearch = ({
   siteId,
-  levels,
+  levels: _levels,
   onSearchSuccess,
   onScrollToLevel,
   onLoadingChange
@@ -92,7 +92,7 @@ const MachineIdSearch = ({
       const newLoadedData = new Map<number, any[]>();
       const PAGE_SIZE = 10;
 
-      // Process each level in the hierarchy
+      // Process each level in the hierarchy - store only the specific level from the path (no siblings)
       for (let i = 0; i < result.hierarchy.length; i++) {
         const currentLevel = result.hierarchy[i];
 
@@ -102,102 +102,18 @@ const MachineIdSearch = ({
           continue;
         }
 
-        let allLevelsForIndex: any[] = [];
+        // For searched path, only show the specific level (no siblings)
+        const specificLevelArray = [currentLevel];
 
-        if (i === 0) {
-          // For root level, load from cache or server
-          const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), 0);
-          if (cachedChildren && cachedChildren.length > 0) {
-            allLevelsForIndex = cachedChildren.filter(level => level && level.status !== 'S');
-          } else if (levels.length > 0) {
-            // Fallback to filtering from already loaded levels
-            allLevelsForIndex = levels.filter(level => {
-              if (!level) return false;
-              const superiorId = level.superiorId?.toString();
-              return (
-                level.status !== 'S' &&
-                (!superiorId ||
-                 superiorId === "" ||
-                 superiorId === "0" ||
-                 superiorId === null ||
-                 superiorId === "null")
-              );
-            });
-          }
-        } else {
-          // For other levels, load children from cache or API
-          const parentId = parseInt(result.hierarchy[i - 1].id.toString());
+        // Store the single level
+        newLoadedData.set(i, specificLevelArray);
+        newHierarchy.set(i, specificLevelArray);
 
-          if (isNaN(parentId)) {
-            console.error("[MachineIdSearch] Invalid parentId at index:", i - 1, result.hierarchy[i - 1]);
-            continue;
-          }
-
-          const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), parentId);
-
-          if (cachedChildren && cachedChildren.length > 0) {
-            allLevelsForIndex = cachedChildren.filter(level => level && level.status !== 'S');
-          } else {
-            // Load from API
-            try {
-              const response = await getChildrenLevels({
-                siteId: siteId.toString(),
-                parentId: parentId
-              }).unwrap();
-
-              if (!response || !Array.isArray(response)) {
-                console.error("[MachineIdSearch] Invalid response from getChildrenLevels:", response);
-                allLevelsForIndex = [];
-              } else {
-                allLevelsForIndex = response.filter((level: any) => level && level.status !== 'S');
-
-                // Cache the results
-                for (const level of allLevelsForIndex) {
-                  await LevelCache.cacheLevel(parseInt(siteId), level);
-                }
-              }
-            } catch (error) {
-              console.error("[MachineIdSearch] Error loading children for parentId:", parentId, error);
-              // Fallback to filtering from all levels
-              const parentIdStr = parentId.toString();
-              allLevelsForIndex = levels.filter(level => {
-                if (!level) return false;
-                const superiorIdStr = level.superiorId?.toString();
-                return superiorIdStr === parentIdStr && level.status !== 'S';
-              });
-            }
-          }
-        }
-
-        // Sort levels alphabetically/alphanumerically by name
-        const sortedLevels = allLevelsForIndex.sort((a, b) => {
-          const nameA = (a.name || a.levelName || '').toLowerCase();
-          const nameB = (b.name || b.levelName || '').toLowerCase();
-          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
-        });
-
-        // Store all loaded data (sorted)
-        newLoadedData.set(i, sortedLevels);
-
-        // Find the index of the current level in the sorted array
-        const foundLevelIndex = sortedLevels.findIndex(level => level.id.toString() === currentLevel.id.toString());
-
-        // Calculate which page the found level is on
-        let currentPage = 1;
-        if (foundLevelIndex !== -1) {
-          currentPage = Math.floor(foundLevelIndex / PAGE_SIZE) + 1;
-        }
-
-        // Calculate paginated data for the page where the level is
-        const startIndex = (currentPage - 1) * PAGE_SIZE;
-        const paginatedData = sortedLevels.slice(startIndex, startIndex + PAGE_SIZE);
-        newHierarchy.set(i, paginatedData);
-
-        // Store pagination info with the correct current page
+        // Pagination for single item
         newPagination.set(i, {
-          current: currentPage,
+          current: 1,
           pageSize: PAGE_SIZE,
-          total: allLevelsForIndex.length
+          total: 1
         });
 
         // Pre-select the level from the found path
@@ -216,9 +132,75 @@ const MachineIdSearch = ({
         return;
       }
 
-      // The found node is the final node - don't load children automatically
-      const finalNodeId = lastLevelId;
-      const isComplete = true;
+      // Now load children of the found level
+      const nextLevelIndex = result.hierarchy.length;
+      let childrenLevels: any[] = [];
+
+      try {
+        const cachedChildren = await LevelCache.getCachedChildren(parseInt(siteId), lastLevelId);
+
+        if (cachedChildren && cachedChildren.length > 0) {
+          childrenLevels = cachedChildren.filter(level => level && level.status !== 'S');
+        } else {
+          // Load from API
+          try {
+            const response = await getChildrenLevels({
+              siteId: siteId.toString(),
+              parentId: lastLevelId
+            }).unwrap();
+
+            if (response && Array.isArray(response)) {
+              childrenLevels = response.filter((level: any) => level && level.status !== 'S');
+
+              // Cache the results
+              for (const level of childrenLevels) {
+                await LevelCache.cacheLevel(parseInt(siteId), level);
+              }
+            }
+          } catch (error) {
+            console.log("[MachineIdSearch] No children found or error loading children:", error);
+            childrenLevels = [];
+          }
+        }
+      } catch (error) {
+        console.log("[MachineIdSearch] Error checking cache for children:", error);
+        childrenLevels = [];
+      }
+
+      // If children exist, add them to the hierarchy
+      let finalNodeId: number | null = lastLevelId;
+      let isComplete = false;
+
+      if (childrenLevels.length > 0) {
+        // Sort children alphabetically/alphanumerically by name
+        const sortedChildren = childrenLevels.sort((a, b) => {
+          const nameA = (a.name || a.levelName || '').toLowerCase();
+          const nameB = (b.name || b.levelName || '').toLowerCase();
+          return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        // Store all loaded data
+        newLoadedData.set(nextLevelIndex, sortedChildren);
+
+        // Paginate first page
+        const paginatedChildren = sortedChildren.slice(0, PAGE_SIZE);
+        newHierarchy.set(nextLevelIndex, paginatedChildren);
+
+        // Pagination info
+        newPagination.set(nextLevelIndex, {
+          current: 1,
+          pageSize: PAGE_SIZE,
+          total: sortedChildren.length
+        });
+
+        // Not complete yet, user needs to select a child
+        isComplete = false;
+        finalNodeId = null;
+      } else {
+        // No children - this is the final node
+        isComplete = true;
+        finalNodeId = lastLevelId;
+      }
 
       // Success! Clear inputs and notify
       setMachineIdSearch("");

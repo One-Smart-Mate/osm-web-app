@@ -1,5 +1,5 @@
 const PAGE_SIZE = 50;
-const PAGE_SIZE_OPTIONS = ["10", "20", "30","50"];
+const PAGE_SIZE_OPTIONS = ["10", "20", "30", "50", "100", "150", "200"];
 const DATE_FORMAT = "YYYY-MM-DD";
 const AUDIO_FORMATS = ["mp3", "wav"];
 const VIDEO_FORMATS = ["mp4", "webm"];

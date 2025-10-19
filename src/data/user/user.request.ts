@@ -102,9 +102,13 @@ export class UpdateUser {
     this.roles = roles;
     this.status = status;
     
-    // Only include fastPassword if it's provided and not empty
+    // Only include fastPassword if it's provided, not empty, and exactly 4 hexadecimal characters
     if (fastPassword && fastPassword.trim()) {
-      this.fastPassword = fastPassword;
+      const trimmedPassword = fastPassword.trim().toUpperCase();
+      // Validate it's exactly 4 hexadecimal characters (0-9, A-F)
+      if (/^[0-9A-F]{4}$/.test(trimmedPassword)) {
+        this.fastPassword = trimmedPassword;
+      }
     }
     
     // Include phoneNumber if provided (can be empty string for updates)

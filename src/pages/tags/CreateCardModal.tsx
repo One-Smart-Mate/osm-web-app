@@ -382,8 +382,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     setShowMachineSearch(false);
 
     if (value) {
+      // Only show the search section, don't load levels automatically
       setShowMachineSearch(true);
-      await loadLevels();
       setTimeout(() => {
         scrollToNextStep(levelRef);
       }, 400);
@@ -393,9 +393,9 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   const handleCustomDueDateChange = (date: dayjs.Dayjs | null) => {
     setCustomDueDate(date);
 
-    if (date && levelHierarchy.size === 0) {
+    // Only show the search section when date is selected, don't load levels
+    if (date) {
       setShowMachineSearch(true);
-      loadLevels();
       scrollToNextStep(levelRef);
     }
   };
@@ -712,7 +712,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
             {/* Button to show/hide manual structure */}
             <Button
               type="primary"
-              onClick={() => {
+              onClick={async () => {
+                // If showing structure and no levels loaded yet, load them first
+                if (!showManualStructure && levelHierarchy.size === 0) {
+                  await loadLevels();
+                }
+
                 setShowManualStructure(!showManualStructure);
                 if (!showManualStructure) {
                   setTimeout(() => {

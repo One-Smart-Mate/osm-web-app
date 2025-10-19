@@ -67,6 +67,10 @@ const LoginPage = () => {
       ).unwrap();
 
       if (isValidUser(data)) {
+        // Clear any session lock flags from previous sessions
+        localStorage.removeItem('session_locked');
+        localStorage.removeItem('last_user_info');
+
         setSessionUser(data);
         dispatch(setCredentials({ ...data }));
         handleNavigation(data);
