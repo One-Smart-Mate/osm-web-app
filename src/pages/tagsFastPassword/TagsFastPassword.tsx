@@ -304,9 +304,13 @@ const TagsFastPassword = () => {
           <Input.Password
             placeholder="Ingrese fast password de 4 caracteres"
             value={fastPassword}
-            onChange={(e) => setFastPassword(e.target.value.toUpperCase())}
+            onChange={(e) => {
+              // Only allow alphanumeric characters (a-z, A-Z, 0-9) and limit to 4 chars
+              const filteredValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4);
+              setFastPassword(filteredValue);
+            }}
             maxLength={4}
-            style={{ 
+            style={{
               marginTop: '12px',
               fontSize: '18px',
               textAlign: 'center',
@@ -317,7 +321,7 @@ const TagsFastPassword = () => {
             autoFocus
           />
           <Typography.Text type="secondary" style={{ fontSize: '12px', marginTop: '8px', display: 'block' }}>
-            El fast password debe tener exactamente 4 caracteres alfabéticos.
+            El fast password debe tener exactamente 4 caracteres alfanuméricos (a-z, A-Z, 0-9).
           </Typography.Text>
         </div>
       </Modal>

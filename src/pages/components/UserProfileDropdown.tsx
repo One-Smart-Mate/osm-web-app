@@ -50,10 +50,10 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
   const [getUser] = useGetUserMutation();
 
   /**
-   * Generate fast password function using alphabetic characters
+   * Generate fast password function using alphanumeric characters (a-z, A-Z, 0-9)
    */
   const generateFastPassword = (): string => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";
     for (let i = 0; i < 4; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));

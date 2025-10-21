@@ -102,11 +102,11 @@ export class UpdateUser {
     this.roles = roles;
     this.status = status;
     
-    // Only include fastPassword if it's provided, not empty, and exactly 4 hexadecimal characters
+    // Only include fastPassword if it's provided, not empty, and exactly 4 alphanumeric characters
     if (fastPassword && fastPassword.trim()) {
-      const trimmedPassword = fastPassword.trim().toUpperCase();
-      // Validate it's exactly 4 hexadecimal characters (0-9, A-F)
-      if (/^[0-9A-F]{4}$/.test(trimmedPassword)) {
+      const trimmedPassword = fastPassword.trim();
+      // Validate it's exactly 4 alphanumeric characters (a-z, A-Z, 0-9)
+      if (/^[a-zA-Z0-9]{4}$/.test(trimmedPassword)) {
         this.fastPassword = trimmedPassword;
       }
     }

@@ -82,11 +82,11 @@ const UserFormCard = ({
   const handleGenerateFastPassword = () => {
     setIsGeneratingFastPassword(true);
     try {
-      // Generate a random 4-character hexadecimal password (0-9, A-F)
-      const hexChars = '0123456789ABCDEF';
+      // Generate a random 4-character alphanumeric password (a-z, A-Z, 0-9)
+      const alphanumericChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let result = '';
       for (let i = 0; i < 4; i++) {
-        result += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
+        result += alphanumericChars.charAt(Math.floor(Math.random() * alphanumericChars.length));
       }
 
       setFastPassword(result);
@@ -94,7 +94,7 @@ const UserFormCard = ({
 
       notification.success({
         message: Strings.success,
-        description: `Fast Password: ${result} (Hexadecimal: 0-9, A-F)`,
+        description: `Fast Password: ${result} (Alfanumérico: a-z, A-Z, 0-9)`,
       });
     } catch (error) {
       AnatomyNotification.error(notification, error);
@@ -268,7 +268,7 @@ const UserFormCard = ({
               className="flex-1"
                               rules={[
                   {
-                    pattern: /^[A-Za-z]{4}$/,
+                    pattern: /^[a-zA-Z0-9]{4}$/,
                     message: Strings.fastPasswordValidation,
                   },
                 ]}
@@ -276,8 +276,8 @@ const UserFormCard = ({
               <Input
                 value={fastPassword}
                 onChange={(e) => {
-                  // Only allow hexadecimal characters (0-9, A-F, a-f) and limit to 4 chars
-                  const filteredValue = e.target.value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase().substring(0, 4);
+                  // Only allow alphanumeric characters (a-z, A-Z, 0-9) and limit to 4 chars
+                  const filteredValue = e.target.value.replace(/[^a-zA-Z0-9]/g, '').substring(0, 4);
                   setFastPassword(filteredValue);
                   form.setFieldsValue({ fastPassword: filteredValue });
                 }}
