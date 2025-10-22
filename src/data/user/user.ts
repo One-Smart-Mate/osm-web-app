@@ -104,6 +104,7 @@ export class UserCardInfo {
   status?: string;
   uploadCardDataWithDataNet?: number;
   uploadCardEvidenceWithDataNet?: number;
+  fastPassword?: string;
   constructor(
     id: string,
     name: string,
@@ -117,7 +118,8 @@ export class UserCardInfo {
     uploadCardDataWithDataNet?: number,
     uploadCardEvidenceWithDataNet?: number,
     phoneNumber?: string,
-    translation?: string
+    translation?: string,
+    fastPassword?: string
   ) {
     this.id = id;
     this.name = name;
@@ -132,5 +134,6 @@ export class UserCardInfo {
     this.status = status;
     this.uploadCardDataWithDataNet = uploadCardDataWithDataNet;
     this.uploadCardEvidenceWithDataNet = uploadCardEvidenceWithDataNet;
+    this.fastPassword = fastPassword;
   }
 }

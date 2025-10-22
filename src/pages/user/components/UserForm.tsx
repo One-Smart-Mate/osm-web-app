@@ -73,7 +73,7 @@ const UserForm = ({
     registerUser(userData)
       .unwrap()
       .then(() => {
-        // Success - just close modal
+        // Success - close modal and show notification
         setIsLoading(false);
         setModalOpen(false);
 
@@ -82,9 +82,9 @@ const UserForm = ({
           AnatomyNotificationType._REGISTER
         );
 
-        // Call onComplete after a small delay to allow modal to close
+        // Call onComplete immediately - no delay needed
         if (onComplete) {
-          setTimeout(() => onComplete(), 100);
+          onComplete();
         }
       })
       .catch((error) => {
@@ -117,15 +117,15 @@ const UserForm = ({
     updateUser(userData)
       .unwrap()
       .then(() => {
-        // Success - just close modal
+        // Success - close modal and show notification
         setIsLoading(false);
         setModalOpen(false);
 
         AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
 
-        // Call onComplete after a small delay to allow modal to close
+        // Call onComplete immediately - no delay needed
         if (onComplete) {
-          setTimeout(() => onComplete(), 100);
+          onComplete();
         }
       })
       .catch((error) => {

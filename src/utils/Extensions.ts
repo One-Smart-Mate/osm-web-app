@@ -281,33 +281,48 @@ export const getCardStatusAndText = (
   duDate?: string,
   DefiniSolutionDate?: string,
   _CreatDate?: string
-): { status: "error" | "success"; text: string; dateStatus: string } => {
+): { status: "error" | "success" | "warning"; text: string; dateStatus: string } => {
   // Use unified time status calculation
   const { timeStatus } = getUnifiedTimeStatus(input, duDate, DefiniSolutionDate);
 
   switch (input) {
-    case "A":
-    case "P":
-    case "V": {
+    case Constants.STATUS_ACTIVE: // "A" - Active/Open
+    case "V": { // Verified or other active states
       return {
         status: "success",
-        text: Strings.open,
+        text: Strings.statusOpen || Strings.open,
         dateStatus: timeStatus,
       };
     }
 
-    case Constants.STATUS_RESOLVED: {
+    case "P": { // Provisional solution applied
       return {
-        status: "error",
-        text: Strings.closed,
+        status: "warning",
+        text: Strings.statusProvisional || "Provisional",
         dateStatus: timeStatus,
       };
     }
 
-    case Constants.STATUS_CANCELED: {
+    case Constants.STATUS_RESOLVED: { // "R" - Resolved
       return {
         status: "error",
-        text: Strings.closed,
+        text: Strings.statusResolved || Strings.resolved || Strings.closed,
+        dateStatus: timeStatus,
+      };
+    }
+
+    case Constants.STATUS_CANCELED: { // "C" - Canceled/Closed
+      return {
+        status: "error",
+        text: Strings.canceled || Strings.closed,
+        dateStatus: timeStatus,
+      };
+    }
+
+    case Constants.STATUS_DRAFT: { // "D" - Draft/Discarded
+      return {
+        status: "warning",
+        text: Strings.statusDiscarded || Strings.discarded || Strings.tagStatusCanceled,
         dateStatus: timeStatus,
       };
     }

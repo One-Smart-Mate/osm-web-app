@@ -77,7 +77,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
   // Track the last selected level to scroll to the next one
   const [lastSelectedLevel, setLastSelectedLevel] = useState<number | null>(null);
 
-  // Función para scroll suave al siguiente paso
+  // Optimized scroll function - reduced delay
   const scrollToNextStep = (targetRef: React.RefObject<HTMLDivElement | null>) => {
     setTimeout(() => {
       if (targetRef.current) {
@@ -87,7 +87,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           inline: 'nearest'
         });
       }
-    }, 300);
+    }, 100); // Reduced from 300ms to 100ms
   };
 
   // Reset form when modal opens
@@ -104,7 +104,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     }
   }, [lastLevelCompleted]);
 
-  // Auto-scroll to next level after selection
+  // Optimized auto-scroll - reduced delays
   useEffect(() => {
     if (lastSelectedLevel !== null) {
       const nextLevelIndex = lastSelectedLevel + 1;
@@ -119,6 +119,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
               inline: 'nearest'
             });
           } else {
+            // Single retry with shorter delay
             setTimeout(() => {
               const retryElement = document.querySelector(`[data-level-index="${nextLevelIndex}"]`);
               if (retryElement) {
@@ -128,14 +129,14 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                   inline: 'nearest'
                 });
               }
-            }, 200);
+            }, 100); // Reduced from 200ms to 100ms
           }
-        }, 500);
+        }, 200); // Reduced from 500ms to 200ms
       }
 
       setTimeout(() => {
         setLastSelectedLevel(null);
-      }, 800);
+      }, 300); // Reduced from 800ms to 300ms
     }
   }, [lastSelectedLevel, levelHierarchy]);
 
@@ -386,7 +387,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       setShowMachineSearch(true);
       setTimeout(() => {
         scrollToNextStep(levelRef);
-      }, 400);
+      }, 150); // Reduced from 400ms to 150ms
     }
   };
 
@@ -418,25 +419,26 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     console.log("[CreateCardModal] hierarchy:", hierarchy);
     console.log("[CreateCardModal] pagination:", pagination);
 
-    // First, hide the structure to force unmount
+    // Batch state updates for better performance
     setShowManualStructure(false);
 
-    // Then update all states
-    setLoadedLevelData(new Map(loadedData));
-    setLevelPagination(new Map(pagination));
-    setSelectedLevels(new Map(selectedLevelsMap));
-    setFinalNodeId(finalNode);
-    setLastLevelCompleted(isComplete);
-    setLevelHierarchy(new Map(hierarchy));
+    // Update all states in a single render cycle
+    Promise.resolve().then(() => {
+      setLoadedLevelData(new Map(loadedData));
+      setLevelPagination(new Map(pagination));
+      setSelectedLevels(new Map(selectedLevelsMap));
+      setFinalNodeId(finalNode);
+      setLastLevelCompleted(isComplete);
+      setLevelHierarchy(new Map(hierarchy));
 
-    // Finally, show structure again with all updated states
-    setTimeout(() => {
+      // Show structure immediately after state updates
       setShowManualStructure(true);
-    }, 50);
+    });
   };
 
   const handleScrollToLevel = (levelIndex: number) => {
-    setTimeout(() => {
+    // Immediate scroll - no delay needed
+    requestAnimationFrame(() => {
       const targetLevelElement = document.querySelector(`[data-level-index="${levelIndex}"]`);
       if (targetLevelElement) {
         targetLevelElement.scrollIntoView({
@@ -445,7 +447,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
           inline: 'nearest'
         });
       }
-    }, 100);
+    });
   };
 
   const handleLevelChange = async (levelIndex: number, value: string) => {
@@ -482,9 +484,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
     if (value) {
       await loadChildLevels(value, levelIndex);
 
-      setTimeout(() => {
-        setLastSelectedLevel(levelIndex);
-      }, 100);
+      // Set immediately - no delay needed
+      setLastSelectedLevel(levelIndex);
     } else {
       setLevelHierarchy(prev => {
         const newHierarchy = new Map(prev);
@@ -544,7 +545,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       return;
     }
 
-    const generateTempUUID = () => {
+    // Generate UUID using crypto API (faster than manual generation)
+    const generateUUID = () => {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      // Fallback for older browsers
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0;
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -554,7 +560,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
     const cardData: CreateCardRequest = {
       siteId: parseInt(siteId),
-      cardUUID: generateTempUUID(),
+      cardUUID: generateUUID(),
       cardCreationDate: new Date().toISOString(),
       cardTypeId: parseInt(selectedCardType),
       preclassifierId: parseInt(selectedPreclassifier),
@@ -720,7 +726,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
 
                 setShowManualStructure(!showManualStructure);
                 if (!showManualStructure) {
-                  setTimeout(() => {
+                  // Use requestAnimationFrame for better performance
+                  requestAnimationFrame(() => {
                     const firstLevelElement = document.querySelector('[data-level-index="0"]');
                     if (firstLevelElement) {
                       firstLevelElement.scrollIntoView({
@@ -729,7 +736,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
                         inline: 'nearest'
                       });
                     }
-                  }, 300);
+                  });
                 }
               }}
               style={{

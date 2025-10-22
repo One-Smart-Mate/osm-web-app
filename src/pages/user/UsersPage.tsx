@@ -29,10 +29,6 @@ const UsersPage = () => {
   const siteId = location?.state.siteId || Strings.empty;
   const { notification } = AntApp.useApp();
 
-  useEffect(() => {
-    handleGetUsers();
-  }, []);
-
   const handleGetUsers = async () => {
     try {
       if (!location.state) {
@@ -45,12 +41,14 @@ const UsersPage = () => {
       setLoading(false);
     } catch (error) {
       AnatomyNotification.error(notification, error);
+      setLoading(false);
     }
   };
 
+  // Load users only once when component mounts - removed duplicate
   useEffect(() => {
     handleGetUsers();
-  }, [location.state]);
+  }, [location.state?.siteId]); // Only re-fetch if siteId changes
 
   const search = useCallback((item: UserCardInfo, query: string): boolean => {
     const normalizedQuery = query.toLowerCase();
@@ -94,7 +92,11 @@ const UsersPage = () => {
       createButtonComponent={
         <UserForm
           formType={UserFormType._CREATE}
-          onComplete={() => handleGetUsers()}
+          onComplete={() => {
+            // Optimized: reload users list after creation
+            // The delay allows the backend to process the user before reloading
+            setTimeout(() => handleGetUsers(), 200);
+          }}
         />
       }
       content={
@@ -114,9 +116,15 @@ const UsersPage = () => {
           <PaginatedList
             className="no-scrollbar"
             dataSource={filteredData}
-            renderItem={(value: UserCardInfo, index: number) => (
-              <List.Item key={index}>
-                <UserCard user={value} onComplete={() => handleGetUsers()} />
+            renderItem={(value: UserCardInfo) => (
+              <List.Item key={value.id}>
+                <UserCard
+                  user={value}
+                  onComplete={() => {
+                    // Optimized: reload users list after update
+                    setTimeout(() => handleGetUsers(), 200);
+                  }}
+                />
               </List.Item>
             )}
             loading={isLoading}

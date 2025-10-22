@@ -94,6 +94,12 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
         </Checkbox>
       </Form.Item>
 
+      <Form.Item name="assignWhileCreate" valuePropName="checked" label={Strings.assignCardOnCreate}>
+        <Checkbox>
+          <p className="text-base">{Strings.assignCardOnCreate}</p>
+        </Checkbox>
+      </Form.Item>
+
       {/* Hidden field */}
       <Form.Item name="superiorId" hidden>
         <Input type="hidden" />

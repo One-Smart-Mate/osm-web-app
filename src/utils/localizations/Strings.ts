@@ -1927,6 +1927,15 @@ class StringsBase {
   static time = "time";
   static event = "event";
   static processingLevels = "processingLevels";
+
+  // Status filter labels
+  static onlyOpen = "onlyOpen";
+  static onlyProvisional = "onlyProvisional";
+  static openPlusProvisional = "openPlusProvisional";
+  static onlyResolved = "onlyResolved";
+  static onlyCanceled = "onlyCanceled";
+  static onlyDiscarded = "onlyDiscarded";
+  static allStatuses = "allStatuses";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

@@ -10,6 +10,11 @@ import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 import Constants from "../../../utils/Constants";
 import AnatomyNotification from "../../components/AnatomyNotification";
 
+// Simple in-memory cache for roles to avoid repeated API calls
+let rolesCache: Role[] | null = null;
+let rolesCacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 interface UserFormCardProps {
   form: FormInstance;
   initialValues?: UserCardInfo;
@@ -33,41 +38,74 @@ const UserFormCard = ({
 
   useEffect(() => {
     handleGetRoles();
-    console.log(initialValues);
-  }, []);
+  }, []); // Only load roles once when component mounts
 
   const handleGetRoles = async () => {
-    const rolesResponse = await getRoles().unwrap();
-    // Filter out the "IH_sis_admin" role from available options
-    const hasAdminRole = user?.roles?.some((role: string | Role) =>
-      typeof role === "string"
-        ? role === Constants.ihSisAdmin
-        : role.name === Constants.ihSisAdmin
-    );
+    try {
+      let rolesResponse: Role[];
 
-    const filteredRoles = hasAdminRole
-      ? rolesResponse
-      : rolesResponse.filter((role) => role.name !== Constants.ihSisAdmin);
-    setRoles(filteredRoles);
+      // Check if cache is still valid
+      const now = Date.now();
+      const isCacheValid = rolesCache && (now - rolesCacheTimestamp) < CACHE_DURATION;
+
+      if (isCacheValid) {
+        // Use cached roles - much faster!
+        rolesResponse = rolesCache!;
+      } else {
+        // Fetch from API and update cache
+        rolesResponse = await getRoles().unwrap();
+        rolesCache = rolesResponse;
+        rolesCacheTimestamp = now;
+      }
+
+      // Filter out the "IH_sis_admin" role from available options
+      const hasAdminRole = user?.roles?.some((role: string | Role) =>
+        typeof role === "string"
+          ? role === Constants.ihSisAdmin
+          : role.name === Constants.ihSisAdmin
+      );
+
+      const filteredRoles = hasAdminRole
+        ? rolesResponse
+        : rolesResponse.filter((role) => role.name !== Constants.ihSisAdmin);
+
+      setRoles(filteredRoles);
+    } catch (error) {
+      console.error("Error loading roles:", error);
+    }
+  };
+
+  // Separate effect for setting form values - runs when initialValues change
+  useEffect(() => {
+    if (roles.length === 0) return; // Wait for roles to load first
 
     if (initialValues) {
-      form.setFieldsValue({
+      const formValues: any = {
         name: initialValues.name,
         email: initialValues.email,
         id: initialValues.id,
-        phoneNumber: initialValues.phoneNumber,
+        phoneNumber: initialValues.phoneNumber || '',
         translation: initialValues.translation || Constants.es,
         roles: initialValues.roles.filter((rol,_) => rol.name != Constants.ihSisAdmin).map((rol, _) => rol.id),
         status: initialValues.status,
         enableEvidences: initialValues.uploadCardDataWithDataNet && initialValues.uploadCardEvidenceWithDataNet
-      });
+      };
+
+      // Include fastPassword if it exists in initialValues
+      if (initialValues.fastPassword) {
+        formValues.fastPassword = initialValues.fastPassword;
+      }
+
+      form.setFieldsValue(formValues);
     } else {
-      // Set default values for new user creation
-      form.setFieldsValue({
-        translation: Constants.es
-      });
+      // Set default values for new user creation - only once
+      if (roles.length > 0) {
+        form.setFieldsValue({
+          translation: Constants.es
+        });
+      }
     }
-  };
+  }, [initialValues, roles.length, form]); // Use roles.length instead of roles array to avoid unnecessary re-renders
 
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active, key: 1 },
@@ -117,9 +155,12 @@ const UserFormCard = ({
     }
   };
 
-  // Clear fast password when modal is opened/closed
+  // Initialize fast password from initial values when editing
   useEffect(() => {
-    if (!initialValues) {
+    if (initialValues && initialValues.fastPassword) {
+      setFastPassword(initialValues.fastPassword);
+    } else if (!initialValues) {
+      // Only clear when creating new user
       setFastPassword("");
       form.setFieldsValue({ fastPassword: "" });
     }

@@ -88,16 +88,32 @@ const TagCard = ({ data }: TagCardProps) => {
     return !isCardDiscarded && !isCardClosed;
   };
 
+  const canApplyProvisionalSolution = () => {
+    // Can only apply provisional solution if card doesn't already have one (status != 'P')
+    // and if the card is not discarded, resolved, or canceled
+    return canApplySolution() && data.status !== 'P';
+  };
+
+  const canApplyDefinitiveSolution = () => {
+    // Can only apply definitive solution if card is not already resolved (status != 'R')
+    // and if the card is not discarded or canceled
+    const isCardDiscarded = data.status === Constants.STATUS_DRAFT; // 'D'
+    const isCardCanceled = data.status === Constants.STATUS_CANCELED; // 'C'
+    const isCardResolved = data.status === Constants.STATUS_RESOLVED; // 'R'
+
+    return !isCardDiscarded && !isCardCanceled && !isCardResolved;
+  };
+
   const dropdownItems = [
     {
       key: 'provisional',
       label: Strings.provisionalSolution || 'Solución Provisional',
-      disabled: !canApplySolution(),
+      disabled: !canApplyProvisionalSolution(),
     },
     {
       key: 'definitive',
       label: Strings.definitiveSolution || 'Solución Definitiva',
-      disabled: !canApplySolution(),
+      disabled: !canApplyDefinitiveSolution(),
     },
   ];
 

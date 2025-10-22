@@ -18,6 +18,11 @@ import MechanicsChart from "./components/MechanicsChart";
 import DefinitiveUsersChart from "./components/DefinitiveUsersChart";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 import DownloadChartDataButton from "./components/DownloadChartDataButton";
 import ChartExpander from "./components/ChartExpander";
 import MainContainer from "../layouts/MainContainer";
@@ -43,7 +48,7 @@ const ChartsPage = () => {
   const [methodologies, setMethodologies] = useState<Methodology[]>([]);
   const [cardTypes, setCardTypes] = useState<CardTypes[]>([]);
   const [selectedCardType, setSelectedCardType] = useState<string | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<string>("A");
+  const [selectedStatus, setSelectedStatus] = useState<string>("A,P");
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -63,12 +68,28 @@ const ChartsPage = () => {
       return;
     }
     setIsLoading(true);
+
+    // Adjust dates to UTC to handle timezone correctly
+    // The backend stores dates in UTC, so we need to convert local dates to UTC range
+    // Example: If user is in GMT-5 and selects "2025-10-22":
+    // - Local start: 2025-10-22 00:00:00 GMT-5 = 2025-10-22 05:00:00 UTC
+    // - Local end: 2025-10-22 23:59:59 GMT-5 = 2025-10-23 04:59:59 UTC
+    // We send the UTC equivalent so backend can find cards created "today" in user's timezone
+
+    const formattedStartDate = startDate
+      ? dayjs(startDate).startOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+      : undefined;
+
+    const formattedEndDate = endDate
+      ? dayjs(endDate).endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+      : undefined;
+
     const [response, response2, cardTypesResponse] = await Promise.all([
       getMethodologiesCatalog().unwrap(),
       getMethodologies({
         siteId,
-        startDate,
-        endDate,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
         status: selectedStatus,
       }).unwrap(),
       getCardTypes(siteId).unwrap()
@@ -89,12 +110,17 @@ const ChartsPage = () => {
 
   const onRangeChange = (
     dates: null | (Dayjs | null)[],
-    dateStrings: string[]
+    _dateStrings: string[]
   ) => {
-    if (dates) {
-      if (dateStrings[0] !== startDate || dateStrings[1] !== endDate) {
-        setStartDate(dateStrings[0]);
-        setEndDate(dateStrings[1]);
+    if (dates && dates[0] && dates[1]) {
+      // Format dates to include timezone offset to ensure backend interprets them correctly
+      // This prevents timezone mismatch issues where cards created "today" don't appear
+      const newStartDate = dates[0].format("YYYY-MM-DD");
+      const newEndDate = dates[1].format("YYYY-MM-DD");
+
+      if (newStartDate !== startDate || newEndDate !== endDate) {
+        setStartDate(newStartDate);
+        setEndDate(newEndDate);
       }
     } else {
       setStartDate(Strings.empty);
@@ -148,8 +174,13 @@ const ChartsPage = () => {
               style={{ minWidth: 180 }}
               onChange={handleStatusChange}
               options={[
-                { value: "A", label: "Solo Abiertas" },
-                { value: "A,C,R", label: "Abiertas y Cerradas" },
+                { value: "A", label: Strings.onlyOpen },
+                { value: "P", label: Strings.onlyProvisional },
+                { value: "A,P", label: Strings.openPlusProvisional },
+                { value: "R", label: Strings.onlyResolved },
+                { value: "C", label: Strings.onlyCanceled },
+                { value: "D", label: Strings.onlyDiscarded },
+                { value: "A,P,C,R,D", label: Strings.allStatuses },
               ]}
             />
           </Space>

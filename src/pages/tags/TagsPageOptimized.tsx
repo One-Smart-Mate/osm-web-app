@@ -62,7 +62,7 @@ const TagsPageOptimized = () => {
   const [debouncedSearchText] = useDebounce(searchText, 300);
   const [dateFilterType, setDateFilterType] = useState<DateFilterType>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<string>("A");
+  const [selectedStatus, setSelectedStatus] = useState<string>("A,P");
 
   // Role-based "My Cards" filter
   // Operators and Mechanics: default to showing only their cards
@@ -328,10 +328,13 @@ const TagsPageOptimized = () => {
                     style={{ width: '100%' }}
                     onChange={(value) => setSelectedStatus(value)}
                     options={[
-                      { value: "A", label: Strings.openTags },
-                      { value: "C,R", label: Strings.closedTags },
-                      { value: "D", label: Strings.canceledTags },
-                      { value: "A,C,R,D", label: Strings.allTags },
+                      { value: "A", label: Strings.onlyOpen },
+                      { value: "P", label: Strings.onlyProvisional },
+                      { value: "A,P", label: Strings.openPlusProvisional },
+                      { value: "R", label: Strings.onlyResolved },
+                      { value: "C", label: Strings.onlyCanceled },
+                      { value: "D", label: Strings.onlyDiscarded },
+                      { value: "A,P,C,R,D", label: Strings.allStatuses },
                     ]}
                   />
                 </div>

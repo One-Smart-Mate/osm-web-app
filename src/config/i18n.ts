@@ -1901,6 +1901,15 @@ const resources = {
       statusExpired: "Expired",
       statusClosedByManager: "Closed by Manager",
       noCards: "No cards.",
+
+      // Status filter labels
+      onlyOpen: "Only Open",
+      onlyProvisional: "Only Provisional",
+      openPlusProvisional: "Open + Provisional",
+      onlyResolved: "Only Resolved",
+      onlyCanceled: "Only Canceled",
+      onlyDiscarded: "Only Discarded",
+      allStatuses: "All Statuses",
     },
   },
   es: {
@@ -3815,6 +3824,15 @@ const resources = {
       statusExpired: "Vencida",
       statusClosedByManager: "Cerrada por Manager",
       noCards: "Sin tarjetas.",
+
+      // Status filter labels
+      onlyOpen: "Solo Abiertas",
+      onlyProvisional: "Solo Provisionales",
+      openPlusProvisional: "Abiertas + Provisionales",
+      onlyResolved: "Solo Resueltas",
+      onlyCanceled: "Solo Canceladas",
+      onlyDiscarded: "Solo Descartadas",
+      allStatuses: "Todos los Estados",
     },
   },
 };
