@@ -241,7 +241,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
         allRootLevels = cachedChildren.filter(level => level.status !== 'S');
       } else {
         // Load from server
-        const response = await getLevels(siteId.toString()).unwrap();
+        const response = await getLevels({ siteId: siteId.toString() }).unwrap();
         setLevels(response);
 
         // Filter out suspended levels and find root levels

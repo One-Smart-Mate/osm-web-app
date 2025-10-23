@@ -99,7 +99,7 @@ const LevelTreeModal: React.FC<LevelTreeModalProps> = ({
     
     setLoading(true);
     try {
-      const response = await getLevels(siteId).unwrap();
+      const response = await getLevels({ siteId }).unwrap();
       const hierarchy = buildHierarchy(response);
       
       // Get the tree expanded state from localStorage

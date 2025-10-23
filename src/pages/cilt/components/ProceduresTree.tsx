@@ -75,7 +75,7 @@ const ProceduresTree: React.FC<ProceduresTreeProps> = ({ siteId, siteName }) => 
 
     setIsLoading(true);
     try {
-      const response = await getLevels(siteId).unwrap();
+      const response = await getLevels({ siteId }).unwrap();
       const activeNodes = response.filter((node: any) => !node.deletedAt);
       const hierarchyData = buildHierarchy(activeNodes);
 

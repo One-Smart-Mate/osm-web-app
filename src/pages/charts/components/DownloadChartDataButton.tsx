@@ -97,7 +97,7 @@ const DownloadChartDataButton = ({
       });
 
       // Get cards data
-      const cardsResult = await getCards(siteId).unwrap();
+      const cardsResult = await getCards({ siteId }).unwrap();
       const cards: CardInterface[] = Array.isArray(cardsResult) ? cardsResult : (cardsResult as any)?.content || [];
 
       // Filter cards by date and type if specified

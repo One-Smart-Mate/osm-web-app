@@ -612,6 +612,8 @@ const resources = {
       statusPlaceholder: "Choose a status",
       activeValue: "A",
       inactiveValue: "I",
+      cancelledStatus: "C",
+      cancelled: "Cancelled",
       statusUserLabel: "User status",
       cardTypeMethodologyTooltip:
         "Select the methodology associated with this card type.",
@@ -2500,6 +2502,8 @@ const resources = {
       statusPlaceholder: "Seleccione un estado",
       activeValue: "A",
       inactiveValue: "I",
+      cancelledStatus: "C",
+      cancelled: "Cancelado",
       statusUserLabel: "Estado del usuario",
       cardTypeMethodologyTooltip:
         "Seleccione la metodología asociada con este tipo de Tarjeta.",

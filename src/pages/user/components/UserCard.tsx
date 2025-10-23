@@ -92,9 +92,15 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
       <AnatomySection
         title={Strings.status}
         label={
-          <Tag color={user.status == Strings.activeStatus ? "green" : "red"}>
+          <Tag color={
+            user.status == Strings.activeStatus ? "green" :
+            user.status == Strings.cancelledStatus ? "red" :
+            "orange"
+          }>
             {user.status == Strings.activeStatus
               ? Strings.active
+              : user.status == Strings.cancelledStatus
+              ? Strings.cancelled
               : Strings.inactive}
           </Tag>
         }

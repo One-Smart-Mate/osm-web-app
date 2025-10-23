@@ -102,7 +102,7 @@ const CiltLevelTreeModal: React.FC<CiltLevelTreeModalProps> = ({
 
     setLoading(true);
     try {
-      const response = await getLevels(siteId).unwrap();
+      const response = await getLevels({ siteId }).unwrap();
       
       // Filter the hierarchy if a reference level ID is provided
       let hierarchy;

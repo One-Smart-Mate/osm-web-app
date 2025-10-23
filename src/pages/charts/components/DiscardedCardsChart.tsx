@@ -118,7 +118,7 @@ const DiscardedCardsChart: React.FC<DiscardedCardsChartProps> = ({
   useEffect(() => {
     const loadAllCards = async () => {
       try {
-        const cards = await getCards(siteId).unwrap();
+        const cards = await getCards({ siteId }).unwrap();
         setAllCards(cards || []);
       } catch (_error) {
         setAllCards([]);

@@ -51,19 +51,19 @@ export const cardService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCardsByLevel: builder.mutation<
       CardInterface[],
-      { levelId: string; siteId: string }
+      { levelId: string; siteId: string; page?: number; limit?: number }
     >({
-      query: ({ levelId, siteId }) =>
-        `/card/by-level/${levelId}?siteId=${siteId}`,
+      query: ({ levelId, siteId, page = 1, limit = 999999 }) =>
+        `/card/by-level/${levelId}?siteId=${siteId}&page=${page}&limit=${limit}`,
       transformResponse: (response: {
-        data: CardInterface[];
+        data: PaginatedCardsResponse;
         status: number;
         message: string;
-      }) => response.data,
+      }) => response.data.data,
     }),
-    getCards: builder.mutation<CardInterface[], string>({
-      query: (siteId) => `/card/all/${siteId}`,
-      transformResponse: (response: { data: CardInterface[] }) => response.data,
+    getCards: builder.mutation<CardInterface[], { siteId: string; page?: number; limit?: number }>({
+      query: ({ siteId, page = 1, limit = 999999 }) => `/card/all/${siteId}?page=${page}&limit=${limit}`,
+      transformResponse: (response: { data: PaginatedCardsResponse }) => response.data.data,
     }),
     getCardsPaginated: builder.mutation<
       PaginatedCardsResponse,

@@ -37,7 +37,9 @@ const UsersPage = () => {
       }
       setLoading(true);
       const response = await getUsersWithPositions(siteId).unwrap();
-      setData(response);
+      // Filter out cancelled users (status 'C') - they should not be visible
+      const filteredUsers = response.filter((user: UserCardInfo) => user.status !== 'C');
+      setData(filteredUsers);
       setLoading(false);
     } catch (error) {
       AnatomyNotification.error(notification, error);

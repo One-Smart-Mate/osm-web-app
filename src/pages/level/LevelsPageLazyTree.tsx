@@ -320,7 +320,7 @@ const LevelsPageLazyTree = () => {
       let statsData = cachedStats;
 
       if (!cachedStats) {
-        const statsResponse = await getLevelStats(siteId.toString()).unwrap();
+        const statsResponse = await getLevelStats({ siteId: siteId.toString() }).unwrap();
         statsData = statsResponse;
         await LevelCache.cacheStats(siteId, statsData);
       }

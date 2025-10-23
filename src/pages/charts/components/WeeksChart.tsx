@@ -61,7 +61,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
 
       // If filters are applied, get all cards and calculate in frontend
       console.log('WeeksChart - Getting all cards for frontend filtering');
-      const cardsResponse = await getCards(siteId).unwrap();
+      const cardsResponse = await getCards({ siteId }).unwrap();
       setAllCards(cardsResponse);
       console.log('WeeksChart - All cards loaded:', cardsResponse.length);
       

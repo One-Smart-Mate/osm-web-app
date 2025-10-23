@@ -499,6 +499,8 @@ class StringsBase {
   static pastDue = "pastDue";
   static suspended = "suspended";
   static canceled = "canceled";
+  static cancelledStatus = "cancelledStatus";
+  static cancelled = "cancelled";
 
   static preclassifiersof = "preclassifiersof";
   static preclassifier = "preclassifier";

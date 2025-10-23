@@ -37,7 +37,7 @@ const LevelsPageWrapper = () => {
       let statsData = cachedStats;
       if (!cachedStats) {
         // Get fresh stats from server
-        const response = await getLevelStats(siteId.toString()).unwrap();
+        const response = await getLevelStats({ siteId: siteId.toString() }).unwrap();
         statsData = response;
 
         // Cache the stats

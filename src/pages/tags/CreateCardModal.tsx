@@ -173,7 +173,7 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       if (cachedChildren && cachedChildren.length > 0) {
         allRootLevels = cachedChildren.filter(level => level.status !== 'S');
       } else {
-        const response = await getLevels(siteId.toString()).unwrap();
+        const response = await getLevels({ siteId: siteId.toString() }).unwrap();
         setLevels(response);
 
         const activeLevels = response.filter(level => level.status !== 'S');

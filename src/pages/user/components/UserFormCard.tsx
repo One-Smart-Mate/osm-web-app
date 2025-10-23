@@ -110,6 +110,7 @@ const UserFormCard = ({
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active, key: 1 },
     { value: Strings.inactiveValue, label: Strings.inactive, key: 2 },
+    { value: Strings.cancelledStatus, label: Strings.cancelled, key: 3 },
   ];
 
   const languageOptions = [
