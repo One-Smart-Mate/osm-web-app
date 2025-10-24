@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Card, Form, Input, Button, Select, Table, message, Row, Col, Space, Typography } from "antd";
+import { Card, Form, Input, Button, Select, Table, message, Row, Col, Space, Typography, Spin } from "antd";
 import { useLocation } from "react-router-dom";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
+import { Pie, Bar, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useGetCardReportGroupedMutation, useGetChartsQuery, useGetChartsLevelsQuery } from "../../services/cardService";
 import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
+import ChartExpander from "../charts/components/ChartExpander";
 
 // Register Chart.js components
-ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, ChartDataLabels);
 
 const { Title: AntTitle } = Typography;
 
@@ -56,7 +57,7 @@ const CardReportsPage: React.FC = () => {
       ? (chartsData as any).data
       : [];
 
-  const [chartType, setChartType] = useState<"pie" | "barV" | "barH">("pie");
+  const [chartType, setChartType] = useState<"pie" | "barV" | "barH" | "line">("pie");
   const [reportData, setReportData] = useState<any[]>([]);
   const [selectedChartId, setSelectedChartId] = useState<number | null>(null);
   const [filters, setFilters] = useState<ReportFilters>({
@@ -296,6 +297,67 @@ const CardReportsPage: React.FC = () => {
     },
   };
 
+  // Line chart configuration - matching PHP demo lines 564-582
+  const lineChartData = {
+    labels,
+    datasets: [
+      {
+        label: Strings.totalCards,
+        data: values,
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: '#0d6efd',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+      },
+    ],
+  };
+
+  const lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value: any) => Number(value).toLocaleString(),
+        },
+        title: { display: true, text: "Total de tarjetas" },
+      },
+      x: {
+        ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 },
+      },
+    },
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: `${Strings.cards} - Líneas` },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const value = context.raw || 0;
+            const percentage = totalCards ? ((value / totalCards) * 100).toFixed(1) : 0;
+            return `${value.toLocaleString()} tarjetas (${percentage}%)`;
+          },
+        },
+      },
+      datalabels: {
+        anchor: "end" as const,
+        align: "top" as const,
+        formatter: (value: number) => (value > 0 ? value.toLocaleString() : ''),
+        color: "#111",
+        font: { weight: "bold" as const, size: 11 },
+        clip: true,
+      },
+    },
+    elements: {
+      line: { fill: false },
+    },
+  };
+
   const columns = [
     {
       title: `${Strings.level} ${filters.groupingLevel}`,
@@ -353,6 +415,7 @@ const CardReportsPage: React.FC = () => {
                   loading={isLoadingCharts}
                   placeholder={Strings.selectChart || "Select chart"}
                   onChange={(value) => setSelectedChartId(value)}
+                  notFoundContent={isLoadingCharts ? <Spin size="small" /> : null}
                   options={charts.map((c) => ({
                     label: `${c.rootNode} - ${c.rootName}`, // Display: root_node + root_name (PHP line 53)
                     value: c.id,
@@ -379,6 +442,7 @@ const CardReportsPage: React.FC = () => {
                   loading={isLoadingLevels}
                   disabled={!selectedChartId}
                   placeholder={Strings.selectLevel || "Select level"}
+                  notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={groupingLevels.map((l) => ({
                     label: `${l.level} - ${l.levelName}`, // Show level number + name (PHP line 322)
                     value: l.level,
@@ -394,6 +458,7 @@ const CardReportsPage: React.FC = () => {
                   loading={isLoadingLevels}
                   disabled={!selectedChartId}
                   placeholder={Strings.selectLevel || "Select level"}
+                  notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={targetLevels.map((l) => ({
                     label: `${l.level} - ${l.levelName}`,
                     value: l.level,
@@ -426,21 +491,45 @@ const CardReportsPage: React.FC = () => {
           </Row>
         </Form>
 
-        <Space style={{ marginBottom: 16 }}>
-          <Button type={chartType === "pie" ? "primary" : "default"} onClick={() => setChartType("pie")}>
-            {Strings.pieChart}
-          </Button>
-          <Button type={chartType === "barV" ? "primary" : "default"} onClick={() => setChartType("barV")}>
-            {Strings.verticalBars}
-          </Button>
-          <Button type={chartType === "barH" ? "primary" : "default"} onClick={() => setChartType("barH")}>
-            {Strings.horizontalBars}
-          </Button>
+        {/* Chart type toggle buttons + Ampliar button - matching PHP demo lines 357-364 */}
+        <Space style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <Space wrap>
+            <Button type={chartType === "pie" ? "primary" : "default"} onClick={() => setChartType("pie")}>
+              {Strings.pieChart}
+            </Button>
+            <Button type={chartType === "barV" ? "primary" : "default"} onClick={() => setChartType("barV")}>
+              {Strings.verticalBars}
+            </Button>
+            <Button type={chartType === "barH" ? "primary" : "default"} onClick={() => setChartType("barH")}>
+              {Strings.horizontalBars}
+            </Button>
+            <Button type={chartType === "line" ? "primary" : "default"} onClick={() => setChartType("line")}>
+              Líneas
+            </Button>
+          </Space>
         </Space>
 
         <Row gutter={16}>
           <Col xs={24} lg={12}>
-            <Card title={Strings.charts} size="small">
+            <Card
+              title={Strings.charts}
+              size="small"
+              extra={reportData.length > 0 && (
+                <ChartExpander title={`${Strings.charts} - ${selectedChart?.chartName || ''}`}>
+                  <div style={{ height: '100%', position: "relative" }}>
+                    {chartType === "pie" ? (
+                      <Pie data={pieChartData} options={pieChartOptions} />
+                    ) : chartType === "barV" ? (
+                      <Bar data={barChartData} options={barVChartOptions} />
+                    ) : chartType === "barH" ? (
+                      <Bar data={barChartData} options={barHChartOptions} />
+                    ) : (
+                      <Line data={lineChartData} options={lineChartOptions} />
+                    )}
+                  </div>
+                </ChartExpander>
+              )}
+            >
               <div style={{ height: 400, position: "relative" }}>
                 {reportData.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
@@ -450,8 +539,10 @@ const CardReportsPage: React.FC = () => {
                   <Pie data={pieChartData} options={pieChartOptions} />
                 ) : chartType === "barV" ? (
                   <Bar data={barChartData} options={barVChartOptions} />
-                ) : (
+                ) : chartType === "barH" ? (
                   <Bar data={barChartData} options={barHChartOptions} />
+                ) : (
+                  <Line data={lineChartData} options={lineChartOptions} />
                 )}
               </div>
             </Card>
