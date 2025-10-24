@@ -12,6 +12,7 @@ import { EvidenceType } from '../../../data/card/card.request';
 import { handleErrorNotification, handleSucccessNotification } from '../../../utils/Notifications';
 import useCurrentUser from '../../../utils/hooks/useCurrentUser';
 import { uploadFileToFirebaseWithPath } from '../../../config/firebaseUpload';
+import { CardCache } from '../../../utils/cardCache';
 
 interface CardSolutionModalProps {
   visible: boolean;
@@ -155,6 +156,9 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
       handleSucccessNotification(
         `${isDefinitive ? Strings.definitiveSolution : Strings.provisionalSolution} ${Strings.appliedCorrectly}`
       );
+
+      // Clear cache before reloading to ensure fresh data is loaded
+      await CardCache.clearSiteCache(parseInt(card.siteId.toString()));
 
       onSuccess?.();
       onClose();

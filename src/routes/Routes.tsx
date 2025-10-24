@@ -141,7 +141,7 @@ const chartsRoute = new Route(
 );
 
 const cardReportsRoute = new Route(
-  "Reporte de tarjetas",
+  Strings.cardReportsSB,
   Constants.ROUTES_PATH.cardReports,
   <CardReportsPage />,
   <BsBarChartLine />,
@@ -331,6 +331,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: cardReportsRoute.label,
+      key: cardReportsRoute.path,
+      icon: cardReportsRoute.icon,
+      section: cardReportsRoute.section,
     }),
     getItemV2({
       label: calendarRoute.label,
@@ -551,6 +557,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: chartsRoute.path,
       icon: chartsRoute.icon,
       section: chartsRoute.section,
+    }),
+    getItemV2({
+      label: cardReportsRoute.label,
+      key: cardReportsRoute.path,
+      icon: cardReportsRoute.icon,
+      section: cardReportsRoute.section,
     }),
     getItemV2({
       label: calendarRoute.label,

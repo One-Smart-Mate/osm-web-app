@@ -241,6 +241,7 @@ export const cardService = apiSlice.injectEndpoints({
         groupingLevel: number;
         dateStart: string;
         dateEnd: string;
+        statusFilter?: string; // 'A', 'R', or 'AR' - matching PHP demo
       }
     >({
       query: (params) => ({
@@ -306,6 +307,47 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CardInterface[] }) => response.data,
     }),
+    // Charts configuration endpoints - matching PHP demo structure
+    getCharts: builder.query<
+      Array<{
+        id: number;
+        siteId: number;
+        chartName: string;
+        chartDescription: string;
+        rootNode: number;
+        rootName: string;
+        defaultPercentage: number | null;
+        status: string;
+        order: number | null;
+      }>,
+      { siteId?: number }
+    >({
+      query: ({ siteId }) => ({
+        url: siteId ? `/charts?siteId=${siteId}&status=A` : `/charts?status=A`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => response?.data || response,
+    }),
+    getChartsLevels: builder.query<
+      Array<{
+        id: number;
+        chartId: number;
+        level: number;
+        levelName: string;
+        levelType: 'grouping' | 'target';
+        status: string;
+        order: number | null;
+      }>,
+      { chartId: number; levelType?: 'grouping' | 'target' }
+    >({
+      query: ({ chartId, levelType }) => ({
+        url: levelType
+          ? `/charts/${chartId}/levels?level_type=${levelType}&status=A`
+          : `/charts/${chartId}/levels?status=A`,
+        method: "GET",
+      }),
+      transformResponse: (response: any) => response?.data || response,
+    }),
   }),
 });
 
@@ -331,4 +373,6 @@ export const {
   useGetCardReportDetailsMutation,
   useGetCardsByMachineMutation,
   useGetCardsByComponentsMutation,
+  useGetChartsQuery,
+  useGetChartsLevelsQuery,
 } = cardService;

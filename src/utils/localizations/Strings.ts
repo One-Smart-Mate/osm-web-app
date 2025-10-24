@@ -467,6 +467,8 @@ class StringsBase {
   static statusExpired = "statusExpired";
   static statusClosedByManager = "statusClosedByManager";
   static noCards = "noCards";
+  static statusFilter = "statusFilter";
+  static selectStatus = "selectStatus";
 
   static edit = "edit";
   static create = "create";
@@ -895,7 +897,6 @@ class StringsBase {
   static selectUsersForPosition = "selectUsersForPosition";
   static cancelPosition = "cancelPosition";
   static updatePositionTitle = "updatePositionTitle";
-  static selectStatus = "selectStatus";
   static positionNameMaxLength = "positionNameMaxLength";
   static positionDescriptionMaxLength = "positionDescriptionMaxLength";
   static noPositionData = "noPositionData";
@@ -1876,6 +1877,8 @@ class StringsBase {
   static selectPriority = "selectPriority";
   static locationLabel = "locationLabel";
   static selectLevel = "selectLevel";
+  static selectChart = "selectChart";
+  static chart = "chart";
   static describeAnomaly = "describeAnomaly";
   static assignCardOnCreate = "assignCardOnCreate";
   static assignCardOnCreateTooltip = "assignCardOnCreateTooltip";

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, Form, Input, Button, Select, Slider, Table, message, Row, Col, Space, Typography } from "antd";
+import { Card, Form, Input, Button, Select, Table, message, Row, Col, Space, Typography } from "antd";
 import { useLocation } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useGetCardReportGroupedMutation } from "../../services/cardService";
-import { useGetlevelsMutation } from "../../services/levelService";
+import { useGetCardReportGroupedMutation, useGetChartsQuery, useGetChartsLevelsQuery } from "../../services/cardService";
 import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
@@ -15,6 +14,18 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 const { Title: AntTitle } = Typography;
 
+interface Chart {
+  id: number;
+  siteId: number;
+  chartName: string;
+  chartDescription: string;
+  rootNode: number;
+  rootName: string;
+  defaultPercentage: number | null;
+  status: string;
+  order: number | null;
+}
+
 interface ReportFilters {
   dateStart: string;
   dateEnd: string;
@@ -22,6 +33,7 @@ interface ReportFilters {
   rootNode: number;
   targetLevel: number;
   groupingLevel: number;
+  statusFilter?: string;
 }
 
 const CardReportsPage: React.FC = () => {
@@ -30,11 +42,23 @@ const CardReportsPage: React.FC = () => {
   const [form] = Form.useForm();
 
   const [getCardReportGrouped, { isLoading: isLoadingReport }] = useGetCardReportGroupedMutation();
-  const [getLevels] = useGetlevelsMutation();
+
+  // Load charts for the site (matching PHP lines 41-47)
+  const { data: chartsData, isLoading: isLoadingCharts } = useGetChartsQuery(
+    { siteId: location.state?.siteId },
+    { skip: !location.state?.siteId }
+  );
+
+  // Ensure charts is always an array - handle both direct array and {data: array} response
+  const charts: Chart[] = Array.isArray(chartsData)
+    ? chartsData
+    : (chartsData && Array.isArray((chartsData as any).data))
+      ? (chartsData as any).data
+      : [];
 
   const [chartType, setChartType] = useState<"pie" | "barV" | "barH">("pie");
   const [reportData, setReportData] = useState<any[]>([]);
-  const [levels, setLevels] = useState<any[]>([]);
+  const [selectedChartId, setSelectedChartId] = useState<number | null>(null);
   const [filters, setFilters] = useState<ReportFilters>({
     dateStart: "2024-01-01",
     dateEnd: new Date().toISOString().split("T")[0],
@@ -42,42 +66,77 @@ const CardReportsPage: React.FC = () => {
     rootNode: 0,
     targetLevel: 4,
     groupingLevel: 2,
+    statusFilter: "AR", // Default: Both A (Active) and R (Resolved) - matching PHP demo line 23
   });
 
+  // Load charts_levels for selected chart (matching PHP lines 85-105)
+  const { data: chartsLevelsData, isLoading: isLoadingLevels } = useGetChartsLevelsQuery(
+    { chartId: selectedChartId! },
+    { skip: !selectedChartId }
+  );
+
+  // Ensure chartsLevels is always an array - handle both direct array and {data: array} response
+  const chartsLevels = Array.isArray(chartsLevelsData)
+    ? chartsLevelsData
+    : (chartsLevelsData && Array.isArray((chartsLevelsData as any).data))
+      ? (chartsLevelsData as any).data
+      : [];
+
+  // Separate grouping and target levels
+  const groupingLevels = Array.isArray(chartsLevels) ? chartsLevels.filter(l => l.levelType === 'grouping') : [];
+  const targetLevels = Array.isArray(chartsLevels) ? chartsLevels.filter(l => l.levelType === 'target') : [];
+
+  // Get selected chart data
+  const selectedChart = charts.find(c => c.id === selectedChartId);
+
+  // Initialize: Select first chart when charts load (matching PHP lines 58-59)
   useEffect(() => {
-    if (location.state?.siteId) {
-      loadLevels();
+    if (charts.length > 0 && !selectedChartId) {
+      const firstChart = charts[0];
+      setSelectedChartId(firstChart.id);
+      form.setFieldsValue({ chartId: firstChart.id });
     }
-  }, [location.state?.siteId]);
+  }, [charts, selectedChartId]);
 
-  const loadLevels = async () => {
-    try {
-      const result = await getLevels(location.state?.siteId.toString()).unwrap();
-      setLevels(result || []);
+  // When chart changes, update rootNode and initialize levels (matching PHP lines 76-105)
+  useEffect(() => {
+    if (selectedChart) {
+      const newFilters = {
+        ...filters,
+        rootNode: selectedChart.rootNode,
+      };
 
-      // Set first root level as default
-      const rootLevels = result.filter((l: any) => l.level === 0 || l.superiorId === 0);
-      if (rootLevels.length > 0) {
-        const rootId = Number(rootLevels[0].id);
-        setFilters(prev => ({ ...prev, rootNode: rootId }));
-        form.setFieldsValue({ rootNode: rootId });
+      // Set default grouping_level and target_level when levels load
+      if (groupingLevels.length > 0 && targetLevels.length > 0) {
+        newFilters.groupingLevel = groupingLevels[0].level;
+        newFilters.targetLevel = targetLevels[0].level;
       }
-    } catch (error) {
-      console.error("Error loading levels:", error);
-      message.error(Strings.errorLoadingLevels);
+
+      setFilters(newFilters);
+      form.setFieldsValue({
+        groupingLevel: newFilters.groupingLevel,
+        targetLevel: newFilters.targetLevel,
+      });
     }
-  };
+  }, [selectedChart, chartsLevels]);
 
   const handleSubmit = async (values: any) => {
     try {
+      // rootNode comes from the selected chart, not from form values
       const params = {
         siteId: location.state?.siteId,
-        rootNode: values.rootNode,
+        rootNode: filters.rootNode, // Get from filters state (set when chart is selected)
         targetLevel: values.targetLevel,
         groupingLevel: values.groupingLevel,
         dateStart: values.dateStart,
         dateEnd: values.dateEnd,
+        statusFilter: values.statusFilter || "AR",
       };
+
+      if (!params.rootNode) {
+        message.error('Please select a chart first');
+        return;
+      }
 
       setFilters(params);
       const result = await getCardReportGrouped(params).unwrap();
@@ -287,6 +346,21 @@ const CardReportsPage: React.FC = () => {
           style={{ marginBottom: 16 }}
         >
           <Row gutter={16}>
+            {/* Chart select - matching PHP line 305 */}
+            <Col xs={24} sm={12} md={8}>
+              <Form.Item label={Strings.chart || "Chart"} name="chartId" rules={[{ required: true }]}>
+                <Select
+                  loading={isLoadingCharts}
+                  placeholder={Strings.selectChart || "Select chart"}
+                  onChange={(value) => setSelectedChartId(value)}
+                  options={charts.map((c) => ({
+                    label: `${c.rootNode} - ${c.rootName}`, // Display: root_node + root_name (PHP line 53)
+                    value: c.id,
+                  }))}
+                />
+              </Form.Item>
+            </Col>
+
             <Col xs={24} sm={12} md={8} lg={4}>
               <Form.Item label={Strings.startDate} name="dateStart" rules={[{ required: true }]}>
                 <Input type="date" />
@@ -297,33 +371,52 @@ const CardReportsPage: React.FC = () => {
                 <Input type="date" />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Form.Item label={Strings.selectRootNode} name="rootNode" rules={[{ required: true }]}>
+
+            {/* Grouping Level select - matching PHP line 321 */}
+            <Col xs={24} sm={12} md={6} lg={4}>
+              <Form.Item label={Strings.groupingLevel} name="groupingLevel" rules={[{ required: true }]}>
                 <Select
-                  showSearch
-                  placeholder={Strings.selectRootNodePlaceholder}
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-                  }
-                  options={levels.map((l) => ({
-                    label: `${l.name} (ID: ${l.id})`,
-                    value: l.id,
+                  loading={isLoadingLevels}
+                  disabled={!selectedChartId}
+                  placeholder={Strings.selectLevel || "Select level"}
+                  options={groupingLevels.map((l) => ({
+                    label: `${l.level} - ${l.levelName}`, // Show level number + name (PHP line 322)
+                    value: l.level,
                   }))}
                 />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Form.Item label={Strings.groupingLevel} name="groupingLevel">
-                <Slider min={0} max={20} tooltip={{ formatter: (value) => `${value}` }} />
+
+            {/* Target Level select - matching PHP line 327 */}
+            <Col xs={24} sm={12} md={6} lg={4}>
+              <Form.Item label={Strings.targetLevel} name="targetLevel" rules={[{ required: true }]}>
+                <Select
+                  loading={isLoadingLevels}
+                  disabled={!selectedChartId}
+                  placeholder={Strings.selectLevel || "Select level"}
+                  options={targetLevels.map((l) => ({
+                    label: `${l.level} - ${l.levelName}`,
+                    value: l.level,
+                  }))}
+                />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Form.Item label={Strings.targetLevel} name="targetLevel">
-                <Slider min={0} max={20} tooltip={{ formatter: (value) => `${value}` }} />
+
+            {/* Status Filter - matching PHP line 333 */}
+            <Col xs={24} sm={12} md={6} lg={4}>
+              <Form.Item label={Strings.statusFilter || "Status Filter"} name="statusFilter">
+                <Select
+                  placeholder={Strings.selectStatus || "Select status"}
+                  options={[
+                    { value: "AR", label: `${Strings.statusOpen || "Active"} + ${Strings.statusResolved || "Resolved"}` },
+                    { value: "A", label: Strings.statusOpen || "Active (A)" },
+                    { value: "R", label: Strings.statusResolved || "Resolved (R)" },
+                  ]}
+                />
               </Form.Item>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={4}>
+
+            <Col xs={24} sm={24} md={6} lg={4}>
               <Form.Item label=" ">
                 <Button type="primary" htmlType="submit" loading={isLoadingReport} block>
                   {Strings.generateReport}

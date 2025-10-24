@@ -11,16 +11,23 @@ const { Title: AntTitle, Text } = Typography;
 
 interface CardDetail {
   id: string | number;
+  site_card_id?: number | string;
+  level_machine_id?: string;
   siteCode?: string;
   siteCardId?: number | string;
   cardUUID?: string;
   cardCreationDate?: string;
+  card_creation_date?: string;
   status?: string;
   cardTypeName?: string;
   preclassifierCode?: string;
   preclassifierDescription?: string;
+  preclassifier_code?: string;
+  preclassifier_description?: string;
   component?: string;
+  componente?: string;
   machine?: string;
+  maquina?: string;
 }
 
 interface MachineRow {
@@ -302,12 +309,20 @@ const CardReportDetailPage: React.FC = () => {
           <List
             dataSource={cardsList}
             renderItem={(card) => {
-              const code = card.siteCode ? `${card.siteCode}-${card.siteCardId}` : `ID ${card.id}`;
-              const uuid = card.cardUUID ? ` · ${card.cardUUID}` : "";
+              // Primary label - matching PHP demo format (line 464)
+              const code = `ID ${card.id}`;
+
+              // Secondary line with three identifiers (matching PHP line 467)
+              const ident = `ID ${card.id} · site_card_id ${card.site_card_id ?? (card.siteCardId || '')} · level_machine_id ${card.level_machine_id ?? ''}`;
+
+              // Preclassifier info
               const preclassifier =
-                card.preclassifierCode || card.preclassifierDescription
-                  ? ` · ${card.preclassifierCode} ${card.preclassifierDescription || ""}`
+                (card.preclassifier_code || card.preclassifierCode) || (card.preclassifier_description || card.preclassifierDescription)
+                  ? ` · ${card.preclassifier_code || card.preclassifierCode || ''} ${card.preclassifier_description || card.preclassifierDescription || ''}`
                   : "";
+
+              // Creation date
+              const creationDate = card.card_creation_date || card.cardCreationDate;
 
               return (
                 <List.Item>
@@ -320,14 +335,16 @@ const CardReportDetailPage: React.FC = () => {
                     }
                     description={
                       <Space direction="vertical" size={0}>
+                        <Text type="secondary" style={{ fontSize: 12 }}>
+                          {ident}
+                        </Text>
                         <Text type="secondary">
                           {card.cardTypeName || ""}
                           {preclassifier}
-                          {uuid}
                         </Text>
                         <Text type="secondary" style={{ fontSize: 12 }}>
-                          {card.cardCreationDate
-                            ? new Date(card.cardCreationDate).toLocaleString()
+                          {creationDate
+                            ? new Date(creationDate.replace(' ', 'T')).toLocaleString()
                             : ""}
                         </Text>
                       </Space>

@@ -1800,6 +1800,8 @@ const resources = {
       selectPriority: "Select priority (optional)",
       locationLabel: "Location",
       selectLevel: "Select level",
+      selectChart: "Select chart",
+      chart: "Chart",
       describeAnomaly: "Describe the detected anomaly...",
       assignCardOnCreate: "Assign card when creating",
       assignCardOnCreateTooltip: "Will be assigned to the level responsible",
@@ -1867,8 +1869,8 @@ const resources = {
       processingLevels: "Processing levels",
 
       // Card Reports
-      cardReportsSB: "Card Reports",
-      cardReportsTitle: "Card Reports",
+      cardReportsSB: "Failure Chart",
+      cardReportsTitle: "Failure Chart",
       cardReportDetailTitle: "Detailed Report",
       selectRootNode: "Select Root Node",
       selectRootNodePlaceholder: "Select a root level",
@@ -1903,6 +1905,7 @@ const resources = {
       statusExpired: "Expired",
       statusClosedByManager: "Closed by Manager",
       noCards: "No cards.",
+      statusFilter: "Status Filter",
 
       // Status filter labels
       onlyOpen: "Only Open",
@@ -3725,6 +3728,8 @@ const resources = {
       selectPriority: "Seleccionar prioridad (opcional)",
       locationLabel: "Ubicación",
       selectLevel: "Seleccionar nivel",
+      selectChart: "Seleccionar gráfica",
+      chart: "Gráfica",
       describeAnomaly: "Describe la anomalía detectada...",
       assignCardOnCreate: "Asignar tarjeta al crearla",
       assignCardOnCreateTooltip: "Se asignará al responsable del nivel",
@@ -3792,8 +3797,8 @@ const resources = {
       processingLevels: "Procesando niveles",
 
       // Card Reports
-      cardReportsSB: "Reporte de Tarjetas",
-      cardReportsTitle: "Reporte de Tarjetas",
+      cardReportsSB: "Gráfica de fallos",
+      cardReportsTitle: "Gráfica de fallos",
       cardReportDetailTitle: "Reporte Detallado",
       selectRootNode: "Seleccionar Nodo Raíz",
       selectRootNodePlaceholder: "Selecciona un nivel raíz",
@@ -3828,6 +3833,7 @@ const resources = {
       statusExpired: "Vencida",
       statusClosedByManager: "Cerrada por Manager",
       noCards: "Sin tarjetas.",
+      statusFilter: "Filtro de Estado",
 
       // Status filter labels
       onlyOpen: "Solo Abiertas",
