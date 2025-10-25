@@ -33,6 +33,9 @@ const RegisterPositionForm = ({
   useEffect(() => {
     if (isVisible && levelData?.siteId) {
       fetchResponsibles();
+      // Clear selected users when modal opens (new position creation)
+      setSelectedUserIds([]);
+      setSelectedUsers([]);
     }
   }, [isVisible, levelData]);
 
@@ -109,6 +112,10 @@ const RegisterPositionForm = ({
         duration: 4,
       });
 
+      // Clear selected users after successful creation
+      setSelectedUserIds([]);
+      setSelectedUsers([]);
+
       if (onSuccess) {
         onSuccess();
       }
@@ -123,11 +130,18 @@ const RegisterPositionForm = ({
     }
   };
 
+  const handleCancel = () => {
+    // Clear selected users when modal is canceled
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
+    onCancel();
+  };
+
   return (
     <Modal
       title={Strings.createPosition}
       open={isVisible}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       footer={null}
       width={600}
       destroyOnHidden
@@ -242,7 +256,7 @@ const RegisterPositionForm = ({
           </Form.Item>
 
           <div className="flex justify-end space-x-2 mt-4">
-            <Button onClick={onCancel}>{Strings.cancelPosition}</Button>
+            <Button onClick={handleCancel}>{Strings.cancelPosition}</Button>
             <Button type="primary" htmlType="submit">
               {Strings.save}
             </Button>

@@ -50,10 +50,6 @@ const PositionCard = ({
 
       <div className="space-y-3">
         <AnatomySection
-          title={Strings.area}
-          label={position.areaName || Strings.noArea}
-        />
-        <AnatomySection
           title={Strings.status}
           label={renderStatusTag(position.status)}
         />
