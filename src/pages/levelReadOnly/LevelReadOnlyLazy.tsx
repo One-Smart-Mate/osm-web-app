@@ -344,6 +344,17 @@ const LevelsReadOnlyLazy = () => {
     localStorage.setItem("treeExpandedStateReadOnly", isTreeExpanded.toString());
   }, [isTreeExpanded]);
 
+  // Helper function to get auth headers
+  const getAuthHeaders = () => {
+    const user = sessionStorage.getItem(Constants.SESSION_KEYS.user);
+    const token = user ? JSON.parse(user).token : '';
+    return {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  };
+
   const handleGetLevels = async () => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
@@ -355,7 +366,7 @@ const LevelsReadOnlyLazy = () => {
 
     try {
       // Get stats first to check total levels
-      const stats = await getLevelStats(siteId.toString()).unwrap();
+      const stats = await getLevelStats({ siteId: siteId.toString() }).unwrap();
 
       // Cache the stats
       await LevelCache.cacheStats(parseInt(siteId), stats);
@@ -434,10 +445,7 @@ const LevelsReadOnlyLazy = () => {
             `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
             {
               method: 'GET',
-              headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-              }
+              headers: getAuthHeaders()
             }
           );
 
@@ -453,10 +461,7 @@ const LevelsReadOnlyLazy = () => {
             `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
             {
               method: 'GET',
-              headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json'
-              }
+              headers: getAuthHeaders()
             }
           );
 
@@ -558,10 +563,7 @@ const LevelsReadOnlyLazy = () => {
                 `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${child.id}?skipOpl=true`,
                 {
                   method: 'GET',
-                  headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                  }
+                  headers: getAuthHeaders()
                 }
               );
 
@@ -575,10 +577,7 @@ const LevelsReadOnlyLazy = () => {
                 `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${child.id}`,
                 {
                   method: 'GET',
-                  headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                  }
+                  headers: getAuthHeaders()
                 }
               );
 
@@ -648,10 +647,7 @@ const LevelsReadOnlyLazy = () => {
                 `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${child.id}?skipOpl=true`,
                 {
                   method: 'GET',
-                  headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                  }
+                  headers: getAuthHeaders()
                 }
               );
 
@@ -665,10 +661,7 @@ const LevelsReadOnlyLazy = () => {
                 `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${child.id}`,
                 {
                   method: 'GET',
-                  headers: {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                  }
+                  headers: getAuthHeaders()
                 }
               );
 
@@ -699,11 +692,43 @@ const LevelsReadOnlyLazy = () => {
       // Get the original tree data (from initial load)
       const originalData = treeData[0].attributes?.originalData || [];
 
-      // Rebuild hierarchy with loaded children
-      const newHierarchy = buildLazyHierarchy(originalData, loadedChildren);
+      // Merge original data with loaded children to build complete hierarchy
+      const mergeLoadedData = (nodes: any[]): any[] => {
+        return nodes.map(node => {
+          const nodeId = node.id?.toString();
+          const loadedChildrenForNode = loadedChildren.get(nodeId);
+
+          if (loadedChildrenForNode && loadedChildrenForNode.length > 0) {
+            // Recursively merge children
+            return {
+              ...node,
+              children: mergeLoadedData(loadedChildrenForNode)
+            };
+          }
+
+          // Keep original children if no loaded children
+          if (node.children && node.children.length > 0) {
+            return {
+              ...node,
+              children: mergeLoadedData(node.children)
+            };
+          }
+
+          return node;
+        });
+      };
+
+      const mergedData = mergeLoadedData(originalData);
+
+      // Rebuild hierarchy with all loaded children
+      const newHierarchy = buildLazyHierarchy(mergedData, loadedChildren);
 
       setTreeData([{
         ...treeData[0],
+        attributes: {
+          ...treeData[0].attributes,
+          originalData: mergedData  // Update original data with merged data
+        },
         children: newHierarchy
       }]);
     }
