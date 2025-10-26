@@ -442,6 +442,14 @@ class StringsBase {
   static pieChart = "pieChart";
   static verticalBars = "verticalBars";
   static horizontalBars = "horizontalBars";
+  static lineChart = "lineChart";
+  static viewModeLabel = "viewModeLabel";
+  static normalView = "normalView";
+  static stackedView = "stackedView";
+  static chartTypeLabel = "chartTypeLabel";
+  static stackedBy = "stackedBy";
+  static withinEach = "withinEach";
+  static sortedDesc = "sortedDesc";
   static viewReport = "viewReport";
   static backToReport = "backToReport";
   static machinesAndComponents = "machinesAndComponents";
@@ -1878,6 +1886,7 @@ class StringsBase {
   static locationLabel = "locationLabel";
   static selectLevel = "selectLevel";
   static selectChart = "selectChart";
+  static pleaseSelectChartFirst = "pleaseSelectChartFirst";
   static chart = "chart";
   static describeAnomaly = "describeAnomaly";
   static assignCardOnCreate = "assignCardOnCreate";
