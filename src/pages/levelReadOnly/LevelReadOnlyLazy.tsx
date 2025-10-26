@@ -345,7 +345,7 @@ const LevelsReadOnlyLazy = () => {
   }, [isTreeExpanded]);
 
   const handleGetLevels = async () => {
-    if (!location.state) {
+    if (!location.state || !siteId) {
       navigate(UnauthorizedRoute);
       return;
     }
@@ -415,7 +415,7 @@ const LevelsReadOnlyLazy = () => {
         try {
           const cards = await getCardsByLevel({
             levelId: level.id,
-            siteId: location.state.siteId
+            siteId: siteId
           }).unwrap();
 
           cardCountsObj[level.id] = cards.length;
@@ -495,7 +495,7 @@ const LevelsReadOnlyLazy = () => {
           children: hierarchyData,
         },
       ]);
-      dispatch(setSiteId(location.state.siteId));
+      dispatch(setSiteId(siteId));
       if (containerRef.current) {
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });

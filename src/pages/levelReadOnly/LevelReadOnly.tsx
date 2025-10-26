@@ -222,14 +222,14 @@ const LevelsReadOnly = () => {
   }, [isTreeExpanded]);
 
   const handleGetLevels = async () => {
-    if (!location.state) {
+    if (!location.state || !siteId) {
       navigate(UnauthorizedRoute);
       return;
     }
 
     setLoading(true);
     try {
-      const response = await getLevels(location.state.siteId).unwrap();
+      const response = await getLevels(siteId).unwrap();
 
       const activeNodes = response.filter((node: any) => !node.deletedAt);
 
@@ -263,9 +263,9 @@ const LevelsReadOnly = () => {
       // Create an array of promises for fetching card counts
       const countPromises = response.map(async (level) => {
         try {
-          const cards = await getCardsByLevel({ 
-            levelId: level.id, 
-            siteId: location.state.siteId 
+          const cards = await getCardsByLevel({
+            levelId: level.id,
+            siteId: siteId
           }).unwrap();
           
           cardCountsObj[level.id] = cards.length;
@@ -339,7 +339,7 @@ const LevelsReadOnly = () => {
           children: hierarchyData,
         },
       ]);
-      dispatch(setSiteId(location.state.siteId));
+      dispatch(setSiteId(siteId));
       if (containerRef.current) {
         const { offsetWidth, offsetHeight } = containerRef.current;
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
