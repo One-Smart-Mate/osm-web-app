@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import ProceduresModal from "./components/ProceduresModal";
 import PositionCard from "./components/PositionCard";
@@ -20,7 +20,7 @@ import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PaginatedList from "../components/PaginatedList";
 
 const PositionsPage = () => {
-  const [filteredPositions, setFilteredPositions] = useState<Position[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isProceduresModalOpen, setIsProceduresModalOpen] = useState(false);
   const [isPositionFormVisible, setIsPositionFormVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
@@ -45,11 +45,25 @@ const PositionsPage = () => {
     pollingInterval: 30000,
   });
 
-  useEffect(() => {
-    if (positions) {
-      setFilteredPositions(positions);
+  const filteredPositions = useMemo(() => {
+    const positionsArray = Array.isArray(positions) ? positions : [];
+
+    if (positionsArray.length === 0) {
+      return [];
     }
-  }, [positions]);
+
+    if (!searchTerm) {
+      return positionsArray;
+    }
+
+    return positionsArray.filter(
+      (position) =>
+        position.areaName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        position.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        position.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        position.status?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [positions, searchTerm]);
 
   useEffect(() => {
     if (siteId) {
@@ -58,16 +72,7 @@ const PositionsPage = () => {
   }, [siteId, getSite]);
 
   const handleSearch = (value: string) => {
-    if (!positions) return;
-
-    const filtered = positions.filter(
-      (position) =>
-        position.areaName?.toLowerCase().includes(value.toLowerCase()) ||
-        position.name?.toLowerCase().includes(value.toLowerCase()) ||
-        position.description?.toLowerCase().includes(value.toLowerCase()) ||
-        position.status?.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredPositions(filtered);
+    setSearchTerm(value);
   };
 
   const handleFormCancel = () => {

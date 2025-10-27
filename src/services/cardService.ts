@@ -307,6 +307,35 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: CardInterface[] }) => response.data,
     }),
+    // Card Report Stacked - for horizontal stacked bar chart
+    getCardReportStacked: builder.mutation<
+      Array<{
+        l3_id: number;
+        l3_name: string;
+        l4_id: number;
+        l4_name: string;
+        l6_id: number;
+        l6_name: string;
+        total_cards: number;
+      }>,
+      {
+        siteId: number;
+        rootNode: number;
+        g1Level: number;
+        g2Level: number;
+        targetLevel: number;
+        dateStart: string;
+        dateEnd: string;
+        statusFilter?: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/stacked",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
     // Charts configuration endpoints - matching PHP demo structure
     getCharts: builder.query<
       Array<{
@@ -348,6 +377,31 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: any) => response?.data || response,
     }),
+    // Time-series data for card creation by position
+    getCardTimeSeries: builder.mutation<
+      Array<{
+        fecha: string;
+        equipo: string;
+        position_id: number | null;
+        total: number;
+        abiertas: number;
+        resueltas: number;
+      }>,
+      {
+        siteId: number;
+        dateStart: string;
+        dateEnd: string;
+        positionIds?: number[];
+        tagOrigin?: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/time-series",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
   }),
 });
 
@@ -373,6 +427,8 @@ export const {
   useGetCardReportDetailsMutation,
   useGetCardsByMachineMutation,
   useGetCardsByComponentsMutation,
+  useGetCardReportStackedMutation,
   useGetChartsQuery,
   useGetChartsLevelsQuery,
+  useGetCardTimeSeriesMutation,
 } = cardService;

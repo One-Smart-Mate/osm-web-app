@@ -97,21 +97,27 @@ const AssignPositionsButton = ({
       );
 
       // Combine all positions that need updates
+      // IMPORTANT: We must send the COMPLETE list of userIds for each position
+      // because the backend deletes all users_positions records and recreates them
       const positionsToUpdate = [
         ...positionsToAdd.map((p) => {
           // Create a new object without the 'order' property
           const { order: _order, ...positionWithoutOrder } = p;
+          // Add the user to the existing list of users
+          const updatedUserIds = [...new Set([...p.userIds, userIdNumber])]; // Use Set to avoid duplicates
           return {
             ...positionWithoutOrder,
-            userIds: [...p.userIds, userIdNumber],
+            userIds: updatedUserIds,
           };
         }),
         ...positionsToRemove.map((p) => {
           // Create a new object without the 'order' property
           const { order: _order, ...positionWithoutOrder } = p;
+          // Remove the user from the existing list of users
+          const updatedUserIds = p.userIds.filter((id) => id !== userIdNumber);
           return {
             ...positionWithoutOrder,
-            userIds: p.userIds.filter((id) => id !== userIdNumber),
+            userIds: updatedUserIds,
           };
         }),
       ];
