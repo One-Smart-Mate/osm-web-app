@@ -596,15 +596,20 @@ const CardReportsPage: React.FC = () => {
             {/* Chart select - matching PHP line 305 */}
             <Col xs={24} sm={12} md={8}>
               <Form.Item label={Strings.chart || "Chart"} name="chartId" rules={[{ required: true }]}>
-                <Select
-                  loading={isLoadingCharts}
-                  placeholder={Strings.selectChart || "Select chart"}
-                  onChange={(value) => setSelectedChartId(value)}
-                  notFoundContent={isLoadingCharts ? <Spin size="small" /> : null}
-                  options={chartOptions}
-                  showSearch={false} // Disable search for better performance
-                  virtual={false} // Disable virtual scrolling for better performance with small lists
-                />
+                {isLoadingCharts ? (
+                  <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px' }}>
+                    <Spin size="small" /> Cargando charts...
+                  </div>
+                ) : (
+                  <Select
+                    placeholder={Strings.selectChart || "Select chart"}
+                    onChange={(value) => setSelectedChartId(value)}
+                    options={chartOptions}
+                    showSearch={false}
+                    virtual={false}
+                    disabled={chartOptions.length === 0}
+                  />
+                )}
               </Form.Item>
             </Col>
 
@@ -622,30 +627,38 @@ const CardReportsPage: React.FC = () => {
             {/* Grouping Level select - matching PHP line 321 */}
             <Col xs={24} sm={12} md={6} lg={4}>
               <Form.Item label={Strings.groupingLevel} name="groupingLevel" rules={[{ required: true }]}>
-                <Select
-                  loading={isLoadingLevels}
-                  disabled={!selectedChartId || isLoadingLevels}
-                  placeholder={Strings.selectLevel || "Select level"}
-                  notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
-                  options={groupingLevelOptions}
-                  showSearch={false}
-                  virtual={false} // Better performance for small lists
-                />
+                {isLoadingLevels ? (
+                  <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px' }}>
+                    <Spin size="small" /> Cargando niveles...
+                  </div>
+                ) : (
+                  <Select
+                    disabled={!selectedChartId || groupingLevelOptions.length === 0}
+                    placeholder={Strings.selectLevel || "Select level"}
+                    options={groupingLevelOptions}
+                    showSearch={false}
+                    virtual={false}
+                  />
+                )}
               </Form.Item>
             </Col>
 
             {/* Target Level select - matching PHP line 327 */}
             <Col xs={24} sm={12} md={6} lg={4}>
               <Form.Item label={Strings.targetLevel} name="targetLevel" rules={[{ required: true }]}>
-                <Select
-                  loading={isLoadingLevels}
-                  disabled={!selectedChartId || isLoadingLevels}
-                  placeholder={Strings.selectLevel || "Select level"}
-                  notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
-                  options={targetLevelOptions}
-                  showSearch={false}
-                  virtual={false} // Better performance for small lists
-                />
+                {isLoadingLevels ? (
+                  <div style={{ padding: '8px 12px', background: '#f5f5f5', borderRadius: '6px' }}>
+                    <Spin size="small" /> Cargando niveles...
+                  </div>
+                ) : (
+                  <Select
+                    disabled={!selectedChartId || targetLevelOptions.length === 0}
+                    placeholder={Strings.selectLevel || "Select level"}
+                    options={targetLevelOptions}
+                    showSearch={false}
+                    virtual={false}
+                  />
+                )}
               </Form.Item>
             </Col>
 
@@ -848,6 +861,7 @@ const CardReportsPage: React.FC = () => {
                   size="small"
                   onClick={handleLoadTimeSeries}
                   loading={isLoadingTimeSeries}
+                  className="mr-2"
                 >
                   {Strings.loadTimeSeries}
                 </Button>
