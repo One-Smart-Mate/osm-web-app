@@ -75,7 +75,6 @@ const CardReportsPage: React.FC = () => {
   // Time-series state
   const [timeSeriesData, setTimeSeriesData] = useState<any[]>([]);
   const [timeSeriesMode, setTimeSeriesMode] = useState<"daily" | "ma7" | "cumulative">("daily");
-  const [showTimeSeriesView, setShowTimeSeriesView] = useState(false);
   const [filters, setFilters] = useState<ReportFilters>({
     dateStart: "2024-01-01",
     dateEnd: new Date().toISOString().split("T")[0],
@@ -127,8 +126,7 @@ const CardReportsPage: React.FC = () => {
       setSelectedChartId(firstChart.id);
       form.setFieldsValue({ chartId: firstChart.id });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [charts.length, selectedChartId]); // Remove 'form' and use charts.length instead
+  }, [charts.length, selectedChartId, form]); // Remove 'form' and use charts.length instead
 
   // When chart changes, update rootNode (separate from levels initialization)
   useEffect(() => {
@@ -164,8 +162,7 @@ const CardReportsPage: React.FC = () => {
         targetLevel: defaultTargetLevel,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupingLevels.length, targetLevels.length]); // Only re-run when array lengths change
+  }, [groupingLevels.length, targetLevels.length, form]); // Only re-run when array lengths change
 
   const handleSubmit = async (values: any) => {
     try {
