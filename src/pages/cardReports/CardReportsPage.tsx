@@ -48,7 +48,7 @@ const CardReportsPage: React.FC = () => {
   const [getCardReportStacked, { isLoading: isLoadingStacked }] = useGetCardReportStackedMutation();
   const [getCardTimeSeries, { isLoading: isLoadingTimeSeries }] = useGetCardTimeSeriesMutation();
 
-  // Load charts for the site (matching PHP lines 41-47)
+  // Load charts for the site
   const { data: chartsData, isLoading: isLoadingCharts } = useGetChartsQuery(
     { siteId: location.state?.siteId },
     {
@@ -59,40 +59,57 @@ const CardReportsPage: React.FC = () => {
     }
   );
 
-  // Ensure charts is always an array - handle both direct array and {data: array} response
-  const charts: Chart[] = Array.isArray(chartsData)
-    ? chartsData
-    : (chartsData && Array.isArray((chartsData as any).data))
-      ? (chartsData as any).data
-      : [];
+  // Ensure charts is always an array
+  const charts: Chart[] = useMemo(() => {
+    return Array.isArray(chartsData)
+      ? chartsData
+      : (chartsData && Array.isArray((chartsData as any).data))
+        ? (chartsData as any).data
+        : [];
+  }, [chartsData]);
 
   const [chartType, setChartType] = useState<"pie" | "barV" | "barH" | "line">("pie");
   const [reportData, setReportData] = useState<any[]>([]);
   const [stackedData, setStackedData] = useState<any[]>([]);
   const [selectedChartId, setSelectedChartId] = useState<number | null>(null);
-  const [showStackedView, setShowStackedView] = useState(false);
 
   // Time-series state
   const [timeSeriesData, setTimeSeriesData] = useState<any[]>([]);
   const [timeSeriesMode, setTimeSeriesMode] = useState<"daily" | "ma7" | "cumulative">("daily");
-  const [filters, setFilters] = useState<ReportFilters>({
-    dateStart: "2024-01-01",
-    dateEnd: new Date().toISOString().split("T")[0],
-    siteId: location.state?.siteId || 0,
-    rootNode: 0,
-    targetLevel: 4,
-    groupingLevel: 2,
-    statusFilter: "AR", // Default: Both A (Active) and R (Resolved) - matching PHP demo line 23
+
+  // Helper function to get date in YYYY-MM-DD format with local timezone
+  const getLocalDateString = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Initialize filters with today and yesterday
+  const [filters, setFilters] = useState<ReportFilters>(() => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    return {
+      dateStart: getLocalDateString(yesterday),
+      dateEnd: getLocalDateString(today),
+      siteId: location.state?.siteId || 0,
+      rootNode: 0,
+      targetLevel: 4,
+      groupingLevel: 2,
+      statusFilter: "AR", // Default: Both A (Active) and R (Resolved) - matching PHP demo line 23
+    };
   });
 
-  // Load charts_levels for selected chart (matching PHP lines 85-105)
+  // Load charts_levels for selected chart
   const { data: chartsLevelsData, isLoading: isLoadingLevels } = useGetChartsLevelsQuery(
     { chartId: selectedChartId! },
     {
       skip: !selectedChartId,
-      refetchOnMountOrArgChange: false, // Don't refetch on component mount
-      refetchOnFocus: false, // Don't refetch when window regains focus
-      refetchOnReconnect: false, // Don't refetch on network reconnect
+      refetchOnMountOrArgChange: false,
+      refetchOnFocus: false,
+      refetchOnReconnect: false,
     }
   );
 
@@ -114,21 +131,31 @@ const CardReportsPage: React.FC = () => {
     return Array.isArray(chartsLevels) ? chartsLevels.filter(l => l.levelType === 'target') : [];
   }, [chartsLevels]);
 
+  // Check if stacked view is available (need at least 2 grouping levels)
+  const stackedViewAvailable = useMemo(() => {
+    return groupingLevels.length >= 2 && targetLevels.length >= 1;
+  }, [groupingLevels, targetLevels]);
+
   // Get selected chart data - memoized
   const selectedChart = useMemo(() => {
     return charts.find(c => c.id === selectedChartId);
   }, [charts, selectedChartId]);
 
-  // Initialize: Select first chart when charts load (matching PHP lines 58-59)
+  // Initialize: Select first chart when charts load and set initial dates
   useEffect(() => {
     if (charts.length > 0 && !selectedChartId) {
       const firstChart = charts[0];
       setSelectedChartId(firstChart.id);
-      form.setFieldsValue({ chartId: firstChart.id });
+      form.setFieldsValue({
+        chartId: firstChart.id,
+        dateStart: filters.dateStart,
+        dateEnd: filters.dateEnd,
+        statusFilter: filters.statusFilter
+      });
     }
-  }, [charts.length, selectedChartId, form]); // Remove 'form' and use charts.length instead
+  }, [charts.length, selectedChartId, form]);
 
-  // When chart changes, update rootNode (separate from levels initialization)
+  // When chart changes, update rootNode
   useEffect(() => {
     if (selectedChart) {
       setFilters(prev => ({
@@ -138,38 +165,33 @@ const CardReportsPage: React.FC = () => {
     }
   }, [selectedChart]);
 
-  // Initialize levels when they first load (only once per chart change)
+  // Initialize levels when they first load
   useEffect(() => {
     if (groupingLevels.length > 0 && targetLevels.length > 0) {
       const defaultGroupingLevel = groupingLevels[0].level;
       const defaultTargetLevel = targetLevels[0].level;
 
-      // Only update if different from current values to avoid unnecessary re-renders
-      setFilters(prev => {
-        if (prev.groupingLevel !== defaultGroupingLevel || prev.targetLevel !== defaultTargetLevel) {
-          return {
-            ...prev,
-            groupingLevel: defaultGroupingLevel,
-            targetLevel: defaultTargetLevel,
-          };
-        }
-        return prev;
-      });
+      setFilters(prev => ({
+        ...prev,
+        groupingLevel: defaultGroupingLevel,
+        targetLevel: defaultTargetLevel,
+      }));
 
-      // Set form values only once when levels are first loaded
       form.setFieldsValue({
         groupingLevel: defaultGroupingLevel,
         targetLevel: defaultTargetLevel,
       });
     }
-  }, [groupingLevels.length, targetLevels.length, form]); // Only re-run when array lengths change
+  }, [groupingLevels.length, targetLevels.length, form]);
+
+  // Track if we've auto-loaded data
+  const [hasAutoLoaded, setHasAutoLoaded] = useState(false);
 
   const handleSubmit = async (values: any) => {
     try {
-      // rootNode comes from the selected chart, not from form values
       const params = {
         siteId: location.state?.siteId,
-        rootNode: filters.rootNode, // Get from filters state (set when chart is selected)
+        rootNode: filters.rootNode,
         targetLevel: values.targetLevel,
         groupingLevel: values.groupingLevel,
         dateStart: values.dateStart,
@@ -184,27 +206,36 @@ const CardReportsPage: React.FC = () => {
 
       setFilters(params);
 
-      // If in stacked view and we have enough levels, fetch stacked data
-      if (showStackedView && stackedViewAvailable && groupingLevels.length >= 2) {
+      // Fetch reports sequentially to avoid overloading
+      // 1. Normal grouped report first (main chart)
+      const reportResult = await getCardReportGrouped(params).unwrap();
+      setReportData(reportResult || []);
+
+      // 2. Stacked data if available
+      if (stackedViewAvailable && groupingLevels.length >= 2) {
         const stackedParams = {
           siteId: params.siteId,
           rootNode: params.rootNode,
-          g1Level: groupingLevels[0].level, // First grouping level
-          g2Level: groupingLevels[1].level, // Second grouping level
+          g1Level: groupingLevels[0].level,
+          g2Level: groupingLevels[1].level,
           targetLevel: params.targetLevel,
           dateStart: params.dateStart,
           dateEnd: params.dateEnd,
           statusFilter: params.statusFilter,
         };
-        console.log('[CardReportsPage] Fetching stacked data with params:', stackedParams);
         const stackedResult = await getCardReportStacked(stackedParams).unwrap();
-        console.log('[CardReportsPage] Stacked data received:', stackedResult);
         setStackedData(stackedResult || []);
-      } else {
-        // Normal grouped report
-        const result = await getCardReportGrouped(params).unwrap();
-        setReportData(result || []);
       }
+
+      // 3. Time series data last
+      const timeSeriesParams = {
+        siteId: location.state?.siteId,
+        dateStart: params.dateStart,
+        dateEnd: params.dateEnd,
+      };
+      const timeSeriesResult = await getCardTimeSeries(timeSeriesParams).unwrap();
+      setTimeSeriesData(timeSeriesResult || []);
+
     } catch (error: any) {
       console.error("Error fetching report:", error);
       message.error(error?.data?.message || Strings.errorLoadingReport);
@@ -217,22 +248,53 @@ const CardReportsPage: React.FC = () => {
         siteId: location.state?.siteId,
         dateStart: filters.dateStart,
         dateEnd: filters.dateEnd,
-        // Optional: Add position filter here if needed
-        // positionIds: [35, 36, 37, 38, 39, 21], // Example position IDs
       };
 
-      console.log('[CardReportsPage] Fetching time-series data with params:', params);
       const result = await getCardTimeSeries(params).unwrap();
-      console.log('[CardReportsPage] Time-series data received:', result);
       setTimeSeriesData(result || []);
     } catch (error: any) {
-      console.error("Error fetching time-series:", error);
       message.error(error?.data?.message || "Error cargando datos de serie temporal");
     }
   };
 
+  // Auto-load data with intelligent delay to avoid performance issues
+  useEffect(() => {
+    // Check if all necessary data is ready
+    const isReady =
+      selectedChartId &&
+      filters.rootNode &&
+      groupingLevels.length > 0 &&
+      targetLevels.length > 0 &&
+      !hasAutoLoaded &&
+      !isLoadingCharts &&
+      !isLoadingLevels &&
+      !isLoadingReport; // Don't auto-load if already loading
+
+    if (isReady) {
+      // Add a delay to ensure the page is fully rendered
+      const timer = setTimeout(() => {
+        setHasAutoLoaded(true);
+        // Submit the form with current values
+        form.submit();
+      }, 1000); // 1 second delay to let the page settle
+
+      return () => clearTimeout(timer);
+    }
+  }, [
+    selectedChartId,
+    filters.rootNode,
+    groupingLevels.length,
+    targetLevels.length,
+    hasAutoLoaded,
+    isLoadingCharts,
+    isLoadingLevels,
+    isLoadingReport,
+    form
+  ]);
+
   // Memoize select options to prevent re-computation on every render
   const chartOptions = useMemo(() => {
+    if (!charts || charts.length === 0) return [];
     return charts.map((c) => ({
       label: `${c.rootNode} - ${c.rootName}`,
       value: c.id,
@@ -240,6 +302,7 @@ const CardReportsPage: React.FC = () => {
   }, [charts]);
 
   const groupingLevelOptions = useMemo(() => {
+    if (!groupingLevels || groupingLevels.length === 0) return [];
     return groupingLevels.map((l) => ({
       label: `${l.level} - ${l.levelName}`,
       value: l.level,
@@ -247,25 +310,12 @@ const CardReportsPage: React.FC = () => {
   }, [groupingLevels]);
 
   const targetLevelOptions = useMemo(() => {
+    if (!targetLevels || targetLevels.length === 0) return [];
     return targetLevels.map((l) => ({
       label: `${l.level} - ${l.levelName}`,
       value: l.level,
     }));
   }, [targetLevels]);
-
-  // Check if stacked view is available (need at least 2 grouping levels)
-  const stackedViewAvailable = useMemo(() => {
-    return groupingLevels.length >= 2 && targetLevels.length >= 1;
-  }, [groupingLevels, targetLevels]);
-
-  // Clear data when switching between views
-  useEffect(() => {
-    if (showStackedView) {
-      setReportData([]); // Clear normal data when switching to stacked
-    } else {
-      setStackedData([]); // Clear stacked data when switching to normal
-    }
-  }, [showStackedView]);
 
   const totalCards = reportData.reduce((sum, item) => sum + (item.total_cards || 0), 0);
 
@@ -552,10 +602,8 @@ const CardReportsPage: React.FC = () => {
                   onChange={(value) => setSelectedChartId(value)}
                   notFoundContent={isLoadingCharts ? <Spin size="small" /> : null}
                   options={chartOptions}
-                  showSearch
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
+                  showSearch={false} // Disable search for better performance
+                  virtual={false} // Disable virtual scrolling for better performance with small lists
                 />
               </Form.Item>
             </Col>
@@ -581,7 +629,7 @@ const CardReportsPage: React.FC = () => {
                   notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={groupingLevelOptions}
                   showSearch={false}
-                  virtual={true}
+                  virtual={false} // Better performance for small lists
                 />
               </Form.Item>
             </Col>
@@ -596,7 +644,7 @@ const CardReportsPage: React.FC = () => {
                   notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={targetLevelOptions}
                   showSearch={false}
-                  virtual={true}
+                  virtual={false} // Better performance for small lists
                 />
               </Form.Item>
             </Col>
@@ -625,133 +673,89 @@ const CardReportsPage: React.FC = () => {
           </Row>
         </Form>
 
-        {/* View mode and chart type selectors */}
+        {/* Chart type toggle buttons */}
         <div style={{ marginBottom: 16 }}>
-          {/* View mode selector - only show when stacked view is available */}
-          {stackedViewAvailable && (
-            <Space style={{ marginBottom: 12 }} wrap>
-              <span style={{ fontWeight: 500 }}>{Strings.viewModeLabel}</span>
-              <Space.Compact>
-                <Button
-                  type={!showStackedView ? "primary" : "default"}
-                  onClick={() => setShowStackedView(false)}
-                >
-                  {Strings.normalView}
-                </Button>
-                <Button
-                  type={showStackedView ? "primary" : "default"}
-                  onClick={() => setShowStackedView(true)}
-                >
-                  {Strings.stackedView}
-                </Button>
-              </Space.Compact>
-            </Space>
-          )}
-
-          {/* Chart type toggle buttons - only show when NOT in stacked view */}
-          {!showStackedView && (
-            <Space wrap>
-              <span style={{ fontWeight: 500, marginLeft: 30 }}>{Strings.chartTypeLabel}</span>
-              <Button type={chartType === "pie" ? "primary" : "default"} onClick={() => setChartType("pie")}>
-                {Strings.pieChart}
-              </Button>
-              <Button type={chartType === "barV" ? "primary" : "default"} onClick={() => setChartType("barV")}>
-                {Strings.verticalBars}
-              </Button>
-              <Button type={chartType === "barH" ? "primary" : "default"} onClick={() => setChartType("barH")}>
-                {Strings.horizontalBars}
-              </Button>
-              <Button type={chartType === "line" ? "primary" : "default"} onClick={() => setChartType("line")}>
-                {Strings.lineChart}
-              </Button>
-            </Space>
-          )}
+          <Space wrap>
+            <span style={{ fontWeight: 500 }}>{Strings.chartTypeLabel}</span>
+            <Button type={chartType === "pie" ? "primary" : "default"} onClick={() => setChartType("pie")}>
+              {Strings.pieChart}
+            </Button>
+            <Button type={chartType === "barV" ? "primary" : "default"} onClick={() => setChartType("barV")}>
+              {Strings.verticalBars}
+            </Button>
+            <Button type={chartType === "barH" ? "primary" : "default"} onClick={() => setChartType("barH")}>
+              {Strings.horizontalBars}
+            </Button>
+            <Button type={chartType === "line" ? "primary" : "default"} onClick={() => setChartType("line")}>
+              {Strings.lineChart}
+            </Button>
+          </Space>
         </div>
 
-        <Row gutter={16}>
-          <Col xs={24} lg={showStackedView ? 24 : 12}>
+        {/* 1. Vista Normal - Chart with multiple types */}
+        <Row gutter={[16, 16]}>
+          <Col xs={24} lg={12}>
             <Card
-              title={Strings.charts}
+              title={`${Strings.charts} - ${Strings.normalView || 'Vista Normal'}`}
               size="small"
               extra={
-                showStackedView
-                  ? stackedData.length > 0 && (
-                      <ChartExpander
-                        title={`${Strings.charts} - ${selectedChart?.chartName || ''} (${Strings.stackedView})`}
-                      >
-                        <StackedHorizontalChart
-                          data={stackedData}
-                          levelNames={{
-                            g1: groupingLevels[0]?.levelName || 'G1',
-                            g2: groupingLevels[1]?.levelName || 'G2',
-                            target: targetLevels.find(t => t.level === filters.targetLevel)?.levelName || 'Target',
-                          }}
-                        />
-                      </ChartExpander>
-                    )
-                  : reportData.length > 0 && (
-                      <ChartExpander
-                        title={`${Strings.charts} - ${selectedChart?.chartName || ''}`}
-                        defaultChartType={chartType}
-                        pieChart={
-                          <div style={{ height: '100%', position: "relative" }}>
-                            <Pie data={pieChartData} options={pieChartOptions} />
-                          </div>
-                        }
-                        barVChart={
-                          <div style={{ height: '100%', position: "relative" }}>
-                            <Bar data={barChartData} options={barVChartOptions} />
-                          </div>
-                        }
-                        barHChart={
-                          <div style={{ height: '100%', position: "relative" }}>
-                            <Bar data={barChartData} options={barHChartOptions} />
-                          </div>
-                        }
-                        lineChart={
-                          <div style={{ height: '100%', position: "relative" }}>
-                            <Line data={lineChartData} options={lineChartOptions} />
-                          </div>
-                        }
-                      />
-                    )
+                reportData.length > 0 && (
+                  <ChartExpander
+                    title={`${Strings.charts} - ${selectedChart?.chartName || ''}`}
+                    defaultChartType={chartType}
+                    pieChart={
+                      <div style={{ height: '100%', position: "relative" }}>
+                        <Pie data={pieChartData} options={pieChartOptions} />
+                      </div>
+                    }
+                    barVChart={
+                      <div style={{ height: '100%', position: "relative" }}>
+                        <Bar data={barChartData} options={barVChartOptions} />
+                      </div>
+                    }
+                    barHChart={
+                      <div style={{ height: '100%', position: "relative" }}>
+                        <Bar data={barChartData} options={barHChartOptions} />
+                      </div>
+                    }
+                    lineChart={
+                      <div style={{ height: '100%', position: "relative" }}>
+                        <Line data={lineChartData} options={lineChartOptions} />
+                      </div>
+                    }
+                  />
+                )
               }
             >
-              {showStackedView ? (
-                // Stacked view
-                <StackedHorizontalChart
-                  data={stackedData}
-                  levelNames={{
-                    g1: groupingLevels[0]?.levelName || 'G1',
-                    g2: groupingLevels[1]?.levelName || 'G2',
-                    target: targetLevels.find(t => t.level === filters.targetLevel)?.levelName || 'Target',
-                  }}
-                />
-              ) : (
-                // Normal view
-                <div style={{ height: 400, position: "relative" }}>
-                  {reportData.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
-                      {Strings.noData}
-                    </div>
-                  ) : chartType === "pie" ? (
-                    <Pie data={pieChartData} options={pieChartOptions} />
-                  ) : chartType === "barV" ? (
-                    <Bar data={barChartData} options={barVChartOptions} />
-                  ) : chartType === "barH" ? (
-                    <Bar data={barChartData} options={barHChartOptions} />
-                  ) : (
-                    <Line data={lineChartData} options={lineChartOptions} />
-                  )}
-                </div>
-              )}
+              <div style={{ height: 400, position: "relative" }}>
+                {isLoadingReport ? (
+                  <div style={{ textAlign: "center", padding: "80px 20px" }}>
+                    <Spin size="large" tip={Strings.loading || "Cargando..."} />
+                  </div>
+                ) : reportData.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
+                    {Strings.noData}
+                  </div>
+                ) : chartType === "pie" ? (
+                  <Pie data={pieChartData} options={pieChartOptions} />
+                ) : chartType === "barV" ? (
+                  <Bar data={barChartData} options={barVChartOptions} />
+                ) : chartType === "barH" ? (
+                  <Bar data={barChartData} options={barHChartOptions} />
+                ) : (
+                  <Line data={lineChartData} options={lineChartOptions} />
+                )}
+              </div>
             </Card>
           </Col>
-          {/* Only show details panel when NOT in stacked view */}
-          {!showStackedView && (
+
           <Col xs={24} lg={12}>
             <Card title={Strings.details} size="small">
-              {reportData.length === 0 ? (
+              {isLoadingReport ? (
+                <div style={{ textAlign: "center", padding: "20px" }}>
+                  <Spin size="large" tip={Strings.loading || "Cargando..."} />
+                </div>
+              ) : reportData.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "20px", color: "#6c757d" }}>
                   {Strings.noData}
                 </div>
@@ -772,10 +776,55 @@ const CardReportsPage: React.FC = () => {
               )}
             </Card>
           </Col>
-          )}
         </Row>
 
-        {/* Time-series section - Tarjetas creadas por posición */}
+        {/* 2. Vista Apilada - Always visible */}
+        <Card
+          title={`${Strings.charts} - ${Strings.stackedView || 'Vista Apilada'}`}
+          size="small"
+          style={{ marginTop: 24 }}
+          extra={
+            stackedData.length > 0 && (
+              <ChartExpander
+                title={`${Strings.charts} - ${selectedChart?.chartName || ''} (${Strings.stackedView})`}
+              >
+                <StackedHorizontalChart
+                  data={stackedData}
+                  levelNames={{
+                    g1: groupingLevels[0]?.levelName || 'G1',
+                    g2: groupingLevels[1]?.levelName || 'G2',
+                    target: targetLevels.find(t => t.level === filters.targetLevel)?.levelName || 'Target',
+                  }}
+                />
+              </ChartExpander>
+            )
+          }
+        >
+          {isLoadingStacked ? (
+            <div style={{ textAlign: "center", padding: "80px 20px" }}>
+              <Spin size="large" tip={Strings.loading || "Cargando..."} />
+            </div>
+          ) : !stackedViewAvailable ? (
+            <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
+              {"Vista apilada requiere al menos 2 niveles de agrupación"}
+            </div>
+          ) : stackedData.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
+              {Strings.noData}
+            </div>
+          ) : (
+            <StackedHorizontalChart
+              data={stackedData}
+              levelNames={{
+                g1: groupingLevels[0]?.levelName || 'G1',
+                g2: groupingLevels[1]?.levelName || 'G2',
+                target: targetLevels.find(t => t.level === filters.targetLevel)?.levelName || 'Target',
+              }}
+            />
+          )}
+        </Card>
+
+        {/* 3. Time-series section - Actividad de tarjetas por equipo/posición */}
         <Card
           size="small"
           style={{ marginTop: 24 }}
@@ -804,6 +853,19 @@ const CardReportsPage: React.FC = () => {
                 </Button>
               </Space>
             </div>
+          }
+          extra={
+            timeSeriesData.length > 0 && (
+              <ChartExpander
+                title={`${Strings.timeSeriesActivityTitle || 'Actividad de tarjetas por equipo/posición'}`}
+              >
+                <TimeSeriesChart
+                  data={timeSeriesData}
+                  mode={timeSeriesMode}
+                  isLoading={isLoadingTimeSeries}
+                />
+              </ChartExpander>
+            )
           }
         >
           <TimeSeriesChart
