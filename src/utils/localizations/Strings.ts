@@ -1950,6 +1950,14 @@ class StringsBase {
   static onlyCanceled = "onlyCanceled";
   static onlyDiscarded = "onlyDiscarded";
   static allStatuses = "allStatuses";
+
+  // Time Series Chart strings
+  static timeSeriesActivityTitle = "timeSeriesActivityTitle";
+  static timeSeriesMode = "timeSeriesMode";
+  static dailyCount = "dailyCount";
+  static movingAverage7Days = "movingAverage7Days";
+  static cumulativeCount = "cumulativeCount";
+  static loadTimeSeries = "loadTimeSeries";
 }
 
 // Create a Proxy object for StringsBase to intercept property access

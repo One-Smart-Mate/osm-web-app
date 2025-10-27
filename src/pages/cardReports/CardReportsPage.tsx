@@ -4,8 +4,9 @@ import { useLocation } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useGetCardReportGroupedMutation, useGetCardReportStackedMutation, useGetChartsQuery, useGetChartsLevelsQuery } from "../../services/cardService";
+import { useGetCardReportGroupedMutation, useGetCardReportStackedMutation, useGetChartsQuery, useGetChartsLevelsQuery, useGetCardTimeSeriesMutation } from "../../services/cardService";
 import StackedHorizontalChart from "./components/StackedHorizontalChart";
+import TimeSeriesChart from "./components/TimeSeriesChart";
 import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
@@ -45,11 +46,17 @@ const CardReportsPage: React.FC = () => {
 
   const [getCardReportGrouped, { isLoading: isLoadingReport }] = useGetCardReportGroupedMutation();
   const [getCardReportStacked, { isLoading: isLoadingStacked }] = useGetCardReportStackedMutation();
+  const [getCardTimeSeries, { isLoading: isLoadingTimeSeries }] = useGetCardTimeSeriesMutation();
 
   // Load charts for the site (matching PHP lines 41-47)
   const { data: chartsData, isLoading: isLoadingCharts } = useGetChartsQuery(
     { siteId: location.state?.siteId },
-    { skip: !location.state?.siteId }
+    {
+      skip: !location.state?.siteId,
+      refetchOnMountOrArgChange: false,
+      refetchOnFocus: false,
+      refetchOnReconnect: false,
+    }
   );
 
   // Ensure charts is always an array - handle both direct array and {data: array} response
@@ -64,6 +71,11 @@ const CardReportsPage: React.FC = () => {
   const [stackedData, setStackedData] = useState<any[]>([]);
   const [selectedChartId, setSelectedChartId] = useState<number | null>(null);
   const [showStackedView, setShowStackedView] = useState(false);
+
+  // Time-series state
+  const [timeSeriesData, setTimeSeriesData] = useState<any[]>([]);
+  const [timeSeriesMode, setTimeSeriesMode] = useState<"daily" | "ma7" | "cumulative">("daily");
+  const [showTimeSeriesView, setShowTimeSeriesView] = useState(false);
   const [filters, setFilters] = useState<ReportFilters>({
     dateStart: "2024-01-01",
     dateEnd: new Date().toISOString().split("T")[0],
@@ -77,7 +89,12 @@ const CardReportsPage: React.FC = () => {
   // Load charts_levels for selected chart (matching PHP lines 85-105)
   const { data: chartsLevelsData, isLoading: isLoadingLevels } = useGetChartsLevelsQuery(
     { chartId: selectedChartId! },
-    { skip: !selectedChartId }
+    {
+      skip: !selectedChartId,
+      refetchOnMountOrArgChange: false, // Don't refetch on component mount
+      refetchOnFocus: false, // Don't refetch when window regains focus
+      refetchOnReconnect: false, // Don't refetch on network reconnect
+    }
   );
 
   // Ensure chartsLevels is always an array - handle both direct array and {data: array} response
@@ -110,35 +127,45 @@ const CardReportsPage: React.FC = () => {
       setSelectedChartId(firstChart.id);
       form.setFieldsValue({ chartId: firstChart.id });
     }
-  }, [charts, selectedChartId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [charts.length, selectedChartId]); // Remove 'form' and use charts.length instead
 
-  // When chart changes, update rootNode and initialize levels (matching PHP lines 76-105)
+  // When chart changes, update rootNode (separate from levels initialization)
   useEffect(() => {
     if (selectedChart) {
+      setFilters(prev => ({
+        ...prev,
+        rootNode: selectedChart.rootNode,
+      }));
+    }
+  }, [selectedChart]);
+
+  // Initialize levels when they first load (only once per chart change)
+  useEffect(() => {
+    if (groupingLevels.length > 0 && targetLevels.length > 0) {
+      const defaultGroupingLevel = groupingLevels[0].level;
+      const defaultTargetLevel = targetLevels[0].level;
+
+      // Only update if different from current values to avoid unnecessary re-renders
       setFilters(prev => {
-        const newFilters = {
-          ...prev,
-          rootNode: selectedChart.rootNode,
-        };
-
-        // Set default grouping_level and target_level when levels load
-        if (groupingLevels.length > 0 && targetLevels.length > 0) {
-          newFilters.groupingLevel = groupingLevels[0].level;
-          newFilters.targetLevel = targetLevels[0].level;
+        if (prev.groupingLevel !== defaultGroupingLevel || prev.targetLevel !== defaultTargetLevel) {
+          return {
+            ...prev,
+            groupingLevel: defaultGroupingLevel,
+            targetLevel: defaultTargetLevel,
+          };
         }
-
-        return newFilters;
+        return prev;
       });
 
-      // Only update form when levels are loaded
-      if (groupingLevels.length > 0 && targetLevels.length > 0) {
-        form.setFieldsValue({
-          groupingLevel: groupingLevels[0].level,
-          targetLevel: targetLevels[0].level,
-        });
-      }
+      // Set form values only once when levels are first loaded
+      form.setFieldsValue({
+        groupingLevel: defaultGroupingLevel,
+        targetLevel: defaultTargetLevel,
+      });
     }
-  }, [selectedChart, groupingLevels, targetLevels, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupingLevels.length, targetLevels.length]); // Only re-run when array lengths change
 
   const handleSubmit = async (values: any) => {
     try {
@@ -184,6 +211,26 @@ const CardReportsPage: React.FC = () => {
     } catch (error: any) {
       console.error("Error fetching report:", error);
       message.error(error?.data?.message || Strings.errorLoadingReport);
+    }
+  };
+
+  const handleLoadTimeSeries = async () => {
+    try {
+      const params = {
+        siteId: location.state?.siteId,
+        dateStart: filters.dateStart,
+        dateEnd: filters.dateEnd,
+        // Optional: Add position filter here if needed
+        // positionIds: [35, 36, 37, 38, 39, 21], // Example position IDs
+      };
+
+      console.log('[CardReportsPage] Fetching time-series data with params:', params);
+      const result = await getCardTimeSeries(params).unwrap();
+      console.log('[CardReportsPage] Time-series data received:', result);
+      setTimeSeriesData(result || []);
+    } catch (error: any) {
+      console.error("Error fetching time-series:", error);
+      message.error(error?.data?.message || "Error cargando datos de serie temporal");
     }
   };
 
@@ -532,14 +579,12 @@ const CardReportsPage: React.FC = () => {
               <Form.Item label={Strings.groupingLevel} name="groupingLevel" rules={[{ required: true }]}>
                 <Select
                   loading={isLoadingLevels}
-                  disabled={!selectedChartId}
+                  disabled={!selectedChartId || isLoadingLevels}
                   placeholder={Strings.selectLevel || "Select level"}
                   notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={groupingLevelOptions}
-                  showSearch
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
+                  showSearch={false}
+                  virtual={true}
                 />
               </Form.Item>
             </Col>
@@ -549,14 +594,12 @@ const CardReportsPage: React.FC = () => {
               <Form.Item label={Strings.targetLevel} name="targetLevel" rules={[{ required: true }]}>
                 <Select
                   loading={isLoadingLevels}
-                  disabled={!selectedChartId}
+                  disabled={!selectedChartId || isLoadingLevels}
                   placeholder={Strings.selectLevel || "Select level"}
                   notFoundContent={isLoadingLevels ? <Spin size="small" /> : null}
                   options={targetLevelOptions}
-                  showSearch
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
+                  showSearch={false}
+                  virtual={true}
                 />
               </Form.Item>
             </Col>
@@ -734,6 +777,44 @@ const CardReportsPage: React.FC = () => {
           </Col>
           )}
         </Row>
+
+        {/* Time-series section - Tarjetas creadas por posición */}
+        <Card
+          size="small"
+          style={{ marginTop: 24 }}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+              <span>{Strings.timeSeriesActivityTitle}</span>
+              <Space wrap>
+                <span style={{ fontSize: 14, fontWeight: 'normal' }}>{Strings.timeSeriesMode}</span>
+                <Select
+                  value={timeSeriesMode}
+                  onChange={setTimeSeriesMode}
+                  style={{ width: 180 }}
+                  size="small"
+                >
+                  <Select.Option value="daily">{Strings.dailyCount}</Select.Option>
+                  <Select.Option value="ma7">{Strings.movingAverage7Days}</Select.Option>
+                  <Select.Option value="cumulative">{Strings.cumulativeCount}</Select.Option>
+                </Select>
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={handleLoadTimeSeries}
+                  loading={isLoadingTimeSeries}
+                >
+                  {Strings.loadTimeSeries}
+                </Button>
+              </Space>
+            </div>
+          }
+        >
+          <TimeSeriesChart
+            data={timeSeriesData}
+            mode={timeSeriesMode}
+            isLoading={isLoadingTimeSeries}
+          />
+        </Card>
       </Card>
     </div>
   );

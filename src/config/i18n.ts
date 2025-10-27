@@ -1924,6 +1924,14 @@ const resources = {
       onlyCanceled: "Only Canceled",
       onlyDiscarded: "Only Discarded",
       allStatuses: "All Statuses",
+
+      // Time Series Chart strings
+      timeSeriesActivityTitle: "Card Activity by Team/Position",
+      timeSeriesMode: "Mode:",
+      dailyCount: "Daily Count",
+      movingAverage7Days: "7-Day Moving Average",
+      cumulativeCount: "Cumulative",
+      loadTimeSeries: "Load Time Series",
     },
   },
   es: {
@@ -3861,6 +3869,14 @@ const resources = {
       onlyCanceled: "Solo Canceladas",
       onlyDiscarded: "Solo Descartadas",
       allStatuses: "Todos los Estados",
+
+      // Time Series Chart strings
+      timeSeriesActivityTitle: "Actividad de tarjetas por equipo/posición",
+      timeSeriesMode: "Modo:",
+      dailyCount: "Conteo diario",
+      movingAverage7Days: "Media móvil 7 días",
+      cumulativeCount: "Acumulada",
+      loadTimeSeries: "Cargar serie temporal",
     },
   },
 };

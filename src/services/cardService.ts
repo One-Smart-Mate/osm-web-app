@@ -377,6 +377,31 @@ export const cardService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: any) => response?.data || response,
     }),
+    // Time-series data for card creation by position
+    getCardTimeSeries: builder.mutation<
+      Array<{
+        fecha: string;
+        equipo: string;
+        position_id: number | null;
+        total: number;
+        abiertas: number;
+        resueltas: number;
+      }>,
+      {
+        siteId: number;
+        dateStart: string;
+        dateEnd: string;
+        positionIds?: number[];
+        tagOrigin?: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/card/report/time-series",
+        method: "POST",
+        body: params,
+      }),
+      transformResponse: (response: { data: any[] }) => response.data,
+    }),
   }),
 });
 
@@ -405,4 +430,5 @@ export const {
   useGetCardReportStackedMutation,
   useGetChartsQuery,
   useGetChartsLevelsQuery,
+  useGetCardTimeSeriesMutation,
 } = cardService;
