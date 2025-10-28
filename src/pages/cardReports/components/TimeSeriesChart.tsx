@@ -56,6 +56,19 @@ function cumulative(data: number[]): number[] {
 }
 
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading }) => {
+  // Helper function to format date as DD/MM/YYYY
+  const formatDate = (dateStr: string): string => {
+    try {
+      const date = new Date(dateStr + 'T00:00:00'); // Add time to avoid timezone issues
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateStr;
+    }
+  };
+
   // Process data into Chart.js format
   const chartData = useMemo(() => {
     if (!data || data.length === 0) return null;
@@ -122,7 +135,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
     });
 
     return {
-      labels: dates,
+      labels: dates.map(formatDate), // Format dates as DD/MM/YYYY
       datasets,
     };
   }, [data, mode]);
@@ -152,6 +165,10 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
         },
         tooltip: {
           callbacks: {
+            title: (context: any) => {
+              // Return the formatted date label (already formatted as DD/MM/YYYY)
+              return context[0]?.label || '';
+            },
             label: (context: any) => {
               const v = context.parsed.y;
               const value = Number.isFinite(v) ? v : 0;
