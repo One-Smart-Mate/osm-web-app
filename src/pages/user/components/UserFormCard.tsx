@@ -77,35 +77,58 @@ const UserFormCard = ({
 
   // Separate effect for setting form values - runs when initialValues change
   useEffect(() => {
-    if (roles.length === 0) return; // Wait for roles to load first
+    if (roles.length === 0) {
+      console.log('[UserFormCard] Waiting for roles to load...');
+      return; // Wait for roles to load first
+    }
 
     if (initialValues) {
+      console.log('[UserFormCard] Initializing form with user data:', {
+        id: initialValues.id,
+        name: initialValues.name,
+        status: initialValues.status,
+        rolesCount: initialValues.roles?.length || 0
+      });
+
+      // Build form values object
       const formValues: any = {
         name: initialValues.name,
         email: initialValues.email,
         id: initialValues.id,
         phoneNumber: initialValues.phoneNumber || '',
         translation: initialValues.translation || Constants.es,
-        roles: initialValues.roles.filter((rol,_) => rol.name != Constants.ihSisAdmin).map((rol, _) => rol.id),
-        status: initialValues.status,
+        roles: initialValues.roles
+          ?.filter((rol) => rol.name !== Constants.ihSisAdmin)
+          .map((rol) => rol.id) || [],
         enableEvidences: initialValues.uploadCardDataWithDataNet && initialValues.uploadCardEvidenceWithDataNet
       };
+
+      // Only include status if enableStatus is true (update mode)
+      if (enableStatus && initialValues.status) {
+        formValues.status = initialValues.status;
+      }
 
       // Include fastPassword if it exists in initialValues
       if (initialValues.fastPassword) {
         formValues.fastPassword = initialValues.fastPassword;
       }
 
+      console.log('[UserFormCard] Setting form values:', formValues);
+
+      // Reset form first to clear any previous values
+      form.resetFields();
+
+      // Set new values
       form.setFieldsValue(formValues);
     } else {
-      // Set default values for new user creation - only once
-      if (roles.length > 0) {
-        form.setFieldsValue({
-          translation: Constants.es
-        });
-      }
+      // Set default values for new user creation
+      console.log('[UserFormCard] Initializing form for new user');
+      form.resetFields();
+      form.setFieldsValue({
+        translation: Constants.es
+      });
     }
-  }, [initialValues, roles.length, form]); // Use roles.length instead of roles array to avoid unnecessary re-renders
+  }, [initialValues, roles.length, form, enableStatus]); // Include enableStatus in dependencies
 
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active, key: 1 },

@@ -16,6 +16,7 @@ import Constants from "../../utils/Constants";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import useUserActivity from "../../utils/hooks/useUserActivity";
 import NotificationHandler from "../components/NotificationHandler";
+import NetworkStatusBanner from "../components/NetworkStatusBanner";
 
 const { Header, Content } = Layout;
 
@@ -63,9 +64,12 @@ const BaseLayout: React.FC = () => {
 
   const toggleCollapse = () => setCollapsed(!isCollapsed);
 
-  
+
   return (
     <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
+      {/* Global network status banner */}
+      <NetworkStatusBanner />
+
       <HeaderBar
         user={user}
         sidebarWidth={sidebarWidth}

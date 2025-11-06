@@ -899,6 +899,18 @@ class StringsBase {
   static success = "success";
   static error = "error";
 
+  // Network error messages
+  static networkConnectionLost = "networkConnectionLost";
+  static networkReconnecting = "networkReconnecting";
+  static networkCheckConnection = "networkCheckConnection";
+  static networkConnectionRestored = "networkConnectionRestored";
+  static networkYouAreBackOnline = "networkYouAreBackOnline";
+  static networkTimeout = "networkTimeout";
+  static serverError = "serverError";
+  static unauthorizedError = "unauthorizedError";
+  static notFoundError = "notFoundError";
+  static unknownError = "unknownError";
+
   static noUsersAvailableForSite = "noUsersAvailableForSite";
   static positionName = "positionName";
   static positionDescription = "positionDescription";

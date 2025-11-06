@@ -28,17 +28,23 @@ const UserForm = ({
 }: UserFormProps): React.ReactElement => {
   const [modalIsOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [modalKey, setModalKey] = useState(0); // Force re-render when modal opens
   const location = useLocation();
   const { notification } = AntApp.useApp();
   const [registerUser] = useCreateUserMutation();
   const [updateUser] = useUpdateUserMutation();
 
   const handleOnClickButton = () => {
+    console.log('[UserForm] Opening modal for user:', data?.id || 'new user');
+    console.log('[UserForm] User data:', data);
+    // Increment key to force form re-mount
+    setModalKey(prev => prev + 1);
     setModalOpen(true);
   };
 
   const handleOnCancelButton = () => {
     if (!isLoading) {
+      console.log('[UserForm] Closing modal');
       setModalOpen(false);
     }
   };
@@ -99,20 +105,29 @@ const UserForm = ({
     setIsLoading(true);
     const enableEvidences = values.enableEvidences ? 1 : 0;
 
-    const userData = {
+    // Only include the specific fields that the backend expects
+    const userData: any = {
       id: Number(values.id),
       name: values.name.trim(),
       email: values.email.trim(),
       siteId: Number(location.state.siteId),
-      password: values.password,
       uploadCardDataWithDataNet: enableEvidences,
       uploadCardEvidenceWithDataNet: enableEvidences,
       roles: values.roles,
       status: values.status,
-      fastPassword: values.fastPassword,
       phoneNumber: values.phoneNumber?.trim() || '',
       translation: values.translation || 'ES'
     };
+
+    // Only include password if it was provided
+    if (values.password && values.password.trim()) {
+      userData.password = values.password;
+    }
+
+    // Only include fastPassword if it was provided and is valid
+    if (values.fastPassword && values.fastPassword.trim()) {
+      userData.fastPassword = values.fastPassword.trim();
+    }
 
     updateUser(userData)
       .unwrap()
@@ -145,7 +160,7 @@ const UserForm = ({
         {formType == UserFormType._CREATE ? Strings.create : Strings.edit}
       </Button>
       <ModalForm
-        key={`${formType}-${data?.id || 'new'}`}
+        key={`${formType}-${data?.id || 'new'}-${modalKey}`}
         open={modalIsOpen}
         onCancel={handleOnCancelButton}
         title={
@@ -156,11 +171,11 @@ const UserForm = ({
         isLoading={isLoading}
         FormComponent={(form: FormInstance) => (
           <UserFormCard
+            key={`user-form-card-${modalKey}`}
             form={form}
             onSubmit={handleOnSubmit}
             initialValues={data}
             enableStatus={formType == UserFormType._UPDATE}
-
           />
         )}
       />

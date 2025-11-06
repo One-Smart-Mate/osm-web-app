@@ -846,6 +846,19 @@ const resources = {
 
       success: "Success",
       error: "Error",
+
+      // Network error messages
+      networkConnectionLost: "Connection Lost",
+      networkReconnecting: "Attempting to reconnect...",
+      networkCheckConnection: "Please check your internet connection and try again.",
+      networkConnectionRestored: "Connection Restored",
+      networkYouAreBackOnline: "You are back online. Data will be refreshed automatically.",
+      networkTimeout: "Request timed out. Please try again.",
+      serverError: "Server error. Please try again later.",
+      unauthorizedError: "Unauthorized. Please login again.",
+      notFoundError: "Resource not found.",
+      unknownError: "An unexpected error occurred. Please try again.",
+
       createPositionHere: "Create position here",
 
       // User positions
@@ -2759,6 +2772,19 @@ const resources = {
 
       success: "Éxito",
       error: "Error",
+
+      // Network error messages
+      networkConnectionLost: "Conexión Perdida",
+      networkReconnecting: "Intentando reconectar...",
+      networkCheckConnection: "Por favor verifica tu conexión a internet e intenta nuevamente.",
+      networkConnectionRestored: "Conexión Restaurada",
+      networkYouAreBackOnline: "Estás de vuelta en línea. Los datos se actualizarán automáticamente.",
+      networkTimeout: "Tiempo de espera agotado. Por favor intenta nuevamente.",
+      serverError: "Error del servidor. Por favor intenta más tarde.",
+      unauthorizedError: "No autorizado. Por favor inicia sesión nuevamente.",
+      notFoundError: "Recurso no encontrado.",
+      unknownError: "Ocurrió un error inesperado. Por favor intenta nuevamente.",
+
       "No position data found for update.":
         "No se encontró información de posición para actualizar.",
       "The position has been updated successfully.":
