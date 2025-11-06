@@ -21,6 +21,7 @@ import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import { theme } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { LevelCache } from "../../utils/levelCache";
+import { showNetworkError } from "../../utils/networkErrorHandler";
 
 // Custom hook for lazy loading node data
 const useLazyNode = () => {
@@ -506,7 +507,8 @@ const LevelsReadOnlyLazy = () => {
         setTranslate({ x: offsetWidth / 2, y: offsetHeight / 4 });
       }
     } catch (error) {
-      console.error("Error loading levels:", error);
+      console.error("[LevelReadOnlyLazy] Error loading levels:", error);
+      showNetworkError(notificationApi, error);
     } finally {
       setLoading(false);
       setTimeout(() => setLoadingProgress(0), 500);
@@ -596,12 +598,9 @@ const LevelsReadOnlyLazy = () => {
           setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
           setAssignmentCounts(prev => ({ ...prev, ...newAssignmentCounts }));
         }
-      } catch (_error) {
-        console.error("Error loading children:", _error);
-        notificationApi.error({
-          message: "Error Loading Children",
-          description: `Failed to load children for node ${parentId}`,
-        });
+      } catch (error) {
+        console.error("[LevelReadOnlyLazy] Error loading children:", error);
+        showNetworkError(notificationApi, error, `${Strings.error} loading children for node ${parentId}`);
       }
       return;
     }
@@ -680,8 +679,9 @@ const LevelsReadOnlyLazy = () => {
           setLevelCardCounts(prev => ({ ...prev, ...newCardCounts }));
           setAssignmentCounts(prev => ({ ...prev, ...newAssignmentCounts }));
         }
-      } catch (_error) {
-        console.error("Error loading node children:", _error);
+      } catch (error) {
+        console.error("[LevelReadOnlyLazy] Error loading node children:", error);
+        showNetworkError(notificationApi, error);
       }
     }
   }, [loadChildren, loadingNodes, siteId, getCardsByLevel, notificationApi]);
