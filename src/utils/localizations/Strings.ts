@@ -255,6 +255,10 @@ class StringsBase {
   // Import users form
   static dragFile = "dragFile";
   static singleUpload = "singleUpload";
+  static onlyExcelFiles = "onlyExcelFiles";
+  static invalidFileType = "invalidFileType";
+  static fileTooLarge = "fileTooLarge";
+  static pleaseConvertToXlsx = "pleaseConvertToXlsx";
 
   // sites
   static site = "site";

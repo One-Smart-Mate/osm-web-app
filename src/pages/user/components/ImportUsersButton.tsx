@@ -65,8 +65,21 @@ const ImportUsersButton = ({
       }
     } catch (error: any) {
       setLoading(false);
+      console.error('[ImportUsersButton] Error importing users:', error);
+
+      // Check if it's a file type error
       const errorMessage = error?.data?.message || error?.message || 'Error importing users';
-      AnatomyNotification.error(notification, errorMessage);
+      const isFileTypeError = errorMessage.toLowerCase().includes('invalid file type') ||
+                              errorMessage.toLowerCase().includes('tipo de archivo inválido');
+
+      if (isFileTypeError) {
+        AnatomyNotification.error(
+          notification,
+          `${errorMessage}. ${Strings.pleaseConvertToXlsx}`
+        );
+      } else {
+        AnatomyNotification.error(notification, errorMessage);
+      }
     }
   };
 
