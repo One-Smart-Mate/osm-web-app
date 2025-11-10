@@ -255,6 +255,10 @@ class StringsBase {
   // Import users form
   static dragFile = "dragFile";
   static singleUpload = "singleUpload";
+  static onlyExcelFiles = "onlyExcelFiles";
+  static invalidFileType = "invalidFileType";
+  static fileTooLarge = "fileTooLarge";
+  static pleaseConvertToXlsx = "pleaseConvertToXlsx";
 
   // sites
   static site = "site";
@@ -898,6 +902,18 @@ class StringsBase {
   static cancelSort = "cancelSort";
   static success = "success";
   static error = "error";
+
+  // Network error messages
+  static networkConnectionLost = "networkConnectionLost";
+  static networkReconnecting = "networkReconnecting";
+  static networkCheckConnection = "networkCheckConnection";
+  static networkConnectionRestored = "networkConnectionRestored";
+  static networkYouAreBackOnline = "networkYouAreBackOnline";
+  static networkTimeout = "networkTimeout";
+  static serverError = "serverError";
+  static unauthorizedError = "unauthorizedError";
+  static notFoundError = "notFoundError";
+  static unknownError = "unknownError";
 
   static noUsersAvailableForSite = "noUsersAvailableForSite";
   static positionName = "positionName";

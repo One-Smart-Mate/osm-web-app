@@ -27,8 +27,8 @@ import Strings from '../../utils/localizations/Strings';
 import { useNavigate } from 'react-router-dom';
 import { buildCardDetailRoute } from '../../routes/RoutesExtensions';
 import Constants from '../../utils/Constants';
-import AnatomyNotification from '../components/AnatomyNotification';
 import i18n from '../../config/i18n';
+import { showNetworkError } from '../../utils/networkErrorHandler';
 
 // Configure moment locale based on current language
 moment.locale(i18n.language === 'en' ? 'en' : 'es');
@@ -116,10 +116,12 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
       });
 
       setEvents(calendarEvents);
-    } catch (_error) {
-      AnatomyNotification.error(notificationApi, Strings.errorLoadingCalendar);
+    } catch (error) {
+      console.error('[CalendarChart] Error loading calendar data:', error);
+      // Use the network error handler for proper error messages
+      showNetworkError(notificationApi, error, Strings.errorLoadingCalendar);
     }
-  }, [siteId, getDateRange, selectedStatus, getCalendarData]);
+  }, [siteId, getDateRange, selectedStatus, getCalendarData, notificationApi]);
 
   useEffect(() => {
     fetchCalendarData();
@@ -163,12 +165,10 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
           setIsUpdating(false);
         }, 500);
 
-      } catch (_error) {
-        notificationApi.error({
-          message: Strings.error,
-          description: Strings.errorUpdatingDueDate,
-          duration: 3,
-        });
+      } catch (error) {
+        console.error('[CalendarChart] Error updating due date:', error);
+        // Use the network error handler for proper error messages
+        showNetworkError(notificationApi, error, Strings.errorUpdatingDueDate);
 
         // Reload calendar data even on error to ensure consistency
         setTimeout(async () => {

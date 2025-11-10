@@ -2,6 +2,7 @@ import type { NotificationInstance } from "antd/es/notification/interface";
 import { format } from "date-fns";
 import CryptoJS from "crypto-js";
 import Strings from "../../utils/localizations/Strings";
+import { isNetworkError, getNetworkErrorType, getErrorMessage, parseRTKError } from "../../utils/networkErrorHandler";
 
 /**
  * Notification types for the application
@@ -118,19 +119,37 @@ class AnatomyNotification {
    */
   static error(notification: NotificationInstance, valueOrText?: any, text?: string) {
     this.handlePrintError(valueOrText);
-    if (valueOrText?.data?.message) {
-      notification.open({
-        message: Strings.notificationErrorTitle || "Error!",
-        description: valueOrText.data.message,
-        type: "error",
+
+    // Check if it's a network error
+    if (isNetworkError(valueOrText)) {
+      const errorType = getNetworkErrorType(valueOrText);
+      const errorMessage = getErrorMessage(errorType);
+
+      notification.error({
+        message: Strings.error,
+        description: errorMessage,
+        duration: 5,
       });
-    } else {
-      notification.open({
-        message: Strings.notificationErrorTitle || "Error!",
-        description: `${valueOrText || Strings.errorOccurred || "Unknown error"} ${text || ""}`,
-        type: "error",
-      });
+      return;
     }
+
+    // Handle RTK Query errors and object errors
+    let description = '';
+
+    if (valueOrText?.data?.message) {
+      description = valueOrText.data.message;
+    } else if (typeof valueOrText === 'object' && valueOrText !== null) {
+      // Parse RTK error to avoid [object Object] messages
+      description = parseRTKError(valueOrText);
+    } else {
+      description = `${valueOrText || Strings.errorOccurred || "Unknown error"} ${text || ""}`.trim();
+    }
+
+    notification.error({
+      message: Strings.notificationErrorTitle || "Error!",
+      description,
+      duration: 4,
+    });
   }
 
   /**
