@@ -146,7 +146,7 @@ const cardReportsRoute = new Route(
   <CardReportsPage />,
   <BsBarChartLine />,
   Strings.dashboard
-);
+); // dasjdadsasdasdj 
 
 const cardReportDetailRoute = new Route(
   "Detalle del reporte",
@@ -226,7 +226,7 @@ const oplRoute = new Route(
   <OplPage />,
   <BsNodePlus />,
   Strings.cilt
-);
+); 
 
 const oplTypesRoute = new Route(
   Strings.oplTypesSB,
