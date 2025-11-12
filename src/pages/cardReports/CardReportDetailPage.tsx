@@ -6,6 +6,9 @@ import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { BsImages, BsCameraVideo, BsMusicPlayer } from "react-icons/bs";
+import { hasImages, hasVideos, hasAudios } from "../../utils/Extensions";
+import type { Evidences } from "../../data/card/card";
 
 const { Title: AntTitle, Text } = Typography;
 
@@ -24,10 +27,14 @@ interface CardDetail {
   preclassifierDescription?: string;
   preclassifier_code?: string;
   preclassifier_description?: string;
+  comments_at_card_creation?: string;
+  comments_at_card_provisional_solution?: string;
+  comments_at_card_definitive_solution?: string;
   component?: string;
   componente?: string;
   machine?: string;
   maquina?: string;
+  evidences?: Evidences[];
 }
 
 interface MachineRow {
@@ -37,6 +44,7 @@ interface MachineRow {
     [key: string]: {
       n: number;
       ids: number[];
+      preclassifiers?: string; // Format: "code1|desc1;code2|desc2"
     };
   };
   subtotal: number;
@@ -82,7 +90,7 @@ const CardReportDetailPage: React.FC = () => {
 
       result.forEach((r: any) => {
         const machineId = r.machine_id;
-        const label = r.comp_name; // Using comp_name directly (no mapping like in PHP)
+        const label = r.comp_name;
         const count = r.n_cards;
 
         if (!grouped[machineId]) {
@@ -95,7 +103,11 @@ const CardReportDetailPage: React.FC = () => {
         }
 
         if (!grouped[machineId].items[label]) {
-          grouped[machineId].items[label] = { n: 0, ids: [] };
+          grouped[machineId].items[label] = {
+            n: 0,
+            ids: [],
+            preclassifiers: r.preclassifiers
+          };
         }
 
         grouped[machineId].items[label].n += count;
@@ -172,25 +184,98 @@ const CardReportDetailPage: React.FC = () => {
     return <Tag color={mapped.color}>{mapped.text}</Tag>;
   };
 
+  const renderEvidenceIndicators = (evidences: Evidences[] = []) => {
+    const indicators: React.ReactElement[] = [];
+
+    if (hasImages(evidences)) {
+      indicators.push(
+        <Tag key="images" icon={<BsImages />} color="blue">
+          Imágenes
+        </Tag>
+      );
+    }
+    if (hasVideos(evidences)) {
+      indicators.push(
+        <Tag key="videos" icon={<BsCameraVideo />} color="purple">
+          Videos
+        </Tag>
+      );
+    }
+    if (hasAudios(evidences)) {
+      indicators.push(
+        <Tag key="audios" icon={<BsMusicPlayer />} color="green">
+          Audios
+        </Tag>
+      );
+    }
+
+    return indicators.length > 0 ? (
+      <Space wrap size={4}>
+        {indicators}
+      </Space>
+    ) : null;
+  };
+
   const expandedRowRender = (record: MachineRow) => {
     const items = Object.entries(record.items)
-      .map(([label, data]) => ({ label, n: data.n, ids: data.ids }))
+      .map(([label, data]) => ({
+        label,
+        n: data.n,
+        ids: data.ids,
+        preclassifiers: data.preclassifiers
+      }))
       .sort((a, b) => {
         const cmp = b.n - a.n;
         return cmp !== 0 ? cmp : a.label.localeCompare(b.label);
       });
 
     const columns = [
-      { title: Strings.components, dataIndex: "label", key: "label" },
+      {
+        title: Strings.components,
+        dataIndex: "label",
+        key: "label",
+        width: '30%'
+      },
+      {
+        title: "Preclasificador",
+        dataIndex: "preclassifiers",
+        key: "preclassifiers",
+        width: '35%',
+        render: (preclassifiers: string) => {
+          if (!preclassifiers) return <Text type="secondary">-</Text>;
+
+          // Parse preclassifiers: "code1|desc1;code2|desc2"
+          const preclassifierList = preclassifiers.split(';').map(p => {
+            const [code, desc] = p.split('|');
+            return { code: code.trim(), desc: desc.trim() };
+          }).filter(p => p.code || p.desc);
+
+          if (preclassifierList.length === 0) {
+            return <Text type="secondary">-</Text>;
+          }
+
+          return (
+            <Space direction="vertical" size={2}>
+              {preclassifierList.map((p, idx) => (
+                <Tag key={idx} color="blue" style={{ margin: 0 }}>
+                  {p.code && p.desc ? `${p.code} ${p.desc}` : p.code || p.desc}
+                </Tag>
+              ))}
+            </Space>
+          );
+        }
+      },
       {
         title: Strings.cards,
         dataIndex: "n",
         key: "n",
+        width: '15%',
         render: (value: number) => <Tag>{value}</Tag>,
       },
       {
         title: Strings.cardList,
         key: "action",
+        width: '20%',
         render: (_: any, item: any) => (
           <Button size="small" onClick={() => loadCardsByComponents(item.ids, item.label, record.maquina)}>
             {Strings.viewCards}
@@ -288,7 +373,7 @@ const CardReportDetailPage: React.FC = () => {
         placement="right"
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
-        width={600}
+        width={720}
         footer={
           <Space>
             <Text strong>{Strings.total}: {cardsList.length}</Text>
@@ -316,13 +401,19 @@ const CardReportDetailPage: React.FC = () => {
               const ident = `ID ${card.id} · site_card_id ${card.site_card_id ?? (card.siteCardId || '')} · level_machine_id ${card.level_machine_id ?? ''}`;
 
               // Preclassifier info
-              const preclassifier =
-                (card.preclassifier_code || card.preclassifierCode) || (card.preclassifier_description || card.preclassifierDescription)
-                  ? ` · ${card.preclassifier_code || card.preclassifierCode || ''} ${card.preclassifier_description || card.preclassifierDescription || ''}`
-                  : "";
+              const preclassifierCode = card.preclassifier_code || card.preclassifierCode || '';
+              const preclassifierDesc = card.preclassifier_description || card.preclassifierDescription || '';
+              const preclassifier = preclassifierCode || preclassifierDesc
+                ? `${preclassifierCode} ${preclassifierDesc}`.trim()
+                : "";
 
               // Creation date
               const creationDate = card.card_creation_date || card.cardCreationDate;
+
+              // Comments
+              const commentCreation = card.comments_at_card_creation;
+              const commentProvisional = card.comments_at_card_provisional_solution;
+              const commentDefinitive = card.comments_at_card_definitive_solution;
 
               return (
                 <List.Item>
@@ -334,14 +425,61 @@ const CardReportDetailPage: React.FC = () => {
                       </Space>
                     }
                     description={
-                      <Space direction="vertical" size={0}>
+                      <Space direction="vertical" size={4} style={{ width: '100%' }}>
                         <Text type="secondary" style={{ fontSize: 12 }}>
                           {ident}
                         </Text>
                         <Text type="secondary">
                           {card.cardTypeName || ""}
-                          {preclassifier}
                         </Text>
+                        {preclassifier && (
+                          <div style={{ padding: '4px 8px', background: '#f0f5ff', borderRadius: '4px' }}>
+                            <Text strong style={{ fontSize: 12, color: '#1890ff' }}>
+                              Preclasificador:
+                            </Text>
+                            <Text style={{ fontSize: 12, marginLeft: 6 }}>
+                              {preclassifier}
+                            </Text>
+                          </div>
+                        )}
+                        {card.evidences && card.evidences.length > 0 && (
+                          <div style={{ padding: '4px 8px', background: '#f9f0ff', borderRadius: '4px' }}>
+                            <Text strong style={{ fontSize: 12, color: '#722ed1', display: 'block', marginBottom: 4 }}>
+                              Evidencias:
+                            </Text>
+                            {renderEvidenceIndicators(card.evidences)}
+                          </div>
+                        )}
+                        {commentCreation && (
+                          <div style={{ padding: '4px 8px', background: '#fff7e6', borderRadius: '4px' }}>
+                            <Text strong style={{ fontSize: 12, color: '#fa8c16' }}>
+                              Comentario creación:
+                            </Text>
+                            <Text style={{ fontSize: 12, display: 'block', marginTop: 2 }}>
+                              {commentCreation}
+                            </Text>
+                          </div>
+                        )}
+                        {commentProvisional && (
+                          <div style={{ padding: '4px 8px', background: '#fcffe6', borderRadius: '4px' }}>
+                            <Text strong style={{ fontSize: 12, color: '#52c41a' }}>
+                              Comentario solución provisional:
+                            </Text>
+                            <Text style={{ fontSize: 12, display: 'block', marginTop: 2 }}>
+                              {commentProvisional}
+                            </Text>
+                          </div>
+                        )}
+                        {commentDefinitive && (
+                          <div style={{ padding: '4px 8px', background: '#f6ffed', borderRadius: '4px' }}>
+                            <Text strong style={{ fontSize: 12, color: '#237804' }}>
+                              Comentario solución definitiva:
+                            </Text>
+                            <Text style={{ fontSize: 12, display: 'block', marginTop: 2 }}>
+                              {commentDefinitive}
+                            </Text>
+                          </div>
+                        )}
                         <Text type="secondary" style={{ fontSize: 12 }}>
                           {creationDate
                             ? new Date(creationDate.replace(' ', 'T')).toLocaleString()
