@@ -58,14 +58,43 @@ function cumulative(data: number[]): number[] {
 const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading }) => {
   // Helper function to format date as DD/MM/YYYY
   const formatDate = (dateStr: string): string => {
+    if (!dateStr) return '';
+
     try {
-      const date = new Date(dateStr + 'T00:00:00'); // Add time to avoid timezone issues
+      // Handle multiple date formats
+      let date: Date;
+
+      // Check if it's already in ISO format (YYYY-MM-DD)
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        date = new Date(dateStr + 'T00:00:00');
+      }
+      // Check if it's in DD/MM/YYYY format
+      else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+        const [day, month, year] = dateStr.split('/');
+        date = new Date(`${year}-${month}-${day}T00:00:00`);
+      }
+      // Check if it's in MM/DD/YYYY format
+      else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+        date = new Date(dateStr + 'T00:00:00');
+      }
+      // Try to parse as is
+      else {
+        date = new Date(dateStr);
+      }
+
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date:', dateStr);
+        return dateStr; // Return original if invalid
+      }
+
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
-    } catch {
-      return dateStr;
+    } catch (error) {
+      console.warn('Error formatting date:', dateStr, error);
+      return dateStr; // Return original string on error
     }
   };
 
@@ -81,12 +110,15 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
       const fecha = row.fecha;
       const equipo = row.equipo || 'Sin equipo';
 
+      // Ensure total is a valid number
+      const total = typeof row.total === 'number' && !isNaN(row.total) ? row.total : 0;
+
       dateSet.add(fecha);
 
       if (!seriesByPosition[equipo]) {
         seriesByPosition[equipo] = {};
       }
-      seriesByPosition[equipo][fecha] = row.total;
+      seriesByPosition[equipo][fecha] = total;
     });
 
     // Sort dates
@@ -184,7 +216,10 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
         y: {
           beginAtZero: true,
           ticks: {
-            callback: (value: any) => Number(value).toLocaleString(),
+            callback: (value: any) => {
+              const num = Number(value);
+              return !isNaN(num) && isFinite(num) ? num.toLocaleString() : '0';
+            },
           },
           title: {
             display: true,
@@ -196,6 +231,11 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
             autoSkip: true,
             maxRotation: 45,
             minRotation: 0,
+            callback: (_value: any, index: number, ticks: any) => {
+              // Get the label and ensure it's valid
+              const label = ticks[index]?.label;
+              return label && label !== 'NaN' ? label : '';
+            },
           },
         },
       },
