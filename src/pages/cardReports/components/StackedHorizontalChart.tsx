@@ -93,14 +93,6 @@ const createRowTotalsPlugin = () => ({
 });
 
 const StackedHorizontalChart: React.FC<StackedHorizontalChartProps> = ({ data, levelNames }) => {
-  // Create plugin instances for this chart only
-  const plugins = useMemo(() => {
-    return [
-      createGroupTitlePlugin(new Set<string>()),
-      createRowTotalsPlugin()
-    ];
-  }, []);
-
   const { labels, datasets, groupRows } = useMemo(() => {
     if (!data || data.length === 0) {
       return { labels: [] as string[], datasets: [], groupRows: new Set<string>() };
@@ -204,21 +196,18 @@ const StackedHorizontalChart: React.FC<StackedHorizontalChartProps> = ({ data, l
         return rowMeta[lab][l6] || null;
       });
 
+      // Pre-calculate colors to avoid function calls on every render
+      const bgColor = palette[l6] || '#0dcaf0';
+      const bgColors = rowValues.map(v => v && v > 0 ? bgColor : 'rgba(0,0,0,0)');
+      const borderColors = rowValues.map(v => v && v > 0 ? '#ffffff' : 'rgba(0,0,0,0)');
+      const borderWidths = rowValues.map(v => v && v > 0 ? 1 : 0);
+
       return {
         label: l6,
         data: rowValues,
-        backgroundColor: (ctx: any) => {
-          const value = ctx.raw;
-          return value && value > 0 ? (palette[l6] || '#0dcaf0') : 'rgba(0,0,0,0)';
-        },
-        borderColor: (ctx: any) => {
-          const value = ctx.raw;
-          return value && value > 0 ? '#ffffff' : 'rgba(0,0,0,0)';
-        },
-        borderWidth: (ctx: any) => {
-          const value = ctx.raw;
-          return value && value > 0 ? 1 : 0;
-        },
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: borderWidths,
         barThickness: 18,
         categoryPercentage: 0.78,
       };
@@ -227,12 +216,11 @@ const StackedHorizontalChart: React.FC<StackedHorizontalChartProps> = ({ data, l
     return { labels: finalLabels, datasets: finalDatasets, groupRows: groupRowsSet };
   }, [data]);
 
-  // Update plugins with current groupRows
-  useMemo(() => {
-    if (plugins[0]) {
-      plugins[0] = createGroupTitlePlugin(groupRows);
-    }
-  }, [groupRows, plugins]);
+  // Memoize plugins only when groupRows changes
+  const plugins = useMemo(() => [
+    createGroupTitlePlugin(groupRows),
+    createRowTotalsPlugin()
+  ], [groupRows]);
 
   const options: ChartOptions<'bar'> = useMemo(() => ({
     indexAxis: 'y',
