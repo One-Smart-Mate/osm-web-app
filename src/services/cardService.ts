@@ -360,6 +360,7 @@ export const cardService = apiSlice.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: any) => response?.data || response,
+      keepUnusedDataFor: 600, // Cache for 10 minutes (charts config rarely changes)
     }),
     getChartsLevels: builder.query<
       Array<{
@@ -380,6 +381,7 @@ export const cardService = apiSlice.injectEndpoints({
         method: "GET",
       }),
       transformResponse: (response: any) => response?.data || response,
+      keepUnusedDataFor: 600, // Cache for 10 minutes (levels config rarely changes)
     }),
     // Time-series data for card creation by position
     // Changed from mutation to query for automatic caching
@@ -437,5 +439,6 @@ export const {
   useLazyGetCardReportStackedQuery, // Changed from mutation to lazy query
   useGetChartsQuery,
   useGetChartsLevelsQuery,
+  usePrefetch, // RTK Query prefetch hook
   useLazyGetCardTimeSeriesQuery, // Changed from mutation to lazy query
 } = cardService;

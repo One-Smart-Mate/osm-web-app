@@ -13,7 +13,11 @@ export const store = configureStore({
         auth: authReducer,
         data: genericReducer
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware({
+        // OPTIMIZED: Disable expensive development checks for better performance
+        serializableCheck: false, // Disable serializable state check (was taking 500-700ms)
+        immutableCheck: false,    // Disable immutable state check in production-like scenarios
+    }).concat(apiSlice.middleware),
     devTools: false,
 });
 

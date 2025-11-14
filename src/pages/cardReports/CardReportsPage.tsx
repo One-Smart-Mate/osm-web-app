@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useLazyGetCardReportGroupedQuery, useLazyGetCardReportStackedQuery, useGetChartsQuery, useGetChartsLevelsQuery, useLazyGetCardTimeSeriesQuery } from "../../services/cardService";
+import { useLazyGetCardReportGroupedQuery, useLazyGetCardReportStackedQuery, useGetChartsQuery, useGetChartsLevelsQuery, useLazyGetCardTimeSeriesQuery, usePrefetch } from "../../services/cardService";
 import StackedHorizontalChart from "./components/StackedHorizontalChart";
 import TimeSeriesChart from "./components/TimeSeriesChart";
 import { navigateWithState } from "../../routes/RoutesExtensions";
@@ -49,25 +49,48 @@ const CardReportsPage: React.FC = () => {
   const [getCardReportStacked, { isLoading: isLoadingStacked, isFetching: isFetchingStacked }] = useLazyGetCardReportStackedQuery();
   const [getCardTimeSeries, { isLoading: isLoadingTimeSeries, isFetching: isFetchingTimeSeries }] = useLazyGetCardTimeSeriesQuery();
 
-  // Load charts for the site
-  const { data: chartsData, isLoading: isLoadingCharts } = useGetChartsQuery(
+  // Prefetch hook for loading chart levels in advance
+  const prefetchChartLevels = usePrefetch('getChartsLevels');
+
+  // Track loading start time for performance monitoring
+  const [chartsLoadStart] = useState(() => performance.now());
+
+  // Load charts for the site - using optimized defaults from apiSlice
+  const { data: chartsData, isLoading: isLoadingCharts, error: chartsError } = useGetChartsQuery(
     { siteId: location.state?.siteId },
     {
       skip: !location.state?.siteId,
-      refetchOnMountOrArgChange: false,
-      refetchOnFocus: false,
-      refetchOnReconnect: false,
+      // Removed explicit refetch settings - using optimized apiSlice defaults
     }
   );
 
+  // Log performance when charts finish loading
+  useEffect(() => {
+    if (!isLoadingCharts && chartsData) {
+      const loadTime = performance.now() - chartsLoadStart;
+      console.log(`[Performance] Charts loaded in ${loadTime.toFixed(0)}ms`);
+    }
+  }, [isLoadingCharts, chartsData, chartsLoadStart]);
+
   // Ensure charts is always an array
   const charts: Chart[] = useMemo(() => {
-    return Array.isArray(chartsData)
+    const result = Array.isArray(chartsData)
       ? chartsData
       : (chartsData && Array.isArray((chartsData as any).data))
         ? (chartsData as any).data
         : [];
-  }, [chartsData]);
+    console.log("[CardReports] Charts loaded:", result.length, "charts");
+
+    // OPTIMIZED: Prefetch levels for ALL charts as soon as charts load
+    if (result.length > 0) {
+      console.log("[CardReports] Prefetching levels for all", result.length, "charts...");
+      result.forEach((chart: Chart) => {
+        prefetchChartLevels({ chartId: chart.id });
+      });
+    }
+
+    return result;
+  }, [chartsData, prefetchChartLevels]);
 
   const [chartType, setChartType] = useState<"pie" | "barV" | "barH" | "line">("pie");
   const [reportData, setReportData] = useState<any[]>([]);
@@ -103,24 +126,44 @@ const CardReportsPage: React.FC = () => {
     };
   });
 
-  // Load charts_levels for selected chart
-  const { data: chartsLevelsData, isLoading: isLoadingLevels } = useGetChartsLevelsQuery(
+  // Track loading start time for levels
+  const [levelsLoadStart, setLevelsLoadStart] = useState<number>(0);
+
+  // Load charts_levels for selected chart - using optimized defaults from apiSlice
+  const { data: chartsLevelsData, isLoading: isLoadingLevels, error: levelsError } = useGetChartsLevelsQuery(
     { chartId: selectedChartId! },
     {
       skip: !selectedChartId,
-      refetchOnMountOrArgChange: false,
-      refetchOnFocus: false,
-      refetchOnReconnect: false,
+      // Removed explicit refetch settings - using optimized apiSlice defaults
     }
   );
 
+  // Track when levels start loading
+  useEffect(() => {
+    if (isLoadingLevels && levelsLoadStart === 0) {
+      setLevelsLoadStart(performance.now());
+      console.log(`[Performance] Started loading levels for chart ${selectedChartId}`);
+    }
+  }, [isLoadingLevels, selectedChartId, levelsLoadStart]);
+
+  // Log performance when levels finish loading
+  useEffect(() => {
+    if (!isLoadingLevels && chartsLevelsData && levelsLoadStart > 0) {
+      const loadTime = performance.now() - levelsLoadStart;
+      console.log(`[Performance] Levels loaded in ${loadTime.toFixed(0)}ms`);
+      setLevelsLoadStart(0);
+    }
+  }, [isLoadingLevels, chartsLevelsData, levelsLoadStart]);
+
   // Ensure chartsLevels is always an array - handle both direct array and {data: array} response
   const chartsLevels = useMemo(() => {
-    return Array.isArray(chartsLevelsData)
+    const result = Array.isArray(chartsLevelsData)
       ? chartsLevelsData
       : (chartsLevelsData && Array.isArray((chartsLevelsData as any).data))
         ? (chartsLevelsData as any).data
         : [];
+    console.log("[CardReports] Chart levels loaded:", result.length, "levels");
+    return result;
   }, [chartsLevelsData]);
 
   // Separate grouping and target levels - memoized to avoid recalculation
@@ -142,10 +185,28 @@ const CardReportsPage: React.FC = () => {
     return charts.find(c => c.id === selectedChartId);
   }, [charts, selectedChartId]);
 
+  // Handle charts loading errors
+  useEffect(() => {
+    if (chartsError) {
+      console.error("Error loading charts:", chartsError);
+      message.error("Error al cargar las gráficas. Por favor recarga la página.");
+    }
+  }, [chartsError]);
+
+  // Handle levels loading errors
+  useEffect(() => {
+    if (levelsError) {
+      console.error("Error loading chart levels:", levelsError);
+      message.error("Error al cargar los niveles de la gráfica.");
+    }
+  }, [levelsError]);
+
   // Initialize: Select first chart when charts load and set initial dates
   useEffect(() => {
-    if (charts.length > 0 && !selectedChartId) {
+    // OPTIMIZED: Only run once when charts load (avoid running on every length change)
+    if (charts.length > 0 && !selectedChartId && !isLoadingCharts) {
       const firstChart = charts[0];
+      console.log("[CardReports] Auto-selecting first chart:", firstChart);
       setSelectedChartId(firstChart.id);
       form.setFieldsValue({
         chartId: firstChart.id,
@@ -154,7 +215,7 @@ const CardReportsPage: React.FC = () => {
         statusFilter: filters.statusFilter
       });
     }
-  }, [charts.length, selectedChartId, form]);
+  }, [charts.length, selectedChartId, isLoadingCharts, form]);
 
   // When chart changes, update rootNode
   useEffect(() => {
@@ -301,13 +362,26 @@ const CardReportsPage: React.FC = () => {
       !isLoadingLevels &&
       !isLoadingReport; // Don't auto-load if already loading
 
+    console.log("[CardReports] Auto-load check:", {
+      selectedChartId,
+      rootNode: filters.rootNode,
+      groupingLevelsCount: groupingLevels.length,
+      targetLevelsCount: targetLevels.length,
+      hasAutoLoaded,
+      isLoadingCharts,
+      isLoadingLevels,
+      isLoadingReport,
+      isReady
+    });
+
     if (isReady) {
-      // Add a delay to ensure the page is fully rendered
+      console.log("[CardReports] Auto-loading data in 500ms...");
+      // OPTIMIZED: Reduced delay from 1000ms to 500ms for faster initial load
       const timer = setTimeout(() => {
         setHasAutoLoaded(true);
         // Submit the form with current values
         form.submit();
-      }, 1000); // 1 second delay to let the page settle
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -774,7 +848,10 @@ const CardReportsPage: React.FC = () => {
               <div style={{ height: 400, position: "relative" }}>
                 {(isLoadingReport || isFetchingReport) ? (
                   <div style={{ textAlign: "center", padding: "80px 20px" }}>
-                    <Spin size="large" tip={Strings.loading || "Cargando..."} />
+                    <Spin size="large" />
+                    <div style={{ marginTop: 16, color: '#1890ff', fontWeight: 500 }}>
+                      Cargando datos del gráfico principal...
+                    </div>
                   </div>
                 ) : reportData.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>
@@ -797,7 +874,10 @@ const CardReportsPage: React.FC = () => {
             <Card title={Strings.details} size="small">
               {(isLoadingReport || isFetchingReport) ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                  <Spin size="large" tip={Strings.loading || "Cargando..."} />
+                  <Spin size="large" />
+                  <div style={{ marginTop: 16, color: '#1890ff', fontWeight: 500 }}>
+                    Cargando detalles...
+                  </div>
                 </div>
               ) : reportData.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "20px", color: "#6c757d" }}>
@@ -846,7 +926,10 @@ const CardReportsPage: React.FC = () => {
         >
           {(isLoadingStacked || isFetchingStacked) ? (
             <div style={{ textAlign: "center", padding: "80px 20px" }}>
-              <Spin size="large" tip={Strings.loading || "Cargando..."} />
+              <Spin size="large" />
+              <div style={{ marginTop: 16, color: '#1890ff', fontWeight: 500 }}>
+                Cargando gráfico apilado...
+              </div>
             </div>
           ) : !stackedViewAvailable ? (
             <div style={{ textAlign: "center", padding: "80px 20px", color: "#6c757d" }}>

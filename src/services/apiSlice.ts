@@ -27,7 +27,8 @@ export const apiSlice = createApi({
   baseQuery: baseQueryWithRetry,
   tagTypes: ["User", "OplLevel"],
   endpoints: (_) => ({}),
-  refetchOnFocus: true, // Refetch data when the app regains focus
-  refetchOnReconnect: true, // Refetch when network reconnects
-  refetchOnMountOrArgChange: 30, // Refetch stale data (older than 30 seconds) on component mount
+  refetchOnFocus: false, // OPTIMIZED: Disable refetch on tab focus (prevents unnecessary reloads)
+  refetchOnReconnect: true, // Keep refetch when network reconnects (important for reliability)
+  refetchOnMountOrArgChange: 60, // OPTIMIZED: Increased to 60 seconds (was 30) for better caching
+  keepUnusedDataFor: 300, // OPTIMIZED: Default cache duration 5 minutes for all queries
 });
