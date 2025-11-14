@@ -227,9 +227,10 @@ const CardReportsPage: React.FC = () => {
         setStackedData(stackedResult || []);
       }
 
-      // 3. Time series data last
+      // 3. Time series data last - now with rootNode filter for better performance
       const timeSeriesParams = {
         siteId: location.state?.siteId,
+        rootNode: params.rootNode, // Filter by tree for faster queries
         dateStart: params.dateStart,
         dateEnd: params.dateEnd,
       };
@@ -246,6 +247,7 @@ const CardReportsPage: React.FC = () => {
     try {
       const params = {
         siteId: location.state?.siteId,
+        rootNode: filters.rootNode, // Filter by tree for faster queries
         dateStart: filters.dateStart,
         dateEnd: filters.dateEnd,
       };
