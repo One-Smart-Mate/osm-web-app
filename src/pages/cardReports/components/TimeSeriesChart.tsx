@@ -265,4 +265,5 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
   );
 };
 
-export default TimeSeriesChart;
+// Memoize component to prevent unnecessary re-renders
+export default React.memo(TimeSeriesChart);

@@ -228,7 +228,8 @@ export const cardService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CardInterface }) => response.data,
     }),
     // Card Reports - Advanced Analytics
-    getCardReportGrouped: builder.mutation<
+    // Changed from mutation to query for automatic caching
+    getCardReportGrouped: builder.query<
       Array<{
         grouping_id: number;
         level_name: string;
@@ -250,6 +251,7 @@ export const cardService = apiSlice.injectEndpoints({
         body: params,
       }),
       transformResponse: (response: { data: any[] }) => response.data,
+      keepUnusedDataFor: 300, // Cache for 5 minutes
     }),
     getCardReportDetails: builder.mutation<
       Array<{
@@ -308,7 +310,8 @@ export const cardService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CardInterface[] }) => response.data,
     }),
     // Card Report Stacked - for horizontal stacked bar chart
-    getCardReportStacked: builder.mutation<
+    // Changed from mutation to query for automatic caching
+    getCardReportStacked: builder.query<
       Array<{
         l3_id: number;
         l3_name: string;
@@ -335,6 +338,7 @@ export const cardService = apiSlice.injectEndpoints({
         body: params,
       }),
       transformResponse: (response: { data: any[] }) => response.data,
+      keepUnusedDataFor: 300, // Cache for 5 minutes
     }),
     // Charts configuration endpoints - matching PHP demo structure
     getCharts: builder.query<
@@ -378,7 +382,8 @@ export const cardService = apiSlice.injectEndpoints({
       transformResponse: (response: any) => response?.data || response,
     }),
     // Time-series data for card creation by position
-    getCardTimeSeries: builder.mutation<
+    // Changed from mutation to query for automatic caching
+    getCardTimeSeries: builder.query<
       Array<{
         fecha: string;
         equipo: string;
@@ -389,6 +394,7 @@ export const cardService = apiSlice.injectEndpoints({
       }>,
       {
         siteId: number;
+        rootNode?: number; // Added for tree filtering
         dateStart: string;
         dateEnd: string;
         positionIds?: number[];
@@ -401,6 +407,7 @@ export const cardService = apiSlice.injectEndpoints({
         body: params,
       }),
       transformResponse: (response: { data: any[] }) => response.data,
+      keepUnusedDataFor: 300, // Cache for 5 minutes
     }),
   }),
 });
@@ -423,12 +430,12 @@ export const {
   useCreateCardMutation,
   useUpdateDefinitiveSolutionMutation,
   useUpdateProvisionalSolutionMutation,
-  useGetCardReportGroupedMutation,
+  useLazyGetCardReportGroupedQuery, // Changed from mutation to lazy query
   useGetCardReportDetailsMutation,
   useGetCardsByMachineMutation,
   useGetCardsByComponentsMutation,
-  useGetCardReportStackedMutation,
+  useLazyGetCardReportStackedQuery, // Changed from mutation to lazy query
   useGetChartsQuery,
   useGetChartsLevelsQuery,
-  useGetCardTimeSeriesMutation,
+  useLazyGetCardTimeSeriesQuery, // Changed from mutation to lazy query
 } = cardService;

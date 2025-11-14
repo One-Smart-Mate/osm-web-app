@@ -297,4 +297,5 @@ const StackedHorizontalChart: React.FC<StackedHorizontalChartProps> = ({ data, l
   );
 };
 
-export default StackedHorizontalChart;
+// Memoize component to prevent unnecessary re-renders
+export default React.memo(StackedHorizontalChart);

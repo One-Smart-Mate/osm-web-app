@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useGetCardReportGroupedMutation, useGetCardReportStackedMutation, useGetChartsQuery, useGetChartsLevelsQuery, useGetCardTimeSeriesMutation } from "../../services/cardService";
+import { useLazyGetCardReportGroupedQuery, useLazyGetCardReportStackedQuery, useGetChartsQuery, useGetChartsLevelsQuery, useLazyGetCardTimeSeriesQuery } from "../../services/cardService";
 import StackedHorizontalChart from "./components/StackedHorizontalChart";
 import TimeSeriesChart from "./components/TimeSeriesChart";
 import { navigateWithState } from "../../routes/RoutesExtensions";
@@ -44,9 +44,10 @@ const CardReportsPage: React.FC = () => {
   const navigate = navigateWithState();
   const [form] = Form.useForm();
 
-  const [getCardReportGrouped, { isLoading: isLoadingReport }] = useGetCardReportGroupedMutation();
-  const [getCardReportStacked, { isLoading: isLoadingStacked }] = useGetCardReportStackedMutation();
-  const [getCardTimeSeries, { isLoading: isLoadingTimeSeries }] = useGetCardTimeSeriesMutation();
+  // Changed to lazy queries for better caching and parallel loading
+  const [getCardReportGrouped, { isLoading: isLoadingReport, isFetching: isFetchingReport }] = useLazyGetCardReportGroupedQuery();
+  const [getCardReportStacked, { isLoading: isLoadingStacked, isFetching: isFetchingStacked }] = useLazyGetCardReportStackedQuery();
+  const [getCardTimeSeries, { isLoading: isLoadingTimeSeries, isFetching: isFetchingTimeSeries }] = useLazyGetCardTimeSeriesQuery();
 
   // Load charts for the site
   const { data: chartsData, isLoading: isLoadingCharts } = useGetChartsQuery(
@@ -206,10 +207,15 @@ const CardReportsPage: React.FC = () => {
 
       setFilters(params);
 
-      // Fetch reports sequentially to avoid overloading
-      // 1. Normal grouped report first (main chart)
-      const reportResult = await getCardReportGrouped(params).unwrap();
-      setReportData(reportResult || []);
+      // OPTIMIZED: Load all 3 charts in PARALLEL using Promise.allSettled
+      // This reduces total load time significantly compared to sequential loading
+      const promises: Promise<{ type: string; data: any[] }>[] = [];
+
+      // 1. Normal grouped report (main chart) - always load
+      promises.push(
+        getCardReportGrouped(params).unwrap()
+          .then(result => ({ type: 'grouped', data: result || [] }))
+      );
 
       // 2. Stacked data if available
       if (stackedViewAvailable && groupingLevels.length >= 2) {
@@ -223,19 +229,42 @@ const CardReportsPage: React.FC = () => {
           dateEnd: params.dateEnd,
           statusFilter: params.statusFilter,
         };
-        const stackedResult = await getCardReportStacked(stackedParams).unwrap();
-        setStackedData(stackedResult || []);
+        promises.push(
+          getCardReportStacked(stackedParams).unwrap()
+            .then(result => ({ type: 'stacked', data: result || [] }))
+        );
       }
 
-      // 3. Time series data last - now with rootNode filter for better performance
+      // 3. Time series data - with rootNode filter for better performance
       const timeSeriesParams = {
         siteId: location.state?.siteId,
         rootNode: params.rootNode, // Filter by tree for faster queries
         dateStart: params.dateStart,
         dateEnd: params.dateEnd,
       };
-      const timeSeriesResult = await getCardTimeSeries(timeSeriesParams).unwrap();
-      setTimeSeriesData(timeSeriesResult || []);
+      promises.push(
+        getCardTimeSeries(timeSeriesParams).unwrap()
+          .then(result => ({ type: 'timeseries', data: result || [] }))
+      );
+
+      // Wait for all requests to complete (even if some fail)
+      const results = await Promise.allSettled(promises);
+
+      // Process results
+      results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+          const { type, data } = result.value as any;
+          if (type === 'grouped') {
+            setReportData(data);
+          } else if (type === 'stacked') {
+            setStackedData(data);
+          } else if (type === 'timeseries') {
+            setTimeSeriesData(data);
+          }
+        } else {
+          console.error(`Error loading ${promises[index]}:`, result.reason);
+        }
+      });
 
     } catch (error: any) {
       console.error("Error fetching report:", error);
@@ -680,7 +709,7 @@ const CardReportsPage: React.FC = () => {
 
             <Col xs={24} sm={24} md={6} lg={4}>
               <Form.Item label=" ">
-                <Button type="primary" htmlType="submit" loading={isLoadingReport || isLoadingStacked} block>
+                <Button type="primary" htmlType="submit" loading={isLoadingReport || isFetchingReport || isLoadingStacked || isFetchingStacked} block>
                   {Strings.generateReport}
                 </Button>
               </Form.Item>
@@ -743,7 +772,7 @@ const CardReportsPage: React.FC = () => {
               }
             >
               <div style={{ height: 400, position: "relative" }}>
-                {isLoadingReport ? (
+                {(isLoadingReport || isFetchingReport) ? (
                   <div style={{ textAlign: "center", padding: "80px 20px" }}>
                     <Spin size="large" tip={Strings.loading || "Cargando..."} />
                   </div>
@@ -766,7 +795,7 @@ const CardReportsPage: React.FC = () => {
 
           <Col xs={24} lg={12}>
             <Card title={Strings.details} size="small">
-              {isLoadingReport ? (
+              {(isLoadingReport || isFetchingReport) ? (
                 <div style={{ textAlign: "center", padding: "20px" }}>
                   <Spin size="large" tip={Strings.loading || "Cargando..."} />
                 </div>
@@ -815,7 +844,7 @@ const CardReportsPage: React.FC = () => {
             )
           }
         >
-          {isLoadingStacked ? (
+          {(isLoadingStacked || isFetchingStacked) ? (
             <div style={{ textAlign: "center", padding: "80px 20px" }}>
               <Spin size="large" tip={Strings.loading || "Cargando..."} />
             </div>
@@ -862,7 +891,7 @@ const CardReportsPage: React.FC = () => {
                   type="primary"
                   size="small"
                   onClick={handleLoadTimeSeries}
-                  loading={isLoadingTimeSeries}
+                  loading={isLoadingTimeSeries || isFetchingTimeSeries}
                   className="mr-2"
                 >
                   {Strings.loadTimeSeries}
@@ -878,7 +907,7 @@ const CardReportsPage: React.FC = () => {
                 <TimeSeriesChart
                   data={timeSeriesData}
                   mode={timeSeriesMode}
-                  isLoading={isLoadingTimeSeries}
+                  isLoading={isLoadingTimeSeries || isFetchingTimeSeries}
                 />
               </ChartExpander>
             )
