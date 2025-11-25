@@ -140,14 +140,14 @@ const TagsPageOptimized = () => {
       // Backend now handles all role-based filtering via myCards and userId filters
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {
-        cards: response.data,
+        cards: response.cards,
         total: response.total,
         totalPages: response.totalPages,
         hasMore: response.hasMore,
       });
 
       setLoadingProgress(100);
-      setData(response.data);
+      setData(response.cards);
       setTotal(response.total);
       setCurrentPage(page);
     } catch (error) {
