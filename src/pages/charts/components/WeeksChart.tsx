@@ -62,8 +62,9 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
       // If filters are applied, get all cards and calculate in frontend
       console.log('WeeksChart - Getting all cards for frontend filtering');
       const cardsResponse = await getCards({ siteId }).unwrap();
-      setAllCards(cardsResponse);
-      console.log('WeeksChart - All cards loaded:', cardsResponse.length);
+      const cards = cardsResponse ?? [];
+      setAllCards(cards);
+      console.log('WeeksChart - All cards loaded:', cards.length);
       
     } catch (error) {
       console.error('Error fetching weeks chart data:', error);
@@ -81,7 +82,7 @@ const WeeksChart = ({ siteId, startDate, endDate, cardTypeName, status }: WeeksC
     }
 
     // If filters are applied but we don't have cards data yet, return empty
-    if (!allCards.length) {
+    if (!allCards || !Array.isArray(allCards) || allCards.length === 0) {
       return [];
     }
 
