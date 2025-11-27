@@ -23,11 +23,12 @@ interface FastPasswordResponse {
 // Paginated cards response interface
 interface PaginatedCardsResponse {
   cards: CardInterface[];
+  data?: CardInterface[]; // Legacy: some endpoints use 'data' instead of 'cards'
   total: number;
   page: number;
   limit: number;
-  totalPages: number;
-  hasMore: boolean;
+  totalPages?: number;
+  hasMore?: boolean;
 }
 
 // Filters for paginated query
@@ -63,7 +64,7 @@ export const cardService = apiSlice.injectEndpoints({
     }),
     getCards: builder.mutation<CardInterface[], { siteId: string; page?: number; limit?: number }>({
       query: ({ siteId, page = 1, limit = 999999 }) => `/card/all/${siteId}?page=${page}&limit=${limit}`,
-      transformResponse: (response: { data: PaginatedCardsResponse }) => response.data.cards,
+      transformResponse: (response: { data: PaginatedCardsResponse }) => response.data.data ?? response.data.cards ?? [],
     }),
     getCardsPaginated: builder.mutation<
       PaginatedCardsResponse,
