@@ -27,8 +27,8 @@ interface PaginatedCardsResponse {
   total: number;
   page: number;
   limit: number;
-  totalPages?: number;
-  hasMore?: boolean;
+  totalPages: number;
+  hasMore: boolean;
 }
 
 // Filters for paginated query
