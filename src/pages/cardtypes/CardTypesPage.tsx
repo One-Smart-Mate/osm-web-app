@@ -17,6 +17,7 @@ import CardTypeDetails from "./components/CardTypeDetails";
 import PreclassifierDetails from "./components/preclassifier/PreclassifierDetails";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import CardTypeForm, { CardTypeFormType } from "./components/CardTypeForm";
 import PreclassifierForm, {
   PreclassifierFormType,
@@ -719,7 +720,8 @@ const CardTypesPage = () => {
           <div ref={containerRef} className="relative flex-1 overflow-hidden">
             <>
               {/* Toggle expand/collapse button */}
-              <div className="absolute top-4 right-4 z-10">
+              <div className="absolute top-4 right-4 z-10 flex gap-2">
+                <RefreshButton onRefresh={() => handleLoadData(location.state.siteId)} isLoading={loading} />
                 <Button
                   onClick={toggleAllNodes}
                   type={isTreeExpanded ? "primary" : "default"}

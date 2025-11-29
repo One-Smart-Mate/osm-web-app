@@ -8,6 +8,7 @@ import PaginatedList from "../components/PaginatedList";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import PriorityForm, { PriorityFormType } from "./components/PriorityForm";
 import PriorityCard from "./components/PriorityCard";
 
@@ -78,6 +79,9 @@ const PrioritiesPage = () => {
       isLoading={isLoading}
       content={
         <div>
+          <div className="flex justify-end mb-2">
+            <RefreshButton onRefresh={handleGetPriorities} isLoading={isLoading} />
+          </div>
           <PaginatedList
             className="no-scrollbar"
             dataSource={data}

@@ -1,7 +1,8 @@
 import React from "react";
 import PageTitle from "../components/PageTitle";
-import { Button, Input, Space } from "antd";
+import { Button, Input, Space, Tooltip } from "antd";
 import { IoIosSearch } from "react-icons/io";
+import { ReloadOutlined } from "@ant-design/icons";
 import Strings from "../../utils/localizations/Strings";
 import Loading from "../components/Loading";
 import BackButton from "../components/BackButton";
@@ -12,15 +13,17 @@ interface MainContainerProps {
   content: React.ReactNode;
   enableSearch?: boolean;
   enableCreateButton?: boolean;
+  enableRefreshButton?: boolean;
   isLoading?: boolean;
   enableBackButton?: boolean;
   createButtonComponent?: React.ReactElement,
   onCreateButtonClick?: () => void;
+  onRefresh?: () => void;
   onSearchChange?: (_value: string) => void;
   disableContentScroll?: boolean;
 }
 
-const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableBackButton ,onCreateButtonClick, onSearchChange, isLoading, createButtonComponent, disableContentScroll }) => {
+const MainContainer: React.FC<MainContainerProps> = ({ title, description, content, enableSearch, enableCreateButton, enableRefreshButton, enableBackButton, onCreateButtonClick, onRefresh, onSearchChange, isLoading, createButtonComponent, disableContentScroll }) => {
     return (
     <div>
         {enableBackButton && <BackButton />}
@@ -44,15 +47,26 @@ const MainContainer: React.FC<MainContainerProps> = ({ title, description, conte
                 </Space>
               )}
             </div>
-            {enableCreateButton && <div className="flex mb-1 md:mb-0 md:justify-end w-full md:w-auto">
-              {createButtonComponent ?? <Button
-                onClick={onCreateButtonClick}
-                className="w-full md:w-auto"
-                type="primary"
-              >
-                {Strings.create}
-              </Button>}
-            </div>}
+            <div className="flex gap-2 mb-1 md:mb-0 md:justify-end w-full md:w-auto">
+              {enableRefreshButton && (
+                <Tooltip title={Strings.refresh}>
+                  <Button
+                    onClick={onRefresh}
+                    icon={<ReloadOutlined spin={isLoading} />}
+                    loading={isLoading}
+                  />
+                </Tooltip>
+              )}
+              {enableCreateButton && (
+                createButtonComponent ?? <Button
+                  onClick={onCreateButtonClick}
+                  className="w-full md:w-auto"
+                  type="primary"
+                >
+                  {Strings.create}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

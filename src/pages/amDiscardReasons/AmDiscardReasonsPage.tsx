@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 import PaginatedList from "../components/PaginatedList";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import AmDiscardReasonForm, { AmDiscardReasonFormType } from "./components/AmDiscardReasonForm";
 import AmDiscardReasonCard from "./components/AmDiscardReasonCard";
 
@@ -73,6 +74,9 @@ const AmDiscardReasonsPage = () => {
       isLoading={isLoading}
       content={
         <div>
+          <div className="flex justify-end mb-2">
+            <RefreshButton onRefresh={handleRefresh} isLoading={isLoading} />
+          </div>
           <PaginatedList
             className="no-scrollbar"
             dataSource={data}

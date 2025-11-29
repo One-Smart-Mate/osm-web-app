@@ -18,6 +18,7 @@ import { UnauthorizedRoute } from "../../utils/Routes";
 import Constants from "../../utils/Constants";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import { theme } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { LevelCache } from "../../utils/levelCache";
@@ -826,7 +827,8 @@ const LevelsReadOnlyLazy = () => {
             ) : (
               <>
                 {/* Expand all nodes */}
-                <div className="absolute top-4 right-4 z-10">
+                <div className="absolute top-4 right-4 z-10 flex gap-2">
+                  <RefreshButton onRefresh={handleGetLevels} isLoading={isLoading} />
                   <Button
                     type={isTreeExpanded ? "default" : "primary"}
                     onClick={toggleAllNodes}

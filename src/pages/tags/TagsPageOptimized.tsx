@@ -6,6 +6,7 @@ import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import { useDebounce } from "use-debounce";
 import { handleErrorNotification } from "../../utils/Notifications";
 import TagCard from "./components/TagCard";
@@ -256,6 +257,10 @@ const TagsPageOptimized = () => {
               )}
 
               <div style={{ display: 'flex', gap: '8px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}>
+                <RefreshButton
+                  onRefresh={() => handleGetCards(1)}
+                  isLoading={isLoading}
+                />
                 {/* Toggle button for Mechanics and other roles (NOT for Operators) */}
                 {userRole !== UserRoles._UNDEFINED && userRole !== UserRoles._OPERATOR && (
                   <Button

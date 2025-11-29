@@ -16,6 +16,7 @@ import {
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 import SiteForm, { SiteFormType } from "./components/SiteForm";
 import SiteCard from "./components/SiteCard";
@@ -111,6 +112,9 @@ const SitesPage = () => {
         }
         content={
           <div>
+            <div className="flex justify-end mb-2">
+              <RefreshButton onRefresh={handleGetSites} isLoading={isLoading} />
+            </div>
             <PaginatedList
               className="no-scrollbar"
               dataSource={filteredData}

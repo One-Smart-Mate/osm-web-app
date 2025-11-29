@@ -17,6 +17,7 @@ import { Position } from "../../data/postiions/positions";
 import Strings from "../../utils/localizations/Strings";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 
 const PositionsPage = () => {
@@ -140,6 +141,9 @@ const PositionsPage = () => {
       isLoading={isLoadingPositions}
       content={
         <div>
+          <div className="flex justify-end mb-2">
+            <RefreshButton onRefresh={refetchPositions} isLoading={isLoadingPositions} />
+          </div>
           <PaginatedList
             className="no-scrollbar"
             dataSource={filteredPositions}

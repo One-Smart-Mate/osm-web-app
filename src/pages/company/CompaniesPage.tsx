@@ -10,6 +10,7 @@ import {
 } from "../../core/genericReducer";
 import CompanyForm, { CompanyFormType } from "./components/CompanyForm";
 import MainContainer from "../layouts/MainContainer";
+import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 import CompanyCard from "./components/CompanyCard";
 
@@ -75,6 +76,9 @@ const CompaniesPage = () => {
       }
       content={
         <>
+          <div className="flex justify-end mb-2">
+            <RefreshButton onRefresh={handleGetCompanies} isLoading={isLoading} />
+          </div>
           <PaginatedList
             dataSource={data}
             className="no-scrollbar"

@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 import AnatomyNotification from "../components/AnatomyNotification";
 import UserForm from "./components/UserForm";
@@ -104,6 +105,7 @@ const UsersPage = () => {
       content={
         <div>
           <div className="flex justify-end pb-2 gap-2">
+            <RefreshButton onRefresh={handleGetUsers} isLoading={isLoading} />
             <ImportUsersButton
               onComplete={(data) => handleImportUsersData(data)}
             />

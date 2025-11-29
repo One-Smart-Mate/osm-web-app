@@ -27,6 +27,7 @@ import DownloadChartDataButton from "./components/DownloadChartDataButton";
 import ChartExpander from "./components/ChartExpander";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import RefreshButton from "../components/RefreshButton";
 
 const { RangePicker } = DatePicker;
 
@@ -145,9 +146,13 @@ const ChartsPage = () => {
       enableSearch={false}
       content={
         <div>
-          <div className="flex items-end justify-end">
-            <DownloadChartDataButton 
-              siteId={siteId} 
+          <div className="flex items-end justify-end gap-2">
+            <RefreshButton
+              onRefresh={handleGetMethodologiesCatalog}
+              isLoading={isLoading}
+            />
+            <DownloadChartDataButton
+              siteId={siteId}
               startDate={startDate}
               endDate={endDate}
               cardTypeName={selectedCardType}
