@@ -3,7 +3,9 @@ import { Button, Tooltip } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import Strings from "../../utils/localizations/Strings";
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+// Check if dev tools are enabled via environment variable
+// This allows the button to show in deployed "develop" environments, not just localhost
+const isDevToolsEnabled = import.meta.env.VITE_ENABLE_DEV_TOOLS === 'true';
 
 interface RefreshButtonProps {
   onRefresh: () => void;
@@ -23,8 +25,8 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
   size = "middle",
   devOnly = true,
 }) => {
-  // If devOnly is true and we're not in development, don't render
-  if (devOnly && !isDevelopment) {
+  // If devOnly is true and dev tools are not enabled, don't render
+  if (devOnly && !isDevToolsEnabled) {
     return null;
   }
 
