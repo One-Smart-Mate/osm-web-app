@@ -945,6 +945,7 @@ class StringsBase {
   static notificationReceived = "notificationReceived";
   static expandAll = "expandAll";
   static collapseAll = "collapseAll";
+  static clearCache = "clearCache";
 
   static machinesOfArea = "machinesOfArea";
   static uploadCardAndEvidenceWithDataNet = "uploadCardAndEvidenceWithDataNet";

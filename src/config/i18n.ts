@@ -879,6 +879,7 @@ const resources = {
 
       collapseAll: "Collapse All",
       expandAll: "Expand All",
+      clearCache: "Clear Cache",
       machinesOfArea: "Zones of Area",
       assignPositions: "Assign Positions",
       uploadCardAndEvidenceWithDataNet: "Upload tag and evidence with data net",
@@ -2822,6 +2823,7 @@ const resources = {
 
       collapseAll: "Contraer todo",
       expandAll: "Expandir todo",
+      clearCache: "Limpiar Caché",
       machinesOfArea: "Zonas del Area",
       assignPositions: "Asignar Posiciones",
       uploadCardAndEvidenceWithDataNet:
