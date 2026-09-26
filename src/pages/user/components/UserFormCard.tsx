@@ -278,6 +278,9 @@ const UserFormCard = ({
             rules={[
               {
                 validator(_, value) {
+                  if (!value && !enableStatus) {
+                    return Promise.reject(new Error(Strings.requiredPassword));
+                  }
                   if (!value) return Promise.resolve();
                   if (value.length < 8) {
                     return Promise.reject(new Error(Strings.passwordLenght));
@@ -302,7 +305,7 @@ const UserFormCard = ({
             rules={[
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value && getFieldValue("password")) {
+                  if (!value && (!enableStatus || getFieldValue("password"))) {
                     return Promise.reject(new Error(Strings.requiredPassword));
                   }
                   if (value && getFieldValue("password") !== value) {

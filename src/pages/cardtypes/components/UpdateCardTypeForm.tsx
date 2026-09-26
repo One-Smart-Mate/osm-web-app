@@ -61,8 +61,7 @@ const UpdateCardTypeForm = ({ form, initialValues }: FormProps) => {
 
   const statusOptions = [
     { value: Strings.activeStatus, label: Strings.active },
-    { value: Strings.detailsOptionS, label: Strings.detailsStatusSuspended },
-    { value: Strings.C, label: Strings.tagStatusCanceled },
+    { value: "I", label: Strings.inactive },
   ];
 
   useEffect(() => {

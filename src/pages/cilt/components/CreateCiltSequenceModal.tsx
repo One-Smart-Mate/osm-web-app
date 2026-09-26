@@ -195,8 +195,12 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         secuenceColor: getColorFromCiltType(combinedData.ciltTypeId) || "FF0000",
         ciltTypeId: Number(combinedData.ciltTypeId) || 0,
         ciltTypeName: ciltTypes.find((type) => type.id === combinedData.ciltTypeId)?.name || "",
-        referenceOplSopId: Number(selectedReferenceOpl?.id) || 0,
-        remediationOplSopId: Number(selectedRemediationOpl?.id) || 0,
+        referenceOplSopId: selectedReferenceOpl?.id
+          ? Number(selectedReferenceOpl.id)
+          : undefined,
+        remediationOplSopId: selectedRemediationOpl?.id
+          ? Number(selectedRemediationOpl.id)
+          : undefined,
         standardTime: Number(combinedData.standardTime) || 0,
         toolsRequired: combinedData.toolsRequired || "",
         stoppageReason: combinedData.stoppageReason ? 1 : 0,

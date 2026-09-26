@@ -29,13 +29,13 @@ export const generateUsersExcelTemplate = () => {
     {
       Name: 'María García',
       Email: 'maria@example.com',
-      Role: 'admin',
+      Role: 'local_admin',
       Celular: '527778456789'
     },
     {
       Name: 'Ana López',
       Email: 'ana@example.com',
-      Role: 'user',
+      Role: 'mechanic',
       Celular: '527778567890'
     }
   ];
@@ -126,7 +126,7 @@ export const generateUsersExcelTemplateWithTranslation = () => {
     {
       Name: 'John Smith',
       Email: 'john@example.com',
-      Role: 'admin',
+      Role: 'local_admin',
       Celular: '527778345678',
       Translation: 'EN'
     }
@@ -211,7 +211,7 @@ export const templateInfo = {
       name: 'Role',
       description: 'Rol del usuario en el sistema',
       required: true,
-      example: 'operator, admin, user'
+      example: 'operator'
     },
     {
       name: 'Celular',
@@ -231,6 +231,6 @@ export const templateInfo = {
     'El campo Celular es opcional pero recomendado para autenticación por WhatsApp',
     'El campo Translation define el idioma de las notificaciones (ES por defecto)',
     'El formato del celular debe incluir el código de país',
-    'Los roles válidos son: operator, admin, user'
+    'Los roles válidos son: mechanic, local_admin, local_sis_admin, operator, external_provider'
   ]
 };

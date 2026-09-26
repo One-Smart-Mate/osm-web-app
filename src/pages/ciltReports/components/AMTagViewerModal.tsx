@@ -22,8 +22,7 @@ import TagPDFButton from "../../components/TagPDFButton";
 import ModalForm from "../../components/ModalForm";
 import UpdatePriorityForm from "../../tagdetails/components/UpdatePriorityForm";
 import UpdateMechanicForm from "../../tagdetails/components/UpdateMechanicForm";
-import { useAppDispatch, useAppSelector } from "../../../core/store";
-import { selectCurrentUser } from "../../../core/authReducer";
+import { useAppDispatch } from "../../../core/store";
 import { setSiteId } from "../../../core/genericReducer";
 import { handleErrorNotification, handleSucccessNotification, NotificationSuccess } from "../../../utils/Notifications";
 import { FormInstance } from "antd";
@@ -59,7 +58,6 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
   
   // Redux
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(selectCurrentUser);
 
   useEffect(() => {
     if (open && amTagId) {
@@ -130,8 +128,7 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
         await updateCardPriority(
           new UpdateCardPriority(
             Number(cardDataState.card.id),
-            Number(values.priorityId),
-            Number(currentUser.userId)
+            Number(values.priorityId)
           )
         ).unwrap();
       } else {
@@ -149,8 +146,7 @@ const AMTagViewerModal: React.FC<AMTagViewerModalProps> = ({
         await updateCardMechanic(
           new UpdateCardMechanic(
             Number(cardDataState.card.id),
-            Number(mechanicId),
-            Number(currentUser.userId)
+            Number(mechanicId)
           )
         ).unwrap();
       }

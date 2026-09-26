@@ -10,6 +10,7 @@ import type { UploadFile } from "antd/es/upload/interface";
 import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
 import { CiltMstr, UpdateCiltMstrDTO } from "../../../data/cilt/ciltMstr/ciltMstr";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 
 interface FormProps {
   form: any;
@@ -22,10 +23,9 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
   const [getSiteResponsibles] = useGetSiteResponsiblesMutation();
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
   const [loading, setLoading] = useState(false);
-  const [creatorId, setCreatorId] = useState<number | null>(null);
+  const { user } = useCurrentUser();
   const [reviewerId, setReviewerId] = useState<number | null>(null);
   const [approvedById, setApprovedById] = useState<number | null>(null);
-  const [creatorModalVisible, setCreatorModalVisible] = useState(false);
   const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
   const [approverModalVisible, setApproverModalVisible] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -40,7 +40,7 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       fetchResponsibles();
       // Reset form when component loads
       form.resetFields();
-      setCreatorId(null);
+      form.setFieldsValue({ creatorName: user?.name ?? "" });
       setReviewerId(null);
       setApprovedById(null);
       setFileList([]);
@@ -58,18 +58,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       console.error("Error fetching responsibles:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCreatorSelection = (userIds: number[]) => {
-    if (userIds.length > 0) {
-      setCreatorId(userIds[0]);
-      // Find the user by comparing with the same type
-      const selectedUser = responsibles.find(user => Number(user.id) === userIds[0]);
-      form.setFieldsValue({ creatorName: selectedUser?.name || "" });
-    } else {
-      setCreatorId(null);
-      form.setFieldsValue({ creatorName: "" });
     }
   };
 
@@ -126,15 +114,12 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       siteId: Number(siteId),
       ciltName: values.ciltName,
       ciltDescription: values.ciltDescription,
-      creatorId: creatorId ? Number(creatorId) : 0,
-      creatorName: values.creatorName || "",
       reviewerId: reviewerId ? Number(reviewerId) : 0,
       reviewerName: values.reviewerName || "",
       approvedById: approvedById ? Number(approvedById) : 0,
       approvedByName: values.approvedByName || "",
       standardTime: undefined, 
       urlImgLayout: "uploading...", 
-      order: 1, 
       status: "A", 
       ciltDueDate: values.ciltDueDate ? `${values.ciltDueDate}T00:00:00.000Z` : undefined
     } as any;
@@ -151,8 +136,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
         siteId: createdCilt.siteId ?? undefined,
         ciltName: createdCilt.ciltName ?? undefined,
         ciltDescription: createdCilt.ciltDescription ?? undefined,
-        creatorId: createdCilt.creatorId ?? undefined,
-        creatorName: createdCilt.creatorName ?? undefined,
         reviewerId: createdCilt.reviewerId ?? undefined,
         reviewerName: createdCilt.reviewerName ?? undefined,
         approvedById: createdCilt.approvedById ?? undefined,
@@ -175,7 +158,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
       });
       
       form.resetFields();
-      setCreatorId(null);
       setReviewerId(null);
       setApprovedById(null);
       setFileList([]);
@@ -269,18 +251,10 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
           <div className="flex items-center">
             <Input 
               className="flex-1 border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
-              placeholder={Strings.selectCreator}
+              placeholder={Strings.ciltCreator}
               readOnly
-              value={creatorId ? responsibles.find(user => Number(user.id) === creatorId)?.name || "" : ""}
+              value={user?.name ?? ""}
             />
-            <Button 
-              type="primary"
-              icon={<UserOutlined />} 
-              onClick={() => setCreatorModalVisible(true)}
-              className="ml-2"
-            >
-              {Strings.select}
-            </Button>
           </div>
         </Form.Item>
 
@@ -400,17 +374,6 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
           {Strings.save}
         </Button>
       </div>
-
-      <UserSelectionModal
-        isVisible={creatorModalVisible}
-        onCancel={() => setCreatorModalVisible(false)}
-        onConfirm={handleCreatorSelection}
-        users={responsibles}
-        loading={loading}
-        initialSelectedUserIds={creatorId ? [creatorId] : []}
-        title={Strings.selectCreator}
-        singleSelection={true}
-      />
 
       <UserSelectionModal
         isVisible={reviewerModalVisible}

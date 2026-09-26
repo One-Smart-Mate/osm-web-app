@@ -4,8 +4,7 @@ import { apiSlice } from "./apiSlice";
 
 // DTO for updating last login/activity
 export interface UpdateLastLoginDTO {
-  userId: number;
-  date: Date | string; // Backend expects Date but we send as ISO string
+  date: string;
   platform: string;
   timezone?: string;
 }
@@ -45,7 +44,20 @@ export const authService = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: any }, _, __) => response.data,
     }),
+    refreshToken: builder.mutation<User, string>({
+      query: (token) => ({
+        url: "/auth/refresh-token",
+        method: "POST",
+        body: { token },
+      }),
+      transformResponse: (response: { data: User }) => response.data,
+    }),
   }),
 });
 
-export const { useLoginMutation, useFastLoginMutation, useUpdateLastLoginMutation } = authService;
+export const {
+  useLoginMutation,
+  useFastLoginMutation,
+  useUpdateLastLoginMutation,
+  useRefreshTokenMutation,
+} = authService;

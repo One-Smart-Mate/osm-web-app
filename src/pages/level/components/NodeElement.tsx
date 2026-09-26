@@ -66,6 +66,7 @@ const NodeElement: React.FC<NodeElementProps> = ({
     switch (status) {
       case Strings.detailsOptionC:
         return "#383838";
+      case Strings.inactiveValue:
       case Strings.detailsOptionS:
         return "#999999";
       case Strings.activeStatus:

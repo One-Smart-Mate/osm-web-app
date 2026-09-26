@@ -10,19 +10,9 @@ import { Note } from "../data/note";
 import { apiSlice } from "./apiSlice";
 
 // Define the response type for the new endpoint
-interface FastPasswordResponse {
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    fastPassword?: string;
-  };
-  cards: CardInterface[];
-}
-
 // Paginated cards response interface
 interface PaginatedCardsResponse {
-  cards: CardInterface[];
+  cards?: CardInterface[];
   data?: CardInterface[]; // Legacy: some endpoints use 'data' instead of 'cards'
   total: number;
   page: number;
@@ -44,9 +34,13 @@ interface CardFilters {
   sortOption?: 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
   status?: string;
   levelMachineId?: string;
-  userId?: number;
   myCards?: boolean;
 }
+
+const CARD_API_MAX_PAGE_SIZE = 200;
+
+const getCardsFromPage = (page: PaginatedCardsResponse): CardInterface[] =>
+  page.data ?? page.cards ?? [];
 
 export const cardService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -54,38 +48,81 @@ export const cardService = apiSlice.injectEndpoints({
       CardInterface[],
       { levelId: string; siteId: string; page?: number; limit?: number }
     >({
-      query: ({ levelId, siteId, page = 1, limit = 999999 }) =>
-        `/card/by-level/${levelId}?siteId=${siteId}&page=${page}&limit=${limit}`,
-      transformResponse: (response: {
-        data: PaginatedCardsResponse;
-        status: number;
-        message: string;
-      }) => response.data.cards,
+      async queryFn({ levelId, siteId, page, limit }, _api, _extra, baseQuery) {
+        const firstPage = page ?? 1;
+        const requestedLimit = Math.max(
+          1,
+          Math.min(limit ?? CARD_API_MAX_PAGE_SIZE, CARD_API_MAX_PAGE_SIZE),
+        );
+        const cards: CardInterface[] = [];
+        let currentPage = firstPage;
+        let hasMore = true;
+
+        while (hasMore) {
+          const result = await baseQuery(
+            `/card/by-level/${levelId}?siteId=${siteId}&page=${currentPage}&limit=${requestedLimit}`,
+          );
+          if (result.error) return { error: result.error };
+
+          const pageData = (result.data as { data: PaginatedCardsResponse }).data;
+          cards.push(...getCardsFromPage(pageData));
+          hasMore =
+            page === undefined && currentPage < (pageData.totalPages ?? 1);
+          if (hasMore) currentPage += 1;
+        }
+
+        return { data: cards };
+      },
     }),
     getCards: builder.mutation<CardInterface[], { siteId: string; page?: number; limit?: number }>({
-      query: ({ siteId, page = 1, limit = 999999 }) => `/card/all/${siteId}?page=${page}&limit=${limit}`,
-      transformResponse: (response: { data: PaginatedCardsResponse }) => response.data.data ?? response.data.cards ?? [],
+      async queryFn({ siteId, page, limit }, _api, _extra, baseQuery) {
+        const firstPage = page ?? 1;
+        const requestedLimit = Math.max(
+          1,
+          Math.min(limit ?? CARD_API_MAX_PAGE_SIZE, CARD_API_MAX_PAGE_SIZE),
+        );
+        const cards: CardInterface[] = [];
+        let currentPage = firstPage;
+        let hasMore = true;
+
+        while (hasMore) {
+          const result = await baseQuery(
+            `/card/all/${siteId}?page=${currentPage}&limit=${requestedLimit}`,
+          );
+          if (result.error) return { error: result.error };
+
+          const pageData = (result.data as { data: PaginatedCardsResponse }).data;
+          cards.push(...getCardsFromPage(pageData));
+          hasMore =
+            page === undefined && currentPage < (pageData.totalPages ?? 1);
+          if (hasMore) currentPage += 1;
+        }
+
+        return { data: cards };
+      },
     }),
     getCardsPaginated: builder.mutation<
       PaginatedCardsResponse,
       { siteId: string; page: number; limit: number; filters?: CardFilters }
     >({
       query: ({ siteId, page, limit, filters = {} }) => {
+        const hasCompleteDateRange = Boolean(
+          filters.dateFilterType && filters.startDate && filters.endDate,
+        );
         const queryParams = new URLSearchParams({
           page: page.toString(),
-          limit: limit.toString(),
+          limit: Math.max(1, Math.min(limit, CARD_API_MAX_PAGE_SIZE)).toString(),
           ...(filters.searchText ? { searchText: filters.searchText } : {}),
           ...(filters.cardNumber ? { cardNumber: filters.cardNumber } : {}),
           ...(filters.location ? { location: filters.location } : {}),
           ...(filters.creator ? { creator: filters.creator } : {}),
           ...(filters.resolver ? { resolver: filters.resolver } : {}),
-          ...(filters.dateFilterType ? { dateFilterType: filters.dateFilterType } : {}),
-          ...(filters.startDate ? { startDate: filters.startDate } : {}),
-          ...(filters.endDate ? { endDate: filters.endDate } : {}),
+          ...(hasCompleteDateRange ? { dateFilterType: filters.dateFilterType! } : {}),
+          ...(hasCompleteDateRange ? { startDate: filters.startDate! } : {}),
+          ...(hasCompleteDateRange ? { endDate: filters.endDate! } : {}),
           ...(filters.sortOption ? { sortOption: filters.sortOption } : {}),
           ...(filters.status ? { status: filters.status } : {}),
           ...(filters.levelMachineId ? { levelMachineId: filters.levelMachineId } : {}),
-          ...(filters.userId ? { userId: filters.userId.toString() } : {}),
           ...(filters.myCards !== undefined ? { myCards: filters.myCards.toString() } : {}),
         }).toString();
 
@@ -124,7 +161,7 @@ export const cardService = apiSlice.injectEndpoints({
         body: { ...responsible },
       }),
     }),
-    updateCardCustomDueDate: builder.mutation<void, { cardId: number; customDueDate: string; idOfUpdatedBy: number }>({
+    updateCardCustomDueDate: builder.mutation<void, { cardId: number; customDueDate: string }>({
       query: (body) => ({
         url: "/card/update/custom-due-date",
         method: "POST",
@@ -195,14 +232,6 @@ export const cardService = apiSlice.injectEndpoints({
         method: "POST",
         body: dto,
       }),
-    }),
-    findCardsByFastPassword: builder.query<
-      FastPasswordResponse,
-      { siteId: number; fastPassword: string }
-    >({
-      query: ({ siteId, fastPassword }) =>
-        `/card/fast-password/${siteId}/${fastPassword}`,
-      transformResponse: (response: { data: FastPasswordResponse }) => response.data,
     }),
     createCard: builder.mutation<CardInterface, CreateCardRequest>({
       query: (cardData) => ({
@@ -429,7 +458,6 @@ export const {
   useGetCardNotesByUUIDMutation,
   useGetDiscardedCardsByUserQuery,
   useDiscardCardMutation,
-  useFindCardsByFastPasswordQuery,
   useCreateCardMutation,
   useUpdateDefinitiveSolutionMutation,
   useUpdateProvisionalSolutionMutation,

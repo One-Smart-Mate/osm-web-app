@@ -232,11 +232,6 @@ const Opl = (): React.ReactElement => {
       setSubmitting(true);
       const values = await form.validateFields();
 
-      const creator = values.creatorId
-        ? responsibles.find(
-            (user: Responsible) => String(user.id) === String(values.creatorId)
-          )
-        : null;
       const reviewer = values.reviewerId
         ? responsibles.find(
             (user: Responsible) => String(user.id) === String(values.reviewerId)
@@ -250,8 +245,8 @@ const Opl = (): React.ReactElement => {
           values.siteId || Number(siteId) || null,
           values.title,
           values.objetive,
-          values.creatorId ? Number(values.creatorId) : undefined,
-          creator?.name || undefined,
+          undefined,
+          undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,
           reviewer?.name || undefined,
           values.oplTypeId ? Number(values.oplTypeId) : undefined
@@ -268,8 +263,8 @@ const Opl = (): React.ReactElement => {
           new Date().toISOString(),
           values.siteId || Number(siteId) || null,
           values.objetive,
-          values.creatorId ? Number(values.creatorId) : undefined,
-          creator?.name || undefined,
+          undefined,
+          undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,
           reviewer?.name || undefined,
           values.oplTypeId ? Number(values.oplTypeId) : undefined

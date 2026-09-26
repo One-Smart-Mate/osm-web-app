@@ -207,9 +207,9 @@ const resources = {
       // Import users form
       dragFile: "Click or drag file to this area to upload",
       singleUpload: "Support for a single upload .xlsx",
-      onlyExcelFiles: "Only Excel files (.xlsx, .xlsm, .xls) are allowed",
+      onlyExcelFiles: "Only Excel files (.xlsx) are allowed",
       invalidFileType: "is not a valid file type",
-      fileTooLarge: "File must be smaller than 10MB",
+      fileTooLarge: "File must be 5MB or smaller",
       pleaseConvertToXlsx: "If the file has macros (.xlsm), please save it as .xlsx (Excel Workbook) without macros",
 
       // sites
@@ -2162,9 +2162,9 @@ const resources = {
       // Import users form
       dragFile: "Haz clic o arrastra un archivo a esta área para subirlo",
       singleUpload: "Compatible con una sola carga .xlsx",
-      onlyExcelFiles: "Solo se permiten archivos de Excel (.xlsx, .xlsm, .xls)",
+      onlyExcelFiles: "Solo se permiten archivos de Excel (.xlsx)",
       invalidFileType: "no es un tipo de archivo válido",
-      fileTooLarge: "El archivo debe ser menor a 10MB",
+      fileTooLarge: "El archivo debe pesar 5MB o menos",
       pleaseConvertToXlsx: "Si el archivo tiene macros (.xlsm), por favor guárdalo como .xlsx (Libro de Excel) sin macros",
 
       // sites

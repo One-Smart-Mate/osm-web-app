@@ -14,6 +14,8 @@ const CardTypeDetails: React.FC<CardTypeDetailsProps> = ({ nodeData }) => {
     switch (status) {
       case Strings.activeStatus:
         return Strings.active;
+      case Strings.inactiveValue:
+        return Strings.inactive;
       case Strings.detailsOptionS:
         return Strings.detailsStatusSuspended;
       case Strings.C:

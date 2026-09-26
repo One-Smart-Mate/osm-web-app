@@ -66,7 +66,7 @@ const UserForm = ({
 
     const userData = {
       name: values.name.trim(),
-      email: values.email.trim(),
+      email: values.email.trim().toLowerCase(),
       siteId: Number(location.state.siteId),
       password: values.password,
       uploadCardDataWithDataNet: enableEvidences,
@@ -109,7 +109,7 @@ const UserForm = ({
     const userData: any = {
       id: Number(values.id),
       name: values.name.trim(),
-      email: values.email.trim(),
+      email: values.email.trim().toLowerCase(),
       siteId: Number(location.state.siteId),
       uploadCardDataWithDataNet: enableEvidences,
       uploadCardEvidenceWithDataNet: enableEvidences,

@@ -45,10 +45,12 @@ const PreclassifierFormCard = ({
   };
 
   const statusOptions = () => {
-    return status.map((st) => ({
+    return status
+      .filter((st) => ["A", "I"].includes(st.statusCode))
+      .map((st) => ({
       value: st.statusCode,
       label: st.statusName,
-    }));
+      }));
   };
 
   return (

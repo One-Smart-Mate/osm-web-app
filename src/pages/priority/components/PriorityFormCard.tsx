@@ -44,10 +44,12 @@ const PriorityFormCard = ({
   };
 
   const formatStatusOptions = () => {
-    return statusOptions.map((status) => ({
+    return statusOptions
+      .filter((status) => ["A", "I"].includes(status.statusCode))
+      .map((status) => ({
       value: status.statusCode,
       label: status.statusName,
-    }));
+      }));
   };
 
   return (

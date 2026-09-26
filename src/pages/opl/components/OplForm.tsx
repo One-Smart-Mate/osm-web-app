@@ -5,6 +5,7 @@ import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
 import { useGetOplTypesMutation, useGetOplTypesBySiteMutation } from "../../../services/oplTypesService";
 import { OplTypes } from "../../../data/oplTypes/oplTypes";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -27,6 +28,7 @@ const OplForm: React.FC<OplFormProps> = ({
   onSubmit,
 }) => {
   const location = useLocation();
+  const { user } = useCurrentUser();
   const siteId = location.state?.siteId || null;
   const [getOplTypes] = useGetOplTypesMutation();
   const [getOplTypesBySite] = useGetOplTypesBySiteMutation();
@@ -120,14 +122,14 @@ const OplForm: React.FC<OplFormProps> = ({
           </Select>
         </Form.Item>
 
+        <Form.Item label={Strings.oplFormCreatorLabel}>
+          <Text>
+            {form.getFieldValue("creatorName") || user?.name || Strings.oplFormNotAssigned}
+          </Text>
+        </Form.Item>
+
         {isViewMode ? (
           <>
-            <Form.Item label={Strings.oplFormCreatorLabel}>
-              <Text>
-                {form.getFieldValue("creatorName") ||
-                  Strings.oplFormNotAssigned}
-              </Text>
-            </Form.Item>
             <Form.Item label={Strings.oplFormReviewerLabel}>
               <Text>
                 {form.getFieldValue("reviewerName") ||
@@ -137,27 +139,6 @@ const OplForm: React.FC<OplFormProps> = ({
           </>
         ) : (
           <>
-            <Form.Item name="creatorId" label={Strings.oplFormCreatorLabel}>
-              <Select
-                placeholder={Strings.oplFormCreatorPlaceholder}
-                loading={loadingUsers}
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.children as unknown as string)
-                    ?.toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-              >
-                {responsibles.map((user) => (
-                  <Option key={user.id} value={user.id}>
-                    {user.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
             <Form.Item name="reviewerId" label={Strings.oplFormReviewerLabel}>
               <Select
                 placeholder={Strings.oplFormReviewerPlaceholder}

@@ -20,11 +20,19 @@ export const oplMstrService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: OplMstr }) => response.data,
     }),
     createOplMstr: builder.mutation<OplMstr, CreateOplMstrDTO>({
-      query: (payload) => ({ url: `/opl-mstr/create`, method: "POST", body: { ...payload } }),
+      query: ({ creatorId: _creatorId, creatorName: _creatorName, ...payload }) => ({
+        url: `/opl-mstr/create`,
+        method: "POST",
+        body: payload,
+      }),
       transformResponse: (response: { data: OplMstr }) => response.data,
     }),
     updateOplMstr: builder.mutation<OplMstr, UpdateOplMstrDTO>({
-      query: (payload) => ({ url: `/opl-mstr/update`, method: "PUT", body: { ...payload } }),
+      query: ({ creatorId: _creatorId, creatorName: _creatorName, ...payload }) => ({
+        url: `/opl-mstr/update`,
+        method: "PUT",
+        body: payload,
+      }),
       transformResponse: (response: { data: OplMstr }) => response.data,
     }),
   }),

@@ -52,14 +52,14 @@ function App() {
     <ConfigProvider theme={getTheme(isDarkMode)}>
       <AntdApp>
         <Routes>
-          <Route
-            path="/external/card/:cardId/details"
-            element={<PublicTagDetails />}
-          />
           <Route index path="/" element={<LoginPage />} />
           <Route path={ResetPasswordRoute} element={<ResetPassword />} />
           <Route path="/locked-session" element={<LockedSession />} />
           <Route element={<ProtectedRoutes />}>
+            <Route
+              path="/external/card/:cardId/details"
+              element={<PublicTagDetails />}
+            />
             <Route
               path={Constants.ROUTES_PATH.dashboard}
               element={<BaseLayout />}

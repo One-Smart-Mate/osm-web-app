@@ -564,9 +564,8 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       cardCreationDate: new Date().toISOString(),
       cardTypeId: parseInt(selectedCardType),
       preclassifierId: parseInt(selectedPreclassifier),
-      creatorId: parseInt(user.userId.toString()),
       nodeId: finalNodeId,
-      priorityId: selectedPriority ? parseInt(selectedPriority) : null,
+      priorityId: parseInt(selectedPriority),
       cardTypeValue: '',
       comments: comments || null,
       evidences: [],
@@ -575,12 +574,12 @@ const CreateCardModal = ({ open, onClose, siteId, siteName, onSuccess }: CreateC
       customDueDate: customDueDate ? customDueDate.format('YYYY-MM-DD') : null
     };
 
-    if (isNaN(cardData.siteId) || isNaN(cardData.cardTypeId) || isNaN(cardData.preclassifierId) || isNaN(cardData.creatorId)) {
+    if (isNaN(cardData.siteId) || isNaN(cardData.cardTypeId) || isNaN(cardData.preclassifierId) || isNaN(cardData.priorityId)) {
       console.error("[CreateCardModal] Invalid parsed IDs:", {
         siteId: cardData.siteId,
         cardTypeId: cardData.cardTypeId,
         preclassifierId: cardData.preclassifierId,
-        creatorId: cardData.creatorId
+        priorityId: cardData.priorityId
       });
       AnatomyNotification.error(notification, "Invalid data format. Please try again.");
       return;

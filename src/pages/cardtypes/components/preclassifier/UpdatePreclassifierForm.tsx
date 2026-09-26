@@ -56,10 +56,12 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
   }, [initialValues, form]);
 
   const statusOptions = () => {
-    return statuses.map((st) => ({
+    return statuses
+      .filter((st) => ["A", "I"].includes(st.statusCode))
+      .map((st) => ({
       value: st.statusCode,
       label: st.statusName,
-    }));
+      }));
   };
 
   return (

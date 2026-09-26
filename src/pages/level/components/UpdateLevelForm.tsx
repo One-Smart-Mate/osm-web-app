@@ -54,10 +54,12 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
   };
 
   const statusOptions = () => {
-    return statuses.map((status) => ({
+    return statuses
+      .filter((status) => ["A", "I"].includes(status.statusCode))
+      .map((status) => ({
       value: status.statusCode,
       label: status.statusName,
-    }));
+      }));
   };
 
   return (

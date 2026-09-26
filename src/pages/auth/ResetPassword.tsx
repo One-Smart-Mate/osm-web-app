@@ -41,8 +41,9 @@ const ResetPassword = () => {
   const onSendEmailFormFinish = async (values: any) => {
     try {
       setLoading(true);
-      await sendCodeToEmail(values.email.trim()).unwrap();
-      setEmail(values.email.trim());
+      const normalizedEmail = values.email.trim().toLowerCase();
+      await sendCodeToEmail(normalizedEmail).unwrap();
+      setEmail(normalizedEmail);
       setShowEnterCodeSection(true);
     } catch (error) {
       console.error("[ResetPassword] onSendEmailFormFinish", error);
@@ -55,8 +56,9 @@ const ResetPassword = () => {
   const onSendCodeFormFinish = async (values: any) => {
     try {
       setLoading(true);
-      await sendCodeToVerify(new SendResetCode(email, values.code)).unwrap();
-      setCode(values.code);
+      const normalizedCode = values.code.trim().toUpperCase();
+      await sendCodeToVerify(new SendResetCode(email, normalizedCode)).unwrap();
+      setCode(normalizedCode);
       setShowChangePasswordSection(true);
     } catch (error) {
       console.error("[ResetPassword] onSendCodeFormFinish", error);
@@ -167,6 +169,8 @@ const ResetPassword = () => {
                       className="flex w-full justify-center"
                       rules={[
                         { required: true, message: Strings.requiredCode },
+                        { len: 6, message: Strings.requiredCode },
+                        { pattern: /^[A-Z0-9]{6}$/i, message: Strings.requiredCode },
                       ]}
                     >
                       <Input.OTP

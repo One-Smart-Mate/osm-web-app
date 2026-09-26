@@ -100,10 +100,9 @@ const TagsPageOptimized = () => {
       endDate: dateRange ? dateRange[1].format('YYYY-MM-DD') : undefined,
       sortOption,
       status: selectedStatus,
-      userId: user?.userId ? parseInt(user.userId) : undefined,
       myCards: shouldFilterMyCards,
     };
-  }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly, user?.userId]);
+  }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly]);
 
   const handleGetCards = async (page: number = 1) => {
     if (!location.state) {
@@ -141,14 +140,14 @@ const TagsPageOptimized = () => {
       // Backend now handles all role-based filtering via myCards and userId filters
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {
-        cards: response.cards,
+        cards: response.cards ?? [],
         total: response.total,
         totalPages: response.totalPages,
         hasMore: response.hasMore,
       });
 
       setLoadingProgress(100);
-      setData(response.cards);
+      setData(response.cards ?? []);
       setTotal(response.total);
       setCurrentPage(page);
     } catch (error) {
@@ -339,7 +338,7 @@ const TagsPageOptimized = () => {
                       { value: "R", label: Strings.onlyResolved },
                       { value: "C", label: Strings.onlyCanceled },
                       { value: "D", label: Strings.onlyDiscarded },
-                      { value: "A,P,C,R,D", label: Strings.allStatuses },
+                      { value: "A,P,V,C,R,D", label: Strings.allStatuses },
                     ]}
                   />
                 </div>
