@@ -99,7 +99,11 @@ const PreclassifierFormCard = ({
         {enableStatus && (
           <div className="flex items-center">
             <div className="flex-1">
-              <Form.Item name="status" label={Strings.status}>
+              <Form.Item
+                name="status"
+                label={Strings.status}
+                rules={[{ required: true, message: Strings.requiredStatus }]}
+              >
                 <Select size="large" options={statusOptions()} />
               </Form.Item>
             </div>

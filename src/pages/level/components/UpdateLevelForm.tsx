@@ -111,7 +111,11 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
           />
         </Form.Item>
 
-        <Form.Item name="status" label={Strings.status}>
+        <Form.Item
+          name="status"
+          label={Strings.status}
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+        >
           <Select placeholder={Strings.status} options={statusOptions()} />
         </Form.Item>
 

@@ -147,7 +147,7 @@ const SiteForm = ({
         Number(values.monthlyPayment),
         values.currency,
         Number(values.appHistoryDays),
-        values.status
+        values.status || Constants.STATUS_ACTIVE
       );
       await updateSite(request).unwrap();
       setModalOpen(false);

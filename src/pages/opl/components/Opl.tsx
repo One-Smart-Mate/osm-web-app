@@ -237,14 +237,23 @@ const Opl = (): React.ReactElement => {
             (user: Responsible) => String(user.id) === String(values.reviewerId)
           )
         : null;
+      const resolvedSiteId = Number(values.siteId || siteId);
+
+      if (!Number.isInteger(resolvedSiteId) || resolvedSiteId <= 0) {
+        notification.error({
+          message: Strings.error,
+          description: Strings.requiredInfo,
+        });
+        return;
+      }
 
       if (currentOpl) {
         const updatePayload = new UpdateOplMstrDTO(
           currentOpl.id,
           new Date().toISOString(),
-          values.siteId || Number(siteId) || null,
-          values.title,
-          values.objetive,
+          resolvedSiteId,
+          values.title.trim(),
+          values.objetive?.trim(),
           undefined,
           undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,
@@ -259,10 +268,10 @@ const Opl = (): React.ReactElement => {
         );
       } else {
         const createPayload = new CreateOplMstrDTO(
-          values.title,
+          values.title.trim(),
           new Date().toISOString(),
-          values.siteId || Number(siteId) || null,
-          values.objetive,
+          resolvedSiteId,
+          values.objetive?.trim(),
           undefined,
           undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,

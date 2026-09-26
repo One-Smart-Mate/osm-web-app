@@ -244,7 +244,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityPictures}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<AiOutlinePicture />}
                   placeholder={Strings.quantityPictures}
                 />
@@ -259,7 +261,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityVideos}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<GoDeviceCameraVideo />}
                   placeholder={Strings.quantityVideos}
                 />
@@ -273,6 +277,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.durationInSeconds}
               >
                 <InputNumber
+                  min={0}
+                  precision={0}
                   maxLength={10}
                   addonBefore={<GoDeviceCameraVideo />}
                   placeholder={Strings.durationInSeconds}
@@ -288,7 +294,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityAudios}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<IoHeadsetOutline />}
                   placeholder={Strings.quantityAudios}
                 />
@@ -303,6 +311,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.durationInSeconds}
               >
                 <InputNumber
+                  min={0}
+                  precision={0}
                   maxLength={10}
                   addonBefore={<IoHeadsetOutline />}
                   placeholder={Strings.durationInSeconds}
@@ -322,7 +332,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   label={Strings.quantityPictures}
                 >
                   <InputNumber
+                    min={0}
                     max={255}
+                    precision={0}
                     addonBefore={<AiOutlinePicture />}
                     placeholder={Strings.quantityPictures}
                   />
@@ -337,7 +349,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   label={Strings.quantityVideos}
                 >
                   <InputNumber
+                    min={0}
                     max={255}
+                    precision={0}
                     addonBefore={<GoDeviceCameraVideo />}
                     placeholder={Strings.quantityVideos}
                   />
@@ -352,6 +366,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   label={Strings.durationInSeconds}
                 >
                   <InputNumber
+                    min={0}
+                    precision={0}
                     maxLength={10}
                     addonBefore={<GoDeviceCameraVideo />}
                     placeholder={Strings.durationInSeconds}
@@ -367,7 +383,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   label={Strings.quantityAudios}
                 >
                   <InputNumber
+                    min={0}
                     max={255}
+                    precision={0}
                     addonBefore={<IoHeadsetOutline />}
                     placeholder={Strings.quantityAudios}
                   />
@@ -382,6 +400,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   label={Strings.durationInSeconds}
                 >
                   <InputNumber
+                    min={0}
+                    precision={0}
                     maxLength={10}
                     addonBefore={<IoHeadsetOutline />}
                     placeholder={Strings.durationInSeconds}
@@ -401,7 +421,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityPictures}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<AiOutlinePicture />}
                   placeholder={Strings.quantityPictures}
                 />
@@ -416,7 +438,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityVideos}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<GoDeviceCameraVideo />}
                   placeholder={Strings.quantityVideos}
                 />
@@ -431,6 +455,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.durationInSeconds}
               >
                 <InputNumber
+                  min={0}
+                  precision={0}
                   maxLength={10}
                   addonBefore={<GoDeviceCameraVideo />}
                   placeholder={Strings.durationInSeconds}
@@ -446,7 +472,9 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.quantityAudios}
               >
                 <InputNumber
+                  min={0}
                   max={255}
+                  precision={0}
                   addonBefore={<IoHeadsetOutline />}
                   placeholder={Strings.quantityAudios}
                 />
@@ -461,6 +489,8 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 label={Strings.durationInSeconds}
               >
                 <InputNumber
+                  min={0}
+                  precision={0}
                   maxLength={10}
                   addonBefore={<IoHeadsetOutline />}
                   placeholder={Strings.durationInSeconds}

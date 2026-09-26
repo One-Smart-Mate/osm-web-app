@@ -7,7 +7,7 @@ export interface CiltSecuencesSchedule {
   ciltId: number | null;
   secuenceId: number | null;
   frecuency: string | null;
-  schedules: string[]; // Updated from schedule: string
+  schedule: string | null;
   scheduleType: ScheduleType | null;
   endDate: string | null;
   mon: number | null;
@@ -70,7 +70,8 @@ export interface UpdateCiltSecuencesScheduleDTO {
   ciltId?: number;
   secuenceId?: number;
   frecuency?: string;
-  schedules?: string[]; // Updated from schedule?: string
+  schedule?: string;
+  schedules?: string[]; // UI-only convenience; never sent to the update endpoint.
   scheduleType?: ScheduleType;
   endDate?: string;
   mon?: number;

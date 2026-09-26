@@ -122,7 +122,7 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
         Number(values.quantityVideosPs || 0),
         Number(values.audiosDurationPs || 0),
         Number(values.videosDurationPs || 0),
-        values.status || Strings.active.toUpperCase()
+        values.status || Strings.activeStatus
       );
       await updateCardType(updatedCardType).unwrap();
       AnatomyNotification.success(notification, AnatomyNotificationType._UPDATE);
@@ -136,7 +136,7 @@ const CardTypeForm = ({ data, onComplete, formType }: CardTypeFormProps) => {
   };
 
   const formatColor = (colorValue: any) => {
-    if (!colorValue) return "transparent";
+    if (!colorValue) return "FFFFFF";
     let c =
       typeof colorValue === "string"
         ? colorValue

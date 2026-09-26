@@ -112,8 +112,8 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
     
     const ciltPayload = {
       siteId: Number(siteId),
-      ciltName: values.ciltName,
-      ciltDescription: values.ciltDescription,
+      ciltName: values.ciltName.trim(),
+      ciltDescription: values.ciltDescription.trim(),
       reviewerId: reviewerId ? Number(reviewerId) : 0,
       reviewerName: values.reviewerName || "",
       approvedById: approvedById ? Number(approvedById) : 0,
@@ -193,13 +193,13 @@ const CreateCiltForm = ({ form, onSuccess }: FormProps) => {
         label={Strings.ciltName}
         rules={[
           { required: true, message: Strings.registerCiltNameRequiredValidation },
-          { max: 100, message: Strings.registerCiltNameMaxLengthValidation }
+          { max: 45, message: Strings.registerCiltNameMaxLengthValidation }
         ]}
       >
         <Input 
           size="large" 
           placeholder={Strings.registerCiltNamePlaceholer} 
-          maxLength={100}
+          maxLength={45}
           showCount
           className="w-full border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
         />

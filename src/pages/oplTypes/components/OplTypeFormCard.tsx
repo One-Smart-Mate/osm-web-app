@@ -42,10 +42,12 @@ const OplTypeFormCard = ({
   };
 
   const formatStatusOptions = () => {
-    return statusOptions.map((status) => ({
-      value: status.statusCode,
-      label: status.statusName,
-    }));
+    return statusOptions
+      .filter((status) => ["A", "I"].includes(status.statusCode))
+      .map((status) => ({
+        value: status.statusCode,
+        label: status.statusName,
+      }));
   };
 
   return (
@@ -98,4 +100,4 @@ const OplTypeFormCard = ({
   );
 };
 
-export default OplTypeFormCard; 
+export default OplTypeFormCard;

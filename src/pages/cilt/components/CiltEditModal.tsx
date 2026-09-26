@@ -157,8 +157,8 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         dateOfLastUsed,
         updatedAt,
         cilt.siteId ?? undefined,
-        cleanString(values.ciltName),
-        cleanString(values.ciltDescription),
+        cleanString(values.ciltName?.trim()),
+        cleanString(values.ciltDescription?.trim()),
         undefined,
         undefined,
         reviewerId ?? undefined,
@@ -250,11 +250,22 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     >
       {updateError && <Alert message={updateError} type="error" showIcon closable onClose={() => setUpdateError(null)} style={{ marginBottom: 16 }} />}
       <Form form={form} layout="vertical" name="edit_cilt_form" initialValues={cilt ?? {}}>
-        <Form.Item name="ciltName" label={Strings.ciltMstrNameLabel} rules={[{ required: true, message: Strings.ciltMstrNameRequired }]}>
-          <Input />
+        <Form.Item
+          name="ciltName"
+          label={Strings.ciltMstrNameLabel}
+          rules={[
+            { required: true, message: Strings.ciltMstrNameRequired },
+            { max: 45 },
+          ]}
+        >
+          <Input maxLength={45} />
         </Form.Item>
-        <Form.Item name="ciltDescription" label={Strings.ciltMstrDescriptionLabel}>
-          <Input.TextArea rows={3} />
+        <Form.Item
+          name="ciltDescription"
+          label={Strings.ciltMstrDescriptionLabel}
+          rules={[{ max: 255 }]}
+        >
+          <Input.TextArea rows={3} maxLength={255} showCount />
         </Form.Item>
         {/* Standard time field removed - now calculated automatically in the database */}
         {/* Campo ciltDueDate agregado */}

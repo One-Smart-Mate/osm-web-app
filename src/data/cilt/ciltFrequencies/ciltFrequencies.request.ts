@@ -3,6 +3,7 @@
     frecuencyCode?: string;
     description?: string;
     status?: string;
+    createdAt: string;
   
     constructor(
       siteId?: number,
@@ -14,6 +15,7 @@
       this.frecuencyCode = frecuencyCode;
       this.description = description;
       this.status = status;
+      this.createdAt = new Date().toISOString();
     }
   }
   
