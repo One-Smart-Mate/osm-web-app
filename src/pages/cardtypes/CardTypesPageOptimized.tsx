@@ -399,9 +399,14 @@ const CardTypesPageOptimized = () => {
       e.stopPropagation();
       handleShowDetails(nodeDatum);
 
-      if (isCardType) {
-        // Load preclassifiers before toggling
+      // For a card type whose preclassifiers have not been loaded yet, load them
+      // first and force the node open. Relying on toggleNode() here races the
+      // async tree update, so the first click showed "(sin preclasificadores)"
+      // and the children only appeared on a second click.
+      if (isCardType && nodeDatum.children?.length === 0) {
         await handleNodeToggle(nodeDatum.id, nodeDatum);
+        setCollapsedState(nodeDatum.id, false);
+        return;
       }
 
       const newCollapsedState = !nodeDatum.__rd3t.collapsed;
@@ -602,8 +607,11 @@ const CardTypesPageOptimized = () => {
         </Dropdown>
         <text x={20} y={35} style={textStyles}>
           {nodeDatum.name}
-          {isCardType && (!nodeDatum.children || nodeDatum.children.length === 0) && !isNodeLoading &&
-            nodeDatum.__rd3t?.collapsed === false && " (" + Strings.noPreclassifiers + ")"}
+          {isCardType &&
+            nodeDatum.hasChildren === false &&
+            !isNodeLoading &&
+            nodeDatum.__rd3t?.collapsed === false &&
+            " (" + Strings.noPreclassifiers + ")"}
         </text>
       </g>
     );
