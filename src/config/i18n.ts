@@ -815,6 +815,14 @@ const resources = {
       positionDescription: "Position description",
       selectUsersForPosition:
         "Select users that will be assigned to this position",
+      positionNameHelp:
+        "Short, descriptive name for the position (e.g. \"Line 1 Operator\"). Max 45 characters.",
+      positionDescriptionHelp:
+        "Optional. Explain what this position covers or its responsibilities. Max 100 characters.",
+      positionResponsableHelp:
+        "Person in charge of this level. They will oversee the position and its assigned users.",
+      positionAssignedUsersHelp:
+        "Users that belong to this position. You can add or change them later.",
       cancelPosition: "Cancel",
       updatePositionTitle: "Edit Position",
       selectStatus: "Select a status",
@@ -2746,6 +2754,14 @@ const resources = {
       positionDescription: "Descripción de la posición",
       selectUsersForPosition:
         "Seleccione los usuarios que estarán asignados a esta posición",
+      positionNameHelp:
+        "Nombre corto y descriptivo de la posición (ej. \"Operador Línea 1\"). Máximo 45 caracteres.",
+      positionDescriptionHelp:
+        "Opcional. Describe qué abarca la posición o sus responsabilidades. Máximo 100 caracteres.",
+      positionResponsableHelp:
+        "Persona a cargo de este nivel. Supervisará la posición y los usuarios asignados.",
+      positionAssignedUsersHelp:
+        "Usuarios que pertenecen a esta posición. Puedes agregarlos o cambiarlos después.",
       cancelPosition: "Cancelar",
       updatePositionTitle: "Editar Posición",
       selectStatus: "Seleccione un estado",

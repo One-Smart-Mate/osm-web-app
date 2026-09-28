@@ -919,6 +919,10 @@ class StringsBase {
   static positionName = "positionName";
   static positionDescription = "positionDescription";
   static selectUsersForPosition = "selectUsersForPosition";
+  static positionNameHelp = "positionNameHelp";
+  static positionDescriptionHelp = "positionDescriptionHelp";
+  static positionResponsableHelp = "positionResponsableHelp";
+  static positionAssignedUsersHelp = "positionAssignedUsersHelp";
   static cancelPosition = "cancelPosition";
   static updatePositionTitle = "updatePositionTitle";
   static positionNameMaxLength = "positionNameMaxLength";
