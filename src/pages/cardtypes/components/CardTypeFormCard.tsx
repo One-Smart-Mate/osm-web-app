@@ -54,7 +54,6 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
       const responseCardTypes = await getCardTypesCatalogs().unwrap();
       setResponsibles(responseResponsibles);
       setCatalogs(responseCardTypes);
-      await handleInitFormValues(responseCardTypes);
     } catch (error) {
       console.error(error);
     } finally {
@@ -66,6 +65,17 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
     handleGetData();
   }, []);
 
+  // Re-initialize the form every time the selected node (initialValues) or the
+  // loaded catalogs change. The detail record is fetched asynchronously by the
+  // parent, so it can arrive AFTER this component mounts; depending on both
+  // values here ensures the methodology, name and every field are populated on
+  // the first click instead of requiring a second one.
+  useEffect(() => {
+    if (catalogs.length > 0) {
+      handleInitFormValues(catalogs);
+    }
+  }, [initialValues, catalogs]);
+
   const handleInitFormValues = async (cardTypesCatalog: CardTypesCatalog[]) => {
     if (initialValues) {
       const formattedCardTypeMethodology =
@@ -76,18 +86,36 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
           : `${initialValues.cardTypeMethodologyName || ""} - ${
               initialValues.cardTypeMethodology || ""
             }`;
-      const matchingOption = catalogsOptions(cardTypesCatalog).find(
+      const options = catalogsOptions(cardTypesCatalog);
+      // Prefer an exact label match; if the display name differs, fall back to
+      // matching the catalog entry by its methodology code so the select still
+      // shows the current methodology when editing.
+      let matchingOption = options.find(
         (option) => option.value === formattedCardTypeMethodology
       );
+      if (!matchingOption && initialValues.cardTypeMethodology) {
+        const methodologyCode = String(
+          initialValues.cardTypeMethodology
+        ).trim();
+        const catalogByCode = cardTypesCatalog.find(
+          (catalog) =>
+            String(catalog.cardTypeMethodology).trim() === methodologyCode
+        );
+        if (catalogByCode) {
+          matchingOption = options.find(
+            (option) =>
+              option.value ===
+              `${catalogByCode.cardTypeMethodologyName} - ${catalogByCode.cardTypeMethodology}`
+          );
+        }
+      }
       const validColor = initialValues.color?.startsWith("#")
         ? initialValues.color
         : `#${initialValues.color || "FFFFFF"}`;
       setColor(validColor);
       form.setFieldsValue({
         ...initialValues,
-        cardTypeMethodology: matchingOption
-          ? formattedCardTypeMethodology
-          : null,
+        cardTypeMethodology: matchingOption ? matchingOption.value : null,
         color: validColor,
       });
     }
