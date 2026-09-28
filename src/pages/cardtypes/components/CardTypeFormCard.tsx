@@ -123,6 +123,14 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
       form.setFieldsValue({
         ...initialValues,
         cardTypeMethodology: matchingOption ? matchingOption.value : null,
+        // Coerce to string so it matches the Select option values (see below);
+        // the detail endpoint returns responsableId as a number, which would
+        // otherwise fail AntD's strict value match and render the raw id.
+        responsableId:
+          initialValues.responsableId !== undefined &&
+          initialValues.responsableId !== null
+            ? String(initialValues.responsableId)
+            : undefined,
         color: validColor,
       });
     }
@@ -130,7 +138,7 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
 
   const responsibleOptions = () => {
     return responsibles.map((responsible) => ({
-      value: responsible.id,
+      value: String(responsible.id),
       label: responsible.name,
     }));
   };
