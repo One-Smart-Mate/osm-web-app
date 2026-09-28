@@ -54,7 +54,6 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
       const responseCardTypes = await getCardTypesCatalogs().unwrap();
       setResponsibles(responseResponsibles);
       setCatalogs(responseCardTypes);
-      await handleInitFormValues(responseCardTypes);
     } catch (error) {
       console.error(error);
     } finally {
@@ -66,28 +65,72 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
     handleGetData();
   }, []);
 
+  // Re-initialize the form every time the selected node (initialValues) or the
+  // loaded catalogs change. The detail record is fetched asynchronously by the
+  // parent, so it can arrive AFTER this component mounts; depending on both
+  // values here ensures the methodology, name and every field are populated on
+  // the first click instead of requiring a second one.
+  useEffect(() => {
+    if (catalogs.length > 0) {
+      handleInitFormValues(catalogs);
+    }
+  }, [initialValues, catalogs]);
+
   const handleInitFormValues = async (cardTypesCatalog: CardTypesCatalog[]) => {
     if (initialValues) {
-      const formattedCardTypeMethodology =
-        typeof initialValues.cardTypeMethodology === "string"
-          ? `${initialValues.methodology || ""} - ${
-              initialValues.cardTypeMethodology
-            }`
-          : `${initialValues.cardTypeMethodologyName || ""} - ${
-              initialValues.cardTypeMethodology || ""
-            }`;
-      const matchingOption = catalogsOptions(cardTypesCatalog).find(
-        (option) => option.value === formattedCardTypeMethodology
+      // Normalize for tolerant comparisons (case, accents and surrounding space).
+      const normalize = (value: unknown) =>
+        String(value ?? "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .toLowerCase();
+
+      const options = catalogsOptions(cardTypesCatalog);
+
+      // The detail record exposes the methodology code as `cardTypeMethodology`
+      // and its display name as `methodology`. Resolve the matching catalog
+      // entry by code first, and if the code is missing fall back to matching
+      // by the (accent/case-insensitive) name, so the select is preloaded.
+      const detailCode = normalize(initialValues.cardTypeMethodology);
+      const detailName = normalize(
+        initialValues.methodology || initialValues.cardTypeMethodologyName
       );
+
+      let catalogMatch = detailCode
+        ? cardTypesCatalog.find(
+            (catalog) => normalize(catalog.cardTypeMethodology) === detailCode
+          )
+        : undefined;
+
+      if (!catalogMatch && detailName) {
+        catalogMatch = cardTypesCatalog.find(
+          (catalog) => normalize(catalog.cardTypeMethodologyName) === detailName
+        );
+      }
+
+      const matchingOption = catalogMatch
+        ? options.find(
+            (option) =>
+              option.value ===
+              `${catalogMatch.cardTypeMethodologyName} - ${catalogMatch.cardTypeMethodology}`
+          )
+        : undefined;
       const validColor = initialValues.color?.startsWith("#")
         ? initialValues.color
         : `#${initialValues.color || "FFFFFF"}`;
       setColor(validColor);
       form.setFieldsValue({
         ...initialValues,
-        cardTypeMethodology: matchingOption
-          ? formattedCardTypeMethodology
-          : null,
+        cardTypeMethodology: matchingOption ? matchingOption.value : null,
+        // Coerce to string so it matches the Select option values (see below);
+        // the detail endpoint returns responsableId as a number, which would
+        // otherwise fail AntD's strict value match and render the raw id.
+        responsableId:
+          initialValues.responsableId !== undefined &&
+          initialValues.responsableId !== null
+            ? String(initialValues.responsableId)
+            : undefined,
         color: validColor,
       });
     }
@@ -95,7 +138,7 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
 
   const responsibleOptions = () => {
     return responsibles.map((responsible) => ({
-      value: responsible.id,
+      value: String(responsible.id),
       label: responsible.name,
     }));
   };
