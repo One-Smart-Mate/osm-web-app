@@ -399,13 +399,20 @@ const CardTypesPageOptimized = () => {
       e.stopPropagation();
       handleShowDetails(nodeDatum);
 
-      // For a card type whose preclassifiers have not been loaded yet, load them
-      // first and force the node open. Relying on toggleNode() here races the
-      // async tree update, so the first click showed "(sin preclasificadores)"
-      // and the children only appeared on a second click.
-      if (isCardType && nodeDatum.children?.length === 0) {
-        await handleNodeToggle(nodeDatum.id, nodeDatum);
-        setCollapsedState(nodeDatum.id, false);
+      // Card types drive their expand/collapse purely through the persisted
+      // collapsed state (read back into __rd3t on every render). Calling rd3t's
+      // toggleNode() as well double-toggled and raced the async preclassifier
+      // load, so a second/double click could collapse the node and hide the
+      // freshly loaded children. Compute the next state ourselves, lazily load
+      // preclassifiers the first time we expand, and skip toggleNode().
+      if (isCardType) {
+        const willExpand = getCollapsedState(nodeDatum.id) === true;
+
+        if (willExpand && nodeDatum.children?.length === 0) {
+          await handleNodeToggle(nodeDatum.id, nodeDatum);
+        }
+
+        setCollapsedState(nodeDatum.id, !willExpand);
         return;
       }
 
