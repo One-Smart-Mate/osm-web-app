@@ -1,111 +1,94 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import Strings from "../../../utils/localizations/Strings";
 import { Evidences } from "../../../data/card/card";
-import { isVideoURL } from "../../../utils/Extensions";
+import {
+  isVideoEvidence,
+  useAuthenticatedMedia,
+} from "../../../utils/evidenceMedia";
 
 interface VideoPreviewGroupProps {
   data: Evidences[];
 }
 
+const IMAGE_NOT_FOUND =
+  "https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png";
+
+/**
+ * Single evidence video, fetched authenticated and played from a blob URL.
+ */
+const AuthenticatedVideo = ({
+  evidence,
+  className,
+  controls = true,
+  autoPlay = false,
+  onClick,
+}: {
+  evidence: Evidences;
+  className?: string;
+  controls?: boolean;
+  autoPlay?: boolean;
+  onClick?: () => void;
+}) => {
+  const { url, error } = useAuthenticatedMedia(evidence.evidenceName);
+
+  if (error || !url) {
+    return (
+      <img
+        src={IMAGE_NOT_FOUND}
+        alt={`Fallback for video with ID ${evidence.id}`}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <video
+      className={className}
+      src={url}
+      controls={controls}
+      autoPlay={autoPlay}
+      onClick={onClick}
+    />
+  );
+};
+
 const VideoPreviewGroup = ({ data }: VideoPreviewGroupProps) => {
-  // Filter and sort the videos
   const videos = data
-    .filter((evidence) => isVideoURL(evidence.evidenceName))
-    .sort((a, b) => {
-      const nameA = a.evidenceName.toLowerCase();
-      const nameB = b.evidenceName.toLowerCase();
-      return nameA.localeCompare(nameB); // Ascending order
-    });
+    .filter(isVideoEvidence)
+    .sort((a, b) =>
+      a.evidenceName.toLowerCase().localeCompare(b.evidenceName.toLowerCase())
+    );
 
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(null);
-  const [videoErrors, setVideoErrors] = useState<Set<string>>(new Set());
-  const [videoNoVisual, setVideoNoVisual] = useState<Set<string>>(new Set());
+  const [currentVideoIndex, setCurrentVideoIndex] = useState<number | null>(
+    null
+  );
 
-  const handleVideoError = (id: string) => {
-    setVideoErrors((prevErrors) => new Set(prevErrors).add(id));
-  };
-
-  const checkVideoVisual = (id: string, index: number) => {
-    const video = videoRefs.current[index];
-    if (video) {
-      if (video.videoWidth === 0 || video.videoHeight === 0) {
-        setVideoNoVisual((prevNoVisual) => new Set(prevNoVisual).add(id));
-      } else {
-        setVideoNoVisual((prevNoVisual) => {
-          const updated = new Set(prevNoVisual);
-          updated.delete(id);
-          return updated;
-        });
-      }
-    }
-  };
-
-  const handleOpenModal = (index: number) => {
-    setCurrentVideoIndex(index);
-  };
-
-  const handleCloseModal = () => {
-    setCurrentVideoIndex(null);
-  };
-
-  const handleNextVideo = () => {
+  const handleOpenModal = (index: number) => setCurrentVideoIndex(index);
+  const handleCloseModal = () => setCurrentVideoIndex(null);
+  const handleNextVideo = () =>
     setCurrentVideoIndex((prev) =>
       prev !== null && prev < videos.length - 1 ? prev + 1 : prev
     );
-  };
-
-  const handlePreviousVideo = () => {
-    setCurrentVideoIndex((prev) =>
-      prev !== null && prev > 0 ? prev - 1 : prev
-    );
-  };
-
-  useEffect(() => {
-    return () => {
-      videoRefs.current = [];
-    };
-  }, []);
+  const handlePreviousVideo = () =>
+    setCurrentVideoIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
 
   return (
     <div>
       <div className="rounded-md p-1 mb-1 bg-white">
-      <h1 className="font-semibold">{Strings.videos}</h1>
-    </div>
+        <h1 className="font-semibold">{Strings.videos}</h1>
+      </div>
       <div className="flex flex-wrap gap-4">
-        {videos.map((video, index) => {
-          const videoId = video.id || `fallback-id-${index}`;
-          const hasError = videoErrors.has(videoId);
-          const noVisual = videoNoVisual.has(videoId);
-
-          return (
-            <div key={videoId} className="video-thumbnail">
-              {hasError || noVisual ? (
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png"
-                  alt={`Fallback for video with ID ${videoId}`}
-                  className="w-[200px] h-auto rounded-lg"
-                />
-              ) : (
-                <video
-                  ref={(videoItem) => {
-                    videoRefs.current[index] = videoItem;
-                    if (videoItem) {
-                      videoItem.onloadeddata = () => checkVideoVisual(videoId, index);
-                    }
-                  }}
-                  className="w-[200px] h-auto rounded-lg cursor-pointer"
-                  src={video.evidenceName}
-                  controls
-                  onClick={() => handleOpenModal(index)}
-                  onError={() => handleVideoError(videoId)}
-                />
-              )}
-            </div>
-          );
-        })}
+        {videos.map((video, index) => (
+          <div key={video.id || `fallback-id-${index}`} className="video-thumbnail">
+            <AuthenticatedVideo
+              evidence={video}
+              className="w-[200px] h-auto rounded-lg cursor-pointer"
+              onClick={() => handleOpenModal(index)}
+            />
+          </div>
+        ))}
       </div>
       {currentVideoIndex !== null && (
         <Modal
@@ -125,12 +108,10 @@ const VideoPreviewGroup = ({ data }: VideoPreviewGroupProps) => {
                 <LeftOutlined style={{ fontSize: "24px" }} />
               </button>
             )}
-            <video
+            <AuthenticatedVideo
+              key={videos[currentVideoIndex]?.id}
+              evidence={videos[currentVideoIndex]}
               className="mx-auto w-full"
-              src={videoErrors.has(videos[currentVideoIndex]?.id)
-                ? "https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png"
-                : videos[currentVideoIndex]?.evidenceName}
-              controls
               autoPlay
             />
             {currentVideoIndex < videos.length - 1 && (
