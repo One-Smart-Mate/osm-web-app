@@ -19,16 +19,14 @@ const AmDiscardReasonsPage = () => {
   const { isIhAdmin } = useCurrentUser();
   
   // Get discard reasons using the query hook
-  const { data: amDiscardReasons = [], isLoading } = useGetAmDiscardReasonsQuery(
+  const { data: amDiscardReasons = [], isLoading, refetch } = useGetAmDiscardReasonsQuery(
     location?.state?.siteId ? Number(location.state.siteId) : 0,
     { skip: !location?.state?.siteId }
   );
 
   useEffect(() => {
-    if (amDiscardReasons.length > 0) {
-      setData(amDiscardReasons);
-      setDataBackup(amDiscardReasons);
-    }
+    setData(amDiscardReasons);
+    setDataBackup(amDiscardReasons);
   }, [amDiscardReasons]);
 
   const handleOnSearch = (query: string) => {
@@ -51,10 +49,9 @@ const AmDiscardReasonsPage = () => {
   };
 
   const handleRefresh = () => {
-    if (amDiscardReasons.length > 0) {
-      setData(amDiscardReasons);
-      setDataBackup(amDiscardReasons);
-    }
+    // Force a fresh fetch from the server (create/update/delete also invalidate
+    // the AmDiscardReason tag, so the list re-fetches automatically too).
+    refetch();
   };
 
   return (
