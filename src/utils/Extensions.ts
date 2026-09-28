@@ -19,17 +19,34 @@ export const isVideoURL = (url: string) => {
   return Constants.VIDEO_FORMATS.some((ext) => url.includes(ext));
 };
 
+// Media classification relies on the authoritative `evidenceType` code
+// (IM* = image, VI* = video, AU* = audio) instead of guessing from the URL
+// extension, because evidences are now stored as opaque service routes
+// (/card/evidence/:siteId/content/:token) whose token carries no visible
+// extension. Legacy rows without evidenceType fall back to the URL extension.
+const matchesEvidenceKind = (
+  evidence: Evidences,
+  prefix: "IM" | "VI" | "AU",
+  extensionCheck: (_url: string) => boolean
+): boolean => {
+  const type = (evidence.evidenceType || "").toUpperCase();
+  if (type.startsWith("IM") || type.startsWith("VI") || type.startsWith("AU")) {
+    return type.startsWith(prefix);
+  }
+  return extensionCheck(evidence.evidenceName || "");
+};
+
 export const hasVideos = (evidenceArray?: Evidences[]): boolean =>
   Array.isArray(evidenceArray) &&
-  evidenceArray.some((evidence) => isVideoURL(evidence.evidenceName));
+  evidenceArray.some((evidence) => matchesEvidenceKind(evidence, "VI", isVideoURL));
 
 export const hasAudios = (evidenceArray?: Evidences[]): boolean =>
   Array.isArray(evidenceArray) &&
-  evidenceArray.some((evidence) => isAudioURL(evidence.evidenceName));
+  evidenceArray.some((evidence) => matchesEvidenceKind(evidence, "AU", isAudioURL));
 
 export const hasImages = (evidenceArray?: Evidences[]): boolean =>
   Array.isArray(evidenceArray) &&
-  evidenceArray.some((evidence) => isImageURL(evidence.evidenceName));
+  evidenceArray.some((evidence) => matchesEvidenceKind(evidence, "IM", isImageURL));
 
 export const generateShortUUID = (): string => {
   const fullUUID = uuidv4();
