@@ -5,7 +5,16 @@ import { useEffect, useState } from "react";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import UserSelectionModal from "../../components/UserSelectionModal";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import { UserOutlined } from "@ant-design/icons";
+
+// Label with an inline contextual-help tooltip, so each field explains itself.
+const LabelWithHelp = ({ text, help }: { text: string; help: string }) => (
+  <span className="inline-flex items-center">
+    {text}
+    <AnatomyTooltip title={help} />
+  </span>
+);
 
 interface FormProps {
   form: any;
@@ -156,7 +165,7 @@ const RegisterPositionForm = ({
         >
           <Form.Item
             name="name"
-            label={Strings.name}
+            label={<LabelWithHelp text={Strings.name} help={Strings.positionNameHelp} />}
             rules={[
               { required: true, message: Strings.requiredInfo },
               { max: 45, message: `${Strings.name} ${Strings.passwordLenght}` },
@@ -172,7 +181,7 @@ const RegisterPositionForm = ({
 
           <Form.Item
             name="description"
-            label={Strings.description}
+            label={<LabelWithHelp text={Strings.description} help={Strings.positionDescriptionHelp} />}
             rules={[
               { required: false },
               {
@@ -191,7 +200,7 @@ const RegisterPositionForm = ({
 
           <Form.Item
             name="nodeResponsableId"
-            label={Strings.nodeResponsable || "Node Responsible"}
+            label={<LabelWithHelp text={Strings.nodeResponsable || "Node Responsible"} help={Strings.positionResponsableHelp} />}
             rules={[{ required: true, message: Strings.requiredInfo }]}
           >
             <Select
@@ -218,7 +227,7 @@ const RegisterPositionForm = ({
           </Form.Item>
 
           <Form.Item
-            label={Strings.assignedUsers}
+            label={<LabelWithHelp text={Strings.assignedUsers} help={Strings.positionAssignedUsersHelp} />}
             help={Strings.selectUsersForPosition}
           >
             {loading ? (
