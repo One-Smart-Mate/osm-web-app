@@ -321,6 +321,13 @@ class StringsBase {
   static enterCode = "enterCode";
   static description = "description";
   static levelMachineId = "levelMachineId";
+  static levelNameTooltip = "levelNameTooltip";
+  static levelDescriptionTooltip = "levelDescriptionTooltip";
+  static levelResponsibleTooltip = "levelResponsibleTooltip";
+  static levelMachineIdTooltip = "levelMachineIdTooltip";
+  static levelNotifyTooltip = "levelNotifyTooltip";
+  static levelAssignCardOnCreateTooltip = "levelAssignCardOnCreateTooltip";
+  static levelStatusTooltip = "levelStatusTooltip";
   static daysNumber = "daysNumber";
   static updatePriority = "updatePriority";
 
