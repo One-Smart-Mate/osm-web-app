@@ -11,6 +11,7 @@ import {
   getDaysSince,
 } from "../../utils/Extensions";
 import { SiteUpdateForm } from "../../data/site/site";
+import { fetchEvidenceAsDataUrl } from "../../utils/evidenceMedia";
 
 interface TagPrintPDFProps {
   data: CardDetailsInterface;
@@ -76,7 +77,22 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
         return;
       }
 
-      // Get the content to print
+      // Evidences are stored as authenticated service routes; a print window
+      // (new document, no session) cannot load them. Inline every <img> as a
+      // base64 data URL first, fetching with the Bearer token.
+      const domImages = Array.from(
+        printRef.current?.querySelectorAll("img") || []
+      );
+      await Promise.all(
+        domImages.map(async (img) => {
+          const source = img.getAttribute("data-original-url") || img.src;
+          if (source.startsWith("data:")) return;
+          const dataUrl = await fetchEvidenceAsDataUrl(source);
+          if (dataUrl) img.src = dataUrl;
+        })
+      );
+
+      // Get the content to print (now with inlined images)
       const printContent = printRef.current?.innerHTML || '';
       
       // Create print-optimized HTML with auto-download script
@@ -634,6 +650,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                     <img
                       key={index}
                       src={value.evidenceName}
+                      data-original-url={value.evidenceName}
                       alt={`Evidence ${index + 1}`}
                       className="evidence-image"
                     />
@@ -698,6 +715,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                     <img
                       key={index}
                       src={_.evidenceName}
+                      data-original-url={_.evidenceName}
                       alt={`Evidence ${index + 1}`}
                       className="evidence-image"
                     />
@@ -762,6 +780,7 @@ const TagPrintPDF = ({ site, data }: TagPrintPDFProps) => {
                     <img
                       key={index}
                       src={_.evidenceName}
+                      data-original-url={_.evidenceName}
                       alt={`Evidence ${index + 1}`}
                       className="evidence-image"
                     />

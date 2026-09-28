@@ -13,6 +13,7 @@ import {
   getDaysSince,
 } from "../../utils/Extensions";
 import { SiteUpdateForm } from "../../data/site/site";
+import { fetchEvidenceAsDataUrl } from "../../utils/evidenceMedia";
 
 interface TagPDFGeneratorProps {
   data: CardDetailsInterface;
@@ -55,67 +56,11 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
     return imagesAtDefinitiveSolution.length > 0 || videosAtDefinitiveSolution.length > 0 || audiosAtDefinitiveSolution.length > 0;
   };
 
-  // Function to convert image URL to canvas and then to data URL
+  // Convert an evidence reference to a data URL using an authenticated fetch.
+  // Evidences are stored as service routes guarded by JWT + site access, so the
+  // Bearer token must travel with the request; a plain <img>/CORS proxy fails.
   const imageUrlToDataUrl = async (url: string): Promise<string | null> => {
-    try {
-      console.log('Converting image to data URL:', url);
-      
-      // Create a temporary image element
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      
-      // Wait for image to load
-      const imageLoaded = await new Promise<boolean>((resolve) => {
-        img.onload = () => resolve(true);
-        img.onerror = () => {
-          console.error('Failed to load image:', url);
-          resolve(false);
-        };
-        
-        // Try with proxy first
-        const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        img.src = `${corsProxyUrl}${url}`;
-        
-        // Fallback to original URL after 3 seconds
-        setTimeout(() => {
-          if (!img.complete) {
-            console.log('Trying original URL as fallback');
-            img.crossOrigin = '';
-            img.src = url;
-          }
-        }, 3000);
-      });
-      
-      if (!imageLoaded) {
-        return null;
-      }
-      
-      // Create canvas and draw image
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        console.error('Could not get canvas context');
-        return null;
-      }
-      
-      // Set canvas size to image size
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
-      
-      // Draw image on canvas
-      ctx.drawImage(img, 0, 0);
-      
-      // Convert canvas to data URL
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-      console.log('Successfully converted image to data URL');
-      
-      return dataUrl;
-      
-    } catch (error) {
-      console.error('Error converting image to data URL:', error);
-      return null;
-    }
+    return fetchEvidenceAsDataUrl(url);
   };
 
   const generatePDF = async () => {
@@ -175,13 +120,7 @@ const TagPDFGenerator = ({ site, data }: TagPDFGeneratorProps) => {
       console.log('Found images in DOM:', images.length);
       
       images.forEach((img, index) => {
-        const originalSrc = img.getAttribute('data-original-url') || img.src;
-        // Extract original URL from proxy URL if needed
-        let actualUrl = originalSrc;
-        if (originalSrc.includes('cors-anywhere.herokuapp.com/')) {
-          actualUrl = originalSrc.replace('https://cors-anywhere.herokuapp.com/', '');
-        }
-        
+        const actualUrl = img.getAttribute('data-original-url') || img.src;
         const dataUrl = imageDataUrls.get(actualUrl);
         if (dataUrl) {
           img.src = dataUrl;
