@@ -53,6 +53,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.opl}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.oplTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardTypes}`,
