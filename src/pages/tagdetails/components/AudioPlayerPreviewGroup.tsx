@@ -1,12 +1,31 @@
 import { Card } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { Evidences } from "../../../data/card/card";
-import { isAudioURL } from "../../../utils/Extensions";
-import { useRef } from "react";
+import {
+  isAudioEvidence,
+  useAuthenticatedMedia,
+} from "../../../utils/evidenceMedia";
 
 interface AudioPlayerPreviewGroupProps {
   data: Evidences[] | [];
 }
+
+/**
+ * Single evidence audio, fetched authenticated and played from a blob URL.
+ */
+const AuthenticatedAudio = ({
+  evidence,
+  onPlay,
+  registerRef,
+}: {
+  evidence: Evidences;
+  onPlay: () => void;
+  registerRef: (_el: HTMLAudioElement | null) => void;
+}) => {
+  const { url } = useAuthenticatedMedia(evidence.evidenceName);
+  if (!url) return null;
+  return <audio ref={registerRef} onPlay={onPlay} controls src={url} />;
+};
 
 const AudioPlayerPreviewGroup = ({ data }: AudioPlayerPreviewGroupProps) => {
   if (!data || data.length === 0) {
@@ -19,19 +38,16 @@ const AudioPlayerPreviewGroup = ({ data }: AudioPlayerPreviewGroupProps) => {
   }
 
   const audios = data
-    .filter((evidence) => isAudioURL(evidence.evidenceName))
-    .sort((a, b) => {
-      // Sort by file name
-      const nameA = a.evidenceName.toLowerCase();
-      const nameB = b.evidenceName.toLowerCase();
-      return nameA.localeCompare(nameB); // Ascending order
-    });
+    .filter(isAudioEvidence)
+    .sort((a, b) =>
+      a.evidenceName.toLowerCase().localeCompare(b.evidenceName.toLowerCase())
+    );
 
-  const audioRefs = useRef<HTMLAudioElement[]>([]);
+  const audioRefs: HTMLAudioElement[] = [];
 
   const handlePlay = (currentIndex: number) => {
-    audioRefs.current.forEach((audio, index) => {
-      if (index !== currentIndex && !audio.paused) {
+    audioRefs.forEach((audio, index) => {
+      if (index !== currentIndex && audio && !audio.paused) {
         audio.pause();
       }
     });
@@ -40,18 +56,17 @@ const AudioPlayerPreviewGroup = ({ data }: AudioPlayerPreviewGroupProps) => {
   return (
     <div>
       <div className="rounded-md p-1 mb-1 bg-white">
-      <h1 className="font-semibold">{Strings.audios}</h1>
-    </div>
+        <h1 className="font-semibold">{Strings.audios}</h1>
+      </div>
       <div className="flex flex-wrap gap-4 px-2">
         {audios.map((audio, index) => (
-          <audio
-            key={index}
-            ref={(audioItem) => {
-              if (audioItem) audioRefs.current[index] = audioItem;
-            }}
+          <AuthenticatedAudio
+            key={audio.id || `fallback-id-${index}`}
+            evidence={audio}
             onPlay={() => handlePlay(index)}
-            controls
-            src={audio.evidenceName}
+            registerRef={(el) => {
+              if (el) audioRefs[index] = el;
+            }}
           />
         ))}
       </div>

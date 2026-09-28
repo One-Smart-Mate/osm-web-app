@@ -21,37 +21,19 @@ import {
   getDaysSince,
 } from "../../utils/Extensions";
 import { SiteUpdateForm } from "../../data/site/site";
+import { fetchEvidenceAsDataUrl } from "../../utils/evidenceMedia";
 
 interface TagPDFDocumentProps {
   data: CardDetailsInterface;
   site?: SiteUpdateForm;
+  // Map of evidenceName/logo -> base64 data URL, pre-fetched with auth.
+  imageMap: Record<string, string>;
 }
-
-// Function to get file extension
-const getFileExtension = (url: string): string => {
-  const match = url.match(/\.([a-zA-Z0-9]+)(\?|$)/);
-  return match ? match[1].toLowerCase() : 'jpg';
-};
-
-// Function to create proxy URL for images
-const createProxyUrl = (url: string): string | null => {
-  if (!url) return null;
-  
-  const extension = getFileExtension(url);
-  const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-  
-  if (!validExtensions.includes(extension)) {
-    console.warn(`Invalid file extension: ${extension}`);
-    return null;
-  }
-
-  // Use images.weserv.nl as proxy (same as core-web-app)
-  return `https://images.weserv.nl/?url=${encodeURIComponent(url)}&output=${extension}`;
-};
 
 const TagPDFDocument = ({
   data,
   site,
+  imageMap,
 }: TagPDFDocumentProps): React.ReactElement => {
   const { card, evidences } = data;
 
@@ -74,20 +56,6 @@ const TagPDFDocument = ({
   const imagesAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.IMCL);
   const videosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.VICL);
   const audiosAtDefinitiveSolution = evidences.filter((e) => e.evidenceType == Strings.AUCL);
-
-  console.log('PDF Generation: Images at creation:', imagesAtCreation.length);
-  if (imagesAtCreation.length > 0) {
-    console.log('PDF Generation: Creation image URLs:', imagesAtCreation.map(img => img.evidenceName));
-  }
-  console.log('PDF Generation: Provisional images:', imagesAtProvisionalSolution.length);
-  if (imagesAtProvisionalSolution.length > 0) {
-    console.log('PDF Generation: Provisional image URLs:', imagesAtProvisionalSolution.map(img => img.evidenceName));
-  }
-  console.log('PDF Generation: Definitive images:', imagesAtDefinitiveSolution.length);
-  if (imagesAtDefinitiveSolution.length > 0) {
-    console.log('PDF Generation: Definitive image URLs:', imagesAtDefinitiveSolution.map(img => img.evidenceName));
-  }
-
 
   const showEvidencesAtCreation = (): boolean => {
     return imagesAtCreation.length> 0 || videosAtCreation.length > 0 || audiosAtCreation.length > 0;
@@ -125,12 +93,9 @@ const TagPDFDocument = ({
             )}
           </View>
 
-          {site?.logo && (
+          {site?.logo && imageMap[site.logo] && (
             <View>
-              <Image 
-                style={styles.logo} 
-                src={createProxyUrl(site.logo) || site.logo} 
-              />
+              <Image style={styles.logo} src={imageMap[site.logo]} />
             </View>
           )}
         </View>
@@ -451,13 +416,10 @@ const TagPDFDocument = ({
                 </View>
                 <View style={styles.imageGrid}>
                   {imagesAtCreation.map((value, index) => {
-                    const proxyUrl = createProxyUrl(value.evidenceName);
-                    return proxyUrl ? (
+                    const dataUrl = imageMap[value.evidenceName];
+                    return dataUrl ? (
                       <View key={index}>
-                        <Image 
-                          style={styles.image} 
-                          src={proxyUrl}
-                        />
+                        <Image style={styles.image} src={dataUrl} />
                       </View>
                     ) : null;
                   })}
@@ -525,14 +487,14 @@ const TagPDFDocument = ({
                   <View style={styles.lineSmall} />
                 </View>
                 <View style={styles.imageGrid}>
-                  {imagesAtProvisionalSolution.map((value, index) => (
-                    <View key={index}>
-                      <Image 
-                        style={styles.image} 
-                        src={createProxyUrl(value.evidenceName) || value.evidenceName}
-                      />
-                    </View>
-                  ))}
+                  {imagesAtProvisionalSolution.map((value, index) => {
+                    const dataUrl = imageMap[value.evidenceName];
+                    return dataUrl ? (
+                      <View key={index}>
+                        <Image style={styles.image} src={dataUrl} />
+                      </View>
+                    ) : null;
+                  })}
                 </View>
               </View>
             )}
@@ -597,14 +559,14 @@ const TagPDFDocument = ({
                   <View style={styles.lineSmall} />
                 </View>
                 <View style={styles.imageGrid}>
-                  {imagesAtDefinitiveSolution.map((value, index) => (
-                    <View key={index}>
-                      <Image 
-                        style={styles.image} 
-                        src={createProxyUrl(value.evidenceName) || value.evidenceName}
-                      />
-                    </View>
-                  ))}
+                  {imagesAtDefinitiveSolution.map((value, index) => {
+                    const dataUrl = imageMap[value.evidenceName];
+                    return dataUrl ? (
+                      <View key={index}>
+                        <Image style={styles.image} src={dataUrl} />
+                      </View>
+                    ) : null;
+                  })}
                 </View>
               </View>
             )}
@@ -746,21 +708,42 @@ const styles = StyleSheet.create({
   },
 });
 
-const TagPDFButton = ({ site, data }: TagPDFDocumentProps) => {
+const TagPDFButton = ({ site, data }: { data: CardDetailsInterface; site?: SiteUpdateForm }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateAndDownloadPDF = async () => {
     if (isGenerating) return;
 
     setIsGenerating(true);
-    
+
     try {
-      console.log('Generating PDF with proxy images...');
-      
-      // Generate PDF blob using the same method as core-web-app
-      const blob = await pdf(<TagPDFDocument data={data} site={site} />).toBlob();
-      
-      // Create download link
+      // @react-pdf/renderer cannot fetch the authenticated, private evidence
+      // routes itself (no Bearer token, and the ids carry no file extension the
+      // old weserv proxy needed). Pre-fetch every image with auth into base64
+      // data URLs, then hand them to the document as a lookup map.
+      const { evidences } = data;
+      const imageEvidences = evidences.filter((e) => {
+        const type = (e.evidenceType || "").toUpperCase();
+        return type.startsWith("IM");
+      });
+
+      const sources = [
+        ...imageEvidences.map((e) => e.evidenceName),
+        ...(site?.logo ? [site.logo] : []),
+      ];
+
+      const imageMap: Record<string, string> = {};
+      await Promise.all(
+        sources.map(async (source) => {
+          const dataUrl = await fetchEvidenceAsDataUrl(source);
+          if (dataUrl) imageMap[source] = dataUrl;
+        })
+      );
+
+      const blob = await pdf(
+        <TagPDFDocument data={data} site={site} imageMap={imageMap} />
+      ).toBlob();
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -769,9 +752,6 @@ const TagPDFButton = ({ site, data }: TagPDFDocumentProps) => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
-      console.log('PDF downloaded successfully!');
-      
     } catch (error) {
       console.error('Error generating PDF:', error);
     } finally {
