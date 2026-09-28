@@ -32,30 +32,59 @@ const SitesPage = () => {
   const { user } = useCurrentUser();
   const navigate = useNavigate();
   const { isIhAdmin } = useCurrentUser();
-  const companyName = location?.state?.companyName || Strings.empty;
+  const cachedCompanyInfo = (() => {
+    const raw = sessionStorage.getItem(Constants.SESSION_KEYS.companyInfo);
+    try {
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const companyName =
+    location?.state?.companyName ||
+    cachedCompanyInfo?.companyName ||
+    Strings.empty;
   const [searchQuery, setSearchQuery] = useState(Strings.empty);
 
   const handleGetSites = async (): Promise<void> => {
-    if (!location.state) {
+    // Non-IH-admin roles (e.g. local_sis_admin) reach Sites directly from the
+    // menu with no navigation state: they load THEIR OWN sites via userId and do
+    // not need a selected company. Only IH-admin needs a companyId (to list a
+    // given company's sites), taken from navigation state or, as a fallback,
+    // from the companyInfo cached in sessionStorage.
+    let companyInfo = location.state
+      ? {
+          companyId: location.state.companyId,
+          companyName: location.state.companyName,
+          companyAddress: location.state.companyAddress,
+          companyPhone: location.state.companyPhone,
+          companyLogo: location.state.companyLogo,
+        }
+      : null;
+
+    if (!companyInfo) {
+      const cached = sessionStorage.getItem(Constants.SESSION_KEYS.companyInfo);
+      if (cached) {
+        companyInfo = JSON.parse(cached);
+      }
+    }
+
+    // IH-admin still requires a company; without one, send to unauthorized.
+    if (isIhAdmin() && !companyInfo?.companyId) {
       navigate(UnauthorizedRoute);
       return;
     }
 
-    const companyInfo = {
-      companyId: location.state.companyId,
-      companyName: location.state.companyName,
-      companyAddress: location.state.companyAddress,
-      companyPhone: location.state.companyPhone,
-      companyLogo: location.state.companyLogo,
-    };
-    sessionStorage.setItem(
-      Constants.SESSION_KEYS.companyInfo,
-      JSON.stringify(companyInfo)
-    );
+    if (companyInfo) {
+      sessionStorage.setItem(
+        Constants.SESSION_KEYS.companyInfo,
+        JSON.stringify(companyInfo)
+      );
+    }
 
     setLoading(true);
     const response = isIhAdmin()
-      ? await getSites(location.state.companyId).unwrap()
+      ? await getSites(companyInfo!.companyId).unwrap()
       : await getUserSites(user.userId).unwrap();
     setData(response);
     setLoading(false);
