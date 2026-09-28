@@ -414,6 +414,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     }
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     maxLength={100}
+                    showCount
                   />
                 </Form.Item>
               </div>
@@ -528,6 +529,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     placeholder={Strings.specialWarning}
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     maxLength={100}
+                    showCount
                   />
                 </Form.Item>
               </div>
@@ -630,6 +632,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                 >
                   <Input
                     maxLength={10}
+                    showCount
                     placeholder={Strings.referencePoint}
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                   />

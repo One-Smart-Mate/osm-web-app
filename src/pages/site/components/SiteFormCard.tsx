@@ -183,6 +183,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsBuilding />}
               placeholder={Strings.companyName}
             />
@@ -201,6 +202,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={13}
+              showCount
               addonBefore={<BsFiles />}
               placeholder={Strings.rfc}
               onInput={(e) =>
@@ -229,6 +231,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               placeholder={Strings.siteBusinessName}
               addonBefore={<BsBuilding />}
             />
@@ -245,6 +248,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={20}
+              showCount
               placeholder={Strings.siteType}
               addonBefore={<BsBuildingGear />}
             />
@@ -309,6 +313,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsPerson />}
               placeholder={Strings.contact}
             />
@@ -326,6 +331,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsDiagram3 />}
               placeholder={Strings.position}
             />
@@ -386,6 +392,7 @@ const SiteFormCard: React.FC<SiteFormCardProps> = ({
           >
             <Input
               maxLength={60}
+              showCount
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}
             />

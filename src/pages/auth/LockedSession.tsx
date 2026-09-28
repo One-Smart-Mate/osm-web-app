@@ -206,6 +206,7 @@ const LockedSession: React.FC = () => {
               setFastPassword(filteredValue);
             }}
             maxLength={4}
+            showCount
             size="large"
             style={{
               fontSize: '20px',

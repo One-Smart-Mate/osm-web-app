@@ -72,6 +72,7 @@ const PriorityFormCard = ({
           >
             <Input
               maxLength={4}
+              showCount
               addonBefore={<BsQrCode />}
               placeholder={Strings.code}
             />
@@ -90,6 +91,7 @@ const PriorityFormCard = ({
           >
             <Input
               maxLength={50}
+              showCount
               addonBefore={<BsCardText />}
               placeholder={Strings.description}
             />

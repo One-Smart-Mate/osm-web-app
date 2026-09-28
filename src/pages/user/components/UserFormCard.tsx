@@ -207,6 +207,7 @@ const UserFormCard = ({
           >
             <Input
               maxLength={50}
+              showCount
               addonBefore={<BsPerson />}
               placeholder={Strings.name}
             />
@@ -224,6 +225,7 @@ const UserFormCard = ({
           >
             <Input
               maxLength={60}
+              showCount
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}
             />
@@ -251,6 +253,7 @@ const UserFormCard = ({
           >
             <Input
               maxLength={15}
+              showCount
               addonBefore={<BsTelephone />}
               placeholder={Strings.phoneNumber}
             />
@@ -352,6 +355,7 @@ const UserFormCard = ({
                 addonBefore={<BsKey />}
                 placeholder={Strings.fastPassword}
                 maxLength={4}
+                showCount
                 addonAfter={
                   <div className="flex gap-1">
                     <Button

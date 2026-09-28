@@ -79,6 +79,7 @@ const OplForm: React.FC<OplFormProps> = ({
         >
           <Input
             maxLength={100}
+            showCount
             placeholder={Strings.oplFormTitlePlaceholder}
           />
         </Form.Item>
@@ -93,6 +94,7 @@ const OplForm: React.FC<OplFormProps> = ({
           <TextArea
             rows={4}
             maxLength={255}
+            showCount
             placeholder={Strings.oplFormObjectivePlaceholder}
           />
         </Form.Item>
