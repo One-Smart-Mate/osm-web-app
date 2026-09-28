@@ -25,7 +25,7 @@ const baseQueryWithRetry = retry(baseQuery, {
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithRetry,
-  tagTypes: ["User", "OplLevel"],
+  tagTypes: ["User", "OplLevel", "AmDiscardReason"],
   endpoints: (_) => ({}),
   refetchOnFocus: false, // OPTIMIZED: Disable refetch on tab focus (prevents unnecessary reloads)
   refetchOnReconnect: true, // Keep refetch when network reconnects (important for reliability)
