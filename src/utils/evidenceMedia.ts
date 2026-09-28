@@ -74,6 +74,37 @@ export const resolveEvidenceUrl = (evidenceName: string): string => {
 };
 
 /**
+ * Fetch an evidence and return it as a base64 data URL (for jsPDF / html2canvas,
+ * which need inlined image bytes, not a network/blob src). Uses the Bearer token
+ * for service routes; absolute legacy URLs are fetched directly. Returns null on
+ * any failure so the caller can skip the image instead of aborting the PDF.
+ */
+export const fetchEvidenceAsDataUrl = async (
+  evidenceName: string
+): Promise<string | null> => {
+  if (!evidenceName) return null;
+  try {
+    const token = getStoredToken();
+    const response = await fetch(resolveEvidenceUrl(evidenceName), {
+      headers:
+        token && !isAbsoluteEvidenceUrl(evidenceName)
+          ? { Authorization: `Bearer ${token}` }
+          : undefined,
+    });
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    return await new Promise<string | null>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve((reader.result as string) || null);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Fetch an evidence and expose it as an object URL usable by <img>/<video>/<audio>.
  *
  * - Absolute URLs are returned directly (no fetch, no blob).
