@@ -24,16 +24,32 @@ const PreclassifierFormCard = ({
   const [status, setStatus] = useState<Status[]>([]);
 
   useEffect(() => {
+    handleGetStatus();
+  }, []);
+
+  // Re-apply the values whenever the selected node changes. The tree node stores
+  // the description under `name` (and the full record under `data`), while a
+  // fetched record uses `preclassifierDescription`; read every source so the
+  // description is populated instead of showing blank when editing.
+  useEffect(() => {
     if (initialValues) {
+      const code =
+        initialValues.preclassifierCode ??
+        initialValues.code ??
+        initialValues.data?.preclassifierCode;
+      const description =
+        initialValues.preclassifierDescription ??
+        initialValues.description ??
+        initialValues.data?.preclassifierDescription ??
+        initialValues.name;
       form.setFieldsValue({
-        id: initialValues.id,
-        code: initialValues.preclassifierCode,
-        description: initialValues.preclassifierDescription,
+        id: initialValues.id ?? initialValues.data?.id,
+        code,
+        description,
         status: initialValues.status ?? Strings.activeStatus,
       });
     }
-    handleGetStatus();
-  }, []);
+  }, [initialValues, form]);
 
   const handleGetStatus = async () => {
     try {
