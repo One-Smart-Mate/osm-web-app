@@ -7,6 +7,7 @@ import User from "../data/user/user";
 import { setCredentials } from "../core/authReducer";
 import { setSessionLocked } from "../core/genericReducer";
 import Constants from "../utils/Constants";
+import { UnauthorizedRoute } from "../utils/Routes";
 
 const ProtectedRoutes: React.FC = () => {
   const [getSessionUser] = useSessionStorage<User>(Constants.SESSION_KEYS.user);
@@ -40,9 +41,21 @@ const ProtectedRoutes: React.FC = () => {
     return <Navigate to="/locked-session" replace state={{ from: location }} />;
   }
 
+  // Distinguish "not logged in" from "logged in but route not allowed for role".
+  // - No session  -> send to login ("/").
+  // - Has session -> send to /unauthorized instead of bouncing through login,
+  //   which caused a login flash-and-return flicker on role-restricted routes
+  //   (e.g. a local_admin reaching /dashboard/sites by URL, refresh, or a link).
+  const hasSession = getSessionUser() !== undefined;
+
   console.warn(`[ACCESS] ${canAccess} [ROUTE] -> ${location.pathname}`);
-  return canAccess ? (
-    <Outlet />
+
+  if (canAccess) {
+    return <Outlet />;
+  }
+
+  return hasSession ? (
+    <Navigate to={UnauthorizedRoute} replace state={{ from: location }} />
   ) : (
     <Navigate to="/" replace state={{ from: location }} />
   );
