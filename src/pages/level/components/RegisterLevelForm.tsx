@@ -1,11 +1,19 @@
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText, BsQrCodeScan } from "react-icons/bs";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import { useAppSelector } from "../../../core/store";
 import { useEffect, useState } from "react";
 import { selectSiteId } from "../../../core/genericReducer";
 import { useGetSiteResponsiblesMutation } from "../../../services/userService";
 import { Responsible } from "../../../data/user/user";
+
+const LabelWithHelp = ({ text, help }: { text: string; help: string }) => (
+  <span className="inline-flex items-center">
+    {text}
+    <AnatomyTooltip title={help} />
+  </span>
+);
 
 interface RegisterLevelFormProps {
   form: FormInstance;
@@ -39,7 +47,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       <Form.Item
         name="name"
         validateFirst
-        label={Strings.name}
+        label={<LabelWithHelp text={Strings.name} help={Strings.levelNameTooltip} />}
         rules={[{ required: true, message: Strings.name }]}
       >
         <Input
@@ -53,7 +61,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       <Form.Item
         name="description"
         validateFirst
-        label={Strings.description}
+        label={<LabelWithHelp text={Strings.description} help={Strings.levelDescriptionTooltip} />}
         rules={[{ required: true, message: Strings.requiredDescription }]}
       >
         <Input
@@ -66,7 +74,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
 
       <Form.Item
         name="responsibleId"
-        label={Strings.responsible}
+        label={<LabelWithHelp text={Strings.responsible} help={Strings.levelResponsibleTooltip} />}
         rules={[{ required: true, message: Strings.responsibleRequired }]}
       >
         <Select
@@ -82,7 +90,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
         />
       </Form.Item>
 
-      <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
+      <Form.Item name="levelMachineId" label={<LabelWithHelp text={Strings.levelMachineId} help={Strings.levelMachineIdTooltip} />}>
         <Input
           maxLength={50}
           showCount
@@ -91,13 +99,13 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
         />
       </Form.Item>
 
-      <Form.Item name="notify" valuePropName="checked" label={Strings.notify}>
+      <Form.Item name="notify" valuePropName="checked" label={<LabelWithHelp text={Strings.notify} help={Strings.levelNotifyTooltip} />}>
         <Checkbox>
           <p className="text-base">{Strings.notify}</p>
         </Checkbox>
       </Form.Item>
 
-      <Form.Item name="assignWhileCreate" valuePropName="checked" label={Strings.assignCardOnCreate}>
+      <Form.Item name="assignWhileCreate" valuePropName="checked" label={<LabelWithHelp text={Strings.assignCardOnCreate} help={Strings.levelAssignCardOnCreateTooltip} />}>
         <Checkbox>
           <p className="text-base">{Strings.assignCardOnCreate}</p>
         </Checkbox>
