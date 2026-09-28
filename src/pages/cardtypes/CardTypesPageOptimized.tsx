@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Tree from "react-d3-tree";
 import { useLocation, useNavigate } from "react-router-dom";
 import Strings from "../../utils/localizations/Strings";
-import { useGetCardTypesMutation } from "../../services/CardTypesService";
+import { useGetCardTypesMutation, useGetCardTypeMutation } from "../../services/CardTypesService";
 import { useGetPreclassifiersMutation } from "../../services/preclassifierService";
 import { setSiteId } from "../../core/genericReducer";
 import { useAppDispatch } from "../../core/store";
@@ -66,6 +66,7 @@ interface TreeNode {
 
 const CardTypesPageOptimized = () => {
   const [getCardTypes] = useGetCardTypesMutation();
+  const [getCardType] = useGetCardTypeMutation();
   const [getPreclassifiers] = useGetPreclassifiersMutation();
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -265,7 +266,7 @@ const CardTypesPageOptimized = () => {
     updatePreForm.resetFields();
   };
 
-  const handleDrawerOpen = (type: DrawerType, data: any = null) => {
+  const handleDrawerOpen = async (type: DrawerType, data: any = null) => {
     setDrawerType(type);
     setDrawerVisible(true);
 
@@ -305,6 +306,21 @@ const CardTypesPageOptimized = () => {
           description: Strings.empty,
           cardTypeId: data.cardTypeId,
         };
+      }
+    }
+
+    if (type === Strings.cardTypesDrawerTypeUpdateCardType && data) {
+      // The tree list endpoint returns a reduced record (no responsableId,
+      // cardTypeMethodology, or evidence counts), so fetch the full detail by id
+      // to preload every field in the edit form.
+      try {
+        const detailId = data.data?.id ?? data.id;
+        const fullRecord = await getCardType(String(detailId)).unwrap();
+        nextFormData = { ...data, ...fullRecord };
+      } catch (error) {
+        console.error("Error fetching card type detail:", error);
+        // Fallback: at least flatten the node's own data so it's not blank.
+        nextFormData = { ...(data.data || {}), ...data };
       }
     }
 
