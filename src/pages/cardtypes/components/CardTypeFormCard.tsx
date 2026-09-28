@@ -198,6 +198,7 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                   <Input
                     addonBefore={<LuTextCursor />}
                     maxLength={45}
+                    showCount
                     placeholder={Strings.name}
                   />
                 </Form.Item>
@@ -219,6 +220,7 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
                 >
                   <Input
                     maxLength={100}
+                    showCount
                     addonBefore={<BsCardText />}
                     placeholder={Strings.description}
                   />

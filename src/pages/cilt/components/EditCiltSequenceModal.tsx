@@ -556,6 +556,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               <Input
                 placeholder={Strings.specialWarning}
                 maxLength={100}
+                showCount
               />
             </Form.Item>
 
@@ -573,6 +574,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 rows={2}
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
                 maxLength={100}
+                showCount
               />
             </Form.Item>
 
@@ -656,6 +658,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 >
                   <Input
                     maxLength={10}
+                    showCount
                     placeholder={Strings.referencePoint}
                   />
                 </Form.Item>

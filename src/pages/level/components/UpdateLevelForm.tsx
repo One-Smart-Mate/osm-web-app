@@ -76,6 +76,7 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
         >
           <Input
             maxLength={45}
+            showCount
             addonBefore={<BsCardText />}
             placeholder={Strings.name}
           />
@@ -91,6 +92,7 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
         >
           <Input
             maxLength={100}
+            showCount
             addonBefore={<BsCardText />}
             placeholder={Strings.description}
           />
@@ -106,6 +108,7 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
         <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
           <Input
             maxLength={50}
+            showCount
             addonBefore={<BsQrCodeScan />}
             placeholder={Strings.levelMachineId}
           />

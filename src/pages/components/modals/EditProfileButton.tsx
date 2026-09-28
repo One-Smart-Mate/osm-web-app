@@ -103,6 +103,7 @@ const EditProfileButton = (): React.ReactElement => {
             >
               <Input
                 maxLength={50}
+                showCount
                 addonBefore={<BsPerson />}
                 placeholder={Strings.name}
               />
@@ -122,6 +123,7 @@ const EditProfileButton = (): React.ReactElement => {
             >
               <Input
                 maxLength={60}
+                showCount
                 addonBefore={<BsMailbox />}
                 placeholder={Strings.email}
               />
@@ -210,6 +212,7 @@ const EditProfileButton = (): React.ReactElement => {
                 addonBefore={<BsLock />}
                 placeholder={Strings.fastPassword}
                 maxLength={4}
+                showCount
               />
             </Form.Item>
             <AnatomyTooltip title={Strings.fastPassword} />

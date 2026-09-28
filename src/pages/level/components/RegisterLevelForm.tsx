@@ -44,6 +44,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       >
         <Input
           maxLength={45}
+          showCount
           addonBefore={<BsCardText />}
           placeholder={Strings.name}
         />
@@ -57,6 +58,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       >
         <Input
           maxLength={100}
+          showCount
           addonBefore={<BsCardText />}
           placeholder={Strings.description}
         />
@@ -83,6 +85,7 @@ const RegisterLevelForm = ({ form }: RegisterLevelFormProps) => {
       <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
         <Input
           maxLength={50}
+          showCount
           addonBefore={<BsQrCodeScan />}
           placeholder={Strings.levelMachineId}
         />

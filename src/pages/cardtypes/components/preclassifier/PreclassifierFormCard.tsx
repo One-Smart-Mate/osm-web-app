@@ -86,6 +86,7 @@ const PreclassifierFormCard = ({
             >
               <Input
                 maxLength={6}
+                showCount
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
@@ -104,6 +105,7 @@ const PreclassifierFormCard = ({
             >
               <Input
                 maxLength={100}
+                showCount
                 addonBefore={<BsCardText />}
                 placeholder={Strings.description}
               />
