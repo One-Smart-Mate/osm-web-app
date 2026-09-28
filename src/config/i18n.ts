@@ -405,7 +405,7 @@ const resources = {
       confirm: "Confirm",
       add: "Add",
 
-      tagVersion: import.meta.env.VITE_AP_VERSION,
+      tagVersion: `v${__APP_VERSION__}`,
       redesign: import.meta.env.VITE_IS_REDESIGN,
 
       // Evidence type
@@ -2834,7 +2834,7 @@ const resources = {
       accounts: "Cuentas",
       dashboard: "Panel",
       technicalSupport: "Soporte Técnico",
-      tagVersion: import.meta.env.VITE_AP_VERSION,
+      tagVersion: `v${__APP_VERSION__}`,
       redesign: import.meta.env.VITE_IS_REDESIGN,
       enterEmail: "Introduce tu correo electrónico",
       enterPassword: "Introduce tu contraseña",

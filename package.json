@@ -1,14 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "vite-react-template",
-  "version": "0.0.0",
+  "version": "3.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest --bail=1 --passWithNoTests"
+    "test": "vitest --bail=1 --passWithNoTests",
+    "version:bump": "npm version patch --no-git-tag-version",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ant-design/v5-patch-for-react-19": "^1.0.3",

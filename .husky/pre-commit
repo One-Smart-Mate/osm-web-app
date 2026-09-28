@@ -13,5 +13,13 @@ npm test || {
   exit 1
 }
 
-echo "🎉 All checks passed! Commit successful."
+echo "🎉 All checks passed!"
+
+echo "🔖 Bumping app version (patch)..."
+npm run version:bump || {
+  echo "❌ Version bump failed, aborting commit."
+  exit 1
+}
+git add package.json package-lock.json
+echo "✅ Version bumped. Commit successful."
 
