@@ -78,37 +78,44 @@ const CardTypeFormCard = ({ form, initialValues, onSubmit, enableStatus }: FormP
 
   const handleInitFormValues = async (cardTypesCatalog: CardTypesCatalog[]) => {
     if (initialValues) {
-      const formattedCardTypeMethodology =
-        typeof initialValues.cardTypeMethodology === "string"
-          ? `${initialValues.methodology || ""} - ${
-              initialValues.cardTypeMethodology
-            }`
-          : `${initialValues.cardTypeMethodologyName || ""} - ${
-              initialValues.cardTypeMethodology || ""
-            }`;
+      // Normalize for tolerant comparisons (case, accents and surrounding space).
+      const normalize = (value: unknown) =>
+        String(value ?? "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .toLowerCase();
+
       const options = catalogsOptions(cardTypesCatalog);
-      // Prefer an exact label match; if the display name differs, fall back to
-      // matching the catalog entry by its methodology code so the select still
-      // shows the current methodology when editing.
-      let matchingOption = options.find(
-        (option) => option.value === formattedCardTypeMethodology
+
+      // The detail record exposes the methodology code as `cardTypeMethodology`
+      // and its display name as `methodology`. Resolve the matching catalog
+      // entry by code first, and if the code is missing fall back to matching
+      // by the (accent/case-insensitive) name, so the select is preloaded.
+      const detailCode = normalize(initialValues.cardTypeMethodology);
+      const detailName = normalize(
+        initialValues.methodology || initialValues.cardTypeMethodologyName
       );
-      if (!matchingOption && initialValues.cardTypeMethodology) {
-        const methodologyCode = String(
-          initialValues.cardTypeMethodology
-        ).trim();
-        const catalogByCode = cardTypesCatalog.find(
-          (catalog) =>
-            String(catalog.cardTypeMethodology).trim() === methodologyCode
+
+      let catalogMatch = detailCode
+        ? cardTypesCatalog.find(
+            (catalog) => normalize(catalog.cardTypeMethodology) === detailCode
+          )
+        : undefined;
+
+      if (!catalogMatch && detailName) {
+        catalogMatch = cardTypesCatalog.find(
+          (catalog) => normalize(catalog.cardTypeMethodologyName) === detailName
         );
-        if (catalogByCode) {
-          matchingOption = options.find(
+      }
+
+      const matchingOption = catalogMatch
+        ? options.find(
             (option) =>
               option.value ===
-              `${catalogByCode.cardTypeMethodologyName} - ${catalogByCode.cardTypeMethodology}`
-          );
-        }
-      }
+              `${catalogMatch.cardTypeMethodologyName} - ${catalogMatch.cardTypeMethodology}`
+          )
+        : undefined;
       const validColor = initialValues.color?.startsWith("#")
         ? initialValues.color
         : `#${initialValues.color || "FFFFFF"}`;
