@@ -102,6 +102,13 @@ export const getInitRoute = (user: User): string => {
 };
 
 export const getUserRol = (user: User): UserRoles | null => {
+  // Guard against a missing user (no session / expired session). Without this,
+  // accessing user.roles throws "Cannot read properties of undefined (reading
+  // 'roles')", which crashes the whole app to a blank screen instead of letting
+  // ProtectedRoutes redirect to login.
+  if (!user || !Array.isArray(user.roles)) {
+    return UserRoles._UNDEFINED;
+  }
   const isihSisAdmin = user.roles?.some(
     (role) => role === Constants.ihSisAdmin
   );
