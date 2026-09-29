@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Image } from "antd";
+import { Image, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import { Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
 import {
@@ -19,13 +20,15 @@ const IMAGE_NOT_FOUND =
  * service routes, so the binary is fetched with the Bearer token and shown via
  * a blob URL (see useAuthenticatedMedia).
  *
- * The grid uses a small cached thumbnail (fast); the full-resolution image is
- * loaded only when the user opens the preview, via Ant Design's preview.src.
+ * The grid shows a small cached thumbnail (fast). The full-resolution image is
+ * fetched ONLY when the preview is opened; while it downloads the preview shows
+ * a loading spinner (never the blurry upscaled thumbnail), and swaps to the
+ * sharp image once it is ready.
  */
 const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const thumb = useAuthenticatedMedia(evidence.evidenceName, true);
-  // Only fetch the full-resolution image once the user opens the preview.
+  // Fetch the full-resolution image only after the preview is opened.
   const full = useAuthenticatedMedia(
     previewOpen ? evidence.evidenceName : ""
   );
@@ -35,6 +38,8 @@ const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
       ? IMAGE_NOT_FOUND
       : thumb.url;
 
+  const fullReady = Boolean(full.url) && !full.loading && !full.error;
+
   return (
     <Image
       width={200}
@@ -42,9 +47,32 @@ const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
       placeholder={thumb.loading}
       fallback={IMAGE_NOT_FOUND}
       preview={{
-        src: full.url || gridSrc || IMAGE_NOT_FOUND,
+        // Pass the full image only when it is ready; until then the custom
+        // renderer below shows a spinner instead of the upscaled thumbnail.
+        src: fullReady ? full.url : IMAGE_NOT_FOUND,
         onVisibleChange: (visible) => {
-          if (visible) setPreviewOpen(true);
+          setPreviewOpen(visible);
+        },
+        imageRender: (originalNode) => {
+          if (!fullReady) {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 200,
+                  minWidth: 200,
+                }}
+              >
+                <Spin
+                  indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />}
+                  tip={Strings.loading}
+                />
+              </div>
+            );
+          }
+          return originalNode;
         },
       }}
       alt={`Image of evidence with ID ${evidence.id}`}
