@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Image, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { useState, type CSSProperties } from "react";
+import { Image, Progress } from "antd";
 import { Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
 import {
@@ -22,8 +21,8 @@ const IMAGE_NOT_FOUND =
  *
  * The grid shows a small cached thumbnail (fast). The full-resolution image is
  * fetched ONLY when the preview is opened; while it downloads the preview shows
- * a loading spinner (never the blurry upscaled thumbnail), and swaps to the
- * sharp image once it is ready.
+ * a progress bar (never the blurry upscaled thumbnail), and swaps to the sharp
+ * image once it is ready.
  */
 const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -48,27 +47,31 @@ const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
       fallback={IMAGE_NOT_FOUND}
       preview={{
         // Pass the full image only when it is ready; until then the custom
-        // renderer below shows a spinner instead of the upscaled thumbnail.
+        // renderer below shows a progress bar instead of the upscaled thumbnail.
         src: fullReady ? full.url : IMAGE_NOT_FOUND,
         onVisibleChange: (visible) => {
           setPreviewOpen(visible);
         },
         imageRender: (originalNode) => {
+          if (full.error) {
+            return (
+              <div style={loadingBoxStyle}>
+                <span style={{ color: "#fff" }}>{Strings.failedToDownload}</span>
+              </div>
+            );
+          }
           if (!fullReady) {
             return (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 200,
-                  minWidth: 200,
-                }}
-              >
-                <Spin
-                  indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />}
-                  tip={Strings.loading}
+              <div style={loadingBoxStyle}>
+                <Progress
+                  type="circle"
+                  percent={full.progress}
+                  size={90}
+                  strokeColor="#1677ff"
                 />
+                <span style={{ color: "#fff", marginTop: 12 }}>
+                  {Strings.loading}
+                </span>
               </div>
             );
           }
@@ -78,6 +81,15 @@ const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
       alt={`Image of evidence with ID ${evidence.id}`}
     />
   );
+};
+
+const loadingBoxStyle: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 220,
+  minWidth: 220,
 };
 
 const ImagesPreviewGroup = ({ data }: CardProps) => {
