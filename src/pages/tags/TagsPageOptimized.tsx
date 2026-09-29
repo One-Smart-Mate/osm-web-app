@@ -104,7 +104,7 @@ const TagsPageOptimized = () => {
     };
   }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly]);
 
-  const handleGetCards = async (page: number = 1) => {
+  const handleGetCards = async (page: number = 1, forceFresh: boolean = false) => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
@@ -114,8 +114,10 @@ const TagsPageOptimized = () => {
     setLoadingProgress(10);
 
     try {
-      // Check cache first
-      const cachedPage = await CardCache.getCachedPage(siteId, page, pageSize, filters);
+      // Check cache first (skipped on a forced refresh).
+      const cachedPage = forceFresh
+        ? null
+        : await CardCache.getCachedPage(siteId, page, pageSize, filters);
 
       if (cachedPage) {
         setData(cachedPage.cards);
@@ -150,14 +152,6 @@ const TagsPageOptimized = () => {
       setData(response.cards ?? []);
       setTotal(response.total);
       setCurrentPage(page);
-
-      setLoadingProgress(100);
-      setData(response.cards ?? []);
-      setTotal(response.total);
-      setCurrentPage(page);
-
-      // Establish a delta-sync baseline (non-blocking) after a full load of the
-      // default view, so a later refresh can pull only the changes.
     } catch (error) {
       handleErrorNotification(error);
     } finally {
@@ -197,7 +191,7 @@ const TagsPageOptimized = () => {
   const handleRefresh = async () => {
     await CardCache.clearSiteCache(siteId);
     setCurrentPage(1);
-    await handleGetCards(1);
+    await handleGetCards(1, true);
   };
 
   const handleCloseCreateModal = () => {
