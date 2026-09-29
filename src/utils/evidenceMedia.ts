@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Constants from "./Constants";
 import { Evidences } from "../data/card/card";
 import { isAudioURL, isImageURL, isVideoURL } from "./Extensions";
+import { getCachedEvidence, putCachedEvidence } from "./evidenceCache";
 
 /**
  * Evidence media helpers.
@@ -155,6 +156,18 @@ export const useAuthenticatedMedia = (
       setError(false);
       setProgress(0);
       try {
+        // 1) Reuse a persistently cached blob if we have one — evidence never
+        //    changes, so this avoids re-downloading it after a page reload.
+        const cached = await getCachedEvidence(evidenceName, thumb);
+        if (cached) {
+          if (cancelled) return;
+          objectUrl = URL.createObjectURL(cached);
+          setUrl(objectUrl);
+          setProgress(100);
+          setLoading(false);
+          return;
+        }
+
         const token = getStoredToken();
         const response = await fetch(resolveEvidenceUrl(evidenceName, thumb), {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
@@ -163,6 +176,8 @@ export const useAuthenticatedMedia = (
           throw new Error(`Evidence request failed: ${response.status}`);
 
         // Stream the body so we can report real download progress.
+        const contentType =
+          response.headers.get("Content-Type") || "application/octet-stream";
         const total = Number(response.headers.get("Content-Length") || 0);
         let blob: Blob;
         if (response.body && total > 0) {
@@ -180,7 +195,7 @@ export const useAuthenticatedMedia = (
               }
             }
           }
-          blob = new Blob(chunks as BlobPart[]);
+          blob = new Blob(chunks as BlobPart[], { type: contentType });
         } else {
           // No Content-Length: fall back to a plain blob without progress.
           blob = await response.blob();
@@ -189,6 +204,8 @@ export const useAuthenticatedMedia = (
         objectUrl = URL.createObjectURL(blob);
         setUrl(objectUrl);
         setProgress(100);
+        // 2) Persist for next time (best-effort, does not block rendering).
+        void putCachedEvidence(evidenceName, thumb, blob, contentType);
       } catch {
         if (!cancelled) setError(true);
       } finally {
