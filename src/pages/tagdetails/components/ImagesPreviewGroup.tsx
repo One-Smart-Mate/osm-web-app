@@ -46,9 +46,10 @@ const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
       placeholder={thumb.loading}
       fallback={IMAGE_NOT_FOUND}
       preview={{
-        // Pass the full image only when it is ready; until then the custom
-        // renderer below shows a progress bar instead of the upscaled thumbnail.
-        src: fullReady ? full.url : IMAGE_NOT_FOUND,
+        // Base src: the full image when ready, otherwise the thumbnail (so the
+        // viewer never tries to load the broken-image placeholder). While the
+        // full image downloads, imageRender below shows a progress bar instead.
+        src: fullReady ? full.url : gridSrc,
         onVisibleChange: (visible) => {
           setPreviewOpen(visible);
         },
@@ -106,16 +107,14 @@ const ImagesPreviewGroup = ({ data }: CardProps) => {
         <h1 className="font-semibold">{Strings.images}</h1>
       </div>
       {images.length > 0 ? (
-        <Image.PreviewGroup preview={{}}>
-          <div className="grid grid-cols-3 gap-4">
-            {images.map((image, index) => (
-              <AuthenticatedImage
-                key={image.id || `fallback-id-${index}`}
-                evidence={image}
-              />
-            ))}
-          </div>
-        </Image.PreviewGroup>
+        <div className="grid grid-cols-3 gap-4">
+          {images.map((image, index) => (
+            <AuthenticatedImage
+              key={image.id || `fallback-id-${index}`}
+              evidence={image}
+            />
+          ))}
+        </div>
       ) : (
         <div className="text-center p-4">
           <Image width={200} src={IMAGE_NOT_FOUND} alt="No images available" />
