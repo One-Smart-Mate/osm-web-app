@@ -121,7 +121,7 @@ export const fetchEvidenceAsDataUrl = async (
 export const useAuthenticatedMedia = (
   evidenceName: string,
   thumb: boolean = false
-): { url?: string; loading: boolean; error: boolean } => {
+): { url?: string; loading: boolean; error: boolean; progress: number } => {
   const [url, setUrl] = useState<string | undefined>(
     isAbsoluteEvidenceUrl(evidenceName) ? evidenceName : undefined
   );
@@ -129,6 +129,8 @@ export const useAuthenticatedMedia = (
     !isAbsoluteEvidenceUrl(evidenceName)
   );
   const [error, setError] = useState<boolean>(false);
+  // Download progress 0..100 (0 when unknown / not started).
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     if (!evidenceName) {
@@ -151,16 +153,42 @@ export const useAuthenticatedMedia = (
     const load = async () => {
       setLoading(true);
       setError(false);
+      setProgress(0);
       try {
         const token = getStoredToken();
         const response = await fetch(resolveEvidenceUrl(evidenceName, thumb), {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
-        if (!response.ok) throw new Error(`Evidence request failed: ${response.status}`);
-        const blob = await response.blob();
+        if (!response.ok)
+          throw new Error(`Evidence request failed: ${response.status}`);
+
+        // Stream the body so we can report real download progress.
+        const total = Number(response.headers.get("Content-Length") || 0);
+        let blob: Blob;
+        if (response.body && total > 0) {
+          const reader = response.body.getReader();
+          const chunks: Uint8Array[] = [];
+          let received = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value) {
+              chunks.push(value);
+              received += value.length;
+              if (!cancelled) {
+                setProgress(Math.min(99, Math.round((received / total) * 100)));
+              }
+            }
+          }
+          blob = new Blob(chunks as BlobPart[]);
+        } else {
+          // No Content-Length: fall back to a plain blob without progress.
+          blob = await response.blob();
+        }
         if (cancelled) return;
         objectUrl = URL.createObjectURL(blob);
         setUrl(objectUrl);
+        setProgress(100);
       } catch {
         if (!cancelled) setError(true);
       } finally {
@@ -176,5 +204,5 @@ export const useAuthenticatedMedia = (
     };
   }, [evidenceName, thumb]);
 
-  return { url, loading, error };
+  return { url, loading, error, progress };
 };
