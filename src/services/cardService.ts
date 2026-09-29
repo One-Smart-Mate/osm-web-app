@@ -37,7 +37,32 @@ interface CardFilters {
   myCards?: boolean;
 }
 
+// --- Delta sync (incremental refresh) ---
+export interface CardDeltaUpsert {
+  type: 'upsert';
+  changedAt: string;
+  card: CardInterface;
+}
+export interface CardDeltaDelete {
+  type: 'delete';
+  id: number;
+  cardUUID: string;
+  siteId: number;
+  deletedAt: string;
+  changedAt: string;
+}
+export type CardDeltaChange = CardDeltaUpsert | CardDeltaDelete;
+export interface CardDeltaSyncResponse {
+  schemaVersion: number;
+  siteId: number;
+  generatedAt: string;
+  nextCursor: string;
+  hasMore: boolean;
+  changes: CardDeltaChange[];
+}
+
 const CARD_API_MAX_PAGE_SIZE = 200;
+const CARD_SYNC_MAX_LIMIT = 500;
 
 const getCardsFromPage = (page: PaginatedCardsResponse): CardInterface[] =>
   page.data ?? page.cards ?? [];
@@ -129,6 +154,26 @@ export const cardService = apiSlice.injectEndpoints({
         return `/card/all/${siteId}/paginated?${queryParams}`;
       },
       transformResponse: (response: { data: PaginatedCardsResponse }) => response.data,
+    }),
+    // Incremental delta sync: returns only cards changed since the cursor.
+    getCardChanges: builder.mutation<
+      CardDeltaSyncResponse,
+      { siteId: string; cursor?: string; limit?: number }
+    >({
+      query: ({ siteId, cursor, limit }) => {
+        const params = new URLSearchParams();
+        if (cursor) params.set('cursor', cursor);
+        if (limit) {
+          params.set(
+            'limit',
+            Math.max(1, Math.min(limit, CARD_SYNC_MAX_LIMIT)).toString(),
+          );
+        }
+        const qs = params.toString();
+        return `/card/sync/${siteId}${qs ? `?${qs}` : ''}`;
+      },
+      transformResponse: (response: { data: CardDeltaSyncResponse }) =>
+        response.data,
     }),
     getCardDetails: builder.mutation<CardDetailsInterface, string>({
       query: (id) => `/card/${id}`,
@@ -448,6 +493,7 @@ export const {
   useGetCardsByLevelMutation,
   useGetCardsMutation,
   useGetCardsPaginatedMutation,
+  useGetCardChangesMutation,
   useGetCardDetailsMutation,
   useGetCardNotesMutation,
   useUpdateCardPriorityMutation,
