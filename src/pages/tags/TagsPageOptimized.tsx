@@ -105,7 +105,7 @@ const TagsPageOptimized = () => {
     };
   }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly, user?.userId]);
 
-  const handleGetCards = async (page: number = 1) => {
+  const handleGetCards = async (page: number = 1, forceFresh: boolean = false) => {
     if (!location.state) {
       navigate(UnauthorizedRoute);
       return;
@@ -115,8 +115,10 @@ const TagsPageOptimized = () => {
     setLoadingProgress(10);
 
     try {
-      // Check cache first
-      const cachedPage = await CardCache.getCachedPage(siteId, page, pageSize, filters);
+      // Check cache first (skipped on a forced refresh).
+      const cachedPage = forceFresh
+        ? null
+        : await CardCache.getCachedPage(siteId, page, pageSize, filters);
 
       if (cachedPage) {
         setData(cachedPage.cards);
@@ -190,6 +192,15 @@ const TagsPageOptimized = () => {
     handleGetCards(1);
   };
 
+  // Refresh: drop the stale cache and reload page 1 fresh from the server (the
+  // forceFresh flag skips the local cache read so the new card shows on the
+  // first click). Immediate now that the API is no-store.
+  const handleRefresh = async () => {
+    await CardCache.clearSiteCache(siteId);
+    setCurrentPage(1);
+    await handleGetCards(1, true);
+  };
+
   const handlePageChange = (page: number, newPageSize?: number) => {
     if (newPageSize && newPageSize !== pageSize) {
       setPageSize(newPageSize);
@@ -258,7 +269,7 @@ const TagsPageOptimized = () => {
 
               <div style={{ display: 'flex', gap: '8px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}>
                 <RefreshButton
-                  onRefresh={() => handleGetCards(1)}
+                  onRefresh={handleRefresh}
                   isLoading={isLoading}
                 />
                 {/* Toggle button for Mechanics and other roles (NOT for Operators) */}
