@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Image } from "antd";
 import { Evidences } from "../../../data/card/card";
 import Strings from "../../../utils/localizations/Strings";
@@ -17,16 +18,35 @@ const IMAGE_NOT_FOUND =
  * Renders a single evidence image. Evidences are stored as authenticated
  * service routes, so the binary is fetched with the Bearer token and shown via
  * a blob URL (see useAuthenticatedMedia).
+ *
+ * The grid uses a small cached thumbnail (fast); the full-resolution image is
+ * loaded only when the user opens the preview, via Ant Design's preview.src.
  */
 const AuthenticatedImage = ({ evidence }: { evidence: Evidences }) => {
-  const { url, loading, error } = useAuthenticatedMedia(evidence.evidenceName);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const thumb = useAuthenticatedMedia(evidence.evidenceName, true);
+  // Only fetch the full-resolution image once the user opens the preview.
+  const full = useAuthenticatedMedia(
+    previewOpen ? evidence.evidenceName : ""
+  );
+
+  const gridSrc =
+    thumb.error || (!thumb.url && !thumb.loading)
+      ? IMAGE_NOT_FOUND
+      : thumb.url;
 
   return (
     <Image
       width={200}
-      src={error || (!url && !loading) ? IMAGE_NOT_FOUND : url}
-      placeholder={loading}
+      src={gridSrc}
+      placeholder={thumb.loading}
       fallback={IMAGE_NOT_FOUND}
+      preview={{
+        src: full.url || gridSrc || IMAGE_NOT_FOUND,
+        onVisibleChange: (visible) => {
+          if (visible) setPreviewOpen(true);
+        },
+      }}
       alt={`Image of evidence with ID ${evidence.id}`}
     />
   );

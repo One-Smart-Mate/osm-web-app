@@ -66,11 +66,18 @@ const getStoredToken = (): string | undefined => {
  * untouched; a service route is prefixed with the API base so it hits the
  * backend instead of the frontend origin.
  */
-export const resolveEvidenceUrl = (evidenceName: string): string => {
+export const resolveEvidenceUrl = (
+  evidenceName: string,
+  thumb: boolean = false
+): string => {
   if (isAbsoluteEvidenceUrl(evidenceName)) return evidenceName;
   const base = (import.meta.env.VITE_API_SERVICE || "").replace(/\/+$/, "");
   const path = evidenceName.startsWith("/") ? evidenceName : `/${evidenceName}`;
-  return `${base}${path}`;
+  // A small cached thumbnail for list/card views (images only; the backend
+  // falls back to the original for non-images). The full image is fetched
+  // without this flag when the user opens the evidence.
+  const suffix = thumb ? (path.includes("?") ? "&thumb=1" : "?thumb=1") : "";
+  return `${base}${path}${suffix}`;
 };
 
 /**
@@ -112,7 +119,8 @@ export const fetchEvidenceAsDataUrl = async (
  *   which is revoked on unmount / when the source changes.
  */
 export const useAuthenticatedMedia = (
-  evidenceName: string
+  evidenceName: string,
+  thumb: boolean = false
 ): { url?: string; loading: boolean; error: boolean } => {
   const [url, setUrl] = useState<string | undefined>(
     isAbsoluteEvidenceUrl(evidenceName) ? evidenceName : undefined
@@ -145,7 +153,7 @@ export const useAuthenticatedMedia = (
       setError(false);
       try {
         const token = getStoredToken();
-        const response = await fetch(resolveEvidenceUrl(evidenceName), {
+        const response = await fetch(resolveEvidenceUrl(evidenceName, thumb), {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
         if (!response.ok) throw new Error(`Evidence request failed: ${response.status}`);
@@ -166,7 +174,7 @@ export const useAuthenticatedMedia = (
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [evidenceName]);
+  }, [evidenceName, thumb]);
 
   return { url, loading, error };
 };
