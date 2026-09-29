@@ -49,8 +49,6 @@ const isDefaultView = (filters: {
   !filters.endDate &&
   filters.status === 'A,P' &&
   !filters.myCards;
-const hasActiveFilters = (filters: Parameters<typeof isDefaultView>[0]): boolean =>
-  !isDefaultView(filters);
 
 const { RangePicker } = DatePicker;
 
@@ -154,6 +152,9 @@ const TagsPageOptimized = () => {
         setCurrentPage(page);
         setLoading(false);
         setLoadingProgress(0);
+        if (page === 1 && isDefaultView(filters)) {
+          void establishBaseline();
+        }
         return;
       }
 
@@ -182,32 +183,15 @@ const TagsPageOptimized = () => {
       setTotal(response.total);
       setCurrentPage(page);
 
-      // Establish a delta-sync baseline after a full load of the default view
-      // (page 1, no filters), so a later refresh can pull only the changes.
-      // Drain the delta once to advance the cursor to "now"; we discard the
-      // payload here (the list already came from the paginated endpoint) and
-      // keep only the final cursor.
-      const noFilters = !hasActiveFilters(filters);
-      if (page === 1 && noFilters) {
-        try {
-          let cursor: string | undefined = undefined;
-          let generatedAt = new Date().toISOString();
-          for (let guard = 0; guard < 100; guard++) {
-            const delta = await getCardChanges({
-              siteId: siteId.toString(),
-              cursor,
-              limit: CARD_SYNC_MAX_LIMIT,
-            }).unwrap();
-            cursor = delta.nextCursor;
-            generatedAt = delta.generatedAt;
-            if (!delta.hasMore) break;
-          }
-          if (cursor) {
-            await CardCache.setSyncCursor(siteId, cursor, generatedAt);
-          }
-        } catch {
-          // Baseline is best-effort; refresh falls back to a full reload.
-        }
+      setLoadingProgress(100);
+      setData(response.cards ?? []);
+      setTotal(response.total);
+      setCurrentPage(page);
+
+      // Establish a delta-sync baseline (non-blocking) after a full load of the
+      // default view, so a later refresh can pull only the changes.
+      if (page === 1 && isDefaultView(filters)) {
+        void establishBaseline();
       }
     } catch (error) {
       handleErrorNotification(error);
@@ -237,18 +221,46 @@ const TagsPageOptimized = () => {
     setShowCreateModal(true);
   };
 
-  // Refresh the list. On the default view (page 1, no filters) with a known
-  // sync baseline, pull ONLY the changes and merge them into the current list:
-  // upserts replace/add by cardUUID, deletes remove. Otherwise fall back to a
-  // full reload of the current page.
+  // Fix a delta-sync baseline: drain the delta to "now" and store the cursor.
+  // Best-effort and non-blocking; a failure just means the next refresh does a
+  // full reload instead of an incremental one.
+  const establishBaseline = async () => {
+    try {
+      let cursor: string | undefined = undefined;
+      let generatedAt = new Date().toISOString();
+      for (let guard = 0; guard < 100; guard++) {
+        const delta = await getCardChanges({
+          siteId: siteId.toString(),
+          cursor,
+          limit: CARD_SYNC_MAX_LIMIT,
+        }).unwrap();
+        cursor = delta.nextCursor;
+        generatedAt = delta.generatedAt;
+        if (!delta.hasMore) break;
+      }
+      if (cursor) {
+        await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+      }
+    } catch {
+      // ignore — refresh will fall back to a full reload
+    }
+  };
+
+  // Refresh the list. On the default view with a known sync baseline, pull ONLY
+  // the changes and merge them into the current list (upserts add/replace by
+  // uuid, deletes remove). Any other case, or any failure, does a clean full
+  // reload — so the button ALWAYS produces a fresh list.
   const handleRefresh = async () => {
     const onDefaultView = currentPage === 1 && isDefaultView(filters);
     const baseline = onDefaultView
       ? await CardCache.getSyncCursor(siteId)
       : null;
 
+    // Always drop the stale page cache so we never keep serving an old list.
+    await CardCache.clearSiteCache(siteId);
+
+    // No incremental baseline available: do a clean full reload.
     if (!onDefaultView || !baseline) {
-      await CardCache.clearSiteCache(siteId);
       setCurrentPage(1);
       await handleGetCards(1);
       return;
@@ -287,11 +299,9 @@ const TagsPageOptimized = () => {
       if (upserts.size > 0 || deleted.size > 0) {
         setData((current) => {
           const byUuid = new Map(current.map((c) => [c.cardUUID, c]));
-          // Apply upserts (add new / replace existing).
           for (const [uuid, card] of upserts) {
             byUuid.set(uuid, card);
           }
-          // Apply deletes.
           for (const uuid of deleted) {
             byUuid.delete(uuid);
           }
@@ -299,12 +309,20 @@ const TagsPageOptimized = () => {
           setTotal(merged.length);
           return merged;
         });
-        // The default-view cache is now stale; drop it so pagination rebuilds.
-        await CardCache.clearSiteCache(siteId);
-      }
-
-      if (cursor) {
-        await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+        // Advance the stored cursor so the next refresh only fetches newer changes.
+        if (cursor) {
+          await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+        }
+      } else {
+        // No incremental changes detected. The baseline may already include the
+        // latest cards (e.g. it was fixed right after creation), so reload the
+        // page from the server to guarantee the on-screen list is current.
+        if (cursor) {
+          await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+        }
+        setCurrentPage(1);
+        await handleGetCards(1);
+        return;
       }
     } catch (error) {
       // On any delta failure, fall back to a clean full reload.
