@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGetCardsPaginatedMutation, useGetCardChangesMutation } from "../../services/cardService";
+import { useGetCardsPaginatedMutation } from "../../services/cardService";
 import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
@@ -22,34 +22,6 @@ import Constants from "../../utils/Constants";
 type SortOption = 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
 type DateFilterType = 'creation' | 'due' | '';
 
-// Max changes per delta-sync page (backend caps at 500).
-const CARD_SYNC_MAX_LIMIT = 500;
-// The default, unfiltered view — the only view where an incremental refresh
-// can safely merge deltas into the current list without re-evaluating filters.
-const isDefaultView = (filters: {
-  searchText?: string;
-  cardNumber?: string;
-  location?: string;
-  levelMachineId?: string;
-  creator?: string;
-  resolver?: string;
-  dateFilterType?: string;
-  startDate?: string;
-  endDate?: string;
-  status?: string;
-  myCards?: boolean;
-}): boolean =>
-  !filters.searchText &&
-  !filters.cardNumber &&
-  !filters.location &&
-  !filters.levelMachineId &&
-  !filters.creator &&
-  !filters.resolver &&
-  !filters.startDate &&
-  !filters.endDate &&
-  filters.status === 'A,P' &&
-  !filters.myCards;
-
 const { RangePicker } = DatePicker;
 
 const rangePresets: TimeRangePickerProps["presets"] = [
@@ -61,7 +33,6 @@ const rangePresets: TimeRangePickerProps["presets"] = [
 
 const TagsPageOptimized = () => {
   const [getCardsPaginated] = useGetCardsPaginatedMutation();
-  const [getCardChanges] = useGetCardChangesMutation();
   const [isLoading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const location = useLocation();
@@ -152,9 +123,6 @@ const TagsPageOptimized = () => {
         setCurrentPage(page);
         setLoading(false);
         setLoadingProgress(0);
-        if (page === 1 && isDefaultView(filters)) {
-          void establishBaseline();
-        }
         return;
       }
 
@@ -190,9 +158,6 @@ const TagsPageOptimized = () => {
 
       // Establish a delta-sync baseline (non-blocking) after a full load of the
       // default view, so a later refresh can pull only the changes.
-      if (page === 1 && isDefaultView(filters)) {
-        void establishBaseline();
-      }
     } catch (error) {
       handleErrorNotification(error);
     } finally {
@@ -221,119 +186,18 @@ const TagsPageOptimized = () => {
     setShowCreateModal(true);
   };
 
-  // Fix a delta-sync baseline: drain the delta to "now" and store the cursor.
-  // Best-effort and non-blocking; a failure just means the next refresh does a
-  // full reload instead of an incremental one.
-  const establishBaseline = async () => {
-    try {
-      let cursor: string | undefined = undefined;
-      let generatedAt = new Date().toISOString();
-      for (let guard = 0; guard < 100; guard++) {
-        const delta = await getCardChanges({
-          siteId: siteId.toString(),
-          cursor,
-          limit: CARD_SYNC_MAX_LIMIT,
-        }).unwrap();
-        cursor = delta.nextCursor;
-        generatedAt = delta.generatedAt;
-        if (!delta.hasMore) break;
-      }
-      if (cursor) {
-        await CardCache.setSyncCursor(siteId, cursor, generatedAt);
-      }
-    } catch {
-      // ignore — refresh will fall back to a full reload
-    }
-  };
 
   // Refresh the list. On the default view with a known sync baseline, pull ONLY
   // the changes and merge them into the current list (upserts add/replace by
-  // uuid, deletes remove). Any other case, or any failure, does a clean full
-  // reload — so the button ALWAYS produces a fresh list.
+  // Refresh the list. The card view is paginated (10 per page) and the server
+  // returns each page already sorted; merging deltas into a single page in the
+  // browser reorders/hides rows, so refresh simply drops the stale cache and
+  // reloads page 1 fresh from the server. Thanks to the no-store API change
+  // this is immediate, and it always shows newly created cards at the top.
   const handleRefresh = async () => {
-    const onDefaultView = currentPage === 1 && isDefaultView(filters);
-    const baseline = onDefaultView
-      ? await CardCache.getSyncCursor(siteId)
-      : null;
-
-    // Always drop the stale page cache so we never keep serving an old list.
     await CardCache.clearSiteCache(siteId);
-
-    // No incremental baseline available: do a clean full reload.
-    if (!onDefaultView || !baseline) {
-      setCurrentPage(1);
-      await handleGetCards(1);
-      return;
-    }
-
-    setLoading(true);
-    setLoadingProgress(20);
-    try {
-      const upserts = new Map<string, CardInterface>();
-      const deleted = new Set<string>();
-      let cursor: string | undefined = baseline.cursor;
-      let generatedAt = baseline.generatedAt;
-
-      for (let guard = 0; guard < 100; guard++) {
-        const delta = await getCardChanges({
-          siteId: siteId.toString(),
-          cursor,
-          limit: CARD_SYNC_MAX_LIMIT,
-        }).unwrap();
-        for (const change of delta.changes) {
-          if (change.type === "upsert") {
-            deleted.delete(change.card.cardUUID);
-            upserts.set(change.card.cardUUID, change.card);
-          } else {
-            upserts.delete(change.cardUUID);
-            deleted.add(change.cardUUID);
-          }
-        }
-        cursor = delta.nextCursor;
-        generatedAt = delta.generatedAt;
-        if (!delta.hasMore) break;
-      }
-
-      setLoadingProgress(70);
-
-      if (upserts.size > 0 || deleted.size > 0) {
-        setData((current) => {
-          const byUuid = new Map(current.map((c) => [c.cardUUID, c]));
-          for (const [uuid, card] of upserts) {
-            byUuid.set(uuid, card);
-          }
-          for (const uuid of deleted) {
-            byUuid.delete(uuid);
-          }
-          const merged = Array.from(byUuid.values());
-          setTotal(merged.length);
-          return merged;
-        });
-        // Advance the stored cursor so the next refresh only fetches newer changes.
-        if (cursor) {
-          await CardCache.setSyncCursor(siteId, cursor, generatedAt);
-        }
-      } else {
-        // No incremental changes detected. The baseline may already include the
-        // latest cards (e.g. it was fixed right after creation), so reload the
-        // page from the server to guarantee the on-screen list is current.
-        if (cursor) {
-          await CardCache.setSyncCursor(siteId, cursor, generatedAt);
-        }
-        setCurrentPage(1);
-        await handleGetCards(1);
-        return;
-      }
-    } catch (error) {
-      // On any delta failure, fall back to a clean full reload.
-      await CardCache.clearSiteCache(siteId);
-      setCurrentPage(1);
-      await handleGetCards(1);
-      handleErrorNotification(error);
-    } finally {
-      setLoading(false);
-      setTimeout(() => setLoadingProgress(0), 500);
-    }
+    setCurrentPage(1);
+    await handleGetCards(1);
   };
 
   const handleCloseCreateModal = () => {
