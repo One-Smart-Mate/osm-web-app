@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import Strings from "../../utils/localizations/Strings";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGetCardsPaginatedMutation } from "../../services/cardService";
+import { useGetCardsPaginatedMutation, useGetCardChangesMutation } from "../../services/cardService";
 import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
@@ -22,6 +22,36 @@ import Constants from "../../utils/Constants";
 type SortOption = 'dueDate-asc' | 'dueDate-desc' | 'creationDate-asc' | 'creationDate-desc' | '';
 type DateFilterType = 'creation' | 'due' | '';
 
+// Max changes per delta-sync page (backend caps at 500).
+const CARD_SYNC_MAX_LIMIT = 500;
+// The default, unfiltered view — the only view where an incremental refresh
+// can safely merge deltas into the current list without re-evaluating filters.
+const isDefaultView = (filters: {
+  searchText?: string;
+  cardNumber?: string;
+  location?: string;
+  levelMachineId?: string;
+  creator?: string;
+  resolver?: string;
+  dateFilterType?: string;
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+  myCards?: boolean;
+}): boolean =>
+  !filters.searchText &&
+  !filters.cardNumber &&
+  !filters.location &&
+  !filters.levelMachineId &&
+  !filters.creator &&
+  !filters.resolver &&
+  !filters.startDate &&
+  !filters.endDate &&
+  filters.status === 'A,P' &&
+  !filters.myCards;
+const hasActiveFilters = (filters: Parameters<typeof isDefaultView>[0]): boolean =>
+  !isDefaultView(filters);
+
 const { RangePicker } = DatePicker;
 
 const rangePresets: TimeRangePickerProps["presets"] = [
@@ -33,6 +63,7 @@ const rangePresets: TimeRangePickerProps["presets"] = [
 
 const TagsPageOptimized = () => {
   const [getCardsPaginated] = useGetCardsPaginatedMutation();
+  const [getCardChanges] = useGetCardChangesMutation();
   const [isLoading, setLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const location = useLocation();
@@ -150,6 +181,34 @@ const TagsPageOptimized = () => {
       setData(response.cards ?? []);
       setTotal(response.total);
       setCurrentPage(page);
+
+      // Establish a delta-sync baseline after a full load of the default view
+      // (page 1, no filters), so a later refresh can pull only the changes.
+      // Drain the delta once to advance the cursor to "now"; we discard the
+      // payload here (the list already came from the paginated endpoint) and
+      // keep only the final cursor.
+      const noFilters = !hasActiveFilters(filters);
+      if (page === 1 && noFilters) {
+        try {
+          let cursor: string | undefined = undefined;
+          let generatedAt = new Date().toISOString();
+          for (let guard = 0; guard < 100; guard++) {
+            const delta = await getCardChanges({
+              siteId: siteId.toString(),
+              cursor,
+              limit: CARD_SYNC_MAX_LIMIT,
+            }).unwrap();
+            cursor = delta.nextCursor;
+            generatedAt = delta.generatedAt;
+            if (!delta.hasMore) break;
+          }
+          if (cursor) {
+            await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+          }
+        } catch {
+          // Baseline is best-effort; refresh falls back to a full reload.
+        }
+      }
     } catch (error) {
       handleErrorNotification(error);
     } finally {
@@ -176,6 +235,87 @@ const TagsPageOptimized = () => {
 
   const handleOpenCreateModal = () => {
     setShowCreateModal(true);
+  };
+
+  // Refresh the list. On the default view (page 1, no filters) with a known
+  // sync baseline, pull ONLY the changes and merge them into the current list:
+  // upserts replace/add by cardUUID, deletes remove. Otherwise fall back to a
+  // full reload of the current page.
+  const handleRefresh = async () => {
+    const onDefaultView = currentPage === 1 && isDefaultView(filters);
+    const baseline = onDefaultView
+      ? await CardCache.getSyncCursor(siteId)
+      : null;
+
+    if (!onDefaultView || !baseline) {
+      await CardCache.clearSiteCache(siteId);
+      setCurrentPage(1);
+      await handleGetCards(1);
+      return;
+    }
+
+    setLoading(true);
+    setLoadingProgress(20);
+    try {
+      const upserts = new Map<string, CardInterface>();
+      const deleted = new Set<string>();
+      let cursor: string | undefined = baseline.cursor;
+      let generatedAt = baseline.generatedAt;
+
+      for (let guard = 0; guard < 100; guard++) {
+        const delta = await getCardChanges({
+          siteId: siteId.toString(),
+          cursor,
+          limit: CARD_SYNC_MAX_LIMIT,
+        }).unwrap();
+        for (const change of delta.changes) {
+          if (change.type === "upsert") {
+            deleted.delete(change.card.cardUUID);
+            upserts.set(change.card.cardUUID, change.card);
+          } else {
+            upserts.delete(change.cardUUID);
+            deleted.add(change.cardUUID);
+          }
+        }
+        cursor = delta.nextCursor;
+        generatedAt = delta.generatedAt;
+        if (!delta.hasMore) break;
+      }
+
+      setLoadingProgress(70);
+
+      if (upserts.size > 0 || deleted.size > 0) {
+        setData((current) => {
+          const byUuid = new Map(current.map((c) => [c.cardUUID, c]));
+          // Apply upserts (add new / replace existing).
+          for (const [uuid, card] of upserts) {
+            byUuid.set(uuid, card);
+          }
+          // Apply deletes.
+          for (const uuid of deleted) {
+            byUuid.delete(uuid);
+          }
+          const merged = Array.from(byUuid.values());
+          setTotal(merged.length);
+          return merged;
+        });
+        // The default-view cache is now stale; drop it so pagination rebuilds.
+        await CardCache.clearSiteCache(siteId);
+      }
+
+      if (cursor) {
+        await CardCache.setSyncCursor(siteId, cursor, generatedAt);
+      }
+    } catch (error) {
+      // On any delta failure, fall back to a clean full reload.
+      await CardCache.clearSiteCache(siteId);
+      setCurrentPage(1);
+      await handleGetCards(1);
+      handleErrorNotification(error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => setLoadingProgress(0), 500);
+    }
   };
 
   const handleCloseCreateModal = () => {
@@ -257,7 +397,7 @@ const TagsPageOptimized = () => {
 
               <div style={{ display: 'flex', gap: '8px', marginLeft: userRole === UserRoles._OPERATOR ? 'auto' : '0' }}>
                 <RefreshButton
-                  onRefresh={() => handleGetCards(1)}
+                  onRefresh={handleRefresh}
                   isLoading={isLoading}
                 />
                 {/* Toggle button for Mechanics and other roles (NOT for Operators) */}

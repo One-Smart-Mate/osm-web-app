@@ -40,10 +40,19 @@ interface CardCacheDB extends DBSchema {
       timestamp: number;
     };
   };
+  // Opaque delta-sync cursor per site, used for incremental refresh.
+  syncCursor: {
+    key: number; // siteId
+    value: {
+      cursor: string;
+      generatedAt: string;
+      timestamp: number;
+    };
+  };
 }
 
 const DB_NAME = 'card-cache-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export class CardCache {
@@ -70,6 +79,11 @@ export class CardCache {
           // Store for card statistics
           if (!db.objectStoreNames.contains('cardStats')) {
             db.createObjectStore('cardStats');
+          }
+
+          // Store for the per-site delta-sync cursor (incremental refresh)
+          if (!db.objectStoreNames.contains('syncCursor')) {
+            db.createObjectStore('syncCursor');
           }
         },
       });
@@ -224,12 +238,45 @@ export class CardCache {
     await db.delete('cardStats', siteId);
   }
 
+  // --- Delta-sync cursor (incremental refresh) ---
+
+  // Read the stored delta-sync cursor for a site (null if never synced).
+  static async getSyncCursor(
+    siteId: number,
+  ): Promise<{ cursor: string; generatedAt: string } | null> {
+    const db = await this.getDB();
+    const entry = await db.get('syncCursor', siteId);
+    if (!entry) return null;
+    return { cursor: entry.cursor, generatedAt: entry.generatedAt };
+  }
+
+  // Persist the latest delta-sync cursor for a site.
+  static async setSyncCursor(
+    siteId: number,
+    cursor: string,
+    generatedAt: string,
+  ): Promise<void> {
+    const db = await this.getDB();
+    await db.put(
+      'syncCursor',
+      { cursor, generatedAt, timestamp: Date.now() },
+      siteId,
+    );
+  }
+
+  // Drop the cursor so the next load rebuilds the baseline from scratch.
+  static async clearSyncCursor(siteId: number): Promise<void> {
+    const db = await this.getDB();
+    await db.delete('syncCursor', siteId);
+  }
+
   // Clear all cache
   static async clearAllCache(): Promise<void> {
     const db = await this.getDB();
     await db.clear('cards');
     await db.clear('cardPages');
     await db.clear('cardStats');
+    await db.clear('syncCursor');
   }
 
   // Clean old entries (older than CACHE_DURATION)
