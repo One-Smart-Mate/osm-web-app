@@ -377,7 +377,13 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       section: oplRoute.section,
     }),
     // NO oplTypesRoute (opl_types)
-    // NO procedures, procedure_types, procedure_frequencies
+    getItemV2({
+      label: ciltProceduresRoute.label,
+      key: ciltProceduresRoute.path,
+      icon: ciltProceduresRoute.icon,
+      section: ciltProceduresRoute.section,
+    }),
+    // NO procedure_types, procedure_frequencies
     getItemV2({
       label: ciltLevelAssignamentsRoute.label,
       key: ciltLevelAssignamentsRoute.path,
@@ -403,6 +409,12 @@ const operatorRoutesSiderOptions = (): ItemType[] => {
       key: levelsReadOnlyRoute.path,
       icon: levelsReadOnlyRoute.icon,
       section: levelsReadOnlyRoute.section,
+    }),
+    getItemV2({
+      label: ciltProceduresRoute.label,
+      key: ciltProceduresRoute.path,
+      icon: ciltProceduresRoute.icon,
+      section: ciltProceduresRoute.section,
     }),
   ];
   return items;
