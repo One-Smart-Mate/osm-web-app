@@ -32,6 +32,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.users}`,
@@ -54,6 +55,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
@@ -75,6 +77,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
 
@@ -85,6 +88,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
 
@@ -95,6 +99,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
   };
