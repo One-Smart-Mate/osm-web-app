@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Tree from "react-d3-tree";
 import { Spin, Empty, theme, notification, Progress } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -10,7 +10,9 @@ import Constants from "../../utils/Constants";
 import TreeLegend from "./components/TreeLegend";
 import AnatomyNotification from "../components/AnatomyNotification";
 import MainContainer from "../layouts/MainContainer";
-import { UnauthorizedRoute } from "../../utils/Routes";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 
 interface TreeNode {
   id: string;
@@ -24,8 +26,10 @@ interface TreeNode {
 
 const ProceduresTreePageLazy = (): React.ReactElement => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const siteId = location.state?.siteId || "";
+  const { user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  // Resolve siteId from navigation state, site selector, or the user's first site
+  const siteId = location.state?.siteId || siteIdFromSelector || user?.sites?.[0]?.id || "";
   const siteName = location.state?.siteName || "";
 
   const { token } = theme.useToken();
@@ -41,12 +45,7 @@ const ProceduresTreePageLazy = (): React.ReactElement => {
   const [getChildrenLevels] = useGetChildrenLevelsMutation();
   const [getProceduresByLevel] = useGetProceduresByLevelMutation();
 
-  // Navigate if unauthorized
-  useEffect(() => {
-    if (!location.state || !siteId) {
-      navigate(UnauthorizedRoute);
-    }
-  }, [location.state, siteId, navigate]);
+  // No forced redirect: siteId resolves from state, selector or the user's site
 
   // Load root levels (first level only)
   const loadRootLevels = useCallback(async () => {

@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Table, Space, Button, Badge } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { OplMstr } from "../../../data/cilt/oplMstr/oplMstr";
-import { useGetOplTypesMutation } from "../../../services/oplTypesService";
+import { useGetOplTypesBySiteMutation } from "../../../services/oplTypesService";
 import type { ColumnsType } from "antd/es/table";
 import Strings from "../../../utils/localizations/Strings";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../../core/store";
+import { selectSiteId } from "../../../core/genericReducer";
 
 interface OplTableProps {
   opls: OplMstr[];
@@ -19,16 +22,24 @@ const OplTable: React.FC<OplTableProps> = ({
   onEdit,
   onDetails,
 }) => {
-  const [getOplTypes] = useGetOplTypesMutation();
+  const [getOplTypesBySite] = useGetOplTypesBySiteMutation();
+  const { user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  // Resolve siteId from the site selector or the user's first site
+  const siteId = siteIdFromSelector || user?.sites?.[0]?.id;
   const [oplTypesMap, setOplTypesMap] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     fetchOplTypes();
-  }, []);
+  }, [siteId]);
 
   const fetchOplTypes = async () => {
+    if (!siteId) {
+      setOplTypesMap({});
+      return;
+    }
     try {
-      const response = await getOplTypes().unwrap();
+      const response = await getOplTypesBySite(Number(siteId)).unwrap();
       const typesMap = Array.isArray(response) 
         ? response.reduce((acc, type) => {
             if (type.documentType) {

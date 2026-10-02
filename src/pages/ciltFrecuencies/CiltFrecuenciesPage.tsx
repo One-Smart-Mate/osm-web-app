@@ -4,10 +4,11 @@ import {
   App as AntApp,
 } from "antd";
 import Strings from "../../utils/localizations/Strings";
-import { useLocation, useNavigate } from "react-router-dom";
-import { UnauthorizedRoute } from "../../utils/Routes";
+import { useLocation } from "react-router-dom";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 import PaginatedList from "../components/PaginatedList";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { CiltFrequency } from "../../data/cilt/ciltFrequencies/ciltFrequencies";
@@ -24,29 +25,29 @@ const CiltFrecuenciesPage = () => {
   const [data, setData] = useState<CiltFrequency[]>([]);
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { isIhAdmin } = useCurrentUser();
+  const { isIhAdmin, user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
   const [searchQuery, setSearchQuery] = useState<string>(Strings.empty);
   const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state.siteId || Strings.empty;
+  // Resolve siteId from navigation state, site selector, or the user's first site
+  const siteId = location?.state?.siteId || siteIdFromSelector || user?.sites?.[0]?.id || Strings.empty;
   const { notification } = AntApp.useApp();
   const [statusFilter, setStatusFilter] = useState<boolean | null>(null);
 
 
   useEffect(() => {
     fetchCiltFrequencies();
-  }, [location.state]);
+  }, [siteId]);
 
   const fetchCiltFrequencies = async () => {
     try {
-      if (!location.state) {
-        navigate(UnauthorizedRoute);
+      if (!siteId) {
         return;
       }
       setLoading(true);
-      const response = await getCiltFrequenciesAll().unwrap();
-      const filteredBySite = response.filter(item => item.siteId === Number(siteId));
-      setData(filteredBySite);
+      const response = await getCiltFrequenciesAll(String(siteId)).unwrap();
+      const safe = Array.isArray(response) ? response : [];
+      setData(safe);
       setLoading(false);
     } catch (error) {
       AnatomyNotification.error(notification, error);

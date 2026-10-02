@@ -7,8 +7,10 @@ import MainContainer from "../layouts/MainContainer";
 import { CiltSequenceExecution } from "../../data/cilt/ciltSequencesExecutions/ciltSequencesExecutions";
 import type { ColumnsType } from "antd/es/table";
 import Strings from "../../utils/localizations/Strings";
-import { useLocation, useNavigate } from "react-router-dom";
-import { UnauthorizedRoute } from "../../utils/Routes";
+import { useLocation } from "react-router-dom";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 import { format } from "date-fns";
 import ExecutionDetailsModal from "./components/ExecutionDetailsModal";
 import { getUnifiedTimeStatus } from "../../utils/Extensions";
@@ -148,18 +150,16 @@ export const CILTReports = () => {
   const [getCiltSequenceExecutionsBySite] =
     useGetCiltSequenceExecutionsBySiteMutation();
   const location = useLocation();
-  const navigate = useNavigate();
+  const { user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
   const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state?.siteId || Strings.empty;
+  // Resolve siteId from navigation state, site selector, or the user's first site
+  const siteId = location?.state?.siteId || siteIdFromSelector || user?.sites?.[0]?.id || Strings.empty;
 
   // Load executions when component mounts
   useEffect(() => {
-    if (!location.state) {
-      navigate(UnauthorizedRoute);
-      return;
-    }
     loadExecutions();
-  }, [location.state]);
+  }, [siteId]);
 
   // Load executions
   const loadExecutions = async () => {

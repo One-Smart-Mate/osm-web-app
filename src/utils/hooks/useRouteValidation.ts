@@ -28,6 +28,11 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.calendar}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.opl}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.users}`,
@@ -46,6 +51,11 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.technicalSupport}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.opl}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.oplTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltLevelAssignaments}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.sites}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levels}`,
@@ -63,18 +73,33 @@ const useRouteValidation = (): boolean => {
     [UserRoles._OPERATOR]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
 
     [UserRoles._MECHANIC]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
 
     [UserRoles._UNDEFINED]: [
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.levelsReadOnly}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltProcedures}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.proceduresTree}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltTypes}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltReports}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltFrecuencies}`,
       new RegExp(`^/${Constants.ROUTES_PATH.dashboard}/card-detail/[^/]+/[^/]+$`)
     ],
   };

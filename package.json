@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "vite-react-template",
-  "version": "3.0.16",
+  "version": "3.0.37",
   "type": "module",
   "scripts": {
     "dev": "vite",

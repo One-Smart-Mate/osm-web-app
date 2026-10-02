@@ -7,10 +7,26 @@ import {
 
 export const ciltFrequenciesService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /cilt-frequencies/alla
-    getCiltFrequenciesAll: builder.mutation<CiltFrequency[], void>({
-      query: () => `/cilt-frequencies/all`,
-      transformResponse: (response: { data: CiltFrequency[] }) => response.data,
+    // Site-scoped first (new backend); falls back to /all for older backends (prod)
+    getCiltFrequenciesAll: builder.mutation<CiltFrequency[], string>({
+      async queryFn(siteId, _api, _extra, baseQuery) {
+        const bySite = await baseQuery(`/cilt-frequencies/site/${siteId}`);
+        if (!bySite.error) {
+          const payload = bySite.data as { data: CiltFrequency[] };
+          return { data: payload.data };
+        }
+        // Older backends (prod) lack the site endpoint -> use /all
+        const all = await baseQuery(`/cilt-frequencies/all`);
+        if (all.error) {
+          return { error: all.error };
+        }
+        const payload = all.data as { data: CiltFrequency[] };
+        const list = Array.isArray(payload.data) ? payload.data : [];
+        const filtered = list.filter(
+          (item) => item.siteId === Number(siteId),
+        );
+        return { data: filtered };
+      },
     }),
 
     getCiltTypesBySite: builder.mutation<CiltFrequency[], string>({

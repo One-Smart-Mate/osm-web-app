@@ -8,8 +8,8 @@ import {
 export const ciltTypesService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     
-    getCiltTypesAll: builder.mutation<CiltType[], void>({
-      query: () => `/cilt-types/all`,
+    getCiltTypesAll: builder.mutation<CiltType[], string>({
+      query: (siteId) => `/cilt-types/site/${siteId}`,
       transformResponse: (response: { data: CiltType[] }) => response.data,
     }),
 
