@@ -45,9 +45,9 @@ const CiltTypesPage = () => {
         return;
       }
       setLoading(true);
-      const response = await getCiltTypesAll().unwrap();
-      const filteredBySite = response.filter(item => item.siteId === Number(siteId));
-      setData(filteredBySite);
+      const response = await getCiltTypesAll(String(siteId)).unwrap();
+      const safe = Array.isArray(response) ? response : [];
+      setData(safe);
       setLoading(false);
     } catch (error) {
       AnatomyNotification.error(notification, error);

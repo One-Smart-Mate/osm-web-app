@@ -7,9 +7,9 @@ import {
 
 export const ciltFrequenciesService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /cilt-frequencies/alla
-    getCiltFrequenciesAll: builder.mutation<CiltFrequency[], void>({
-      query: () => `/cilt-frequencies/all`,
+    // GET /cilt-frequencies/site/:siteId (site-scoped, accessible to site roles)
+    getCiltFrequenciesAll: builder.mutation<CiltFrequency[], string>({
+      query: (siteId) => `/cilt-frequencies/site/${siteId}`,
       transformResponse: (response: { data: CiltFrequency[] }) => response.data,
     }),
 
