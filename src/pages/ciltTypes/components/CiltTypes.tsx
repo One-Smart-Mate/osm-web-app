@@ -16,6 +16,9 @@ import { useGetCiltTypesAllMutation, useCreateCiltTypeMutation, useUpdateCiltTyp
 import AnatomyButton from "../../../components/AnatomyButton";
 import { CiltType } from "../../../data/cilt/ciltTypes/ciltTypes";
 import { useLocation } from "react-router-dom";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../../core/store";
+import { selectSiteId } from "../../../core/genericReducer";
 import { FilterOutlined } from "@ant-design/icons";
 import { Checkbox, Popover } from "antd";
 
@@ -39,7 +42,9 @@ const CiltTypes = (): React.ReactElement => {
   const [updateCiltType] = useUpdateCiltTypeMutation();
 
   const location = useLocation();
-  const siteId = location?.state?.siteId; 
+  const { user } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const siteId = location?.state?.siteId || siteIdFromSelector || user?.sites?.[0]?.id; 
 
 
 
@@ -53,7 +58,7 @@ const CiltTypes = (): React.ReactElement => {
 
   const fetchCiltTypes = async () => {
     try {
-      const data = await getCiltTypesAll().unwrap();
+      const data = await getCiltTypesAll(String(siteId)).unwrap();
       const filteredBySite = data.filter(item => item.siteId === Number(siteId));
       setCiltTypes(filteredBySite);
     } catch (_error) {
