@@ -56,10 +56,12 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
   }, [initialValues, form]);
 
   const statusOptions = () => {
-    return statuses.map((st) => ({
+    return statuses
+      .filter((st) => ["A", "I"].includes(st.statusCode))
+      .map((st) => ({
       value: st.statusCode,
       label: st.statusName,
-    }));
+      }));
   };
 
   return (
@@ -80,6 +82,7 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
               <Input
                 size="large"
                 maxLength={6}
+                showCount
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
@@ -101,6 +104,7 @@ const UpdatePreclassifierForm2: React.FC<UpdatePreclassifierForm2Props> = ({
               <Input
                 size="large"
                 maxLength={100}
+                showCount
                 addonBefore={<BsCardText />}
                 placeholder={Strings.description}
               />

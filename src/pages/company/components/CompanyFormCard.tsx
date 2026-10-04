@@ -143,6 +143,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsBuilding />}
               placeholder={Strings.companyName}
             />
@@ -161,6 +162,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           >
             <Input
               maxLength={13}
+              showCount
               addonBefore={<BsFiles />}
               placeholder={Strings.rfc}
               onInput={(e) =>
@@ -203,6 +205,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsPerson />}
               placeholder={Strings.contact}
             />
@@ -220,6 +223,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           >
             <Input
               maxLength={100}
+              showCount
               addonBefore={<BsDiagram3 />}
               placeholder={Strings.position}
             />
@@ -281,6 +285,7 @@ const CompanyFormCard: React.FC<CompanyFormCardProps> = ({
           >
             <Input
               maxLength={60}
+              showCount
               addonBefore={<BsMailbox />}
               placeholder={Strings.email}
             />

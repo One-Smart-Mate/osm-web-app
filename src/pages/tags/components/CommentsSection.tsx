@@ -20,7 +20,7 @@ const CommentsSection = forwardRef<HTMLDivElement, CommentsSectionProps>(
             placeholder={Strings.describeAnomaly}
             value={comments}
             onChange={(e) => onCommentsChange(e.target.value)}
-            maxLength={500}
+            maxLength={200}
             showCount
           />
         </div>

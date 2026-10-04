@@ -200,11 +200,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
       setSubmitting(true);
       const values = await oplForm.validateFields();
 
-      const creator = values.creatorId
-        ? responsibles.find(
-            (user: Responsible) => String(user.id) === String(values.creatorId)
-          )
-        : null;
       const reviewer = values.reviewerId
         ? responsibles.find(
             (user: Responsible) => String(user.id) === String(values.reviewerId)
@@ -245,8 +240,6 @@ const OplSelectionModal: React.FC<OplSelectionModalProps> = ({
       const createPayload = {
         title: values.title,
         objetive: values.objetive || "", // Provide empty string as default
-        creatorId: values.creatorId ? Number(values.creatorId) : undefined, // Must use undefined to match the DTO type
-        creatorName: creator?.name || "", // Provide empty string as default
         reviewerId: values.reviewerId ? Number(values.reviewerId) : undefined, // Must use undefined to match the DTO type
         reviewerName: reviewer?.name || "", // Provide empty string as default
         oplTypeId: values.oplTypeId ? Number(values.oplTypeId) : undefined, // Use oplTypeId instead of oplType

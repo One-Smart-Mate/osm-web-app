@@ -32,10 +32,10 @@ export const oplDetailsService = apiSlice.injectEndpoints({
     }),
     // POST /opl-details/create
     createOplDetail: builder.mutation<OplDetail, CreateOplDetailsDTO>({
-      query: (payload) => ({
+      query: ({ siteId: _siteId, order: _order, ...payload }) => ({
         url: `/opl-details/create`,
         method: "POST",
-        body: { ...payload },
+        body: payload,
       }),
       transformResponse: (response: { data: OplDetail }) => response.data,
     }),

@@ -50,6 +50,8 @@ const LevelDetailsCard = ({
     switch (status) {
       case Strings.detailsOptionA:
         return Strings.detailsStatusActive;
+      case Strings.inactiveValue:
+        return Strings.inactive;
       case Strings.detailsOptionC:
         return Strings.detailsStatusCancelled;
       case Strings.detailsOptionS:

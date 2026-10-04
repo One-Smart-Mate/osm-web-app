@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Modal, Form, Select, Input, Button, App as AntdApp } from "antd";
 import { useGetAmDiscardReasonsQuery } from "../../../services/amDiscardReasonService";
 import { useDiscardCardMutation } from "../../../services/cardService";
-import { useAppSelector } from "../../../core/store";
-import { selectCurrentUser } from "../../../core/authReducer";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyNotification from "../../components/AnatomyNotification";
 
@@ -27,7 +25,6 @@ const DiscardCardModal = ({
 }: DiscardCardModalProps) => {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const currentUser = useAppSelector(selectCurrentUser);
   const { notification } = AntdApp.useApp();
 
   // Get discard reasons for the site
@@ -57,7 +54,6 @@ const DiscardCardModal = ({
         siteId,
         siteIdType: typeof siteId,
         values,
-        currentUser: currentUser.userId
       });
 
       if (!values.amDiscardReasonId) {
@@ -81,10 +77,6 @@ const DiscardCardModal = ({
       const discardDto = {
         cardId: Number(cardId),
         amDiscardReasonId: Number(values.amDiscardReasonId),
-        managerId: Number(currentUser.userId),
-        managerName: String(currentUser.name),
-        cardManagerCloseDate: new Date().toISOString(),
-        // discardReason: omitted to let backend handle it properly
         commentsManagerAtCardClose: values.commentsManagerAtCardClose?.trim() || null
       };
 
@@ -190,4 +182,4 @@ const DiscardCardModal = ({
   );
 };
 
-export default DiscardCardModal; 
+export default DiscardCardModal;

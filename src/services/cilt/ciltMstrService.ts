@@ -27,18 +27,18 @@ export const ciltMstrService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CiltMstr }) => response.data,
     }),
     createCiltMstr: builder.mutation<CiltMstr, CreateCiltMstrDTO>({
-      query: (newCilt) => ({
-        url: `/cilt-mstr/create`,
-        method: "POST",
-        body: { ...newCilt },
-      }),
+      query: ({ creatorId: _creatorId, creatorName: _creatorName, order: _order, ...newCilt }) => ({
+          url: `/cilt-mstr/create`,
+          method: "POST",
+          body: newCilt,
+        }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
     }),
     updateCiltMstr: builder.mutation<CiltMstr, UpdateCiltMstrDTO>({
-      query: (cilt) => ({
+      query: ({ creatorId: _creatorId, creatorName: _creatorName, ...cilt }) => ({
         url: `/cilt-mstr/update`,
         method: "PUT",
-        body: { ...cilt },
+        body: cilt,
       }),
       transformResponse: (response: { data: CiltMstr }) => response.data,
     }),

@@ -424,17 +424,39 @@ const OplViewModal: React.FC<OplViewModalProps> = ({
           bordered={true}
         >
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Button 
-              type="primary" 
-              onClick={() => {
-                setCurrentPdfUrl(detail.mediaUrl || "");
-                setPdfPreviewVisible(true);
-              }}
-              icon={<FileOutlined />}
-            >
-              {Strings.oplViewPdf}
-            </Button>
             <Text style={{ display: 'block', fontWeight: 'bold' }}>{getFileName(detail.mediaUrl)}</Text>
+            <div
+              style={{
+                width: '100%',
+                height: '400px',
+                maxHeight: '55vh',
+                border: '1px solid #d9d9d9',
+                borderRadius: '6px',
+                overflow: 'auto',
+                background: '#f5f5f5',
+              }}
+            >
+              <iframe
+                src={detail.mediaUrl}
+                title={getFileName(detail.mediaUrl)}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+              />
+            </div>
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setCurrentPdfUrl(detail.mediaUrl || "");
+                  setPdfPreviewVisible(true);
+                }}
+                icon={<FileOutlined />}
+              >
+                {Strings.oplViewPdf}
+              </Button>
+              <Button onClick={() => window.open(detail.mediaUrl || "")}>
+                {Strings.oplOpenInNewTab}
+              </Button>
+            </Space>
           </Space>
         </Card>
       );

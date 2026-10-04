@@ -35,22 +35,18 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  const [creatorModalVisible, setCreatorModalVisible] = useState(false);
   const [reviewerModalVisible, setReviewerModalVisible] = useState(false);
   const [approverModalVisible, setApproverModalVisible] = useState(false);
   const [responsibles, setResponsibles] = useState<Responsible[]>([]);
-  const [creatorId, setCreatorId] = useState<number | undefined>(undefined);
   const [reviewerId, setReviewerId] = useState<number | undefined>(undefined);
   const [approvedById, setApprovedById] = useState<number | undefined>(undefined);
   
   // Update user IDs whenever cilt changes
   useEffect(() => {
     if (cilt) {
-      setCreatorId(cilt.creatorId ? Number(cilt.creatorId) : undefined);
       setReviewerId(cilt.reviewerId ? Number(cilt.reviewerId) : undefined);
       setApprovedById(cilt.approvedById ? Number(cilt.approvedById) : undefined);
     } else {
-      setCreatorId(undefined);
       setReviewerId(undefined);
       setApprovedById(undefined);
     }
@@ -77,20 +73,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     }
   };
 
-  const handleCreatorSelection = (userIds: number[]) => {
-    if (userIds.length > 0) {
-      const selectedUserId = userIds[0];
-      setCreatorId(selectedUserId);
-      // Find the user by comparing with the same type
-      const selectedUser = responsibles.find(user => Number(user.id) === selectedUserId);
-      form.setFieldsValue({ creatorName: selectedUser?.name || "" });
-    } else {
-      setCreatorId(undefined);
-      form.setFieldsValue({ creatorName: "" });
-    }
-    setCreatorModalVisible(false);
-  };
-  
   const handleReviewerSelection = (userIds: number[]) => {
     if (userIds.length > 0) {
       const selectedUserId = userIds[0];
@@ -175,10 +157,10 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         dateOfLastUsed,
         updatedAt,
         cilt.siteId ?? undefined,
-        cleanString(values.ciltName),
-        cleanString(values.ciltDescription),
-        creatorId ?? undefined,
-        cleanString(values.creatorName),
+        cleanString(values.ciltName?.trim()),
+        cleanString(values.ciltDescription?.trim()),
+        undefined,
+        undefined,
         reviewerId ?? undefined,
         cleanString(values.reviewerName),
         approvedById ?? undefined,
@@ -268,11 +250,22 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
     >
       {updateError && <Alert message={updateError} type="error" showIcon closable onClose={() => setUpdateError(null)} style={{ marginBottom: 16 }} />}
       <Form form={form} layout="vertical" name="edit_cilt_form" initialValues={cilt ?? {}}>
-        <Form.Item name="ciltName" label={Strings.ciltMstrNameLabel} rules={[{ required: true, message: Strings.ciltMstrNameRequired }]}>
-          <Input />
+        <Form.Item
+          name="ciltName"
+          label={Strings.ciltMstrNameLabel}
+          rules={[
+            { required: true, message: Strings.ciltMstrNameRequired },
+            { max: 45 },
+          ]}
+        >
+          <Input maxLength={45} />
         </Form.Item>
-        <Form.Item name="ciltDescription" label={Strings.ciltMstrDescriptionLabel}>
-          <Input.TextArea rows={3} />
+        <Form.Item
+          name="ciltDescription"
+          label={Strings.ciltMstrDescriptionLabel}
+          rules={[{ max: 255 }]}
+        >
+          <Input.TextArea rows={3} maxLength={255} showCount />
         </Form.Item>
         {/* Standard time field removed - now calculated automatically in the database */}
         {/* Campo ciltDueDate agregado */}
@@ -301,13 +294,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
               size="large" 
               placeholder={Strings.selectCreator}
               readOnly
-              addonAfter={
-                <Button 
-                  type="text" 
-                  icon={<UserOutlined />} 
-                  onClick={() => setCreatorModalVisible(true)}
-                />
-              }
             />
           </Form.Item>
 
@@ -433,17 +419,6 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
           </Upload>
         </div>
       </Form>
-
-      <UserSelectionModal
-        isVisible={creatorModalVisible}
-        onCancel={() => setCreatorModalVisible(false)}
-        onConfirm={handleCreatorSelection}
-        users={responsibles}
-        loading={loading}
-        initialSelectedUserIds={creatorId ? [creatorId] : []}
-        title={Strings.selectCreator}
-        singleSelection={true}
-      />
 
       <UserSelectionModal
         isVisible={reviewerModalVisible}

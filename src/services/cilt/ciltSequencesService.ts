@@ -37,7 +37,11 @@ export const ciltSequencesService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CiltSequence }) => response.data,
     }),
     createCiltSequence: builder.mutation<CiltSequence, CreateCiltSequenceDTO>({
-      query: (payload) => ({ url: `/cilt-sequences/create`, method: "POST", body: { ...payload } }),
+      query: ({ siteId: _siteId, siteName: _siteName, ciltMstrName: _ciltMstrName, order: _order, ...payload }) => ({
+        url: `/cilt-sequences/create`,
+        method: "POST",
+        body: payload,
+      }),
       transformResponse: (response: { data: CiltSequence }) => response.data,
     }),
     updateCiltSequence: builder.mutation<CiltSequence, UpdateCiltSequenceDTO>({

@@ -61,10 +61,12 @@ const PreclassifierFormCard = ({
   };
 
   const statusOptions = () => {
-    return status.map((st) => ({
+    return status
+      .filter((st) => ["A", "I"].includes(st.statusCode))
+      .map((st) => ({
       value: st.statusCode,
       label: st.statusName,
-    }));
+      }));
   };
 
   return (
@@ -84,6 +86,7 @@ const PreclassifierFormCard = ({
             >
               <Input
                 maxLength={6}
+                showCount
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
@@ -102,6 +105,7 @@ const PreclassifierFormCard = ({
             >
               <Input
                 maxLength={100}
+                showCount
                 addonBefore={<BsCardText />}
                 placeholder={Strings.description}
               />
@@ -113,7 +117,11 @@ const PreclassifierFormCard = ({
         {enableStatus && (
           <div className="flex items-center">
             <div className="flex-1">
-              <Form.Item name="status" label={Strings.status}>
+              <Form.Item
+                name="status"
+                label={Strings.status}
+                rules={[{ required: true, message: Strings.requiredStatus }]}
+              >
                 <Select size="large" options={statusOptions()} />
               </Form.Item>
             </div>

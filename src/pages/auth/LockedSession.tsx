@@ -12,6 +12,8 @@ import Strings from "../../utils/localizations/Strings";
 import AnatomyNotification from "../components/AnatomyNotification";
 import { buildInitRoute } from "../../routes/RoutesExtensions";
 import { detectUserTimezone } from "../../utils/timezoneDetector";
+import { useLogoutMutation } from "../../services/userService";
+import { logOut } from "../../core/authReducer";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +26,7 @@ const LockedSession: React.FC = () => {
   const { notification } = AntdApp.useApp();
   const [, setSessionUser] = useSessionStorage(Constants.SESSION_KEYS.user);
   const [fastLogin] = useFastLoginMutation();
+  const [logout] = useLogoutMutation();
   const { token } = theme.useToken();
 
   useEffect(() => {
@@ -65,10 +68,8 @@ const LockedSession: React.FC = () => {
 
       const result = await fastLogin(fastLoginData).unwrap();
 
-      // Clear ALL previous session data first
-      sessionStorage.clear();
-
-      // Store new user data in session storage
+      // Replace only the active user. The primary session remains available as
+      // the parent of subsequent fast sessions on this browser tab.
       setSessionUser(result);
 
       // Update Redux auth state
@@ -135,12 +136,26 @@ const LockedSession: React.FC = () => {
       content: Strings.returnToLoginConfirmContent,
       okText: Strings.yesReturn,
       cancelText: Strings.cancel,
-      onOk: () => {
-        // Clear all session data
-        localStorage.clear();
-        sessionStorage.clear();
+      onOk: async () => {
+        const primaryUser = sessionStorage.getItem(
+          Constants.SESSION_KEYS.primaryUser,
+        );
+        if (primaryUser) {
+          sessionStorage.setItem(Constants.SESSION_KEYS.user, primaryUser);
+        }
 
-        // Navigate to login
+        try {
+          await logout({ osName: Constants.osName }).unwrap();
+        } catch (error) {
+          console.error("Logout error:", error);
+        }
+
+        localStorage.removeItem("session_locked");
+        localStorage.removeItem("last_user_info");
+        sessionStorage.removeItem(Constants.SESSION_KEYS.user);
+        sessionStorage.removeItem(Constants.SESSION_KEYS.primaryUser);
+        dispatch(logOut(null));
+
         navigate("/");
       }
     });
@@ -191,6 +206,7 @@ const LockedSession: React.FC = () => {
               setFastPassword(filteredValue);
             }}
             maxLength={4}
+            showCount
             size="large"
             style={{
               fontSize: '20px',

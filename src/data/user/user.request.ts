@@ -7,7 +7,7 @@ export class LoginRequest {
   platform?: string;
 
   constructor(email: string, password: string, timezone?: string, platform?: string) {
-    this.email = email.trim();
+    this.email = email.trim().toLowerCase();
     this.password = password;
     this.timezone = timezone;
     this.platform = platform;
@@ -121,13 +121,23 @@ export class UpdateUser {
   }
 }
 
+export interface UpdateUserPartial {
+  id: number;
+  name?: string;
+  email?: string;
+  password?: string;
+  fastPassword?: string;
+  phoneNumber?: string;
+  translation?: "ES" | "EN";
+}
+
 export class SendResetCode {
   email: string;
   resetCode: string;
 
   constructor(email: string, resetCode: string) {
-    this.email = email;
-    this.resetCode = resetCode;
+    this.email = email.trim().toLowerCase();
+    this.resetCode = resetCode.trim().toUpperCase();
   }
 }
 
@@ -137,8 +147,8 @@ export class ResetPasswordClass {
   newPassword: string;
 
   constructor(email: string, resetCode: string, newPassword: string) {
-    this.email = email;
-    this.resetCode = resetCode;
-    this.newPassword = newPassword;
+    this.email = email.trim().toLowerCase();
+    this.resetCode = resetCode.trim().toUpperCase();
+    this.newPassword = newPassword.trim();
   }
 }

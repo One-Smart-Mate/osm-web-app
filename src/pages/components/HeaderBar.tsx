@@ -82,6 +82,21 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
       logo: user.logo
     }));
 
+    const primaryUser = sessionStorage.getItem(
+      Constants.SESSION_KEYS.primaryUser,
+    );
+    if (primaryUser) {
+      // A fast user is handing the workstation back. Restore the primary
+      // credential before showing the lock screen so it can create a new child.
+      sessionStorage.setItem(Constants.SESSION_KEYS.user, primaryUser);
+    } else {
+      // The first lock establishes the primary session that owns fast sessions.
+      sessionStorage.setItem(
+        Constants.SESSION_KEYS.primaryUser,
+        JSON.stringify(user),
+      );
+    }
+
     // Mark session as locked persistently
     localStorage.setItem('session_locked', 'true');
 

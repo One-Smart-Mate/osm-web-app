@@ -762,7 +762,12 @@ const LevelsPageLazyTree = () => {
         const updatePayload = {
           ...updateValues,
           id: Number(values.id),
-          responsibleId: values.responsibleId ? Number(values.responsibleId) : null,
+          responsibleId:
+            Number(values.responsibleId) > 0 ? Number(values.responsibleId) : null,
+          name: values.name?.trim(),
+          description: values.description?.trim(),
+          levelMachineId: values.levelMachineId?.trim() || null,
+          status: values.status || Constants.STATUS_ACTIVE,
           notify: values.notify ? 1 : 0,
           assignWhileCreate: values.assignWhileCreate ? 1 : 0,
         };

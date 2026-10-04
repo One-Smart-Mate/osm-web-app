@@ -30,37 +30,32 @@ const Logout = ({ enableText }: LogoutProps) => {
       content: Strings.logutModalContent,
       okText: Strings.confirm,
       cancelText: Strings.cancel,
-      onOk() {
-        // First get the user
+      async onOk() {
+        const primaryUser = sessionStorage.getItem(
+          Constants.SESSION_KEYS.primaryUser,
+        );
+        if (primaryUser) {
+          // Fast sessions cannot revoke their parent. Use the retained primary
+          // credential so logout closes the full browser session tree.
+          sessionStorage.setItem(Constants.SESSION_KEYS.user, primaryUser);
+        }
         const user = getSessionUser();
-        // Then remove the user from session storage
-        removeSessionUser();
-
-        // Clear session lock flags
-        localStorage.removeItem('session_locked');
-        localStorage.removeItem('last_user_info');
 
         if (user && user.userId) {
-          // Call the logout endpoint with userId and osName
-          logout({
-            userId: parseInt(user.userId),
-            osName: Constants.osName,
-          })
-            .then(() => {
-              dispatch(logOut(null));
-              navigate("/");
-            })
-            .catch((error) => {
-              console.error("Logout error:", error);
-              // Even if the API call fails, we should still log out the user from the frontend
-              dispatch(logOut(null));
-              navigate("/");
-            });
-        } else {
-          // If no user is found in session, just log out from the frontend
-          dispatch(logOut(null));
-          navigate("/");
+          try {
+            // The backend identifies the user and session from the bearer token.
+            await logout({ osName: Constants.osName }).unwrap();
+          } catch (error) {
+            console.error("Logout error:", error);
+          }
         }
+
+        removeSessionUser();
+        sessionStorage.removeItem(Constants.SESSION_KEYS.primaryUser);
+        localStorage.removeItem("session_locked");
+        localStorage.removeItem("last_user_info");
+        dispatch(logOut(null));
+        navigate("/");
       },
     });
   };

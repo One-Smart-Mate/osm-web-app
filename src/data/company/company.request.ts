@@ -59,7 +59,8 @@ export class UpdateCompanyRequest {
     extension: string,
     cellular: string,
     email: string,
-    logo: string
+    logo: string,
+    status: string
   ) {
     this.id = id;
     this.name = name;
@@ -72,6 +73,6 @@ export class UpdateCompanyRequest {
     this.cellular = cellular;
     this.email = email;
     this.logo = logo;
-    this.status = "A";
+    this.status = status;
   }
 }

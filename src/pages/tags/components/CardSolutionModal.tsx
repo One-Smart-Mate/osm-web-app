@@ -137,7 +137,6 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
         const requestData = {
           cardId: parseInt(card.id.toString()),
           userDefinitiveSolutionId: parseInt(values.responsibleUser),
-          userAppDefinitiveSolutionId: parseInt(user.userId),
           comments: values.comments || '',
           evidences,
         };
@@ -146,7 +145,6 @@ const CardSolutionModal: React.FC<CardSolutionModalProps> = ({
         const requestData = {
           cardId: parseInt(card.id.toString()),
           userProvisionalSolutionId: parseInt(values.responsibleUser),
-          userAppProvisionalSolutionId: parseInt(user.userId),
           comments: values.comments || '',
           evidences,
         };

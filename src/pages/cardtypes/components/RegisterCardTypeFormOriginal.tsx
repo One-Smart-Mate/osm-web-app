@@ -122,6 +122,7 @@ const RegisterCardTypeFormOriginal = ({ form }: FormProps) => {
               addonBefore={<LuTextCursor />}
               size="large"
               maxLength={45}
+              showCount
               placeholder={Strings.name}
             />
           </Form.Item>
@@ -144,6 +145,7 @@ const RegisterCardTypeFormOriginal = ({ form }: FormProps) => {
             <Input
               size="large"
               maxLength={100}
+              showCount
               addonBefore={<BsCardText />}
               placeholder={Strings.description}
             />

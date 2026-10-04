@@ -31,8 +31,8 @@ export interface SiteUpdateForm {
   cellular: string;
   email: string;
   logo: string;
-  latitude: string;
-  longitude: string;
+  latitud: string;
+  longitud: string;
   dueDate: string;
   monthlyPayment: string;
   currency: string;

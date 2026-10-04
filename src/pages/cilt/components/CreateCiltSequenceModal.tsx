@@ -195,8 +195,12 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
         secuenceColor: getColorFromCiltType(combinedData.ciltTypeId) || "FF0000",
         ciltTypeId: Number(combinedData.ciltTypeId) || 0,
         ciltTypeName: ciltTypes.find((type) => type.id === combinedData.ciltTypeId)?.name || "",
-        referenceOplSopId: Number(selectedReferenceOpl?.id) || 0,
-        remediationOplSopId: Number(selectedRemediationOpl?.id) || 0,
+        referenceOplSopId: selectedReferenceOpl?.id
+          ? Number(selectedReferenceOpl.id)
+          : undefined,
+        remediationOplSopId: selectedRemediationOpl?.id
+          ? Number(selectedRemediationOpl.id)
+          : undefined,
         standardTime: Number(combinedData.standardTime) || 0,
         toolsRequired: combinedData.toolsRequired || "",
         stoppageReason: combinedData.stoppageReason ? 1 : 0,
@@ -410,6 +414,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     }
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     maxLength={100}
+                    showCount
                   />
                 </Form.Item>
               </div>
@@ -524,6 +529,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                     placeholder={Strings.specialWarning}
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                     maxLength={100}
+                    showCount
                   />
                 </Form.Item>
               </div>
@@ -626,6 +632,7 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
                 >
                   <Input
                     maxLength={10}
+                    showCount
                     placeholder={Strings.referencePoint}
                     className="w-full h-10 text-base border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
                   />

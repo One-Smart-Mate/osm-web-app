@@ -321,6 +321,13 @@ class StringsBase {
   static enterCode = "enterCode";
   static description = "description";
   static levelMachineId = "levelMachineId";
+  static levelNameTooltip = "levelNameTooltip";
+  static levelDescriptionTooltip = "levelDescriptionTooltip";
+  static levelResponsibleTooltip = "levelResponsibleTooltip";
+  static levelMachineIdTooltip = "levelMachineIdTooltip";
+  static levelNotifyTooltip = "levelNotifyTooltip";
+  static levelAssignCardOnCreateTooltip = "levelAssignCardOnCreateTooltip";
+  static levelStatusTooltip = "levelStatusTooltip";
   static daysNumber = "daysNumber";
   static updatePriority = "updatePriority";
 
@@ -1155,15 +1162,6 @@ class StringsBase {
   static oplUserAccessLastColumn = "oplUserAccessLastColumn";
   static oplUserAccessCountColumn = "oplUserAccessCountColumn";
   static oplUserAccessEmpty = "oplUserAccessEmpty";
-  static oplAssignToNodeTitle = "oplAssignToNodeTitle";
-  static oplAssignToNodePlaceholder = "oplAssignToNodePlaceholder";
-  static oplAssignedNodesTitle = "oplAssignedNodesTitle";
-  static oplNoAssignedNodes = "oplNoAssignedNodes";
-  static oplUnassignSuccess = "oplUnassignSuccess";
-  static oplErrorUnassigning = "oplErrorUnassigning";
-  static oplAlreadyAssignedToNode = "oplAlreadyAssignedToNode";
-  static oplSaveOplBeforeAssigning = "oplSaveOplBeforeAssigning";
-  static remove = "remove";
   static oplTableActionsColumn = "oplTableActionsColumn";
   static oplTableViewTooltip = "oplTableViewTooltip";
   static oplTableEditTooltip = "oplTableEditTooltip";
@@ -1851,6 +1849,15 @@ class StringsBase {
   static openEvidence = "openEvidence";
   static resolved = "resolved";
   static oplAssignmentSuccess = "oplAssignmentSuccess";
+  static oplAssignToNodeTitle = "oplAssignToNodeTitle";
+  static oplAssignToNodePlaceholder = "oplAssignToNodePlaceholder";
+  static oplAssignedNodesTitle = "oplAssignedNodesTitle";
+  static oplNoAssignedNodes = "oplNoAssignedNodes";
+  static oplUnassignSuccess = "oplUnassignSuccess";
+  static oplErrorUnassigning = "oplErrorUnassigning";
+  static oplAlreadyAssignedToNode = "oplAlreadyAssignedToNode";
+  static oplSaveOplBeforeAssigning = "oplSaveOplBeforeAssigning";
+  static remove = "remove";
   static viewReferenceOplButton = "viewReferenceOplButton";
   static viewRemediationOplButton = "viewRemediationOplButton";
   static initial = "initial";

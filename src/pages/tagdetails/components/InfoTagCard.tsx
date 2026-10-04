@@ -21,8 +21,7 @@ import {
   UpdateCardMechanic,
   UpdateCardPriority,
 } from "../../../data/card/card.request";
-import { useAppDispatch, useAppSelector } from "../../../core/store";
-import { selectCurrentUser } from "../../../core/authReducer";
+import { useAppDispatch } from "../../../core/store";
 import {
   handleErrorNotification,
   handleSucccessNotification,
@@ -58,7 +57,6 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
   const [modalIsLoading, setModalLoading] = useState(false);
   const [modalIsOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState(Strings.empty);
-  const currentUser = useAppSelector(selectCurrentUser);
   const [updateCardPriority] = useUpdateCardPriorityMutation();
   const [updateCardMechanic] = useUpdateCardMechanicMutation();
   const [updateCardCustomDueDate] = useUpdateCardCustomDueDateMutation();
@@ -141,8 +139,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
         await updateCardPriority(
           new UpdateCardPriority(
             Number(card.id),
-            Number(values.priorityId),
-            Number(currentUser.userId)
+            Number(values.priorityId)
           )
         ).unwrap();
 
@@ -150,8 +147,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
         if (values.customDueDate) {
           await updateCardCustomDueDate({
             cardId: Number(card.id),
-            customDueDate: values.customDueDate.format('YYYY-MM-DD'),
-            idOfUpdatedBy: Number(currentUser.userId)
+            customDueDate: values.customDueDate.format('YYYY-MM-DD')
           }).unwrap();
         }
       } else {
@@ -169,8 +165,7 @@ const InfoTagCard = ({ data, evidences, cardName, onOpenModal }: InfoTagCardProp
         await updateCardMechanic(
           new UpdateCardMechanic(
             Number(card.id),
-            Number(mechanichId),
-            Number(currentUser.userId)
+            Number(mechanichId)
           )
         ).unwrap();
       }

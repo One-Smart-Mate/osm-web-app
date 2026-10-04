@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Constants from "./Constants";
 import { Evidences } from "../data/card/card";
 import { isAudioURL, isImageURL, isVideoURL } from "./Extensions";
+import { getCachedEvidence, putCachedEvidence } from "./evidenceCache";
 
 /**
  * Evidence media helpers.
@@ -66,11 +67,18 @@ const getStoredToken = (): string | undefined => {
  * untouched; a service route is prefixed with the API base so it hits the
  * backend instead of the frontend origin.
  */
-export const resolveEvidenceUrl = (evidenceName: string): string => {
+export const resolveEvidenceUrl = (
+  evidenceName: string,
+  thumb: boolean = false
+): string => {
   if (isAbsoluteEvidenceUrl(evidenceName)) return evidenceName;
   const base = (import.meta.env.VITE_API_SERVICE || "").replace(/\/+$/, "");
   const path = evidenceName.startsWith("/") ? evidenceName : `/${evidenceName}`;
-  return `${base}${path}`;
+  // A small cached thumbnail for list/card views (images only; the backend
+  // falls back to the original for non-images). The full image is fetched
+  // without this flag when the user opens the evidence.
+  const suffix = thumb ? (path.includes("?") ? "&thumb=1" : "?thumb=1") : "";
+  return `${base}${path}${suffix}`;
 };
 
 /**
@@ -112,8 +120,9 @@ export const fetchEvidenceAsDataUrl = async (
  *   which is revoked on unmount / when the source changes.
  */
 export const useAuthenticatedMedia = (
-  evidenceName: string
-): { url?: string; loading: boolean; error: boolean } => {
+  evidenceName: string,
+  thumb: boolean = false
+): { url?: string; loading: boolean; error: boolean; progress: number } => {
   const [url, setUrl] = useState<string | undefined>(
     isAbsoluteEvidenceUrl(evidenceName) ? evidenceName : undefined
   );
@@ -121,6 +130,8 @@ export const useAuthenticatedMedia = (
     !isAbsoluteEvidenceUrl(evidenceName)
   );
   const [error, setError] = useState<boolean>(false);
+  // Download progress 0..100 (0 when unknown / not started).
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     if (!evidenceName) {
@@ -143,16 +154,58 @@ export const useAuthenticatedMedia = (
     const load = async () => {
       setLoading(true);
       setError(false);
+      setProgress(0);
       try {
+        // 1) Reuse a persistently cached blob if we have one — evidence never
+        //    changes, so this avoids re-downloading it after a page reload.
+        const cached = await getCachedEvidence(evidenceName, thumb);
+        if (cached) {
+          if (cancelled) return;
+          objectUrl = URL.createObjectURL(cached);
+          setUrl(objectUrl);
+          setProgress(100);
+          setLoading(false);
+          return;
+        }
+
         const token = getStoredToken();
-        const response = await fetch(resolveEvidenceUrl(evidenceName), {
+        const response = await fetch(resolveEvidenceUrl(evidenceName, thumb), {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
-        if (!response.ok) throw new Error(`Evidence request failed: ${response.status}`);
-        const blob = await response.blob();
+        if (!response.ok)
+          throw new Error(`Evidence request failed: ${response.status}`);
+
+        // Stream the body so we can report real download progress.
+        const contentType =
+          response.headers.get("Content-Type") || "application/octet-stream";
+        const total = Number(response.headers.get("Content-Length") || 0);
+        let blob: Blob;
+        if (response.body && total > 0) {
+          const reader = response.body.getReader();
+          const chunks: Uint8Array[] = [];
+          let received = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value) {
+              chunks.push(value);
+              received += value.length;
+              if (!cancelled) {
+                setProgress(Math.min(99, Math.round((received / total) * 100)));
+              }
+            }
+          }
+          blob = new Blob(chunks as BlobPart[], { type: contentType });
+        } else {
+          // No Content-Length: fall back to a plain blob without progress.
+          blob = await response.blob();
+        }
         if (cancelled) return;
         objectUrl = URL.createObjectURL(blob);
         setUrl(objectUrl);
+        setProgress(100);
+        // 2) Persist for next time (best-effort, does not block rendering).
+        void putCachedEvidence(evidenceName, thumb, blob, contentType);
       } catch {
         if (!cancelled) setError(true);
       } finally {
@@ -166,7 +219,7 @@ export const useAuthenticatedMedia = (
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [evidenceName]);
+  }, [evidenceName, thumb]);
 
-  return { url, loading, error };
+  return { url, loading, error, progress };
 };

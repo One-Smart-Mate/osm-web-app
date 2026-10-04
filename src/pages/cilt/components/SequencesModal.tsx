@@ -16,10 +16,7 @@ import { CiltSequence } from "../../../data/cilt/ciltSequences/ciltSequences";
 import Strings from "../../../utils/localizations/Strings";
 import Constants from "../../../utils/Constants";
 import ScheduleSecuence from "./ScheduleSecuence";
-import { CreateCiltSecuencesScheduleDTO } from "../../../data/cilt/ciltSecuencesSchedule/ciltSecuencesSchedule.tsx";
 import dayjs from "dayjs";
-import { useCreateScheduleMutation } from "../../../services/cilt/ciltSecuencesScheduleService";
-import { message } from "antd";
 
 interface SequencesModalProps {
   open: boolean;
@@ -87,115 +84,6 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
     null
   );
-
-  const handleSave = async (schedule: {
-    startDate: string;
-    endDate: string | null;
-    schedule: string;
-    scheduleType: "dai" | "wee" | "mon" | "yea" | "man";
-    mon?: number;
-    tue?: number;
-    wed?: number;
-    thu?: number;
-    fri?: number;
-    sat?: number;
-    sun?: number;
-    dayOfMonth?: number;
-    weekOfMonth?: number;
-    dateOfYear?: string;
-    monthOfYear?: number;
-  }) => {
-    const now = new Date().toISOString();
-
-    if (!selectedSequence) return;
-
-    const payload: CreateCiltSecuencesScheduleDTO = {
-      siteId: Number(currentCilt.siteId),
-      ciltId: currentCilt.id,
-      secuenceId: Number(selectedSequence.id),
-      schedules: [schedule.schedule],
-      scheduleType: schedule.scheduleType,
-      createdAt: now,
-      status: "A"
-    };
-    
-    if (schedule.endDate) {
-      payload.endDate = schedule.endDate;
-    }
-    
-    if (schedule.scheduleType === "wee") {
-      if (schedule.mon) payload.mon = 1;
-      if (schedule.tue) payload.tue = 1;
-      if (schedule.wed) payload.wed = 1;
-      if (schedule.thu) payload.thu = 1;
-      if (schedule.fri) payload.fri = 1;
-      if (schedule.sat) payload.sat = 1;
-      if (schedule.sun) payload.sun = 1;
-    }
-    
-    if (schedule.scheduleType === "mon") {
-      if (schedule.dayOfMonth && schedule.dayOfMonth >= 1) {
-        payload.dayOfMonth = schedule.dayOfMonth;
-      } else if (schedule.weekOfMonth && schedule.weekOfMonth >= 1) {
-        payload.weekOfMonth = schedule.weekOfMonth;
-        if (schedule.mon) payload.mon = 1;
-        if (schedule.tue) payload.tue = 1;
-        if (schedule.wed) payload.wed = 1;
-        if (schedule.thu) payload.thu = 1;
-        if (schedule.fri) payload.fri = 1;
-        if (schedule.sat) payload.sat = 1;
-        if (schedule.sun) payload.sun = 1;
-      } else {
-        message.error(Strings.errorForMonthlySchedule);
-        return;
-      }
-    }
-    
-    if (schedule.scheduleType === "yea") {
-      if (schedule.dateOfYear) {
-        payload.dateOfYear = schedule.dateOfYear;
-      } else {
-        if (schedule.monthOfYear && schedule.monthOfYear >= 1 && schedule.monthOfYear <= 12) {
-          payload.monthOfYear = schedule.monthOfYear;
-          
-          const hasDayOfMonth = schedule.dayOfMonth && schedule.dayOfMonth >= 1;
-          const hasWeekOfMonth = schedule.weekOfMonth && schedule.weekOfMonth >= 1;
-          const hasDaysOfWeek = schedule.mon || schedule.tue || schedule.wed || 
-                              schedule.thu || schedule.fri || schedule.sat || schedule.sun;
-          
-          if (hasDayOfMonth) {
-            payload.dayOfMonth = schedule.dayOfMonth;
-          } 
-          else if (hasWeekOfMonth && hasDaysOfWeek) {
-            payload.weekOfMonth = schedule.weekOfMonth;
-            if (schedule.mon) payload.mon = 1;
-            if (schedule.tue) payload.tue = 1;
-            if (schedule.wed) payload.wed = 1;
-            if (schedule.thu) payload.thu = 1;
-            if (schedule.fri) payload.fri = 1;
-            if (schedule.sat) payload.sat = 1;
-            if (schedule.sun) payload.sun = 1;
-          } else {
-            message.error(Strings.errorForYearlySchedule);
-            return;
-          }
-        }
-      }
-    }
-    
-      payload.status = "A";
-    payload.createdAt = now;
-
-    try {
-      await createSchedule(payload).unwrap();
-      message.success(Strings.scheduleSavedSuccessfully);
-    } catch (error) {
-      console.error(Strings.errorSavingSchedule, error);
-      message.error(Strings.errorSavingSchedule);
-    }
-  };
-
-  const [createSchedule] = useCreateScheduleMutation();
 
   return (
     <>
@@ -430,6 +318,9 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
       <ScheduleSecuence
         open={isScheduleSecuenceVisible}
         onCancel={() => setScheduleSecuenceVisible(false)}
+        sequenceId={selectedSequence?.id}
+        ciltId={currentCilt.id}
+        siteId={currentCilt.siteId ?? undefined}
         existingSchedule={
           selectedSequence && scheduledData[selectedSequence.id]
             ? {
@@ -449,7 +340,6 @@ const SequencesModal: React.FC<SequencesModalProps> = ({
             [selectedSequence.id]: data,
           }));
 
-          await handleSave(data);
           setScheduleSecuenceVisible(false);
         }}
       />

@@ -63,7 +63,6 @@ const CiltFrecuenciesPage = React.lazy(
   () => import("../pages/ciltFrecuencies/CiltFrecuenciesPage")
 );
 const TagsPage = React.lazy(() => import("../pages/tags/TagsPageOptimized"));
-const TagsFastPassword = React.lazy(() => import("../pages/tagsFastPassword/TagsFastPassword"));
 
 const CiltLevelAssignamentsPage = React.lazy(
   () => import("../pages/ciltLevelAssignments/CiltLevelAssignmentsLazy")
@@ -268,14 +267,6 @@ const systemHealthRoute = new Route(
   Strings.technicalSupport
 );
 
-const tagsFastPasswordRoute = new Route(
-  Strings.tagsFastPasswordSB,
-  Constants.ROUTES_PATH.tagsFastPassword,
-  <TagsFastPassword />,
-  <BsCardChecklist />,
-  Strings.dashboard
-);
-
 export const tagDetailsRoute = new Route(
   Strings.cardDetailsSB,
   `${Constants.ROUTES_PATH.cardDetail}/${Constants.ROUTES_PARAMS.siteId}/${Constants.ROUTES_PARAMS.cardId}`,
@@ -300,7 +291,6 @@ const routes: Route[] = [
   sitesRoute,
   ciltReportsRoute,
   tagsRoute,
-  tagsFastPasswordRoute,
   levelsRoute,
   levelsReadOnlyRoute,
   positionsRoute,

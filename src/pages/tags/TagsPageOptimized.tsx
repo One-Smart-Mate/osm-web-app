@@ -100,10 +100,9 @@ const TagsPageOptimized = () => {
       endDate: dateRange ? dateRange[1].format('YYYY-MM-DD') : undefined,
       sortOption,
       status: selectedStatus,
-      userId: user?.userId ? parseInt(user.userId) : undefined,
       myCards: shouldFilterMyCards,
     };
-  }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly, user?.userId]);
+  }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly]);
 
   const handleGetCards = async (page: number = 1, forceFresh: boolean = false) => {
     if (!location.state) {
@@ -143,14 +142,14 @@ const TagsPageOptimized = () => {
       // Backend now handles all role-based filtering via myCards and userId filters
       // Cache the result
       await CardCache.cachePage(siteId, page, pageSize, filters, {
-        cards: response.cards,
+        cards: response.cards ?? [],
         total: response.total,
         totalPages: response.totalPages,
         hasMore: response.hasMore,
       });
 
       setLoadingProgress(100);
-      setData(response.cards);
+      setData(response.cards ?? []);
       setTotal(response.total);
       setCurrentPage(page);
     } catch (error) {
@@ -181,6 +180,20 @@ const TagsPageOptimized = () => {
     setShowCreateModal(true);
   };
 
+
+  // Refresh the list. On the default view with a known sync baseline, pull ONLY
+  // the changes and merge them into the current list (upserts add/replace by
+  // Refresh the list. The card view is paginated (10 per page) and the server
+  // returns each page already sorted; merging deltas into a single page in the
+  // browser reorders/hides rows, so refresh simply drops the stale cache and
+  // reloads page 1 fresh from the server. Thanks to the no-store API change
+  // this is immediate, and it always shows newly created cards at the top.
+  const handleRefresh = async () => {
+    await CardCache.clearSiteCache(siteId);
+    setCurrentPage(1);
+    await handleGetCards(1, true);
+  };
+
   const handleCloseCreateModal = () => {
     setShowCreateModal(false);
   };
@@ -190,15 +203,6 @@ const TagsPageOptimized = () => {
     await CardCache.clearSiteCache(siteId);
     setCurrentPage(1);
     handleGetCards(1);
-  };
-
-  // Refresh: drop the stale cache and reload page 1 fresh from the server (the
-  // forceFresh flag skips the local cache read so the new card shows on the
-  // first click). Immediate now that the API is no-store.
-  const handleRefresh = async () => {
-    await CardCache.clearSiteCache(siteId);
-    setCurrentPage(1);
-    await handleGetCards(1, true);
   };
 
   const handlePageChange = (page: number, newPageSize?: number) => {
@@ -350,7 +354,7 @@ const TagsPageOptimized = () => {
                       { value: "R", label: Strings.onlyResolved },
                       { value: "C", label: Strings.onlyCanceled },
                       { value: "D", label: Strings.onlyDiscarded },
-                      { value: "A,P,C,R,D", label: Strings.allStatuses },
+                      { value: "A,P,V,C,R,D", label: Strings.allStatuses },
                     ]}
                   />
                 </div>

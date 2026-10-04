@@ -41,8 +41,7 @@ const useUserActivity = () => {
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         
         await updateLastLogin({
-          userId: Number(user.userId),
-          date: new Date().toISOString(), // Send as ISO string to match backend example
+          date: new Date().toISOString(),
           platform: Constants.OS_WEB,
           timezone: userTimezone
         }).unwrap();
@@ -126,4 +125,4 @@ const useUserActivity = () => {
   }, [user?.userId, updateUserActivity]);
 };
 
-export default useUserActivity; 
+export default useUserActivity;

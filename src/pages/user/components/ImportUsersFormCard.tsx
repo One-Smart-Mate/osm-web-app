@@ -14,17 +14,18 @@ const ImportUsersFormCard = ({ form }: FormProps) => {
   const handleBeforeUpload = (file: File) => {
     // Validate file extension
     const isXlsx = file.name.toLowerCase().endsWith('.xlsx');
-    const isXlsm = file.name.toLowerCase().endsWith('.xlsm');
-    const isXls = file.name.toLowerCase().endsWith('.xls');
+    const hasValidMimeType =
+      file.type ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    if (!isXlsx && !isXlsm && !isXls) {
+    if (!isXlsx || !hasValidMimeType) {
       message.error(`${file.name} ${Strings.invalidFileType}. ${Strings.onlyExcelFiles}`);
       return Upload.LIST_IGNORE;
     }
 
-    // Validate file size (max 10MB)
-    const isLt10M = file.size / 1024 / 1024 < 10;
-    if (!isLt10M) {
+    // Match the backend upload limit (5 MB).
+    const isLt5M = file.size <= 5 * 1024 * 1024;
+    if (!isLt5M) {
       message.error(Strings.fileTooLarge);
       return Upload.LIST_IGNORE;
     }
@@ -43,7 +44,7 @@ const ImportUsersFormCard = ({ form }: FormProps) => {
           maxCount={1}
           beforeUpload={handleBeforeUpload}
           name="file"
-          accept=".xlsx,.xlsm,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel"
+          accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         >
           <p className="ant-upload-drag-icon">
             <InboxOutlined />

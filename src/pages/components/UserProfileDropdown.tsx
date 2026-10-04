@@ -4,16 +4,15 @@ import User from "../../data/user/user";
 import Logout from "../auth/Logout";
 import { MenuProps } from "antd/lib";
 import EditProfileButton from "./modals/EditProfileButton";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 import { BsFilePdf } from "react-icons/bs";
 import Strings from "../../utils/localizations/Strings";
 import AnatomyNotification from "./AnatomyNotification";
 import * as zipjs from "@zip.js/zip.js";
-import { useUpdateUserMutation, useGetUserMutation } from "../../services/userService";
-import { UpdateUser } from "../../data/user/user.request";
+import { useUpdateUserPartialMutation } from "../../services/userService";
 import { useAppSelector } from "../../core/store";
-import { selectSiteId, selectIsSessionLocked } from "../../core/genericReducer";
+import { selectIsSessionLocked } from "../../core/genericReducer";
 
 /**
  * Props for the UserProfileDropdown component
@@ -33,21 +32,8 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
   const [generatingPassword, setGeneratingPassword] = useState(false);
   const [fastPasswordModalVisible, setFastPasswordModalVisible] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
-  const location = useLocation();
-  
-  
   const isSessionLocked = useAppSelector(selectIsSessionLocked);
-  
-  
-  const reduxSiteId = useAppSelector(selectSiteId);
-  const locationSiteId = location.state?.siteId;
-  const userFirstSiteId = user?.sites?.[0]?.id;
-  
-  
-  const currentSiteId = locationSiteId || reduxSiteId || userFirstSiteId;
-
-  const [updateUser] = useUpdateUserMutation();
-  const [getUser] = useGetUserMutation();
+  const [updateUserPartial] = useUpdateUserPartialMutation();
 
   /**
    * Generate fast password function using alphanumeric characters (a-z, A-Z, 0-9)
@@ -97,42 +83,15 @@ const UserProfileDropdown = ({ user }: UserProfileDropdownProps) => {
   const handleGenerateFastPassword = async () => {
     if (isSessionLocked) return; 
     
-    if (!currentSiteId) {
-      notification.warning({
-        message: Strings.warning,
-        description: Strings.siteIdRequired,
-      });
-      return;
-    }
-
     try {
       setGeneratingPassword(true);
-      
-      
       const newFastPassword = generateFastPassword();
-      
-      
-      const userDetails = await getUser(user.userId).unwrap();
-      
-      
-      const updateData = new UpdateUser(
-        parseInt(userDetails.id),
-        userDetails.name,
-        userDetails.email,
-        parseInt(currentSiteId),
-        "", 
-        userDetails.uploadCardDataWithDataNet,
-        userDetails.uploadCardEvidenceWithDataNet,
-        userDetails.roles.map((role: any) => parseInt(role)),
-        userDetails.status,
-        newFastPassword, 
-        "", 
-        "ES" 
-      );
-      
-      await updateUser(updateData).unwrap();
-      
-      
+
+      await updateUserPartial({
+        id: Number(user.userId),
+        fastPassword: newFastPassword,
+      }).unwrap();
+
       setGeneratedPassword(newFastPassword);
       setFastPasswordModalVisible(true);
       
