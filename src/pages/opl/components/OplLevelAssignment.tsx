@@ -95,13 +95,32 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
     );
   }, [allOplLevels, oplId]);
 
-  const levelNameById = useMemo(() => {
-    const m: { [key: string]: string } = {};
+  // Map of levelId -> level, used to walk up the superiorId chain.
+  const levelById = useMemo(() => {
+    const m: { [key: string]: Level } = {};
     levels.forEach((l) => {
-      m[String(l.id)] = l.name;
+      m[String(l.id)] = l;
     });
     return m;
   }, [levels]);
+
+  /**
+   * Builds the full breadcrumb path from the root down to the given level,
+   * e.g. "Planta › Área › Equipo › Batería". Guards against cycles.
+   */
+  const buildLevelPath = (levelId: string | number): string => {
+    const parts: string[] = [];
+    let current: Level | undefined = levelById[String(levelId)];
+    const seen = new Set<string>();
+    while (current && !seen.has(String(current.id))) {
+      seen.add(String(current.id));
+      parts.unshift(current.name);
+      const parentId: string = current.superiorId;
+      if (!parentId || parentId === "0") break;
+      current = levelById[String(parentId)];
+    }
+    return parts.length > 0 ? parts.join(" › ") : `${Strings.level} ${levelId}`;
+  };
 
   const treeData = useMemo(() => buildLevelTree(levels), [levels]);
 
@@ -218,6 +237,12 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
         </Button>
       </div>
 
+      {selectedLevelId && (
+        <Text type="secondary" style={{ display: "block", marginTop: 6 }}>
+          {buildLevelPath(selectedLevelId)}
+        </Text>
+      )}
+
       {!oplId && (
         <Text type="secondary" style={{ display: "block", marginTop: 8 }}>
           {Strings.oplSaveOplBeforeAssigning}
@@ -260,8 +285,7 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
                   ]}
                 >
                   <Text>
-                    {levelNameById[String(item.levelId)] ||
-                      `${Strings.level} ${item.levelId}`}
+                    {buildLevelPath(item.levelId)}
                   </Text>
                 </List.Item>
               )}
