@@ -73,10 +73,6 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ data, mode, isLoading
         const [day, month, year] = dateStr.split('/');
         date = new Date(`${year}-${month}-${day}T00:00:00`);
       }
-      // Check if it's in MM/DD/YYYY format
-      else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-        date = new Date(dateStr + 'T00:00:00');
-      }
       // Try to parse as is
       else {
         date = new Date(dateStr);

@@ -312,9 +312,11 @@ AnatomyNotification.error(notification, {
       }
 
       if (existingSchedule?.id) {
+        const { schedules: _schedules, order: _order, ...updateData } = scheduleData;
         await updateSchedule({
           id: existingSchedule.id,
-          ...scheduleData,
+          ...updateData,
+          schedule: schedulesArray[0],
           updatedAt: new Date().toISOString(),
         }).unwrap();
       } else {

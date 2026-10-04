@@ -1,6 +1,7 @@
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 import Strings from "../../../utils/localizations/Strings";
 import { BsCardText, BsQrCodeScan } from "react-icons/bs";
+import AnatomyTooltip from "../../components/AnatomyTooltip";
 import { useAppSelector } from "../../../core/store";
 import { useEffect, useState } from "react";
 import { selectSiteId } from "../../../core/genericReducer";
@@ -13,6 +14,13 @@ interface UpdateLevelFormProps {
   form: FormInstance;
   initialValues: any;
 }
+
+const LabelWithHelp = ({ text, help }: { text: string; help: string }) => (
+  <span className="inline-flex items-center">
+    {text}
+    <AnatomyTooltip title={help} />
+  </span>
+);
 
 const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
   const [getResponsibles] = useGetSiteResponsiblesMutation();
@@ -54,10 +62,12 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
   };
 
   const statusOptions = () => {
-    return statuses.map((status) => ({
+    return statuses
+      .filter((status) => ["A", "I"].includes(status.statusCode))
+      .map((status) => ({
       value: status.statusCode,
       label: status.statusName,
-    }));
+      }));
   };
 
   return (
@@ -69,11 +79,12 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
 
         <Form.Item
           name="name"
-          label={Strings.name}
+          label={<LabelWithHelp text={Strings.name} help={Strings.levelNameTooltip} />}
           rules={[{ required: true, message: Strings.name }, { max: 45 }]}
         >
           <Input
             maxLength={45}
+            showCount
             addonBefore={<BsCardText />}
             placeholder={Strings.name}
           />
@@ -81,7 +92,7 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
 
         <Form.Item
           name="description"
-          label={Strings.description}
+          label={<LabelWithHelp text={Strings.description} help={Strings.levelDescriptionTooltip} />}
           rules={[
             { required: true, message: Strings.requiredDescription },
             { max: 100 },
@@ -89,37 +100,43 @@ const UpdateLevelForm = ({ form, initialValues }: UpdateLevelFormProps) => {
         >
           <Input
             maxLength={100}
+            showCount
             addonBefore={<BsCardText />}
             placeholder={Strings.description}
           />
         </Form.Item>
 
-        <Form.Item name="responsibleId" label={Strings.responsible}>
+        <Form.Item name="responsibleId" label={<LabelWithHelp text={Strings.responsible} help={Strings.levelResponsibleTooltip} />}>
           <Select
             placeholder={Strings.responsible}
             options={responsibleOptions()}
           />
         </Form.Item>
 
-        <Form.Item name="levelMachineId" label={Strings.levelMachineId}>
+        <Form.Item name="levelMachineId" label={<LabelWithHelp text={Strings.levelMachineId} help={Strings.levelMachineIdTooltip} />}>
           <Input
             maxLength={50}
+            showCount
             addonBefore={<BsQrCodeScan />}
             placeholder={Strings.levelMachineId}
           />
         </Form.Item>
 
-        <Form.Item name="status" label={Strings.status}>
+        <Form.Item
+          name="status"
+          label={<LabelWithHelp text={Strings.status} help={Strings.levelStatusTooltip} />}
+          rules={[{ required: true, message: Strings.requiredStatus }]}
+        >
           <Select placeholder={Strings.status} options={statusOptions()} />
         </Form.Item>
 
-        <Form.Item name="notify" valuePropName="checked" label={Strings.notify}>
+        <Form.Item name="notify" valuePropName="checked" label={<LabelWithHelp text={Strings.notify} help={Strings.levelNotifyTooltip} />}>
           <Checkbox>
             <p className="text-base">{Strings.notify}</p>
           </Checkbox>
         </Form.Item>
 
-        <Form.Item name="assignWhileCreate" valuePropName="checked" label={Strings.assignCardOnCreate}>
+        <Form.Item name="assignWhileCreate" valuePropName="checked" label={<LabelWithHelp text={Strings.assignCardOnCreate} help={Strings.levelAssignCardOnCreateTooltip} />}>
           <Checkbox>
             <p className="text-base">{Strings.assignCardOnCreate}</p>
           </Checkbox>

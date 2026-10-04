@@ -141,13 +141,13 @@ const SiteForm = ({
         values.cellular?.toString(),
         values.email,
         logo,
-        values.latitud,
-        values.longitud,
+        values.latitud.toString(),
+        values.longitud.toString(),
         values.dueDate.format(Constants.DATE_FORMAT),
         Number(values.monthlyPayment),
         values.currency,
         Number(values.appHistoryDays),
-        values.status
+        values.status || Constants.STATUS_ACTIVE
       );
       await updateSite(request).unwrap();
       setModalOpen(false);

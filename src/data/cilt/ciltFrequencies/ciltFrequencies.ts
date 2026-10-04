@@ -11,6 +11,7 @@ export interface CiltFrequency {
     frecuencyCode?: string;
     description?: string;
     status?: string;
+    createdAt: string;
   
     constructor(
       siteId?: number,
@@ -22,6 +23,7 @@ export interface CiltFrequency {
       this.frecuencyCode = frecuencyCode;
       this.description = description;
       this.status = status;
+      this.createdAt = new Date().toISOString();
     }
   }
   

@@ -39,6 +39,7 @@ const RegisterPreclassifierForm2 = ({ form, initialValues }: FormProps) => {
               <Input
                 size="large"
                 maxLength={6}
+                showCount
                 addonBefore={<CiBarcode />}
                 placeholder={Strings.code}
               />
@@ -59,6 +60,7 @@ const RegisterPreclassifierForm2 = ({ form, initialValues }: FormProps) => {
               <Input
                 size="large"
                 maxLength={100}
+                showCount
                 addonBefore={<BsCardText />}
                 placeholder={Strings.description}
               />

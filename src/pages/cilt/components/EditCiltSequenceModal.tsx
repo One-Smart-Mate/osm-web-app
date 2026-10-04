@@ -252,10 +252,10 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
         secuenceColor: getColorFromCiltType(values.ciltTypeId),
         ciltTypeId: Number(values.ciltTypeId),
         ciltTypeName: ciltTypes.find((type) => type.id === values.ciltTypeId)?.name || values.ciltTypeName || "",
-        referenceOplSopId: Number(values.referenceOplSopId) || 0,
+        referenceOplSopId: Number(values.referenceOplSopId) || undefined,
         standardTime: Number(values.standardTime) || 0,
         standardOk: values.standardOk || "",
-        remediationOplSopId: Number(values.remediationOplSopId) || 0,
+        remediationOplSopId: Number(values.remediationOplSopId) || undefined,
         toolsRequired: values.toolsRequired || "",
         stoppageReason: values.stoppageReason ? 1 : 0,
         machineStopped: values.machineStopped ? 1 : 0,
@@ -556,6 +556,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
               <Input
                 placeholder={Strings.specialWarning}
                 maxLength={100}
+                showCount
               />
             </Form.Item>
 
@@ -573,6 +574,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 rows={2}
                 placeholder={Strings.editCiltSequenceModalStandardOkPlaceholder}
                 maxLength={100}
+                showCount
               />
             </Form.Item>
 
@@ -656,6 +658,7 @@ const EditCiltSequenceModal: React.FC<EditCiltSequenceModalProps> = ({
                 >
                   <Input
                     maxLength={10}
+                    showCount
                     placeholder={Strings.referencePoint}
                   />
                 </Form.Item>

@@ -76,11 +76,9 @@ const UpdateMechanicForm = ({ form, cardId, cardName, card }: FormProps) => {
       return;
     }
 
-      const currentUserId = selectedUserId;
       await updateCardMechanic({
         cardId: Number(finalCardId),
         mechanicId: Number(selectedUserId),
-        idOfUpdatedBy: Number(currentUserId),
       }).unwrap();
 
       const isExternalProvider = selectedUser.roles &&

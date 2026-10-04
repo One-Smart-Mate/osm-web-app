@@ -9,9 +9,9 @@ export interface OplDetail {
   }
   
   export class CreateOplDetailsDTO {
-    siteId: number;
+    siteId?: number;
     oplId: number;
-    order: number;
+    order?: number;
     type: 'texto' | 'imagen' | 'video' | 'pdf';
     text?: string;
     mediaUrl?: string;

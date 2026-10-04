@@ -12,6 +12,12 @@ const useRouteValidation = (): boolean => {
     return false; // No user, no access
   }
 
+  // Card links used in notifications are no longer public in the API. Any
+  // authenticated role may open them; site authorization is enforced server-side.
+  if (location.pathname.startsWith(Constants.externalProviderRouteVal)) {
+    return true;
+  }
+
   const currentRole = rol;
   const isDevelopment = process.env.NODE_ENV === 'development';
 

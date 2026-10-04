@@ -49,7 +49,7 @@ const PreclassifierForm = ({
 
   const handleOnCreate = async (values: any) => {
     try {
-      if (!data.cardTypeId) {
+      if (!data?.cardTypeId) {
         AnatomyNotification.error(
           notification,
           Strings.cardTypesNoCardTypeIdError

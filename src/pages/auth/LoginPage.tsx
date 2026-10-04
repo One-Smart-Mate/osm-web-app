@@ -1,5 +1,6 @@
 import { Form, Input, Card, Button, App as AntdApp, theme } from "antd";
 import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../services/authService";
 import { LoginRequest } from "../../data/user/user.request";
 import { useAppDispatch } from "../../core/store";
@@ -27,6 +28,8 @@ const LoginPage = () => {
     Constants.SESSION_KEYS.user
   );
   const navigatewithState = navigateWithState();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { notification } = AntdApp.useApp();
   const isDarkMode = useDarkMode();
   const { token } = theme.useToken();
@@ -42,6 +45,13 @@ const LoginPage = () => {
   };
 
   const handleNavigation = (user: User) => {
+    const returnLocation = location.state?.from;
+    if (returnLocation?.pathname?.startsWith("/external/")) {
+      navigate(`${returnLocation.pathname}${returnLocation.search ?? ""}`, {
+        replace: true,
+      });
+      return;
+    }
     navigatewithState(buildInitRoute(user), null, user);
   };
 
@@ -70,6 +80,7 @@ const LoginPage = () => {
         // Clear any session lock flags from previous sessions
         localStorage.removeItem('session_locked');
         localStorage.removeItem('last_user_info');
+        sessionStorage.removeItem(Constants.SESSION_KEYS.primaryUser);
 
         setSessionUser(data);
         dispatch(setCredentials({ ...data }));

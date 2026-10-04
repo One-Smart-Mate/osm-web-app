@@ -149,8 +149,7 @@ const CalendarChart: React.FC<CalendarChartProps> = ({
       try {
         await updateCardDueDate({
           cardId: cardEvent.id,
-          customDueDate: newDate,
-          idOfUpdatedBy: parseInt(user?.userId?.toString() || '0')
+          customDueDate: newDate
         }).unwrap();
 
         notificationApi.success({

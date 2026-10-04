@@ -90,7 +90,7 @@ const PriorityForm = ({ data, onComplete, formType }: PriorityFormProps) => {
         new UpdatePriorityReq(
           Number(values.id),
           values.code.trim(),
-          values.description,
+          values.description.trim(),
           Number(values.days),
           values.status
         )

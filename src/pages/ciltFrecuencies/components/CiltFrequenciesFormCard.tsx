@@ -53,6 +53,7 @@ const CiltFrequenciesFormCard = ({
                     >
                         <Input
                             maxLength={3}
+                            showCount
                             placeholder={Strings.frequencyCode}
                         />
 

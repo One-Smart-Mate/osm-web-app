@@ -11,6 +11,7 @@ import {
   SendResetCode,
   SetAppTokenDTO,
   UpdateUser,
+  UpdateUserPartial,
 } from "../data/user/user.request";
 import i18next from "i18next";
 import Constants from "../utils/Constants";
@@ -58,6 +59,14 @@ export const userService = apiSlice.injectEndpoints({
         url: "/users/update",
         method: "PUT",
         body: { ...user },
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+    }),
+    updateUserPartial: builder.mutation<any, UpdateUserPartial>({
+      query: (user) => ({
+        url: "/users/update-partial",
+        method: "PUT",
+        body: user,
       }),
       transformResponse: (response: { data: any }) => response.data,
     }),
@@ -142,11 +151,11 @@ export const userService = apiSlice.injectEndpoints({
         message: string;
       }) => response.data,
     }),
-    logout: builder.mutation<void, { userId: number; osName: string }>({
+    logout: builder.mutation<void, { osName: "WEB" | "ANDROID" | "IOS" }>({
       query: (logoutData) => ({
         url: "/users/logout",
         method: "POST",
-        body: { ...logoutData },
+        body: logoutData,
       }),
     }),
     
@@ -175,6 +184,7 @@ export const {
   useCreateUserMutation,
   useGetUserMutation,
   useUpdateUserMutation,
+  useUpdateUserPartialMutation,
   useSendCodeToEmailMutation,
   useSendCodeToVerifyMutation,
   useResetPasswordMutation,

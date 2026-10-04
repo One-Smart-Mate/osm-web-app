@@ -362,6 +362,7 @@ const CardTypesPageOptimized = () => {
 
     const getStatusColor = (status: string | undefined) => {
       switch (status) {
+        case Strings.inactiveValue:
         case Strings.detailsOptionS:
           return "#999999";
         case Strings.detailsOptionC:

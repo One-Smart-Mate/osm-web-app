@@ -108,7 +108,8 @@ const CompanyForm = ({ data, onComplete, formType }: CompanyFormProps) => {
         values.extension?.toString(),
         values.cellular?.toString(),
         values.email,
-        logo
+        logo,
+        data?.status || "A"
       );
       await updateCompany(companyToUpdate).unwrap();
       setModalOpen(false);

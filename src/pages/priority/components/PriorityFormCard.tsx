@@ -44,10 +44,12 @@ const PriorityFormCard = ({
   };
 
   const formatStatusOptions = () => {
-    return statusOptions.map((status) => ({
+    return statusOptions
+      .filter((status) => ["A", "I"].includes(status.statusCode))
+      .map((status) => ({
       value: status.statusCode,
       label: status.statusName,
-    }));
+      }));
   };
 
   return (
@@ -70,6 +72,7 @@ const PriorityFormCard = ({
           >
             <Input
               maxLength={4}
+              showCount
               addonBefore={<BsQrCode />}
               placeholder={Strings.code}
             />
@@ -88,6 +91,7 @@ const PriorityFormCard = ({
           >
             <Input
               maxLength={50}
+              showCount
               addonBefore={<BsCardText />}
               placeholder={Strings.description}
             />
@@ -104,6 +108,8 @@ const PriorityFormCard = ({
             className="mr-1"
           >
             <InputNumber
+              min={0}
+              precision={0}
               maxLength={3}
               addonBefore={<BsCalendar2Date />}
               placeholder={Strings.daysNumber}
@@ -112,7 +118,12 @@ const PriorityFormCard = ({
           <AnatomyTooltip title={Strings.priorityDaysNumberTooltip} />
 
           {!isLoading && enableStatus && (
-            <Form.Item name="status" className="w-60" label={Strings.status}>
+            <Form.Item
+              name="status"
+              className="w-60"
+              label={Strings.status}
+              rules={[{ required: true, message: Strings.requiredStatus }]}
+            >
               <Select options={formatStatusOptions()} />
             </Form.Item>
           )}

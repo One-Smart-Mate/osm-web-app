@@ -5,40 +5,51 @@ import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 import Strings from "../../../utils/localizations/Strings";
 import AnatomyTooltip from "../AnatomyTooltip";
 import { validateEmailPromise } from "../../../utils/Extensions";
-import User from "../../../data/user/user";
-import AnatomyNotification from "../AnatomyNotification";
+import AnatomyNotification, {
+  AnatomyNotificationType,
+} from "../AnatomyNotification";
+import { useUpdateUserPartialMutation } from "../../../services/userService";
+import { useAppDispatch } from "../../../core/store";
+import { setCredentials } from "../../../core/authReducer";
 
 const EditProfileButton = (): React.ReactElement => {
   const { user, setUser } = useCurrentUser();
   const [openModal, setOpenModal] = useState(false);
   const { token } = theme.useToken();
   const [form] = Form.useForm();
-  const [currentUser] = useState<User>(user);
   const [isLoading, setLoading] = useState(false);
   const { notification } = AntApp.useApp();
+  const [updateUserPartial] = useUpdateUserPartialMutation();
+  const dispatch = useAppDispatch();
 
-  const onFinish = async() => {
+  const onFinish = async () => {
     try {
       setLoading(true);
+      const values = await form.validateFields();
+      const name = values.name.trim();
+      const email = values.email.trim().toLowerCase();
 
-      const name = form.getFieldValue("name");
-      const email = form.getFieldValue("email");
+      await updateUserPartial({
+        id: Number(user.userId),
+        name,
+        email,
+        ...(values.password ? { password: values.password.trim() } : {}),
+        ...(values.fastPassword
+          ? { fastPassword: values.fastPassword.trim() }
+          : {}),
+      }).unwrap();
 
-      if (name == undefined || name == "" || name == null) {
-        AnatomyNotification.error(notification, Strings.requiredUserName);
-        return;
-      }
-
-      if (email == undefined || email == "" || email == null) {
-        AnatomyNotification.error(notification, Strings.requiredEmail);
-        return;
-      }
-      await validateEmailPromise({}, email);
       setUser({
-        name: name,
-        email: email,
+        name,
+        email,
       });
-      window.location.reload();
+      dispatch(setCredentials({ ...user, name, email }));
+      setOpenModal(false);
+      form.resetFields();
+      AnatomyNotification.success(
+        notification,
+        AnatomyNotificationType._UPDATE,
+      );
     } catch (error) {
       AnatomyNotification.error(notification, error);
     } finally {
@@ -47,7 +58,13 @@ const EditProfileButton = (): React.ReactElement => {
   };
 
   const handleInitValues = () => {
-    form.setFieldsValue({ ...currentUser });
+    form.setFieldsValue({
+      name: user.name,
+      email: user.email,
+      password: undefined,
+      confirmPassword: undefined,
+      fastPassword: undefined,
+    });
     setOpenModal(true);
   };
 
@@ -86,6 +103,7 @@ const EditProfileButton = (): React.ReactElement => {
             >
               <Input
                 maxLength={50}
+                showCount
                 addonBefore={<BsPerson />}
                 placeholder={Strings.name}
               />
@@ -105,6 +123,7 @@ const EditProfileButton = (): React.ReactElement => {
             >
               <Input
                 maxLength={60}
+                showCount
                 addonBefore={<BsMailbox />}
                 placeholder={Strings.email}
               />
@@ -175,29 +194,25 @@ const EditProfileButton = (): React.ReactElement => {
               name="fastPassword"
               validateFirst
               label={Strings.fastPassword}
-              dependencies={["password"]}
               rules={[
-                ({ getFieldValue }) => ({
+                {
                   validator(_, value) {
-                    if (!value && getFieldValue("password")) {
+                    if (value && !/^[a-zA-Z0-9]{4}$/.test(value)) {
                       return Promise.reject(
-                        new Error(Strings.requiredPassword)
-                      );
-                    }
-                    if (value && getFieldValue("password") !== value) {
-                      return Promise.reject(
-                        new Error(Strings.passwordsDoNotMatch)
+                        new Error(Strings.fastPasswordValidation)
                       );
                     }
                     return Promise.resolve();
                   },
-                }),
+                },
               ]}
               className="flex-1"
             >
               <Input.Password
                 addonBefore={<BsLock />}
-                placeholder={Strings.confirmPassword}
+                placeholder={Strings.fastPassword}
+                maxLength={4}
+                showCount
               />
             </Form.Item>
             <AnatomyTooltip title={Strings.fastPassword} />

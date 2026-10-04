@@ -49,6 +49,7 @@ const AmDiscardReasonFormCard = ({
           >
             <Input
               maxLength={45}
+              showCount
               addonBefore={<BsCardText />}
               placeholder={Strings.discardReason}
             />

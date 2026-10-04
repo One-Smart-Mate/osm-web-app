@@ -855,6 +855,9 @@ const CiltSequencesPage = () => {
           open={isScheduleSecuenceVisible}
           onCancel={handleScheduleSequenceCancel}
           onSave={handleScheduleSequenceSuccess}
+          sequenceId={selectedSequence?.id}
+          ciltId={currentCilt?.id}
+          siteId={currentCilt?.siteId ?? undefined}
         />
       </DndProvider>
     </>
