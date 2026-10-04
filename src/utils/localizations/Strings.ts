@@ -1841,6 +1841,15 @@ class StringsBase {
   static openEvidence = "openEvidence";
   static resolved = "resolved";
   static oplAssignmentSuccess = "oplAssignmentSuccess";
+  static oplAssignToNodeTitle = "oplAssignToNodeTitle";
+  static oplAssignToNodePlaceholder = "oplAssignToNodePlaceholder";
+  static oplAssignedNodesTitle = "oplAssignedNodesTitle";
+  static oplNoAssignedNodes = "oplNoAssignedNodes";
+  static oplUnassignSuccess = "oplUnassignSuccess";
+  static oplErrorUnassigning = "oplErrorUnassigning";
+  static oplAlreadyAssignedToNode = "oplAlreadyAssignedToNode";
+  static oplSaveOplBeforeAssigning = "oplSaveOplBeforeAssigning";
+  static remove = "remove";
   static viewReferenceOplButton = "viewReferenceOplButton";
   static viewRemediationOplButton = "viewRemediationOplButton";
   static initial = "initial";

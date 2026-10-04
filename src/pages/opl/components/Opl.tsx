@@ -28,6 +28,7 @@ import OplTable from "./OplTable";
 import OplForm from "./OplForm";
 import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
+import OplLevelAssignment from "./OplLevelAssignment";
 import Strings from "../../../utils/localizations/Strings";
 
 import SearchBar from "../../../components/common/SearchBar";
@@ -536,6 +537,13 @@ const Opl = (): React.ReactElement => {
           onSubmit={handleSubmit}
           currentOpl={currentOpl}
         />
+
+        {currentOpl && !isViewMode && (
+          <OplLevelAssignment
+            oplId={currentOpl.id}
+            siteId={currentOpl.siteId || siteId}
+          />
+        )}
       </Modal>
 
       <OplViewModal
