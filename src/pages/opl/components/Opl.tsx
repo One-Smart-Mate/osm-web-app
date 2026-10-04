@@ -28,6 +28,7 @@ import OplTable from "./OplTable";
 import OplForm from "./OplForm";
 import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
+import OplLevelAssignment from "./OplLevelAssignment";
 import Strings from "../../../utils/localizations/Strings";
 
 import SearchBar from "../../../components/common/SearchBar";
@@ -232,26 +233,30 @@ const Opl = (): React.ReactElement => {
       setSubmitting(true);
       const values = await form.validateFields();
 
-      const creator = values.creatorId
-        ? responsibles.find(
-            (user: Responsible) => String(user.id) === String(values.creatorId)
-          )
-        : null;
       const reviewer = values.reviewerId
         ? responsibles.find(
             (user: Responsible) => String(user.id) === String(values.reviewerId)
           )
         : null;
+      const resolvedSiteId = Number(values.siteId || siteId);
+
+      if (!Number.isInteger(resolvedSiteId) || resolvedSiteId <= 0) {
+        notification.error({
+          message: Strings.error,
+          description: Strings.requiredInfo,
+        });
+        return;
+      }
 
       if (currentOpl) {
         const updatePayload = new UpdateOplMstrDTO(
           currentOpl.id,
           new Date().toISOString(),
-          values.siteId || Number(siteId) || null,
-          values.title,
-          values.objetive,
-          values.creatorId ? Number(values.creatorId) : undefined,
-          creator?.name || undefined,
+          resolvedSiteId,
+          values.title.trim(),
+          values.objetive?.trim(),
+          undefined,
+          undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,
           reviewer?.name || undefined,
           values.oplTypeId ? Number(values.oplTypeId) : undefined
@@ -264,12 +269,12 @@ const Opl = (): React.ReactElement => {
         );
       } else {
         const createPayload = new CreateOplMstrDTO(
-          values.title,
+          values.title.trim(),
           new Date().toISOString(),
-          values.siteId || Number(siteId) || null,
-          values.objetive,
-          values.creatorId ? Number(values.creatorId) : undefined,
-          creator?.name || undefined,
+          resolvedSiteId,
+          values.objetive?.trim(),
+          undefined,
+          undefined,
           values.reviewerId ? Number(values.reviewerId) : undefined,
           reviewer?.name || undefined,
           values.oplTypeId ? Number(values.oplTypeId) : undefined
@@ -532,6 +537,13 @@ const Opl = (): React.ReactElement => {
           onSubmit={handleSubmit}
           currentOpl={currentOpl}
         />
+
+        {currentOpl && !isViewMode && (
+          <OplLevelAssignment
+            oplId={currentOpl.id}
+            siteId={currentOpl.siteId || siteId}
+          />
+        )}
       </Modal>
 
       <OplViewModal
