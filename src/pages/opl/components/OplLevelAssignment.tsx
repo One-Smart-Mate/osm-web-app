@@ -13,11 +13,10 @@ import {
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useGetlevelsMutation } from "../../../services/levelService";
 import {
-  useGetAllOplLevelsQuery,
+  useGetOplLevelsByOplIdQuery,
   useCreateOplLevelMutation,
   useDeleteOplLevelMutation,
 } from "../../../services/cilt/assignaments/oplLevelService";
-import { CreateOplLevelDTO, OplLevel } from "../../../data/cilt/assignaments/oplLevel";
 import { Level } from "../../../data/level/level";
 import Strings from "../../../utils/localizations/Strings";
 
@@ -78,22 +77,20 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
   );
 
   const {
-    data: allOplLevels,
+    data: oplLevelsData,
     isFetching: isLoadingAssignments,
     refetch: refetchAssignments,
-  } = useGetAllOplLevelsQuery(undefined, { skip: !oplId });
+  } = useGetOplLevelsByOplIdQuery(Number(oplId), { skip: !oplId });
 
   const [createOplLevel, { isLoading: isAssigning }] =
     useCreateOplLevelMutation();
   const [deleteOplLevel] = useDeleteOplLevelMutation();
 
-  // Levels assigned to THIS opl (filtered client-side; backend has no per-opl list endpoint).
-  const assignedOplLevels: OplLevel[] = useMemo(() => {
-    if (!oplId || !allOplLevels) return [];
-    return allOplLevels.filter(
-      (ol) => String(ol.oplId) === String(oplId) && !ol.deletedAt
-    );
-  }, [allOplLevels, oplId]);
+  // Level relations assigned to THIS opl (endpoint already scopes by opl).
+  const assignedOplLevels: any[] = useMemo(() => {
+    if (!oplId || !oplLevelsData) return [];
+    return oplLevelsData;
+  }, [oplLevelsData, oplId]);
 
   // Map of levelId -> level, used to walk up the superiorId chain.
   const levelById = useMemo(() => {
@@ -168,11 +165,11 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
     }
 
     try {
-      const payload = new CreateOplLevelDTO(
-        Number(oplId),
-        Number(selectedLevelId),
-        Number(siteId)
-      );
+      const payload = {
+        oplId: Number(oplId),
+        levelId: Number(selectedLevelId),
+        siteId: Number(siteId),
+      };
       await createOplLevel(payload).unwrap();
       notification.success({
         message: Strings.success,
@@ -211,7 +208,7 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
       <Divider orientation="left" style={{ marginTop: 8 }}>
         {Strings.oplAssignToNodeTitle}{" "}
         <Text type="secondary" style={{ fontSize: 11 }}>
-          (build 40)
+          (build 41)
         </Text>
       </Divider>
 
