@@ -209,7 +209,10 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
   return (
     <div>
       <Divider orientation="left" style={{ marginTop: 8 }}>
-        {Strings.oplAssignToNodeTitle}
+        {Strings.oplAssignToNodeTitle}{" "}
+        <Text type="secondary" style={{ fontSize: 11 }}>
+          (build 40)
+        </Text>
       </Divider>
 
       <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
