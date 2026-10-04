@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice";
-import { OplMstr, CreateOplMstrDTO, UpdateOplMstrDTO } from "../../data/cilt/oplMstr/oplMstr";
+import { OplMstr, CreateOplMstrDTO, UpdateOplMstrDTO, OplUserAccess } from "../../data/cilt/oplMstr/oplMstr";
 
 export const oplMstrService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,6 +18,10 @@ export const oplMstrService = apiSlice.injectEndpoints({
     getOplMstrById: builder.mutation<OplMstr, string>({
       query: (id) => `/opl-mstr/${id}`,
       transformResponse: (response: { data: OplMstr }) => response.data,
+    }),
+    getUserOplAccess: builder.query<OplUserAccess[], string | number>({
+      query: (userId) => `/opl-mstr/user/${userId}/access`,
+      transformResponse: (response: { data: OplUserAccess[] }) => response.data,
     }),
     createOplMstr: builder.mutation<OplMstr, CreateOplMstrDTO>({
       query: ({ creatorId: _creatorId, creatorName: _creatorName, ...payload }) => ({
@@ -44,6 +48,7 @@ export const {
   useGetOplMstrBySiteMutation,
   useGetOplMstrByCreatorMutation,
   useGetOplMstrByIdMutation,
+  useGetUserOplAccessQuery,
   useCreateOplMstrMutation,
   useUpdateOplMstrMutation,
 } = oplMstrService;

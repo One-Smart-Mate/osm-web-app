@@ -1154,6 +1154,14 @@ class StringsBase {
   static oplTableTitleColumn = "oplTableTitleColumn";
   static oplTableObjectiveColumn = "oplTableObjectiveColumn";
   static oplTableTypeColumn = "oplTableTypeColumn";
+  static oplTableTimesUsedColumn = "oplTableTimesUsedColumn";
+  static oplUserAccessButton = "oplUserAccessButton";
+  static oplUserAccessTitle = "oplUserAccessTitle";
+  static oplUserAccessOplColumn = "oplUserAccessOplColumn";
+  static oplUserAccessPathColumn = "oplUserAccessPathColumn";
+  static oplUserAccessLastColumn = "oplUserAccessLastColumn";
+  static oplUserAccessCountColumn = "oplUserAccessCountColumn";
+  static oplUserAccessEmpty = "oplUserAccessEmpty";
   static oplTableActionsColumn = "oplTableActionsColumn";
   static oplTableViewTooltip = "oplTableViewTooltip";
   static oplTableEditTooltip = "oplTableEditTooltip";
