@@ -4,6 +4,7 @@ import { Card, Space, Tag, Tooltip, Typography } from "antd";
 import UserForm from "./UserForm";
 import { UserFormType } from "./UserFormTypes";
 import AssignPositionsButton from "./AssignPositionsButton";
+import OplUserAccessButton from "./OplUserAccessButton";
 import AnatomySection from "../../../pagesRedesign/components/AnatomySection";
 import Strings from "../../../utils/localizations/Strings";
 import {
@@ -53,6 +54,7 @@ const UserCard = ({ user, onComplete }: UserCardProps): React.ReactElement => {
             }
           }}
         />,
+        <OplUserAccessButton userId={user.id} userName={user.name} />,
       ]}
     >
       <AnatomySection

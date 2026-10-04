@@ -11,6 +11,18 @@ export interface OplMstr {
   updatedAt: string | null;
   deletedAt: string | null;
   siteId: number | null;
+  directUsageCount?: number | null;
+  ciltUsageCount?: number | null;
+  lastUsedAt?: string | null;
+}
+
+export interface OplUserAccess {
+  oplId: number;
+  title: string | null;
+  oplTypeId: number | null;
+  path: string | null;
+  accessCount: number;
+  lastAccessAt: string | null;
 }
   
   export class CreateOplMstrDTO {

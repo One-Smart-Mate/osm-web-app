@@ -93,6 +93,20 @@ const OplTable: React.FC<OplTableProps> = ({
       responsive: ['sm'],
     },
     {
+      title: Strings.oplTableTimesUsedColumn,
+      key: "timesUsed",
+      align: "center",
+      sorter: (a, b) =>
+        ((a.directUsageCount ?? 0) + (a.ciltUsageCount ?? 0)) -
+        ((b.directUsageCount ?? 0) + (b.ciltUsageCount ?? 0)),
+      render: (_, record) => {
+        const total =
+          (record.directUsageCount ?? 0) + (record.ciltUsageCount ?? 0);
+        return <Badge color={total > 0 ? "green" : "default"} text={total} />;
+      },
+      responsive: ['sm'],
+    },
+    {
       title: Strings.oplTableActionsColumn,
       key: "action",
       render: (_, record) => (
