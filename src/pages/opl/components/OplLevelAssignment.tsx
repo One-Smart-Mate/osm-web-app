@@ -287,7 +287,10 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
                   </Text>
                   <div style={{ marginTop: 4 }}>
                     <Tag color={Number(item.usageCount) > 0 ? "blue" : "default"}>
-                      {Strings.oplNodeTimesUsed}: {Number(item.usageCount) || 0}
+                      {Strings.oplNodeCiltUsage}: {Number(item.usageCount) || 0}
+                    </Tag>
+                    <Tag color={Number(item.oplDirectUsageCount) > 0 ? "green" : "default"}>
+                      {Strings.oplDirectUsage}: {Number(item.oplDirectUsageCount) || 0}
                     </Tag>
                   </div>
                 </List.Item>
