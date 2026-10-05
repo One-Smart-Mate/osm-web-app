@@ -6,7 +6,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   useGetLevelTreeLazyMutation,
   useGetChildrenLevelsMutation,
-  useGetLevelStatsMutation
+  useGetLevelStatsMutation,
+  useGetLevelCardStatsMutation
 } from "../../services/levelService";
 import { useGetCardsByLevelMutation } from "../../services/cardService";
 
@@ -161,62 +162,18 @@ const ReadOnlyNodeElement = ({
   // Check if this is a placeholder node
   const isPlaceholder = nodeDatum.attributes?.isPlaceholder;
 
-  // Helper functions for assignments (similar to cards)
-  const hasAssignments = (node: any, assignmentCounts: { [key: string]: number }) => {
-    if (node.id !== "0" && assignmentCounts[node.id] && assignmentCounts[node.id] > 0) {
-      return true;
-    }
+  // Get counts. The backend returns per-node totals already rolled up with
+  // all descendants, so we read the node's value directly instead of walking
+  // the (lazily-loaded) children tree — this is what makes colors/numbers
+  // appear from the start without expanding nodes.
+  const assignmentCount =
+    nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] || 0 : null;
+  const totalCardCount =
+    nodeDatum.id !== "0" ? cardCounts[nodeDatum.id] || 0 : null;
 
-    if (node.children && node.children.length > 0) {
-      return node.children.some((child: any) => hasAssignments(child, assignmentCounts));
-    }
-
-    return false;
-  };
-
-  const _calculateTotalAssignments = (node: any, assignmentCounts: { [key: string]: number }): number => {
-    const ownAssignments = node.id !== "0" && assignmentCounts[node.id] ? assignmentCounts[node.id] : 0;
-
-    if (!node.children || node.children.length === 0) {
-      return ownAssignments;
-    }
-
-    const childrenAssignments = node.children.reduce(
-      (total: number, child: any) => total + _calculateTotalAssignments(child, assignmentCounts),
-      0
-    );
-
-    return ownAssignments + childrenAssignments;
-  };
-
-  const calculateTotalCards = (node: any, cardCounts: { [key: string]: number }): number => {
-    const ownCards = node.id !== "0" && cardCounts[node.id] ? cardCounts[node.id] : 0;
-
-    if (!node.children || node.children.length === 0) {
-      return ownCards;
-    }
-
-    const childrenCards = node.children.reduce(
-      (total: number, child: any) => total + calculateTotalCards(child, cardCounts),
-      0
-    );
-
-    return ownCards + childrenCards;
-  };
-
-  // Get counts
-  const assignmentCount = nodeDatum.id !== "0" ? assignmentCounts[nodeDatum.id] : null;
-  const totalCardCount = nodeDatum.id !== "0" ? calculateTotalCards(nodeDatum, cardCounts) : null;
-
-  // Check if node or children have assignments
-  const nodeHasOwnAssignments = assignmentCount && assignmentCount > 0;
-  const nodeChildrenHaveAssignments =
-    nodeDatum.children &&
-    nodeDatum.children.length > 0 &&
-    nodeDatum.children.some((child: any) => hasAssignments(child, assignmentCounts));
-
-  // Show split colors if node has assignments (own or children)
-  const showSplitColors = nodeDatum.id !== "0" && (nodeHasOwnAssignments || nodeChildrenHaveAssignments);
+  // Show split colors when the node (including descendants) has assignments.
+  const showSplitColors =
+    nodeDatum.id !== "0" && !!assignmentCount && assignmentCount > 0;
 
   // Default fill color - placeholders should be gray
   const fillColor = isPlaceholder ? "#f0f0f0" : (isLeafNode ? "#FFFF00" : "#145695");
@@ -295,6 +252,7 @@ const LevelsReadOnlyLazy = () => {
   const [getLevelTreeLazy] = useGetLevelTreeLazyMutation();
   const [getCardsByLevel] = useGetCardsByLevelMutation();
   const [getLevelStats] = useGetLevelStatsMutation();
+  const [getLevelCardStats] = useGetLevelCardStatsMutation();
   const { loadChildren, loadingNodes } = useLazyNode();
   const [notificationApi, contextHolder] = notification.useNotification();
 
@@ -419,71 +377,22 @@ const LevelsReadOnlyLazy = () => {
         applyExpandState(hierarchyData);
       }
 
-      // Fetch card counts and assignment counts for each level
-      const cardCountsObj: {[key: string]: number} = {};
-      const assignmentCountsObj: {[key: string]: number} = {};
+      // Per-node counts for the WHOLE site in a single call. The previous
+      // approach queried only the lazily-loaded nodes, so deep nodes stayed
+      // blank until expanded. This endpoint returns own counts for every node
+      // regardless of what is expanded, fixing the missing colors/numbers.
+      let cardCountsObj: {[key: string]: number} = {};
+      let assignmentCountsObj: {[key: string]: number} = {};
+      try {
+        const stats = await getLevelCardStats({
+          siteId: siteId.toString(),
+        }).unwrap();
+        cardCountsObj = stats?.cardCounts || {};
+        assignmentCountsObj = stats?.assignmentCounts || {};
+      } catch (_error) {
+        console.error("Error fetching level card stats:", _error);
+      }
 
-      // Create an array of promises for fetching card counts
-      const countPromises = activeNodes.map(async (level) => {
-        try {
-          const cards = await getCardsByLevel({
-            levelId: level.id,
-            siteId: location.state.siteId
-          }).unwrap();
-
-          cardCountsObj[level.id] = cards.length;
-        } catch (_error) {
-          console.error(`Error fetching cards for level ${level.id}:`, _error);
-          cardCountsObj[level.id] = 0;
-        }
-      });
-
-      // Create promises for fetching assignment counts
-      const assignmentPromises = activeNodes.map(async (level) => {
-        try {
-          // Fetch CILT assignments for this level
-
-          const ciltAssignmentsResponse = await fetch(
-            `${import.meta.env.VITE_API_SERVICE}/cilt-mstr-position-levels/level/${level.id}?skipOpl=true`,
-            {
-              method: 'GET',
-              headers: getAuthHeaders()
-            }
-          );
-
-          let ciltCount = 0;
-          if (ciltAssignmentsResponse.ok) {
-            const ciltData = await ciltAssignmentsResponse.json();
-            const ciltAssignments = ciltData.data || ciltData;
-            ciltCount = Array.isArray(ciltAssignments) ? ciltAssignments.filter(a => a.status === 'A').length : 0;
-          }
-
-          // Fetch OPL assignments for this level
-          const oplAssignmentsResponse = await fetch(
-            `${import.meta.env.VITE_API_SERVICE}/opl-levels/level/${level.id}`,
-            {
-              method: 'GET',
-              headers: getAuthHeaders()
-            }
-          );
-
-          let oplCount = 0;
-          if (oplAssignmentsResponse.ok) {
-            const oplData = await oplAssignmentsResponse.json();
-            const oplAssignments = oplData.data || oplData;
-            oplCount = Array.isArray(oplAssignments) ? oplAssignments.length : 0;
-          }
-
-          // Total assignments for this level
-          assignmentCountsObj[level.id] = ciltCount + oplCount;
-        } catch (_error) {
-          console.error(`Error fetching assignments for level ${level.id}:`, _error);
-          assignmentCountsObj[level.id] = 0;
-        }
-      });
-
-      // Wait for all card count and assignment requests to complete
-      await Promise.all([...countPromises, ...assignmentPromises]);
       setLoadingProgress(90);
 
       // Update state with counts

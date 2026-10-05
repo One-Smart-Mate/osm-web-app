@@ -95,6 +95,14 @@ export const levelService = apiSlice.injectEndpoints({
       query: ({ siteId, page = 1, limit = 999999 }) => `/level/stats/${siteId}?page=${page}&limit=${limit}`,
       transformResponse: (response: { data: any }) => response.data.stats,
     }),
+
+    getLevelCardStats: builder.mutation<{
+      cardCounts: { [levelId: string]: number };
+      assignmentCounts: { [levelId: string]: number };
+    }, { siteId: string }>({
+      query: ({ siteId }) => `/level/card-stats/${siteId}`,
+      transformResponse: (response: { data: any }) => response.data,
+    }),
   }),
 });
 
@@ -108,4 +116,5 @@ export const {
   useGetLevelTreeLazyMutation,
   useGetChildrenLevelsMutation,
   useGetLevelStatsMutation,
+  useGetLevelCardStatsMutation,
 } = levelService;
