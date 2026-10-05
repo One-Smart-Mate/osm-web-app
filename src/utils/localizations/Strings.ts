@@ -1155,6 +1155,7 @@ class StringsBase {
   static oplTableObjectiveColumn = "oplTableObjectiveColumn";
   static oplTableTypeColumn = "oplTableTypeColumn";
   static oplTableTimesUsedColumn = "oplTableTimesUsedColumn";
+  static oplNodeTimesUsed = "oplNodeTimesUsed";
   static oplUserAccessButton = "oplUserAccessButton";
   static oplUserAccessTitle = "oplUserAccessTitle";
   static oplUserAccessOplColumn = "oplUserAccessOplColumn";
