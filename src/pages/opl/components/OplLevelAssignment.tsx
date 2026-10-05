@@ -9,6 +9,7 @@ import {
   Spin,
   notification,
   Popconfirm,
+  Tag,
 } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useGetlevelsMutation } from "../../../services/levelService";
@@ -284,6 +285,14 @@ const OplLevelAssignment: React.FC<OplLevelAssignmentProps> = ({
                   <Text>
                     {buildLevelPath(item.levelId)}
                   </Text>
+                  <div style={{ marginTop: 4 }}>
+                    <Tag color={Number(item.usageCount) > 0 ? "blue" : "default"}>
+                      {Strings.oplNodeCiltUsage}: {Number(item.usageCount) || 0}
+                    </Tag>
+                    <Tag color={Number(item.oplDirectUsageCount) > 0 ? "green" : "default"}>
+                      {Strings.oplDirectUsage}: {Number(item.oplDirectUsageCount) || 0}
+                    </Tag>
+                  </div>
                 </List.Item>
               )}
             />
