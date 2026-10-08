@@ -159,9 +159,14 @@ const CreateCiltSequenceModal: React.FC<CreateCiltSequenceModalProps> = ({
 
       // Removed frequency validation as it's no longer needed
 
+      // Prefer the siteId prop (provided via navigation state) and fall back
+      // to the cilt's own siteId. The cilt object loaded from the API does not
+      // always include siteId, which previously made the payload send siteId=0
+      // and the backend rejected it with "siteId and ciltMstrId are required".
+      const resolvedSiteId = Number(siteId ?? cilt?.siteId ?? 0);
       const combinedData = {
         ...values,
-        siteId: Number(cilt?.siteId || 0),
+        siteId: resolvedSiteId,
         siteName: "",
         ciltMstrId: Number(cilt?.id || 0),
         ciltMstrName: cilt?.ciltName || "",
