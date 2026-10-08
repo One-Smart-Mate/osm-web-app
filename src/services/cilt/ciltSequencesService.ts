@@ -37,7 +37,11 @@ export const ciltSequencesService = apiSlice.injectEndpoints({
       transformResponse: (response: { data: CiltSequence }) => response.data,
     }),
     createCiltSequence: builder.mutation<CiltSequence, CreateCiltSequenceDTO>({
-      query: ({ siteId: _siteId, siteName: _siteName, ciltMstrName: _ciltMstrName, order: _order, ...payload }) => ({
+      // Only strip fields the backend assigns itself (order). siteId and
+      // siteName are REQUIRED by the backend ("siteId and ciltMstrId are
+      // required"); previously they were destructured out here, so every
+      // create request was sent without siteId and rejected with 400.
+      query: ({ order: _order, ...payload }) => ({
         url: `/cilt-sequences/create`,
         method: "POST",
         body: payload,
