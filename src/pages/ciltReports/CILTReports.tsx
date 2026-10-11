@@ -302,12 +302,13 @@ export const CILTReports = () => {
       title: "ID",
       dataIndex: "siteExecutionId",
       key: "siteExecutionId",
-      render: (text) => text || Strings.oplFormNotAssigned,
+      render: (text, record) =>
+        text ?? (record as any).id ?? Strings.oplFormNotAssigned,
       width: columnWidths.siteExecutionId,
       align: "center",
       sorter: (a, b) => {
-        const aId = a.siteExecutionId || 0;
-        const bId = b.siteExecutionId || 0;
+        const aId = a.siteExecutionId || (a as any).id || 0;
+        const bId = b.siteExecutionId || (b as any).id || 0;
         return aId - bId;
       },
       onHeaderCell: () => ({
