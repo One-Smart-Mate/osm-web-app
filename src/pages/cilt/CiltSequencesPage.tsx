@@ -371,6 +371,11 @@ const CiltSequencesPage = () => {
     setIsEditSequenceModalVisible(true);
   };
 
+  const showScheduleSequenceModal = (sequence: CiltSequence) => {
+    setSelectedSequence(sequence);
+    setScheduleSecuenceVisible(true);
+  };
+
   const handleEditSequenceModalCancel = () => {
     setIsEditSequenceModalVisible(false);
     setSelectedSequence(null);
@@ -676,6 +681,13 @@ const CiltSequencesPage = () => {
             {Strings.edit}
           </Button>
           <Button
+            type="primary"
+            size="small"
+            onClick={() => showScheduleSequenceModal(record)}
+          >
+            {Strings.scheduleSequence}
+          </Button>
+          <Button
             type="default"
             size="small"
             onClick={() =>
@@ -707,7 +719,7 @@ const CiltSequencesPage = () => {
           </Button>
         </Space>
       ),
-      width: 320,
+      width: 400,
     },
   ];
 
@@ -859,7 +871,7 @@ const CiltSequencesPage = () => {
           onSave={handleScheduleSequenceSuccess}
           sequenceId={selectedSequence?.id}
           ciltId={currentCilt?.id}
-          siteId={currentCilt?.siteId ?? undefined}
+          siteId={currentCilt?.siteId != null ? Number(currentCilt.siteId) : undefined}
         />
       </DndProvider>
     </>
