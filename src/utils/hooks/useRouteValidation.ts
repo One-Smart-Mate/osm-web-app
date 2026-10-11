@@ -51,6 +51,7 @@ const useRouteValidation = (): boolean => {
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cards}`,
       // NO tagsFastPassword
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.charts}`,
+      `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltCharts}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardReports}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.cardReportDetail}`,
       `/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.calendar}`,
