@@ -156,7 +156,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
         cilt.id,
         dateOfLastUsed,
         updatedAt,
-        cilt.siteId ?? undefined,
+        cilt.siteId != null && cilt.siteId !== ('' as any) ? Number(cilt.siteId) : undefined,
         cleanString(values.ciltName?.trim()),
         cleanString(values.ciltDescription?.trim()),
         undefined,
