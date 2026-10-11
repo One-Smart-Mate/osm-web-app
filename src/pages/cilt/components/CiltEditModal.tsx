@@ -258,7 +258,7 @@ const CiltEditModal: React.FC<CiltEditModalProps> = ({
             { max: 45 },
           ]}
         >
-          <Input maxLength={45} />
+          <Input maxLength={45} showCount />
         </Form.Item>
         <Form.Item
           name="ciltDescription"
