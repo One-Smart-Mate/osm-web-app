@@ -11,6 +11,9 @@ import { useGetCiltSequencesByCiltMutation } from "../../../services/cilt/ciltSe
 import { useGetOplMstrByIdMutation } from "../../../services/cilt/oplMstrService";
 import { useGetOplDetailsByOplMutation } from "../../../services/cilt/oplDetailsService";
 import Strings from "../../../utils/localizations/Strings";
+import { useAppSelector } from "../../../core/store";
+import { selectSiteId } from "../../../core/genericReducer";
+import useCurrentUser from "../../../utils/hooks/useCurrentUser";
 
 import CiltTable from "./CiltTable";
 import CiltEditModal from "./CiltEditModal";
@@ -33,7 +36,14 @@ interface CiltCardListProps {
 const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const siteId = location.state?.siteId ? Number(location.state.siteId) : undefined;
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const { user } = useCurrentUser();
+  const resolvedSiteId =
+    location.state?.siteId ||
+    siteIdFromSelector ||
+    user?.sites?.[0]?.id ||
+    undefined;
+  const siteId = resolvedSiteId ? Number(resolvedSiteId) : undefined;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [ciltProcedures, setCiltProcedures] = useState<CiltMstr[]>([]);
@@ -194,8 +204,8 @@ const CiltCardList: React.FC<CiltCardListProps> = ({ searchTerm = "" }) => {
     // Pasar la información del sitio en el estado de navegación para mantener la consistencia en el SideBar
     navigate(`/${Constants.ROUTES_PATH.dashboard}/${Constants.ROUTES_PATH.ciltSequences}/${ciltId}`, {
       state: {
-        siteId: location.state?.siteId,
-        siteName: location.state?.siteName,
+        siteId: resolvedSiteId,
+        siteName: location.state?.siteName || user?.sites?.[0]?.name,
         siteLogo: location.state?.siteLogo
       }
     });

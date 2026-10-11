@@ -6,11 +6,20 @@ import MainContainer from "../layouts/MainContainer";
 import CiltCardList from "./components/CiltCardList";
 import { useGetSiteMutation } from "../../services/siteService";
 import CreateCiltModal from "./components/CreateCiltModal";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const CiltProceduresPage = (): React.ReactElement => {
   const location = useLocation();
-  const siteId = location.state?.siteId || "";
-  const siteName = location.state?.siteName || "";
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const { user } = useCurrentUser();
+  const siteId =
+    location.state?.siteId ||
+    siteIdFromSelector ||
+    String(user?.sites?.[0]?.id || "");
+  const siteName =
+    location.state?.siteName || user?.sites?.[0]?.name || "";
 
   const [isCiltFormVisible, setIsCiltFormVisible] = useState(false);
   const [ciltForm] = Form.useForm();
