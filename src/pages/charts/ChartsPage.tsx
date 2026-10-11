@@ -51,7 +51,9 @@ const ChartsPage = () => {
   const [selectedCardType, setSelectedCardType] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>("A,P");
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [startDate, setStartDate] = useState(
+    dayjs().subtract(1, "year").format("YYYY-MM-DD")
+  );
   const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAreaId, setSelectedAreaId] = useState<number | undefined>(

@@ -103,9 +103,15 @@ const DownloadChartDataButton = ({
       // Filter cards by date and type if specified
       let filteredCards = cards;
       if (startDate && endDate) {
+        // Compare by full day: include the whole end day (up to 23:59:59.999),
+        // otherwise cards created after midnight of endDate are wrongly excluded.
+        const rangeStart = new Date(`${startDate}T00:00:00`);
+        const rangeEnd = new Date(`${endDate}T23:59:59.999`);
         filteredCards = cards.filter(card => {
+          if (!card.createdAt) return false;
           const cardDate = new Date(card.createdAt);
-          return cardDate >= new Date(startDate) && cardDate <= new Date(endDate);
+          if (isNaN(cardDate.getTime())) return false;
+          return cardDate >= rangeStart && cardDate <= rangeEnd;
         });
       }
       if (cardTypeName) {
