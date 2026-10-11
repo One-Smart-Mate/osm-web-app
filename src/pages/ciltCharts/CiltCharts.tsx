@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Card, Typography, DatePicker, Button } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { CiltChartFilters } from "../../services/chartService";
-import { UnauthorizedRoute } from "../../utils/Routes";
 import Strings from "../../utils/localizations/Strings";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 import PageTitle from "../components/PageTitle";
 import ExecutionChart from "./components/ExecutionChart";
 import ComplianceChart from "./components/ComplianceChart";
@@ -17,7 +19,6 @@ const { RangePicker } = DatePicker;
 
 const CiltChartsPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState<CiltChartFilters>({
     startDate: dayjs().subtract(7, 'days').format('YYYY-MM-DD'),
@@ -27,21 +28,30 @@ const CiltChartsPage = () => {
     levelId: undefined,
   });
 
-  const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state?.siteId || Strings.empty;
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const { user } = useCurrentUser();
+  const siteName =
+    location?.state?.siteName || user?.sites?.[0]?.name || Strings.empty;
+  const siteId =
+    location?.state?.siteId ||
+    siteIdFromSelector ||
+    String(user?.sites?.[0]?.id || "") ||
+    Strings.empty;
 
   useEffect(() => {
-    if (!location.state?.siteId) {
-      navigate(UnauthorizedRoute);
+    // Resolve siteId from navigation state, the global selector or the user's
+    // first site, so the screen also works when opened from the menu or on
+    // refresh (previously it bounced to Unauthorized when location.state was empty).
+    if (!siteId) {
       return;
     }
-    
+
     // Set siteId in filters
     setFilters(prev => ({
       ...prev,
       siteId: parseInt(siteId)
     }));
-  }, [location.state?.siteId, navigate, siteId]);
+  }, [siteId]);
 
   const handleDateRangeChange = (dates: any) => {
     if (dates) {
