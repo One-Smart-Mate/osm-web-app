@@ -254,14 +254,18 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                     dropdownRender={(menu) => <>{menu}</>}
                     optionLabelProp="label"
                   >
-                    {positions?.map((position) => (
+                    {positions?.map((position) => {
+                      const positionLabel = position.areaName
+                        ? `${position.name} - ${position.areaName}`
+                        : position.name;
+                      return (
                       <Select.Option
                         key={position.id}
                         value={position.id}
-                        label={`${position.name} - ${position.areaName}`}
+                        label={positionLabel}
                       >
                         <div className="flex justify-between items-center">
-                          <span>{`${position.name} - ${position.areaName}`}</span>
+                          <span>{positionLabel}</span>
                           <Button
                             type="primary"
                             size="small"
@@ -279,7 +283,8 @@ const CiltAssignmentDrawer: React.FC<CiltAssignmentDrawerProps> = ({
                           </Button>
                         </div>
                       </Select.Option>
-                    ))}
+                      );
+                    })}
                   </Select>
                 </Col>
                 {selectedPosition && (
