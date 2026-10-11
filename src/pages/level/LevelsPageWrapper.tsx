@@ -5,26 +5,44 @@ import { useGetLevelStatsMutation } from "../../services/levelService";
 import LevelsPageLazyTree from "./LevelsPageLazyTree";
 import { LevelCache } from "../../utils/levelCache";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import useSiteId from "../../utils/hooks/useSiteId";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const LevelsPageWrapper = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [getLevelStats] = useGetLevelStatsMutation();
+  const { user } = useCurrentUser();
 
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'standard' | 'optimized' | 'lazy-tree' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const siteId = location.state?.siteId;
+  const resolvedSiteId = useSiteId();
+  const siteId = resolvedSiteId;
 
   useEffect(() => {
-    if (!location.state || !siteId) {
+    if (!siteId) {
+      // No site in state and none resolvable from selector/user -> truly unauthorized.
       navigate(UnauthorizedRoute);
       return;
     }
 
+    // If we reached this screen without the site in navigation state (menu entry
+    // or refresh), backfill it so child screens that read location.state keep working.
+    if (!location.state?.siteId) {
+      navigate(location.pathname, {
+        replace: true,
+        state: {
+          siteId: resolvedSiteId,
+          siteName: location.state?.siteName || user?.sites?.[0]?.name || "",
+        },
+      });
+      return;
+    }
+
     checkPerformanceMode();
-  }, [location.state]);
+  }, [location.state, siteId]);
 
   const checkPerformanceMode = async () => {
     try {
@@ -32,7 +50,7 @@ const LevelsPageWrapper = () => {
       setError(null);
 
       // Check cached stats first
-      const cachedStats = await LevelCache.getStats(siteId);
+      const cachedStats = await LevelCache.getStats(Number(siteId));
 
       let statsData = cachedStats;
       if (!cachedStats) {
@@ -41,7 +59,7 @@ const LevelsPageWrapper = () => {
         statsData = response;
 
         // Cache the stats
-        await LevelCache.cacheStats(siteId, statsData);
+        await LevelCache.cacheStats(Number(siteId), statsData);
       }
 
       // Always use lazy-tree mode by default

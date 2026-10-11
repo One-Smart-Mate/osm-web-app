@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import PaginatedList from "../components/PaginatedList";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 import RefreshButton from "../components/RefreshButton";
 import AmDiscardReasonForm, { AmDiscardReasonFormType } from "./components/AmDiscardReasonForm";
 import AmDiscardReasonCard from "./components/AmDiscardReasonCard";
@@ -15,13 +17,16 @@ const AmDiscardReasonsPage = () => {
   const location = useLocation();
   const [data, setData] = useState<AmDiscardReason[]>([]);
   const [dataBackup, setDataBackup] = useState<AmDiscardReason[]>([]);
-  const siteName = location?.state?.siteName || Strings.empty;
-  const { isIhAdmin } = useCurrentUser();
-  
+  const { user, isIhAdmin } = useCurrentUser();
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const resolvedSiteId =
+    location?.state?.siteId || siteIdFromSelector || user?.sites?.[0]?.id || 0;
+  const siteName = location?.state?.siteName || user?.sites?.[0]?.name || Strings.empty;
+
   // Get discard reasons using the query hook
   const { data: amDiscardReasons = [], isLoading, refetch } = useGetAmDiscardReasonsQuery(
-    location?.state?.siteId ? Number(location.state.siteId) : 0,
-    { skip: !location?.state?.siteId }
+    resolvedSiteId ? Number(resolvedSiteId) : 0,
+    { skip: !resolvedSiteId }
   );
 
   useEffect(() => {

@@ -3,19 +3,36 @@ import { Spin, Result, Button } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardTypesPageOptimized from "./CardTypesPageOptimized";
 import { UnauthorizedRoute } from "../../utils/Routes";
+import useSiteId from "../../utils/hooks/useSiteId";
+import useCurrentUser from "../../utils/hooks/useCurrentUser";
 
 const CardTypesPageWrapper = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useCurrentUser();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
 
-  const siteId = location.state?.siteId;
+  const resolvedSiteId = useSiteId();
+  const siteId = resolvedSiteId;
 
   useEffect(() => {
-    if (!location.state || !siteId) {
+    if (!siteId) {
       navigate(UnauthorizedRoute);
+      return;
+    }
+
+    // Backfill navigation state when entered from the menu or on refresh,
+    // so the optimized child screen that reads location.state keeps working.
+    if (!location.state?.siteId) {
+      navigate(location.pathname, {
+        replace: true,
+        state: {
+          siteId: resolvedSiteId,
+          siteName: location.state?.siteName || user?.sites?.[0]?.name || "",
+        },
+      });
       return;
     }
 

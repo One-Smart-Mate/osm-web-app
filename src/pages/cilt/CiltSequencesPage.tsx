@@ -19,6 +19,7 @@ import {
   Modal,
 } from "antd";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import useSiteId from "../../utils/hooks/useSiteId";
 import {
   SearchOutlined,
   ArrowLeftOutlined,
@@ -212,6 +213,7 @@ const CiltSequencesPage = () => {
   const { ciltId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const resolvedSiteId = useSiteId();
 
   const [currentCilt, setCurrentCilt] = useState<CiltMstr | null>(null);
   const [sequences, setSequences] = useState<CiltSequence[]>([]);
@@ -825,7 +827,7 @@ const CiltSequencesPage = () => {
             cilt={currentCilt}
             onCancel={handleCreateSequenceCancel}
             onSuccess={handleCreateSequenceSuccess}
-            siteId={location.state?.siteId}
+            siteId={location.state?.siteId || resolvedSiteId}
           />
         )}
 

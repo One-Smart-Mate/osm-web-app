@@ -6,6 +6,7 @@ import { CardInterface } from "../../data/card/card";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import useSiteId from "../../utils/hooks/useSiteId";
 import RefreshButton from "../components/RefreshButton";
 import { useDebounce } from "use-debounce";
 import { handleErrorNotification } from "../../utils/Notifications";
@@ -42,7 +43,8 @@ const TagsPageOptimized = () => {
   const [pageSize, setPageSize] = useState(Constants.PAGE_SIZE);
   const navigate = useNavigate();
   const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state?.siteId;
+  const siteIdStr = useSiteId();
+  const siteId = siteIdStr ? Number(siteIdStr) : 0;
   const { isIhAdmin, user } = useCurrentUser();
   const userRole = user ? getUserRol(user) : UserRoles._UNDEFINED;
 
@@ -105,7 +107,7 @@ const TagsPageOptimized = () => {
   }, [debouncedSearchText, debouncedCardNumber, debouncedLocation, debouncedLevelMachineId, debouncedCreator, debouncedResolver, dateFilterType, dateRange, sortOption, selectedStatus, userRole, showMyCardsOnly]);
 
   const handleGetCards = async (page: number = 1, forceFresh: boolean = false) => {
-    if (!location.state) {
+    if (!siteId) {
       navigate(UnauthorizedRoute);
       return;
     }
@@ -497,7 +499,7 @@ const TagsPageOptimized = () => {
           <CreateCardModal
             open={showCreateModal}
             onClose={handleCloseCreateModal}
-            siteId={location.state?.siteId?.toString() || ""}
+            siteId={siteId?.toString() || ""}
             siteName={siteName}
             onSuccess={handleCardCreated}
           />

@@ -9,6 +9,7 @@ import CiltLevelMenuOptions from "./components/CiltLevelMenuOptions";
 import CiltAssignmentDrawer from "./components/CiltAssignmentDrawer";
 import LevelDetailsDrawer from "./components/LevelDetailsDrawer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import useSiteId from "../../utils/hooks/useSiteId";
 import { useGetlevelsMutation } from "../../services/levelService";
 import { Level } from "../../data/level/level";
 import AnatomyNotification from "../components/AnatomyNotification";
@@ -198,7 +199,7 @@ const CiltLevelAssignaments: React.FC = () => {
     useState<any>(null);
 
   const siteName = location.state?.siteName || "Default Site";
-  const siteId = location.state?.siteId || "1";
+  const siteId = useSiteId() || "1";
 
   useEffect(() => {
     handleGetLevels();
@@ -370,7 +371,7 @@ const CiltLevelAssignaments: React.FC = () => {
   const handleGetLevels = async () => {
     setIsLoading(true);
     try {
-      const response = await getLevels(siteId).unwrap();
+      const response = await getLevels({ siteId }).unwrap();
       
       const activeNodes = response.filter((node: any) => !node.deletedAt);
     

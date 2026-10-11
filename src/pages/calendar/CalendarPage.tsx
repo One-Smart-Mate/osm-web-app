@@ -3,13 +3,16 @@ import { useLocation } from 'react-router-dom';
 import { Typography } from 'antd';
 import CalendarChart from './CalendarChart';
 import Strings from '../../utils/localizations/Strings';
+import useSiteId from '../../utils/hooks/useSiteId';
+import useCurrentUser from '../../utils/hooks/useCurrentUser';
 
 const { Title } = Typography;
 
 const CalendarPage: React.FC = () => {
   const location = useLocation();
-  const siteId = location.state?.siteId;
-  const siteName = location.state?.siteName;
+  const { user } = useCurrentUser();
+  const siteId = useSiteId();
+  const siteName = location.state?.siteName || user?.sites?.[0]?.name;
 
   return (
     <div style={{ padding: '24px' }}>

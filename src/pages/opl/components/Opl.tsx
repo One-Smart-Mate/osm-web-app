@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import useSiteId from "../../../utils/hooks/useSiteId";
 import { Button, Spin, Form, notification, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -36,8 +36,7 @@ import { fileValidationCache } from "./OplMediaUploader";
 import AnatomyNotification, { AnatomyNotificationType } from "../../components/AnatomyNotification";
 
 const Opl = (): React.ReactElement => {
-  const location = useLocation();
-  const siteId = location.state?.siteId || "";
+  const siteId = useSiteId();
   const [form] = Form.useForm();
   const [detailForm] = Form.useForm();
 

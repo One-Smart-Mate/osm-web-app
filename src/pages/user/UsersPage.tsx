@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UnauthorizedRoute } from "../../utils/Routes";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import useSiteId from "../../utils/hooks/useSiteId";
 import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 import AnatomyNotification from "../components/AnatomyNotification";
@@ -24,15 +25,15 @@ const UsersPage = () => {
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isIhAdmin } = useCurrentUser();
+  const { user, isIhAdmin } = useCurrentUser();
   const [searchQuery, setSearchQuery] = useState<string>(Strings.empty);
-  const siteName = location?.state?.siteName || Strings.empty;
-  const siteId = location?.state.siteId || Strings.empty;
+  const siteId = useSiteId();
+  const siteName = location?.state?.siteName || user?.sites?.[0]?.name || Strings.empty;
   const { notification } = AntApp.useApp();
 
   const handleGetUsers = async () => {
     try {
-      if (!location.state) {
+      if (!siteId) {
         navigate(UnauthorizedRoute);
         return;
       }
@@ -51,7 +52,7 @@ const UsersPage = () => {
   // Load users only once when component mounts - removed duplicate
   useEffect(() => {
     handleGetUsers();
-  }, [location.state?.siteId]); // Only re-fetch if siteId changes
+  }, [siteId]); // Only re-fetch if siteId changes
 
   const search = useCallback((item: UserCardInfo, query: string): boolean => {
     const normalizedQuery = query.toLowerCase();

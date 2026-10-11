@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, Form, Input, Button, Select, Table, message, Row, Col, Space, Typography, Spin } from "antd";
-import { useLocation } from "react-router-dom";
+
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement } from 'chart.js';
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -11,6 +11,7 @@ import { navigateWithState } from "../../routes/RoutesExtensions";
 import Constants from "../../utils/Constants";
 import Strings from "../../utils/localizations/Strings";
 import ChartExpander from "../charts/components/ChartExpander";
+import useSiteId from "../../utils/hooks/useSiteId";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, ChartDataLabels);
@@ -40,7 +41,8 @@ interface ReportFilters {
 }
 
 const CardReportsPage: React.FC = () => {
-  const location = useLocation();
+  const resolvedSiteIdStr = useSiteId();
+  const resolvedSiteId = resolvedSiteIdStr ? Number(resolvedSiteIdStr) : 0;
   const navigate = navigateWithState();
   const [form] = Form.useForm();
 
@@ -57,9 +59,9 @@ const CardReportsPage: React.FC = () => {
 
   // Load charts for the site - using optimized defaults from apiSlice
   const { data: chartsData, isLoading: isLoadingCharts, error: chartsError } = useGetChartsQuery(
-    { siteId: location.state?.siteId },
+    { siteId: resolvedSiteId },
     {
-      skip: !location.state?.siteId,
+      skip: !resolvedSiteId,
       // Removed explicit refetch settings - using optimized apiSlice defaults
     }
   );
@@ -118,7 +120,7 @@ const CardReportsPage: React.FC = () => {
     return {
       dateStart: getLocalDateString(yesterday),
       dateEnd: getLocalDateString(today),
-      siteId: location.state?.siteId || 0,
+      siteId: resolvedSiteId || 0,
       rootNode: 0,
       targetLevel: 4,
       groupingLevel: 2,
@@ -252,7 +254,7 @@ const CardReportsPage: React.FC = () => {
   const handleSubmit = async (values: any) => {
     try {
       const params = {
-        siteId: location.state?.siteId,
+        siteId: resolvedSiteId,
         rootNode: filters.rootNode,
         targetLevel: values.targetLevel,
         groupingLevel: values.groupingLevel,
@@ -298,7 +300,7 @@ const CardReportsPage: React.FC = () => {
 
       // 3. Time series data - with rootNode filter for better performance
       const timeSeriesParams = {
-        siteId: location.state?.siteId,
+        siteId: resolvedSiteId,
         rootNode: params.rootNode, // Filter by tree for faster queries
         dateStart: params.dateStart,
         dateEnd: params.dateEnd,
@@ -336,7 +338,7 @@ const CardReportsPage: React.FC = () => {
   const handleLoadTimeSeries = async () => {
     try {
       const params = {
-        siteId: location.state?.siteId,
+        siteId: resolvedSiteId,
         rootNode: filters.rootNode, // Filter by tree for faster queries
         dateStart: filters.dateStart,
         dateEnd: filters.dateEnd,
