@@ -17,6 +17,8 @@ import { Position } from "../../data/postiions/positions";
 import Strings from "../../utils/localizations/Strings";
 import MainContainer from "../layouts/MainContainer";
 import useCurrentUser from "../../utils/hooks/useCurrentUser";
+import { useAppSelector } from "../../core/store";
+import { selectSiteId } from "../../core/genericReducer";
 import RefreshButton from "../components/RefreshButton";
 import PaginatedList from "../components/PaginatedList";
 
@@ -31,11 +33,16 @@ const PositionsPage = () => {
   const [positionForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [getSite] = useGetSiteMutation();
-  const { isIhAdmin } = useCurrentUser();
+  const { user, isIhAdmin } = useCurrentUser();
 
   const location = useLocation();
-  const siteId = location.state?.siteId || "";
-  const siteName = location.state?.siteName || "";
+  const siteIdFromSelector = useAppSelector(selectSiteId);
+  const siteId =
+    location.state?.siteId ||
+    siteIdFromSelector ||
+    String(user?.sites?.[0]?.id || "");
+  const siteName =
+    location.state?.siteName || user?.sites?.[0]?.name || "";
 
   const {
     data: positions = [],
