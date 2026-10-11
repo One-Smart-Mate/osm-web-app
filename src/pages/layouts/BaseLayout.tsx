@@ -4,6 +4,7 @@ import {
   Button,
   theme,
   Card,
+  Spin,
 } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Outlet } from "react-router-dom";
@@ -103,7 +104,17 @@ const BaseLayout: React.FC = () => {
           </span>
           <div className="layout-content h-full w-full">
             <Card style={{backgroundColor: colorBgContainer}}>
-              <Outlet />
+              <React.Suspense
+                fallback={
+                  <div className="flex justify-center items-center w-full py-16">
+                    <Spin size="large" tip={Strings.loading}>
+                      <div style={{ minHeight: 80 }} />
+                    </Spin>
+                  </div>
+                }
+              >
+                <Outlet />
+              </React.Suspense>
             </Card>
           </div>
         </Content>

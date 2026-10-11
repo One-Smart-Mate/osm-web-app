@@ -1,4 +1,4 @@
-import { ConfigProvider, App as AntdApp, theme } from "antd";
+import { ConfigProvider, App as AntdApp, theme, Spin } from "antd";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import ResetPassword from "./pages/auth/ResetPassword";
@@ -51,7 +51,22 @@ function App() {
   return (
     <ConfigProvider theme={getTheme(isDarkMode)}>
       <AntdApp>
-        <Routes>
+        <React.Suspense
+          fallback={
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+                width: "100%",
+              }}
+            >
+              <Spin size="large" />
+            </div>
+          }
+        >
+          <Routes>
           <Route index path="/" element={<LoginPage />} />
           <Route path={ResetPasswordRoute} element={<ResetPassword />} />
           <Route path="/locked-session" element={<LockedSession />} />
@@ -73,7 +88,8 @@ function App() {
           <Route path={UnauthorizedRoute} element={<Unauthorized />} />
           <Route path={"*"} element={<NotFound />} />
           <Route />
-        </Routes>
+          </Routes>
+        </React.Suspense>
       </AntdApp>
     </ConfigProvider>
   );
