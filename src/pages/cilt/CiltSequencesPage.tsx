@@ -45,6 +45,7 @@ import SequenceDetailsModal from "./components/SequenceDetailsModal";
 import EditCiltSequenceModal from "./components/EditCiltSequenceModal";
 import OplDetailsModal from "./components/OplDetailsModal";
 import ScheduleSecuence from "./components/ScheduleSecuence";
+import { useGetSchedulesBySequenceQuery } from "../../services/cilt/ciltSecuencesScheduleService";
 import Constants from "../../utils/Constants";
 import { formatSecondsToNaturalTime } from "../../utils/timeUtils";
 import type { ColumnsType } from "antd/es/table";
@@ -241,6 +242,26 @@ const CiltSequencesPage = () => {
   const [selectedSequence, setSelectedSequence] = useState<CiltSequence | null>(
     null
   );
+
+  // Load existing schedules for the selected sequence so the schedule modal can
+  // show and edit the current calendarization instead of only creating a new one.
+  const { data: sequenceSchedules } = useGetSchedulesBySequenceQuery(
+    Number(selectedSequence?.id),
+    { skip: !isScheduleSecuenceVisible || !selectedSequence?.id }
+  );
+  const existingSchedule =
+    sequenceSchedules && sequenceSchedules.length > 0
+      ? ({
+          ...(sequenceSchedules[0] as any),
+          // The backend returns the time in the singular `schedule` field, but the
+          // modal reads `schedules` (array). Normalize so existing times pre-fill.
+          schedules:
+            (sequenceSchedules[0] as any).schedules ??
+            ((sequenceSchedules[0] as any).schedule
+              ? [(sequenceSchedules[0] as any).schedule]
+              : []),
+        } as any)
+      : undefined;
   const [selectedOpl, setSelectedOpl] = useState<OplMstr | null>(null);
   const [selectedOplDetails, setSelectedOplDetails] = useState<OplDetail[]>([]);
   const [loadingOplDetails, setLoadingOplDetails] = useState(false);
@@ -872,6 +893,7 @@ const CiltSequencesPage = () => {
           sequenceId={selectedSequence?.id}
           ciltId={currentCilt?.id}
           siteId={currentCilt?.siteId != null ? Number(currentCilt.siteId) : undefined}
+          existingSchedule={existingSchedule}
         />
       </DndProvider>
     </>
