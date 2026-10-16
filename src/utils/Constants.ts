@@ -104,6 +104,7 @@ const ROUTES_PATH = {
   proceduresTree: 'procedures-tree',
   opl: 'opl',
   oplTypes: 'opl-types',
+  trainingMatrix: 'training-matrix',
   ciltTypes: 'cilt-types',
   ciltFrecuencies: 'cilt-frecuencies',
   ciltLevelAssignaments: 'cilt-level-assignaments',

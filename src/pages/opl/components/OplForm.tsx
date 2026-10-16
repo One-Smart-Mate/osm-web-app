@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Select, Spin, Typography, Button } from "antd";
+import { Form, Input, Select, Spin, Typography, Button, InputNumber } from "antd";
 import { Responsible } from "../../../data/user/user";
 import Strings from "../../../utils/localizations/Strings";
 import { useLocation } from "react-router-dom";
@@ -122,6 +122,19 @@ const OplForm: React.FC<OplFormProps> = ({
               </Option>
             ))}
           </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="validityDays"
+          label={Strings.oplValidityDaysLabel}
+          help={Strings.oplValidityDaysHelp}
+        >
+          <InputNumber
+            min={1}
+            style={{ width: "100%" }}
+            placeholder={Strings.oplValidityDaysPlaceholder}
+            disabled={isViewMode}
+          />
         </Form.Item>
 
         <Form.Item label={Strings.oplFormCreatorLabel}>

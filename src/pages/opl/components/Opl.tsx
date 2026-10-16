@@ -29,7 +29,7 @@ import OplForm from "./OplForm";
 import OplDetailsModal from "./OplDetailsModal";
 import OplViewModal from "./OplViewModal";
 import OplLevelAssignment from "./OplLevelAssignment";
-import Strings from "../../../utils/localizations/Strings";
+import OplPositionAssignment from "./OplPositionAssignment";import Strings from "../../../utils/localizations/Strings";
 
 import SearchBar from "../../../components/common/SearchBar";
 import { fileValidationCache } from "./OplMediaUploader";
@@ -261,6 +261,11 @@ const Opl = (): React.ReactElement => {
           values.oplTypeId ? Number(values.oplTypeId) : undefined
         );
 
+        updatePayload.validityDays =
+          values.validityDays != null && values.validityDays !== ""
+            ? Number(values.validityDays)
+            : undefined;
+
         await updateOplMstr(updatePayload).unwrap();
         AnatomyNotification.success(
           notification,
@@ -278,6 +283,11 @@ const Opl = (): React.ReactElement => {
           reviewer?.name || undefined,
           values.oplTypeId ? Number(values.oplTypeId) : undefined
         );
+
+        createPayload.validityDays =
+          values.validityDays != null && values.validityDays !== ""
+            ? Number(values.validityDays)
+            : undefined;
 
         await createOplMstr(createPayload).unwrap();
         AnatomyNotification.success(
@@ -539,6 +549,13 @@ const Opl = (): React.ReactElement => {
 
         {currentOpl && !isViewMode && (
           <OplLevelAssignment
+            oplId={currentOpl.id}
+            siteId={currentOpl.siteId || siteId}
+          />
+        )}
+
+        {currentOpl && !isViewMode && (
+          <OplPositionAssignment
             oplId={currentOpl.id}
             siteId={currentOpl.siteId || siteId}
           />

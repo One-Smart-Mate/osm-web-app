@@ -7,6 +7,7 @@ export interface OplMstr {
   reviewerId: number | null;
   reviewerName: string | null;
   oplTypeId: number | null;
+  validityDays?: number | null;
   createdAt: string | null;
   updatedAt: string | null;
   deletedAt: string | null;
@@ -33,6 +34,7 @@ export interface OplUserAccess {
   reviewerId?: number;
   reviewerName?: string;
   oplTypeId?: number;
+  validityDays?: number;
   createdAt: string;
   siteId: number | null;
 
@@ -68,6 +70,7 @@ export interface OplUserAccess {
   reviewerId?: number;
   reviewerName?: string;
   oplTypeId?: number;
+  validityDays?: number;
   updatedAt: string;
   siteId: number | null;
 

@@ -225,7 +225,7 @@ const baseQueryWithRetry = retry(baseQueryWithSession, { maxRetries: 3 });
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithRetry,
-  tagTypes: ["User", "OplLevel", "AmDiscardReason"],
+  tagTypes: ["User", "OplLevel", "OplTraining", "AmDiscardReason"],
   endpoints: (_) => ({}),
   refetchOnFocus: false,
   refetchOnReconnect: true,

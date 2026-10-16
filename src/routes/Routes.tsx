@@ -55,6 +55,7 @@ const CiltSequencesPage = React.lazy(
   () => import("../pages/cilt/CiltSequencesPage")
 );
 const OplPage = React.lazy(() => import("../pages/opl/OplPage"));
+const TrainingMatrixPage = React.lazy(() => import("../pages/trainingMatrix/TrainingMatrixPage"));
 const OplTypesPage = React.lazy(() => import("../pages/oplTypes/OplTypesPage"));
 const CiltTypesPage = React.lazy(
   () => import("../pages/ciltTypes/CiltTypesPage")
@@ -235,6 +236,14 @@ const oplTypesRoute = new Route(
   Strings.cilt
 );
 
+const trainingMatrixRoute = new Route(
+  Strings.trainingMatrix,
+  Constants.ROUTES_PATH.trainingMatrix,
+  <TrainingMatrixPage />,
+  <BsPeople />,
+  Strings.cilt
+);
+
 const ciltTypesRoute = new Route(
   Strings.ciltTypesSB,
   Constants.ROUTES_PATH.ciltTypes,
@@ -303,6 +312,7 @@ const routes: Route[] = [
   proceduresTreeRoute,
   oplRoute,
   oplTypesRoute,
+  trainingMatrixRoute,
   ciltTypesRoute,
   ciltFrecuenciesRoute,
   ciltLevelAssignamentsRoute,
@@ -365,6 +375,12 @@ const localAdminRoutesSiderOptions = (): ItemType[] => {
       key: oplRoute.path,
       icon: oplRoute.icon,
       section: oplRoute.section,
+    }),
+    getItemV2({
+      label: trainingMatrixRoute.label,
+      key: trainingMatrixRoute.path,
+      icon: trainingMatrixRoute.icon,
+      section: trainingMatrixRoute.section,
     }),
     // NO oplTypesRoute (opl_types)
     getItemV2({
@@ -518,6 +534,12 @@ const localSisAdminRoutesSiderOptions = (): ItemType[] => {
       key: oplTypesRoute.path,
       icon: oplTypesRoute.icon,
       section: oplTypesRoute.section,
+    }),
+    getItemV2({
+      label: trainingMatrixRoute.label,
+      key: trainingMatrixRoute.path,
+      icon: trainingMatrixRoute.icon,
+      section: trainingMatrixRoute.section,
     }),
     getItemV2({
       label: ciltTypesRoute.label,

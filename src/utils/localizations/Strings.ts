@@ -1861,6 +1861,30 @@ class StringsBase {
   static oplAlreadyAssignedToNode = "oplAlreadyAssignedToNode";
   static oplSaveOplBeforeAssigning = "oplSaveOplBeforeAssigning";
   static remove = "remove";
+
+  // OPL training (capacitación por posición)
+  static oplValidityDaysLabel = "oplValidityDaysLabel";
+  static oplValidityDaysPlaceholder = "oplValidityDaysPlaceholder";
+  static oplValidityDaysHelp = "oplValidityDaysHelp";
+  static oplAssignToPositionTitle = "oplAssignToPositionTitle";
+  static oplAssignToPositionPlaceholder = "oplAssignToPositionPlaceholder";
+  static oplAssignedPositionsTitle = "oplAssignedPositionsTitle";
+  static oplNoAssignedPositions = "oplNoAssignedPositions";
+  static oplAlreadyAssignedToPosition = "oplAlreadyAssignedToPosition";
+  static oplSaveOplBeforeAssigningPosition = "oplSaveOplBeforeAssigningPosition";
+  static trainingMatrix = "trainingMatrix";
+  static trainingMatrixTitle = "trainingMatrixTitle";
+  static trainingUser = "trainingUser";
+  static trainingStatusPending = "trainingStatusPending";
+  static trainingStatusSelfCompleted = "trainingStatusSelfCompleted";
+  static trainingStatusValidated = "trainingStatusValidated";
+  static trainingStatusExpired = "trainingStatusExpired";
+  static trainingValidate = "trainingValidate";
+  static trainingValidateSuccess = "trainingValidateSuccess";
+  static trainingExpiresAt = "trainingExpiresAt";
+  static trainingNoRecords = "trainingNoRecords";
+  static trainingMarkTaken = "trainingMarkTaken";
+  static trainingMarkTakenSuccess = "trainingMarkTakenSuccess";
   static viewReferenceOplButton = "viewReferenceOplButton";
   static viewRemediationOplButton = "viewRemediationOplButton";
   static initial = "initial";
